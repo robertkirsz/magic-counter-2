@@ -8,72 +8,72 @@ export const Games: React.FC = () => {
   const { users, addUser } = useUsers()
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [newGamePlayers, setNewGamePlayers] = useState('')
-  const [editGamePlayers, setEditGamePlayers] = useState('')
-  const [selectedUsers, setSelectedUsers] = useState<string[]>([])
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([])
   const [newUserName, setNewUserName] = useState('')
+  const [editGamePlayers, setEditGamePlayers] = useState('')
 
   const handleAddGame = () => {
-    if (newGamePlayers.trim() || selectedUsers.length > 0) {
-      let players: string[] = []
-
-      // Add selected users
-      players = [...selectedUsers]
-
-      // Add manually entered players
-      if (newGamePlayers.trim()) {
-        players = [...players, ...newGamePlayers
-          .split(',')
-          .map(p => p.trim())
-          .filter(p => p)]
-      }
-
-      if (players.length > 0) {
-        addGame({ players })
-        setNewGamePlayers('')
-        setSelectedUsers([])
-        setIsAdding(false)
-      }
+    if (selectedUserIds.length > 0) {
+      addGame({ players: selectedUserIds })
+      setSelectedUserIds([])
+      setIsAdding(false)
     }
   }
 
   const handleAddNewUser = () => {
     if (newUserName.trim()) {
-      addUser({ name: newUserName, decks: [] })
-      setSelectedUsers(prev => [...prev, newUserName])
+      const newUser = addUser({ name: newUserName, decks: [] })
+      setSelectedUserIds(prev => [...prev, newUser.id])
       setNewUserName('')
     }
   }
 
-  const handleUserSelect = (userName: string) => {
-    setSelectedUsers(prev => (prev.includes(userName) ? prev.filter(name => name !== userName) : [...prev, userName]))
+  const handleUserSelect = (userId: string) => {
+    setSelectedUserIds(prev => (prev.includes(userId) ? prev.filter(id => id !== userId) : [...prev, userId]))
   }
 
   const handleEditGame = (gameId: string) => {
     const game = games.find(g => g.id === gameId)
-    
     if (game) {
-      setEditGamePlayers(game.players.join(', '))
+      // Convert user IDs to names for editing
+      const playerNames = game.players.map(playerId => {
+        const user = users.find(u => u.id === playerId)
+        return user ? user.name : playerId
+      })
+      setEditGamePlayers(playerNames.join(', '))
       setEditingId(gameId)
     }
   }
 
   const handleSaveEdit = () => {
     if (editingId && editGamePlayers.trim()) {
+      // Convert names back to IDs where possible
+      const playerNames = editGamePlayers
+        .split(',')
+        .map(p => p.trim())
+        .filter(p => p)
+      
+      const players = playerNames.map(name => {
+        const user = users.find(u => u.name === name)
+        return user ? user.id : name // Keep as name if no matching user found
+      })
+      
       setEditingId(null)
       setEditGamePlayers('')
-      updateGame(editingId, {
-        players: editGamePlayers
-          .split(',')
-          .map(p => p.trim())
-          .filter(p => p)
-      })
+      updateGame(editingId, { players })
     }
   }
 
   const handleCancelEdit = () => {
     setEditingId(null)
     setEditGamePlayers('')
+  }
+
+  const getPlayerNames = (playerIds: string[]) => {
+    return playerIds.map(id => {
+      const user = users.find(u => u.id === id)
+      return user ? user.name : 'Unknown'
+    })
   }
 
   return (
@@ -91,22 +91,23 @@ export const Games: React.FC = () => {
         ) : (
           <div>
             <h3 className="mb-2 text-lg font-semibold">Add New Game</h3>
-
             {/* User Selection */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-3">
-              {users.map(user => (
-                <label key={user.id} className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={selectedUsers.includes(user.name)}
-                    onChange={() => handleUserSelect(user.name)}
-                    className="rounded"
-                  />
-                  <span className="text-sm">{user.name}</span>
-                </label>
-              ))}
+            <div className="mb-4">
+              <label className="block mb-2 font-medium">Select Existing Users:</label>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-3">
+                {users.map(user => (
+                  <label key={user.id} className="flex items-center space-x-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedUserIds.includes(user.id)}
+                      onChange={() => handleUserSelect(user.id)}
+                      className="rounded"
+                    />
+                    <span className="text-sm">{user.name}</span>
+                  </label>
+                ))}
+              </div>
             </div>
-
             {/* Add New User */}
             <div className="mb-4">
               <label className="block mb-2 font-medium">Add New User:</label>
@@ -126,7 +127,20 @@ export const Games: React.FC = () => {
                 </button>
               </div>
             </div>
-
+            {/* Selected Players Summary */}
+            {selectedUserIds.length > 0 && (
+              <div className="mb-4 p-3 bg-blue-50 rounded">
+                <p className="font-medium mb-1">Selected Players:</p>
+                <p className="text-sm text-gray-600">
+                  {selectedUserIds
+                    .map(id => {
+                      const user = users.find(u => u.id === id)
+                      return user ? user.name : id
+                    })
+                    .join(', ')}
+                </p>
+              </div>
+            )}
             <div>
               <button
                 onClick={handleAddGame}
@@ -137,8 +151,7 @@ export const Games: React.FC = () => {
               <button
                 onClick={() => {
                   setIsAdding(false)
-                  setNewGamePlayers('')
-                  setSelectedUsers([])
+                  setSelectedUserIds([])
                   setNewUserName('')
                 }}
                 className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
@@ -149,7 +162,6 @@ export const Games: React.FC = () => {
           </div>
         )}
       </div>
-
       {/* Games List */}
       <div>
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Current Games</h2>
@@ -192,7 +204,7 @@ export const Games: React.FC = () => {
                       <h3 className="font-semibold mb-1">Game {game.id.slice(0, 8)}</h3>
                       <p className="text-gray-500 mb-1">Created: {game.createdAt.toLocaleDateString()}</p>
                       <p>
-                        <span className="font-medium">Players:</span> {game.players.join(', ')}
+                        <span className="font-medium">Players:</span> {getPlayerNames(game.players).join(', ')}
                       </p>
                     </div>
                     <div>

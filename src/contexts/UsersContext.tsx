@@ -2,7 +2,7 @@ import React, { type ReactNode, createContext, useContext, useEffect, useState }
 
 interface UsersContextType {
   users: User[]
-  addUser: (user: Omit<User, 'id' | 'createdAt'>) => void
+  addUser: (user: Omit<User, 'id' | 'createdAt'>) => User
   removeUser: (userId: string) => void
   updateUser: (userId: string, updates: Partial<User>) => void
 }
@@ -33,6 +33,7 @@ export const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
       createdAt: new Date()
     }
     setUsers(prev => [...prev, newUser])
+    return newUser
   }
 
   const removeUser = (userId: string) => {
