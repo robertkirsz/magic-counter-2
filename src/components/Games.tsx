@@ -10,8 +10,9 @@ export const Games: React.FC = () => {
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
 
-  const handleAddGame = (data: { players: string[]; tracking: 'full' | 'simple' | 'none' }) => {
+  const handleAddGame = (data: { players: Game['players']; tracking: Game['tracking'] }) => {
     addGame({
+      state: 'active',
       players: data.players,
       activePlayer: null,
       tracking: data.tracking
@@ -23,7 +24,7 @@ export const Games: React.FC = () => {
     setEditingId(gameId)
   }
 
-  const handleSaveEdit = (data: { players: string[]; tracking: 'full' | 'simple' | 'none' }) => {
+  const handleSaveEdit = (data: { players: Game['players']; tracking: Game['tracking'] }) => {
     if (editingId) {
       // Convert names back to IDs where possible
       const playerNames = data.players.map(p => p.trim()).filter(p => p)
@@ -76,14 +77,17 @@ export const Games: React.FC = () => {
                   <div>
                     <h3 className="font-semibold mb-1">Game {game.id.slice(0, 8)}</h3>
                     <p className="text-gray-500 mb-1">Created: {game.createdAt.toLocaleDateString()}</p>
+
                     <p className="mb-1">
                       <span className="font-medium">Players:</span> {getPlayerNames(game.players).join(', ')}
                     </p>
+
                     <p className="text-sm text-gray-600">
                       <span className="font-medium">Tracking:</span>{' '}
                       {game.tracking.charAt(0).toUpperCase() + game.tracking.slice(1)}
                     </p>
                   </div>
+
                   <div>
                     <button
                       onClick={() => handleEditGame(game.id)}
@@ -91,6 +95,7 @@ export const Games: React.FC = () => {
                     >
                       Edit
                     </button>
+
                     <button
                       onClick={() => removeGame(game.id)}
                       className="px-3 py-1.5 bg-red-600 text-white rounded hover:bg-red-700 transition"
@@ -105,21 +110,12 @@ export const Games: React.FC = () => {
         )}
       </div>
 
-      {/* Create Game Modal */}
       {isAdding && (
-        <GameForm
-          mode="create"
-          onSave={handleAddGame}
-          onCancel={() => setIsAdding(false)}
-          users={users}
-          addUser={addUser}
-        />
+        <GameForm onSave={handleAddGame} onCancel={() => setIsAdding(false)} users={users} addUser={addUser} />
       )}
 
-      {/* Edit Game Modal */}
       {editingId !== null && (
         <GameForm
-          mode="edit"
           game={games.find(g => g.id === editingId)}
           onSave={handleSaveEdit}
           onCancel={handleCancelEdit}

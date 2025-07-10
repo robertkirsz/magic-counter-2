@@ -24,6 +24,7 @@ type Player = {
 type Game = {
   id: string
   createdAt: Date
+  state: 'active' | 'archived'
   players: User['id'][]
   activePlayer: User['id'] | null
   tracking: 'full' | 'simple' | 'none'

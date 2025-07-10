@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 
+import { UserForm } from './UserForm'
+
 interface GameFormProps {
-  mode: 'create' | 'edit'
   game?: Game
-  onSave: (data: { players: string[]; tracking: 'full' | 'simple' | 'none' }) => void
+  onSave: (data: { players: Game['players']; tracking: Game['tracking'] }) => void
   onCancel: () => void
   users: Array<{ id: string; name: string }>
   addUser: (userData: { name: string; decks: string[] }) => {
@@ -14,17 +15,16 @@ interface GameFormProps {
   }
 }
 
-export const GameForm: React.FC<GameFormProps> = ({ mode, game, onSave, onCancel, users, addUser }) => {
+export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, users, addUser }) => {
+  const mode = game ? 'edit' : 'create'
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>(game?.players || [])
-  const [newUserName, setNewUserName] = useState('')
-  const [tracking, setTracking] = useState<'full' | 'simple' | 'none'>(game?.tracking || 'full')
+  const [tracking, setTracking] = useState<Game['tracking']>(game?.tracking || 'full')
+  const [isAddingUser, setIsAddingUser] = useState(false)
 
-  const handleAddNewUser = () => {
-    if (newUserName.trim()) {
-      const newUser = addUser({ name: newUserName, decks: [] })
-      setSelectedUserIds(prev => [...prev, newUser.id])
-      setNewUserName('')
-    }
+  const handleAddNewUser = (userData: { name: string; decks: string[] }) => {
+    const newUser = addUser(userData)
+    setSelectedUserIds(prev => [...prev, newUser.id])
+    setIsAddingUser(false)
   }
 
   const handleUserSelect = (userId: string) => {
@@ -63,22 +63,28 @@ export const GameForm: React.FC<GameFormProps> = ({ mode, game, onSave, onCancel
         {/* Add New User */}
         <div className="mb-4">
           <label className="block mb-2 font-medium">Add New User:</label>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={newUserName}
-              onChange={e => setNewUserName(e.target.value)}
-              placeholder="New user name"
-              className="flex-1 p-2 border border-gray-300 rounded"
-            />
-            <button
-              onClick={handleAddNewUser}
-              className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-            >
-              Add User
-            </button>
-          </div>
+          <button
+            onClick={() => setIsAddingUser(true)}
+            className="w-full px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+          >
+            Add New User
+          </button>
         </div>
+
+        {/* Selected Players Summary */}
+        {selectedUserIds.length > 0 && (
+          <div className="mb-4 p-3 bg-blue-50 rounded">
+            <p className="font-medium mb-1">Selected Players:</p>
+            <p className="text-sm text-gray-600">
+              {selectedUserIds
+                .map(id => {
+                  const user = users.find(u => u.id === id)
+                  return user ? user.name : id
+                })
+                .join(', ')}
+            </p>
+          </div>
+        )}
 
         {/* Tracking Selection */}
         <div className="mb-6">
@@ -142,6 +148,9 @@ export const GameForm: React.FC<GameFormProps> = ({ mode, game, onSave, onCancel
           </button>
         </div>
       </div>
+
+      {/* Add User Modal */}
+      {isAddingUser && <UserForm mode="create" onSave={handleAddNewUser} onCancel={() => setIsAddingUser(false)} />}
     </div>
   )
 }
