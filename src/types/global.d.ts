@@ -1,15 +1,17 @@
+type ManaColor = 'W' | 'U' | 'B' | 'R' | 'G' | 'C'
+
 type Decks = {
   id: string
-  name: string
   createdAt: Date
-  colors: string[]
+  name: string
+  colors: ManaColor[]
   commanders?: string[]
 }
 
 type User = {
   id: string
-  name: string
   createdAt: Date
+  name: string
   decks: Decks['id'][]
 }
 
