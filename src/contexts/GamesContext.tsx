@@ -1,4 +1,4 @@
-import React, { type ReactNode, createContext, useContext, useState } from 'react'
+import React, { type ReactNode, createContext, useContext, useEffect, useState } from 'react'
 
 interface GamesContextType {
   games: Game[]
@@ -13,8 +13,19 @@ interface GamesProviderProps {
   children: ReactNode
 }
 
+const LOCAL_STORAGE_KEY = 'games'
+
+const readGames = (): Game[] => {
+  const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
+  if (stored) return JSON.parse(stored).map((g: any) => ({ ...g, createdAt: new Date(g.createdAt) }))
+  return []
+}
+
 export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
-  const [games, setGames] = useState<Game[]>([])
+  const [games, setGames] = useState<Game[]>(readGames())
+  console.log(games)
+
+  useEffect(() => localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(games)), [games])
 
   const addGame = (gameData: Omit<Game, 'id' | 'createdAt'>) => {
     const newGame: Game = {
@@ -46,10 +57,6 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
 
 export const useGames = (): GamesContextType => {
   const context = useContext(GamesContext)
-
-  if (context === undefined) {
-    throw new Error('useGames must be used within a GamesProvider')
-  }
-
+  if (context === undefined) throw new Error('useGames must be used within a GamesProvider')
   return context
 }

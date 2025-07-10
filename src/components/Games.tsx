@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+
 import { useGames } from '../contexts/GamesContext'
 
 export const Games: React.FC = () => {
@@ -98,10 +99,7 @@ export const Games: React.FC = () => {
         ) : (
           <div>
             {games.map(game => (
-              <div
-                key={game.id}
-                className="border border-gray-200 rounded-lg p-4 mb-3 bg-gray-50"
-              >
+              <div key={game.id} className="border border-gray-200 rounded-lg p-4 mb-3 bg-gray-50">
                 {editingId === game.id ? (
                   <div>
                     <h3 className="mb-2 text-lg font-semibold">Edit Game</h3>
@@ -134,7 +132,9 @@ export const Games: React.FC = () => {
                     <div>
                       <h3 className="font-semibold mb-1">Game {game.id.slice(0, 8)}</h3>
                       <p className="text-gray-500 mb-1">Created: {game.createdAt.toLocaleDateString()}</p>
-                      <p><span className="font-medium">Players:</span> {game.players.join(', ')}</p>
+                      <p>
+                        <span className="font-medium">Players:</span> {game.players.join(', ')}
+                      </p>
                     </div>
                     <div>
                       <button
