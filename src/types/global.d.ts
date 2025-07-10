@@ -1,8 +1,11 @@
+type Tracking = 'full' | 'simple' | 'none'
+type GameState = 'active' | 'archived'
 type ManaColor = 'W' | 'U' | 'B' | 'R' | 'G' | 'C'
 
 type Deck = {
   id: string
   createdAt: Date
+  createdBy?: User['id']
   name: string
   colors: ManaColor[]
   commanders?: string[]
@@ -23,8 +26,8 @@ type Player = {
 type Game = {
   id: string
   createdAt: Date
-  state: 'active' | 'archived'
+  state: GameState
   players: Player[]
   activePlayer: User['id'] | null
-  tracking: 'full' | 'simple' | 'none'
+  tracking: Tracking
 }

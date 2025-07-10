@@ -2,7 +2,7 @@ import React, { type ReactNode, createContext, useContext, useEffect, useState }
 
 interface DecksContextType {
   decks: Deck[]
-  addDeck: (deck: Omit<Deck, 'id' | 'createdAt'>) => Deck
+  addDeck: (deck: Omit<Deck, 'id' | 'createdAt'> & { createdBy?: User['id'] }) => Deck
   removeDeck: (deckId: string) => void
   updateDeck: (deckId: string, updates: Partial<Deck>) => void
 }
@@ -26,7 +26,7 @@ export const DecksProvider: React.FC<DecksProviderProps> = ({ children }) => {
 
   useEffect(() => localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(decks)), [decks])
 
-  const addDeck = (deckData: Omit<Deck, 'id' | 'createdAt'>) => {
+  const addDeck = (deckData: Omit<Deck, 'id' | 'createdAt'> & { createdBy?: User['id'] }) => {
     const newDeck: Deck = {
       ...deckData,
       id: crypto.randomUUID(),

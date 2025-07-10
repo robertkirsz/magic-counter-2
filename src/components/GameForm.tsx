@@ -49,7 +49,13 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, user
   }
 
   const handleCreateDeck = (deckData: { name: string; colors: ManaColor[]; commanders?: string[] }) => {
-    const newDeck = addDeck(deckData)
+    // Get the user ID of the player for whom we're creating the deck
+    const playerUserId = selectedPlayerForDeck !== null ? selectedPlayers[selectedPlayerForDeck].userId : undefined
+
+    const newDeck = addDeck({
+      ...deckData,
+      createdBy: playerUserId
+    })
     if (selectedPlayerForDeck !== null) {
       handleDeckSelect(selectedPlayerForDeck, newDeck.id)
     }
@@ -142,7 +148,7 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, user
                       <option value="">No deck assigned</option>
                       {decks.map(deck => (
                         <option key={deck.id} value={deck.id}>
-                          {deck.name} ({deck.colors.join(', ')})
+                          {deck.name} ({deck.colors.join(', ')}){deck.createdBy === player.userId ? ' (yours)' : ''}
                         </option>
                       ))}
                     </select>

@@ -34,8 +34,6 @@ export const UserForm: React.FC<UserFormProps> = ({ mode, user, onSave, onCancel
           />
         </div>
 
-
-
         {/* Action Buttons */}
         <div className="flex gap-2">
           <button

@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
 
+import { useDecks } from '../contexts/DecksContext'
 import { useUsers } from '../contexts/UsersContext'
+import { DeckList } from './DeckList'
 import { UserForm } from './UserForm'
 
 export const Users: React.FC = () => {
   const { users, addUser, removeUser, updateUser } = useUsers()
+  const { decks } = useDecks()
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
 
@@ -52,12 +55,12 @@ export const Users: React.FC = () => {
         ) : (
           <div>
             {users.map(user => (
-              <div key={user.id} className="border border-gray-200 rounded-lg p-4 mb-3 bg-gray-50">
-                <div className="flex justify-between items-center">
-                                      <div>
-                      <h3 className="font-semibold mb-1">{user.name}</h3>
-                      <p className="text-gray-500 mb-1">Created: {user.createdAt.toLocaleDateString()}</p>
-                    </div>
+              <div key={user.id} className="border border-gray-200 rounded-lg p-4 mb-6 bg-gray-50">
+                <div className="flex justify-between items-center mb-4">
+                  <div>
+                    <h3 className="font-semibold mb-1">{user.name}</h3>
+                    <p className="text-gray-500 mb-1">Created: {user.createdAt.toLocaleDateString()}</p>
+                  </div>
                   <div>
                     <button
                       onClick={() => handleEditUser(user.id)}
@@ -73,6 +76,9 @@ export const Users: React.FC = () => {
                     </button>
                   </div>
                 </div>
+
+                {/* User's Decks */}
+                <DeckList decks={decks} filterByUser={user.id} showActions={false} title={`${user.name}'s Decks`} />
               </div>
             ))}
           </div>
