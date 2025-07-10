@@ -10,12 +10,12 @@ export const Games: React.FC = () => {
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
 
-  const handleAddGame = (data: { players: Game['players']; tracking: Game['tracking'] }) => {
+  const handleAddGame = (data: { players: Player[]; tracking: Game['tracking'] }) => {
     addGame({
-      state: 'active',
       players: data.players,
       activePlayer: null,
-      tracking: data.tracking
+      tracking: data.tracking,
+      state: 'active'
     })
     setIsAdding(false)
   }
@@ -24,18 +24,10 @@ export const Games: React.FC = () => {
     setEditingId(gameId)
   }
 
-  const handleSaveEdit = (data: { players: Game['players']; tracking: Game['tracking'] }) => {
+  const handleSaveEdit = (data: { players: Player[]; tracking: Game['tracking'] }) => {
     if (editingId) {
-      // Convert names back to IDs where possible
-      const playerNames = data.players.map(p => p.trim()).filter(p => p)
-
-      const players = playerNames.map(name => {
-        const user = users.find(u => u.name === name)
-        return user ? user.id : name // Keep as name if no matching user found
-      })
-
+      updateGame(editingId, { players: data.players, tracking: data.tracking })
       setEditingId(null)
-      updateGame(editingId, { players, tracking: data.tracking })
     }
   }
 
@@ -43,9 +35,9 @@ export const Games: React.FC = () => {
     setEditingId(null)
   }
 
-  const getPlayerNames = (playerIds: string[]) => {
-    return playerIds.map(id => {
-      const user = users.find(u => u.id === id)
+  const getPlayerNames = (players: Player[]) => {
+    return players.map(player => {
+      const user = users.find(u => u.id === player.userId)
       return user ? user.name : 'Unknown'
     })
   }
@@ -77,17 +69,14 @@ export const Games: React.FC = () => {
                   <div>
                     <h3 className="font-semibold mb-1">Game {game.id.slice(0, 8)}</h3>
                     <p className="text-gray-500 mb-1">Created: {game.createdAt.toLocaleDateString()}</p>
-
                     <p className="mb-1">
                       <span className="font-medium">Players:</span> {getPlayerNames(game.players).join(', ')}
                     </p>
-
                     <p className="text-sm text-gray-600">
                       <span className="font-medium">Tracking:</span>{' '}
                       {game.tracking.charAt(0).toUpperCase() + game.tracking.slice(1)}
                     </p>
                   </div>
-
                   <div>
                     <button
                       onClick={() => handleEditGame(game.id)}
@@ -95,7 +84,6 @@ export const Games: React.FC = () => {
                     >
                       Edit
                     </button>
-
                     <button
                       onClick={() => removeGame(game.id)}
                       className="px-3 py-1.5 bg-red-600 text-white rounded hover:bg-red-700 transition"
@@ -110,10 +98,12 @@ export const Games: React.FC = () => {
         )}
       </div>
 
+      {/* Create Game Modal */}
       {isAdding && (
         <GameForm onSave={handleAddGame} onCancel={() => setIsAdding(false)} users={users} addUser={addUser} />
       )}
 
+      {/* Edit Game Modal */}
       {editingId !== null && (
         <GameForm
           game={games.find(g => g.id === editingId)}

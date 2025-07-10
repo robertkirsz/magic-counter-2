@@ -8,10 +8,9 @@ export const Users: React.FC = () => {
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
 
-  const handleAddUser = (data: { name: string; decks: string[] }) => {
+  const handleAddUser = (data: { name: string }) => {
     addUser({
-      name: data.name,
-      decks: data.decks
+      name: data.name
     })
     setIsAdding(false)
   }
@@ -20,9 +19,9 @@ export const Users: React.FC = () => {
     setEditingId(userId)
   }
 
-  const handleSaveEdit = (data: { name: string; decks: string[] }) => {
+  const handleSaveEdit = (data: { name: string }) => {
     if (editingId) {
-      updateUser(editingId, { name: data.name, decks: data.decks })
+      updateUser(editingId, { name: data.name })
       setEditingId(null)
     }
   }
@@ -55,13 +54,10 @@ export const Users: React.FC = () => {
             {users.map(user => (
               <div key={user.id} className="border border-gray-200 rounded-lg p-4 mb-3 bg-gray-50">
                 <div className="flex justify-between items-center">
-                  <div>
-                    <h3 className="font-semibold mb-1">{user.name}</h3>
-                    <p className="text-gray-500 mb-1">Created: {user.createdAt.toLocaleDateString()}</p>
-                    <p>
-                      <span className="font-medium">Decks:</span> {user.decks.length}
-                    </p>
-                  </div>
+                                      <div>
+                      <h3 className="font-semibold mb-1">{user.name}</h3>
+                      <p className="text-gray-500 mb-1">Created: {user.createdAt.toLocaleDateString()}</p>
+                    </div>
                   <div>
                     <button
                       onClick={() => handleEditUser(user.id)}

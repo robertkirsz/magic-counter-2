@@ -4,7 +4,7 @@ type ManaColor = 'W' | 'U' | 'B' | 'R' | 'G' | 'C'
 
 interface DeckFormProps {
   mode: 'create' | 'edit'
-  deck?: Decks
+  deck?: Deck
   onSave: (data: { name: string; colors: ManaColor[]; commanders?: string[] }) => void
   onCancel: () => void
 }

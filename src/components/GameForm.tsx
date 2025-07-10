@@ -1,43 +1,84 @@
 import React, { useState } from 'react'
 
+import { useDecks } from '../contexts/DecksContext'
+import { DeckForm } from './DeckForm'
 import { UserForm } from './UserForm'
 
 interface GameFormProps {
   game?: Game
-  onSave: (data: { players: Game['players']; tracking: Game['tracking'] }) => void
+  onSave: (data: { players: Player[]; tracking: Game['tracking'] }) => void
   onCancel: () => void
   users: Array<{ id: string; name: string }>
-  addUser: (userData: { name: string; decks: string[] }) => {
+  addUser: (userData: { name: string }) => {
     id: string
     name: string
     createdAt: Date
-    decks: string[]
   }
 }
 
 export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, users, addUser }) => {
+  const { decks, addDeck } = useDecks()
   const mode = game ? 'edit' : 'create'
-  const [selectedUserIds, setSelectedUserIds] = useState<string[]>(game?.players || [])
+  const [selectedPlayers, setSelectedPlayers] = useState<Player[]>(game?.players || [])
   const [tracking, setTracking] = useState<Game['tracking']>(game?.tracking || 'full')
   const [isAddingUser, setIsAddingUser] = useState(false)
+  const [isAddingDeck, setIsAddingDeck] = useState(false)
+  const [selectedPlayerForDeck, setSelectedPlayerForDeck] = useState<number | null>(null)
 
-  const handleAddNewUser = (userData: { name: string; decks: string[] }) => {
+  const handleAddNewUser = (userData: { name: string }) => {
     const newUser = addUser(userData)
-    setSelectedUserIds(prev => [...prev, newUser.id])
+    setSelectedPlayers(prev => [...prev, { userId: newUser.id, life: 40, deck: null }])
     setIsAddingUser(false)
   }
 
   const handleUserSelect = (userId: string) => {
-    setSelectedUserIds(prev => (prev.includes(userId) ? prev.filter(id => id !== userId) : [...prev, userId]))
+    setSelectedPlayers(prev => {
+      const existing = prev.find(p => p.userId === userId)
+      if (existing) {
+        return prev.filter(p => p.userId !== userId)
+      } else {
+        return [...prev, { userId, life: 40, deck: null }]
+      }
+    })
+  }
+
+  const handleDeckSelect = (playerIndex: number, deckId: string) => {
+    setSelectedPlayers(prev =>
+      prev.map((player, index) => (index === playerIndex ? { ...player, deck: deckId } : player))
+    )
+  }
+
+  const handleCreateDeck = (deckData: { name: string; colors: ManaColor[]; commanders?: string[] }) => {
+    const newDeck = addDeck(deckData)
+    if (selectedPlayerForDeck !== null) {
+      handleDeckSelect(selectedPlayerForDeck, newDeck.id)
+    }
+    setIsAddingDeck(false)
+    setSelectedPlayerForDeck(null)
   }
 
   const handleSave = () => {
-    if (selectedUserIds.length > 0) onSave({ players: selectedUserIds, tracking })
+    if (selectedPlayers.length > 0) {
+      onSave({
+        players: selectedPlayers,
+        tracking
+      })
+    }
+  }
+
+  const getPlayerName = (userId: string) => {
+    const user = users.find(u => u.id === userId)
+    return user ? user.name : 'Unknown'
+  }
+
+  const getDeckName = (deckId: string) => {
+    const deck = decks.find(d => d.id === deckId)
+    return deck ? deck.name : 'Unknown Deck'
   }
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <h3 className="mb-4 text-xl font-semibold">{mode === 'create' ? 'Add New Game' : 'Edit Game'}</h3>
 
         {/* User Selection */}
@@ -49,7 +90,7 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, user
                 <label key={user.id} className="flex items-center space-x-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    checked={selectedUserIds.includes(user.id)}
+                    checked={selectedPlayers.some(p => p.userId === user.id)}
                     onChange={() => handleUserSelect(user.id)}
                     className="rounded"
                   />
@@ -71,18 +112,46 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, user
           </button>
         </div>
 
-        {/* Selected Players Summary */}
-        {selectedUserIds.length > 0 && (
-          <div className="mb-4 p-3 bg-blue-50 rounded">
-            <p className="font-medium mb-1">Selected Players:</p>
-            <p className="text-sm text-gray-600">
-              {selectedUserIds
-                .map(id => {
-                  const user = users.find(u => u.id === id)
-                  return user ? user.name : id
-                })
-                .join(', ')}
-            </p>
+        {/* Selected Players with Deck Assignment */}
+        {selectedPlayers.length > 0 && (
+          <div className="mb-4">
+            <label className="block mb-2 font-medium">Selected Players & Decks:</label>
+            <div className="space-y-3">
+              {selectedPlayers.map((player, index) => (
+                <div key={player.userId} className="p-3 border border-gray-200 rounded bg-gray-50">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-medium">{getPlayerName(player.userId)}</span>
+                    <button
+                      onClick={() => {
+                        setSelectedPlayerForDeck(index)
+                        setIsAddingDeck(true)
+                      }}
+                      className="px-2 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition"
+                    >
+                      Create New Deck
+                    </button>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <label className="text-sm font-medium">Deck:</label>
+                    <select
+                      value={player.deck || ''}
+                      onChange={e => handleDeckSelect(index, e.target.value)}
+                      className="flex-1 p-1 text-sm border border-gray-300 rounded"
+                    >
+                      <option value="">No deck assigned</option>
+                      {decks.map(deck => (
+                        <option key={deck.id} value={deck.id}>
+                          {deck.name} ({deck.colors.join(', ')})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {player.deck && <p className="text-xs text-gray-600 mt-1">Assigned: {getDeckName(player.deck)}</p>}
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
@@ -151,6 +220,18 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, user
 
       {/* Add User Modal */}
       {isAddingUser && <UserForm mode="create" onSave={handleAddNewUser} onCancel={() => setIsAddingUser(false)} />}
+
+      {/* Add Deck Modal */}
+      {isAddingDeck && (
+        <DeckForm
+          mode="create"
+          onSave={handleCreateDeck}
+          onCancel={() => {
+            setIsAddingDeck(false)
+            setSelectedPlayerForDeck(null)
+          }}
+        />
+      )}
     </div>
   )
 }

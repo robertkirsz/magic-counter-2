@@ -1,6 +1,6 @@
 type ManaColor = 'W' | 'U' | 'B' | 'R' | 'G' | 'C'
 
-type Decks = {
+type Deck = {
   id: string
   createdAt: Date
   name: string
@@ -12,20 +12,19 @@ type User = {
   id: string
   createdAt: Date
   name: string
-  decks: Decks['id'][]
 }
 
 type Player = {
   userId: User['id']
   life: number
-  deck: Decks['id'] | null
+  deck: Deck['id'] | null
 }
 
 type Game = {
   id: string
   createdAt: Date
   state: 'active' | 'archived'
-  players: User['id'][]
+  players: Player[]
   activePlayer: User['id'] | null
   tracking: 'full' | 'simple' | 'none'
 }
