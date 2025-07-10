@@ -2,8 +2,8 @@ type Decks = {
   id: string
   name: string
   createdAt: Date
+  colors: string[]
   commanders?: string[]
-  // add more fields as needed
 }
 
 type User = {
@@ -11,12 +11,18 @@ type User = {
   name: string
   createdAt: Date
   decks: Decks['id'][]
-  // add more fields as needed
+}
+
+type Player = {
+  userId: User['id']
+  life: number
+  deck: Decks['id'] | null
 }
 
 type Game = {
   id: string
   createdAt: Date
-  players: User['id'][]
-  // add more fields as needed
+  players: User['id'][],
+  activePlayer: User['id'] | null
+  tracking: 'full' | 'simple' | 'none'
 }

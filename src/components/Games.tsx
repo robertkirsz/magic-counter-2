@@ -11,12 +11,19 @@ export const Games: React.FC = () => {
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([])
   const [newUserName, setNewUserName] = useState('')
   const [editGamePlayers, setEditGamePlayers] = useState('')
+  const [editGameTracking, setEditGameTracking] = useState<'full' | 'simple' | 'none'>('full')
+  const [tracking, setTracking] = useState<'full' | 'simple' | 'none'>('full')
 
   const handleAddGame = () => {
     if (selectedUserIds.length > 0) {
-      addGame({ players: selectedUserIds })
+      addGame({ 
+        players: selectedUserIds, 
+        activePlayer: null,
+        tracking: tracking
+      })
       setSelectedUserIds([])
       setIsAdding(false)
+      setTracking('full') // Reset to default
     }
   }
 
@@ -41,6 +48,7 @@ export const Games: React.FC = () => {
         return user ? user.name : playerId
       })
       setEditGamePlayers(playerNames.join(', '))
+      setEditGameTracking(game.tracking)
       setEditingId(gameId)
     }
   }
@@ -60,13 +68,15 @@ export const Games: React.FC = () => {
       
       setEditingId(null)
       setEditGamePlayers('')
-      updateGame(editingId, { players })
+      setEditGameTracking('full')
+      updateGame(editingId, { players, tracking: editGameTracking })
     }
   }
 
   const handleCancelEdit = () => {
     setEditingId(null)
     setEditGamePlayers('')
+    setEditGameTracking('full')
   }
 
   const getPlayerNames = (playerIds: string[]) => {
@@ -141,6 +151,51 @@ export const Games: React.FC = () => {
                 </p>
               </div>
             )}
+            {/* Tracking Selection */}
+            <div className="mb-4">
+              <label className="block mb-2 font-medium">Life Tracking:</label>
+              <div className="space-y-2">
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="tracking"
+                    value="full"
+                    checked={tracking === 'full'}
+                    onChange={(e) => setTracking(e.target.value as 'full' | 'simple' | 'none')}
+                    className="rounded"
+                  />
+                  <span className="text-sm">
+                    <strong>Full</strong> - Track all life changes and game events
+                  </span>
+                </label>
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="tracking"
+                    value="simple"
+                    checked={tracking === 'simple'}
+                    onChange={(e) => setTracking(e.target.value as 'full' | 'simple' | 'none')}
+                    className="rounded"
+                  />
+                  <span className="text-sm">
+                    <strong>Simple</strong> - Track only current life totals
+                  </span>
+                </label>
+                <label className="flex items-center space-x-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="tracking"
+                    value="none"
+                    checked={tracking === 'none'}
+                    onChange={(e) => setTracking(e.target.value as 'full' | 'simple' | 'none')}
+                    className="rounded"
+                  />
+                  <span className="text-sm">
+                    <strong>None</strong> - No life tracking
+                  </span>
+                </label>
+              </div>
+            </div>
             <div>
               <button
                 onClick={handleAddGame}
@@ -153,6 +208,7 @@ export const Games: React.FC = () => {
                   setIsAdding(false)
                   setSelectedUserIds([])
                   setNewUserName('')
+                  setTracking('full')
                 }}
                 className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
               >
@@ -183,6 +239,50 @@ export const Games: React.FC = () => {
                         className="w-full p-2 border border-gray-300 rounded"
                       />
                     </div>
+                    <div className="mb-2">
+                      <label className="block mb-1 font-medium">Life Tracking:</label>
+                      <div className="space-y-1">
+                        <label className="flex items-center space-x-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            name={`tracking-${game.id}`}
+                            value="full"
+                            checked={editGameTracking === 'full'}
+                            onChange={(e) => setEditGameTracking(e.target.value as 'full' | 'simple' | 'none')}
+                            className="rounded"
+                          />
+                          <span className="text-sm">
+                            <strong>Full</strong> - Track all life changes and game events
+                          </span>
+                        </label>
+                        <label className="flex items-center space-x-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            name={`tracking-${game.id}`}
+                            value="simple"
+                            checked={editGameTracking === 'simple'}
+                            onChange={(e) => setEditGameTracking(e.target.value as 'full' | 'simple' | 'none')}
+                            className="rounded"
+                          />
+                          <span className="text-sm">
+                            <strong>Simple</strong> - Track only current life totals
+                          </span>
+                        </label>
+                        <label className="flex items-center space-x-2 cursor-pointer">
+                          <input
+                            type="radio"
+                            name={`tracking-${game.id}`}
+                            value="none"
+                            checked={editGameTracking === 'none'}
+                            onChange={(e) => setEditGameTracking(e.target.value as 'full' | 'simple' | 'none')}
+                            className="rounded"
+                          />
+                          <span className="text-sm">
+                            <strong>None</strong> - No life tracking
+                          </span>
+                        </label>
+                      </div>
+                    </div>
                     <div>
                       <button
                         onClick={handleSaveEdit}
@@ -203,8 +303,11 @@ export const Games: React.FC = () => {
                     <div>
                       <h3 className="font-semibold mb-1">Game {game.id.slice(0, 8)}</h3>
                       <p className="text-gray-500 mb-1">Created: {game.createdAt.toLocaleDateString()}</p>
-                      <p>
+                      <p className="mb-1">
                         <span className="font-medium">Players:</span> {getPlayerNames(game.players).join(', ')}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        <span className="font-medium">Tracking:</span> {game.tracking.charAt(0).toUpperCase() + game.tracking.slice(1)}
                       </p>
                     </div>
                     <div>
