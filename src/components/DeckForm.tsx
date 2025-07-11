@@ -44,22 +44,25 @@ export const DeckForm: React.FC<DeckFormProps> = ({ mode, deck, onSave, onCancel
     <Modal isOpen={true} onClose={onCancel} title={mode === 'create' ? 'Add New Deck' : 'Edit Deck'} maxWidth="md">
       {/* Name Input */}
       <div className="mb-4">
-        <label className="block mb-2 font-medium">Deck Name:</label>
         <input
           type="text"
           value={name}
           onChange={e => setName(e.target.value)}
-          placeholder="Enter deck name"
+          placeholder="Deck name"
           className="w-full p-2 border border-gray-300 rounded"
           autoFocus
         />
       </div>
+
+      {/* Commanders */}
+      <CommanderSearch commanders={commanders} onCommandersChange={setCommanders} />
 
       {/* Mana Colors */}
       <div className="mb-4">
         <label className="block mb-2 font-medium">
           Mana Colors: <span className="text-red-500">*</span>
         </label>
+
         <div className="grid grid-cols-3 gap-2">
           {MANA_COLORS.map(({ value, label, color }) => (
             <label key={value} className="flex items-center space-x-2 cursor-pointer">
@@ -73,11 +76,9 @@ export const DeckForm: React.FC<DeckFormProps> = ({ mode, deck, onSave, onCancel
             </label>
           ))}
         </div>
+
         {selectedColors.length === 0 && <p className="text-red-500 text-sm mt-1">Please select at least one color</p>}
       </div>
-
-      {/* Commanders */}
-      <CommanderSearch commanders={commanders} onCommandersChange={setCommanders} />
 
       {/* Action Buttons */}
       <div className="flex gap-2">

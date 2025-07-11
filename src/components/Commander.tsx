@@ -1,3 +1,4 @@
+import { Trash2 } from 'lucide-react'
 import React from 'react'
 
 import { ColorBadges } from './ColorBadges'
@@ -71,8 +72,12 @@ export const Commander: React.FC<CommanderProps> = ({
 
       {/* Remove Button */}
       {showRemoveButton && onRemove && (
-        <button onClick={handleRemove} className="text-red-600 hover:text-red-800 text-sm font-medium">
-          Remove
+        <button
+          onClick={handleRemove}
+          className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
+          title="Remove commander"
+        >
+          <Trash2 size={16} />
         </button>
       )}
     </div>

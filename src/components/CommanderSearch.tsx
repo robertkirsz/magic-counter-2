@@ -75,7 +75,7 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
     if (!commanders.includes(card.name)) {
       onCommandersChange([...commanders, card.name])
     }
-   
+
     setNewCommander('')
     setSuggestions([])
     setShowSuggestions(false)
@@ -142,8 +142,6 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
       {/* Commanders List */}
       {commanders.length > 0 && (
         <div className="space-y-2">
-          <p className="text-sm font-medium text-gray-700">Current Commanders:</p>
-
           {commanders.map((commander, index) => (
             <div key={index} className="bg-gray-50 rounded">
               <Commander commander={commander} onRemove={() => handleRemoveCommander(index)} showRemoveButton={true} />
