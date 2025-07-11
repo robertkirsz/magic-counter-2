@@ -14,7 +14,7 @@ export const ColorBadges: React.FC<ColorBadgesProps> = ({ colors, className = ''
     <div className={`flex gap-1 ${className}`}>
       {colors.map(color => {
         const colorInfo = MANA_COLORS.find(c => c.value === color)
-        
+
         return colorInfo ? (
           <img
             key={color}
