@@ -40,6 +40,23 @@ export const DeckForm: React.FC<DeckFormProps> = ({ mode, deck, onSave, onCancel
     }
   }
 
+  const handleCommandersChange = (commanders: ScryfallCard[]) => {
+    setCommanders(commanders)
+
+    const allCommandersColors = commanders.map(commander => commander.colors).flat() as ManaColor[]
+    const uniqueColors = [...new Set(allCommandersColors)]
+
+    if (commanders.length > 0) {
+      if (uniqueColors.length > 0) {
+        setSelectedColors(uniqueColors)
+      } else {
+        setSelectedColors(['C'])
+      }
+    } else {
+      setSelectedColors([])
+    }
+  }
+
   return (
     <Modal isOpen={true} onClose={onCancel} title={mode === 'create' ? 'Add New Deck' : 'Edit Deck'}>
       <div className="flex flex-col gap-4">
@@ -56,7 +73,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ mode, deck, onSave, onCancel
         </div>
 
         {/* Commanders */}
-        <CommanderSearch commanders={commanders} onCommandersChange={setCommanders} />
+        <CommanderSearch commanders={commanders} onCommandersChange={handleCommandersChange} />
 
         {/* Mana Colors */}
         <div>
