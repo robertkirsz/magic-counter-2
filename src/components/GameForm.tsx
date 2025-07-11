@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 import { useDecks } from '../contexts/DecksContext'
 import { DeckForm } from './DeckForm'
+import { Modal } from './Modal'
 import { UserForm } from './UserForm'
 
 interface GameFormProps {
@@ -83,145 +84,141 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, user
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-        <h3 className="mb-4 text-xl font-semibold">{mode === 'create' ? 'Add New Game' : 'Edit Game'}</h3>
-
-        {/* User Selection */}
-        {users.length > 0 && (
-          <div className="mb-4">
-            <label className="block mb-2 font-medium">Select Existing Users:</label>
-            <div className="grid grid-cols-2 gap-2 mb-3 max-h-32 overflow-y-auto">
-              {users.map(user => (
-                <label key={user.id} className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={selectedPlayers.some(p => p.userId === user.id)}
-                    onChange={() => handleUserSelect(user.id)}
-                    className="rounded"
-                  />
-                  <span className="text-sm">{user.name}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Add New User */}
+    <Modal isOpen={true} onClose={onCancel} title={mode === 'create' ? 'Add New Game' : 'Edit Game'} maxWidth="2xl">
+      {/* User Selection */}
+      {users.length > 0 && (
         <div className="mb-4">
-          <label className="block mb-2 font-medium">Add New User:</label>
-          <button
-            onClick={() => setIsAddingUser(true)}
-            className="w-full px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          >
-            Add New User
-          </button>
+          <label className="block mb-2 font-medium">Select Existing Users:</label>
+          <div className="grid grid-cols-2 gap-2 mb-3 max-h-32 overflow-y-auto">
+            {users.map(user => (
+              <label key={user.id} className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={selectedPlayers.some(p => p.userId === user.id)}
+                  onChange={() => handleUserSelect(user.id)}
+                  className="rounded"
+                />
+                <span className="text-sm">{user.name}</span>
+              </label>
+            ))}
+          </div>
         </div>
+      )}
 
-        {/* Selected Players with Deck Assignment */}
-        {selectedPlayers.length > 0 && (
-          <div className="mb-4">
-            <label className="block mb-2 font-medium">Selected Players & Decks:</label>
-            <div className="space-y-3">
-              {selectedPlayers.map((player, index) => (
-                <div key={player.userId} className="p-3 border border-gray-200 rounded bg-gray-50">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-medium">{getPlayerName(player.userId)}</span>
-                    <button
-                      onClick={() => {
-                        setSelectedPlayerForDeck(index)
-                        setIsAddingDeck(true)
-                      }}
-                      className="px-2 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition"
-                    >
-                      Create New Deck
-                    </button>
-                  </div>
+      {/* Add New User */}
+      <div className="mb-4">
+        <label className="block mb-2 font-medium">Add New User:</label>
+        <button
+          onClick={() => setIsAddingUser(true)}
+          className="w-full px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        >
+          Add New User
+        </button>
+      </div>
 
-                  <div className="flex items-center space-x-2">
-                    <label className="text-sm font-medium">Deck:</label>
-                    <select
-                      value={player.deck || ''}
-                      onChange={e => handleDeckSelect(index, e.target.value)}
-                      className="flex-1 p-1 text-sm border border-gray-300 rounded"
-                    >
-                      <option value="">No deck assigned</option>
-                      {decks.map(deck => (
-                        <option key={deck.id} value={deck.id}>
-                          {deck.name} ({deck.colors.join(', ')}){deck.createdBy === player.userId ? ' (yours)' : ''}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {player.deck && <p className="text-xs text-gray-600 mt-1">Assigned: {getDeckName(player.deck)}</p>}
+      {/* Selected Players with Deck Assignment */}
+      {selectedPlayers.length > 0 && (
+        <div className="mb-4">
+          <label className="block mb-2 font-medium">Selected Players & Decks:</label>
+          <div className="space-y-3">
+            {selectedPlayers.map((player, index) => (
+              <div key={player.userId} className="p-3 border border-gray-200 rounded bg-gray-50">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-medium">{getPlayerName(player.userId)}</span>
+                  <button
+                    onClick={() => {
+                      setSelectedPlayerForDeck(index)
+                      setIsAddingDeck(true)
+                    }}
+                    className="px-2 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition"
+                  >
+                    Create New Deck
+                  </button>
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
 
-        {/* Tracking Selection */}
-        <div className="mb-6">
-          <label className="block mb-2 font-medium">Life Tracking:</label>
-          <div className="space-y-2">
-            <label className="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="radio"
-                name={`tracking-${mode}`}
-                value="full"
-                checked={tracking === 'full'}
-                onChange={e => setTracking(e.target.value as 'full' | 'simple' | 'none')}
-                className="rounded"
-              />
-              <span className="text-sm">
-                <strong>Full</strong> - Track all life changes and game events
-              </span>
-            </label>
-            <label className="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="radio"
-                name={`tracking-${mode}`}
-                value="simple"
-                checked={tracking === 'simple'}
-                onChange={e => setTracking(e.target.value as 'full' | 'simple' | 'none')}
-                className="rounded"
-              />
-              <span className="text-sm">
-                <strong>Simple</strong> - Track only current life totals (no turn tracking)
-              </span>
-            </label>
-            <label className="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="radio"
-                name={`tracking-${mode}`}
-                value="none"
-                checked={tracking === 'none'}
-                onChange={e => setTracking(e.target.value as 'full' | 'simple' | 'none')}
-                className="rounded"
-              />
-              <span className="text-sm">
-                <strong>None</strong> - Game will not be tracked
-              </span>
-            </label>
+                <div className="flex items-center space-x-2">
+                  <label className="text-sm font-medium">Deck:</label>
+                  <select
+                    value={player.deck || ''}
+                    onChange={e => handleDeckSelect(index, e.target.value)}
+                    className="flex-1 p-1 text-sm border border-gray-300 rounded"
+                  >
+                    <option value="">No deck assigned</option>
+                    {decks.map(deck => (
+                      <option key={deck.id} value={deck.id}>
+                        {deck.name} ({deck.colors.join(', ')}){deck.createdBy === player.userId ? ' (yours)' : ''}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {player.deck && <p className="text-xs text-gray-600 mt-1">Assigned: {getDeckName(player.deck)}</p>}
+              </div>
+            ))}
           </div>
         </div>
+      )}
 
-        {/* Action Buttons */}
-        <div className="flex gap-2">
-          <button
-            onClick={handleSave}
-            className="flex-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
-          >
-            {mode === 'create' ? 'Save Game' : 'Save Changes'}
-          </button>
-          <button
-            onClick={onCancel}
-            className="flex-1 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-          >
-            Cancel
-          </button>
+      {/* Tracking Selection */}
+      <div className="mb-6">
+        <label className="block mb-2 font-medium">Life Tracking:</label>
+        <div className="space-y-2">
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="radio"
+              name={`tracking-${mode}`}
+              value="full"
+              checked={tracking === 'full'}
+              onChange={e => setTracking(e.target.value as 'full' | 'simple' | 'none')}
+              className="rounded"
+            />
+            <span className="text-sm">
+              <strong>Full</strong> - Track all life changes and game events
+            </span>
+          </label>
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="radio"
+              name={`tracking-${mode}`}
+              value="simple"
+              checked={tracking === 'simple'}
+              onChange={e => setTracking(e.target.value as 'full' | 'simple' | 'none')}
+              className="rounded"
+            />
+            <span className="text-sm">
+              <strong>Simple</strong> - Track only current life totals (no turn tracking)
+            </span>
+          </label>
+          <label className="flex items-center space-x-2 cursor-pointer">
+            <input
+              type="radio"
+              name={`tracking-${mode}`}
+              value="none"
+              checked={tracking === 'none'}
+              onChange={e => setTracking(e.target.value as 'full' | 'simple' | 'none')}
+              className="rounded"
+            />
+            <span className="text-sm">
+              <strong>None</strong> - Game will not be tracked
+            </span>
+          </label>
         </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex gap-2">
+        <button
+          onClick={handleSave}
+          className="flex-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+        >
+          {mode === 'create' ? 'Save Game' : 'Save Changes'}
+        </button>
+        <button
+          onClick={onCancel}
+          className="flex-1 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+        >
+          Cancel
+        </button>
       </div>
 
       {/* Add User Modal */}
@@ -238,6 +235,6 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, user
           }}
         />
       )}
-    </div>
+    </Modal>
   )
 }
