@@ -1,3 +1,4 @@
+import { X } from 'lucide-react'
 import React, { useEffect, useRef } from 'react'
 
 interface ModalProps {
@@ -29,9 +30,7 @@ export const Modal: React.FC<ModalProps> = ({
 
   useEffect(() => {
     const dialog = dialogRef.current
-
     if (!dialog) return
-
     if (isOpen) {
       if (!dialog.open) dialog.showModal()
     } else {
@@ -41,15 +40,11 @@ export const Modal: React.FC<ModalProps> = ({
 
   useEffect(() => {
     const dialog = dialogRef.current
-
     if (!dialog) return
-
     const handleClose = () => {
       onClose()
     }
-
     dialog.addEventListener('close', handleClose)
-
     return () => {
       dialog.removeEventListener('close', handleClose)
     }
@@ -61,26 +56,22 @@ export const Modal: React.FC<ModalProps> = ({
       className={`rounded-lg p-0 border-0 shadow-lg ${maxWidthClasses[maxWidth]} max-h-[90vh] overflow-y-auto`}
       style={{ padding: 0 }}
     >
-      <form method="dialog">
-        <div className="flex justify-between items-center mb-4 p-6 pb-0">
-          <h3 className="text-xl font-semibold">{title}</h3>
+      <div className="flex justify-between items-center mb-4 p-6 pb-0">
+        <h3 className="text-xl font-semibold">{title}</h3>
 
-          {showCloseButton && (
-            <button
-              type="button"
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-              aria-label="Close modal"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          )}
-        </div>
+        {showCloseButton && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
+            aria-label="Close modal"
+          >
+            <X size={24} />
+          </button>
+        )}
+      </div>
 
-        <div className="px-6 pb-6">{children}</div>
-      </form>
+      <div className="px-6 pb-6">{children}</div>
 
       <style>{`
         dialog[open] {

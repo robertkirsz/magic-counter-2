@@ -27,7 +27,9 @@ export const DeckList: React.FC<DeckListProps> = ({
     if (!deck.createdBy) {
       return 'Global Deck'
     }
+
     const creator = users.find(user => user.id === deck.createdBy)
+
     return creator ? creator.name : 'Unknown User'
   }
 

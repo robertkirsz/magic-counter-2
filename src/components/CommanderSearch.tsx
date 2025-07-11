@@ -62,15 +62,6 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
     return () => clearTimeout(timeoutId)
   }, [newCommander])
 
-  const handleAddCommander = () => {
-    if (newCommander.trim() && !commanders.includes(newCommander.trim())) {
-      onCommandersChange([...commanders, newCommander.trim()])
-      setNewCommander('')
-      setSuggestions([])
-      setShowSuggestions(false)
-    }
-  }
-
   const handleSuggestionClick = (card: ScryfallCard) => {
     if (!commanders.includes(card.name)) {
       onCommandersChange([...commanders, card.name])
@@ -83,13 +74,6 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
 
   const handleRemoveCommander = (index: number) => {
     onCommandersChange(commanders.filter((_, i) => i !== index))
-  }
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      handleAddCommander()
-    }
   }
 
   return (
@@ -105,25 +89,16 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
         </div>
       )}
 
-      {/* Add Commander Input */}
-      <div className="flex gap-2">
+      {/* Search Commander Input */}
+      <div>
         <input
           type="text"
           value={newCommander}
           onChange={e => setNewCommander(e.target.value)}
-          onKeyDown={handleKeyPress}
           onFocus={() => setShowSuggestions(true)}
-          placeholder="Commander (optional)"
-          className="flex-1 p-2 border border-gray-300 rounded"
+          placeholder="Search for commanders..."
+          className="w-full p-2 border border-gray-300 rounded"
         />
-
-        <button
-          onClick={handleAddCommander}
-          disabled={!newCommander.trim() || commanders.includes(newCommander.trim())}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
-        >
-          Add
-        </button>
       </div>
 
       {/* Suggestions Dropdown */}
@@ -134,6 +109,10 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
               <div className="animate-spin inline-block w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full"></div>
               <span className="ml-2">Searching...</span>
             </div>
+          )}
+
+          {!isLoading && suggestions.length === 0 && newCommander.trim().length >= 2 && (
+            <div className="p-3 text-center text-gray-500">No commanders found. Try a different search term.</div>
           )}
 
           {!isLoading &&

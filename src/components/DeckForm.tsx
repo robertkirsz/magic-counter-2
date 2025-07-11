@@ -41,9 +41,10 @@ export const DeckForm: React.FC<DeckFormProps> = ({ mode, deck, onSave, onCancel
   }
 
   return (
-    <Modal isOpen={true} onClose={onCancel} title={mode === 'create' ? 'Add New Deck' : 'Edit Deck'} maxWidth="md">
+    <Modal isOpen={true} onClose={onCancel} title={mode === 'create' ? 'Add New Deck' : 'Edit Deck'}>
+      <div className="flex flex-col gap-4">
       {/* Name Input */}
-      <div className="mb-4">
+      <div>
         <input
           type="text"
           value={name}
@@ -58,11 +59,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ mode, deck, onSave, onCancel
       <CommanderSearch commanders={commanders} onCommandersChange={setCommanders} />
 
       {/* Mana Colors */}
-      <div className="mb-4">
-        <label className="block mb-2 font-medium">
-          Mana Colors: <span className="text-red-500">*</span>
-        </label>
-
+      <div>
         <div className="grid grid-cols-3 gap-2">
           {MANA_COLORS.map(({ value, label, color }) => (
             <label key={value} className="flex items-center space-x-2 cursor-pointer">
@@ -96,6 +93,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ mode, deck, onSave, onCancel
         >
           Cancel
         </button>
+      </div>
       </div>
     </Modal>
   )
