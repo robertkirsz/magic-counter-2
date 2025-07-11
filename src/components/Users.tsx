@@ -13,9 +13,7 @@ export const Users: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null)
 
   const handleAddUser = (data: { name: string }) => {
-    addUser({
-      name: data.name
-    })
+    addUser({ name: data.name })
     setIsAdding(false)
   }
 
@@ -35,11 +33,11 @@ export const Users: React.FC = () => {
   }
 
   return (
-    <div className="p-5 font-sans">
-      <h1 className="text-3xl font-bold text-gray-800 mb-5">Users</h1>
+    <>
+      <div className="flex flex-col gap-4 items-start">
+        <h1 className="text-3xl font-bold text-gray-800">Users</h1>
 
-      {/* Add User Section */}
-      <div className="mb-5 p-4 border border-gray-200 rounded-lg">
+        {/* Add User Section */}
         <button
           onClick={() => setIsAdding(true)}
           className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2"
@@ -47,60 +45,61 @@ export const Users: React.FC = () => {
           <Plus size={20} />
           Add New User
         </button>
-      </div>
 
-      {/* Users List */}
-      <div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Current Users</h2>
-        {users.length === 0 ? (
-          <p className="text-gray-500 italic">No users yet. Add your first user!</p>
-        ) : (
-          <div>
-            {users.map(user => (
-              <div key={user.id} className="border border-gray-200 rounded-lg p-4 mb-6 bg-gray-50">
-                <div className="flex justify-between items-center mb-4">
-                  <div>
-                    <h3 className="font-semibold mb-1">{user.name}</h3>
-                    <p className="text-gray-500 mb-1">Created: {user.createdAt.toLocaleDateString()}</p>
+        {/* Users List */}
+        <div>
+          {users.length === 0 ? (
+            <p className="text-gray-500 italic">No users yet. Add your first user!</p>
+          ) : (
+            <div>
+              {users.map(user => (
+                <div key={user.id} className="border border-gray-200 rounded-lg p-4 mb-6 bg-gray-50">
+                  <div className="flex justify-between items-center mb-4">
+                    <div>
+                      <h3 className="font-semibold mb-1">{user.name}</h3>
+                      <p className="text-gray-500 mb-1">Created: {user.createdAt.toLocaleDateString()}</p>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleEditUser(user.id)}
+                        className="p-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
+                        title="Edit user"
+                      >
+                        <Edit3 size={16} />
+                      </button>
+
+                      <button
+                        onClick={() => removeUser(user.id)}
+                        className="p-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                        title="Delete user"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleEditUser(user.id)}
-                      className="p-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
-                      title="Edit user"
-                    >
-                      <Edit3 size={16} />
-                    </button>
-                    <button
-                      onClick={() => removeUser(user.id)}
-                      className="p-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-                      title="Delete user"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
+
+                  {/* User's Decks */}
+                  <DeckList decks={decks} filterByUser={user.id} showActions={false} />
                 </div>
+              ))}
+            </div>
+          )}
+        </div>
 
-                {/* User's Decks */}
-                <DeckList decks={decks} filterByUser={user.id} showActions={false} title={`${user.name}'s Decks`} />
-              </div>
-            ))}
-          </div>
+        {/* Create User Modal */}
+        {isAdding && <UserForm mode="create" onSave={handleAddUser} onCancel={() => setIsAdding(false)} />}
+
+        {/* Edit User Modal */}
+        {editingId !== null && (
+          <UserForm
+            mode="edit"
+            user={users.find(u => u.id === editingId)}
+            onSave={handleSaveEdit}
+            onCancel={handleCancelEdit}
+          />
         )}
       </div>
-
-      {/* Create User Modal */}
-      {isAdding && <UserForm mode="create" onSave={handleAddUser} onCancel={() => setIsAdding(false)} />}
-
-      {/* Edit User Modal */}
-      {editingId !== null && (
-        <UserForm
-          mode="edit"
-          user={users.find(u => u.id === editingId)}
-          onSave={handleSaveEdit}
-          onCancel={handleCancelEdit}
-        />
-      )}
-    </div>
+    </>
   )
 }

@@ -44,11 +44,11 @@ export const Games: React.FC = () => {
   }
 
   return (
-    <div className="p-5 font-sans">
-      <h1 className="text-3xl font-bold text-gray-800 mb-5">Games</h1>
+    <>
+      <div className="flex flex-col gap-4 items-start">
+        <h1 className="text-3xl font-bold text-gray-800">Games</h1>
 
-      {/* Add Game Section */}
-      <div className="mb-5 p-4 border border-gray-200 rounded-lg">
+        {/* Add Game Section */}
         <button
           onClick={() => setIsAdding(true)}
           className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2"
@@ -56,50 +56,53 @@ export const Games: React.FC = () => {
           <Plus size={20} />
           Add New Game
         </button>
-      </div>
 
-      {/* Games List */}
-      <div>
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Current Games</h2>
-        {games.length === 0 ? (
-          <p className="text-gray-500 italic">No games yet. Add your first game!</p>
-        ) : (
-          <div>
-            {games.map(game => (
-              <div key={game.id} className="border border-gray-200 rounded-lg p-4 mb-3 bg-gray-50">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h3 className="font-semibold mb-1">Game {game.id.slice(0, 8)}</h3>
-                    <p className="text-gray-500 mb-1">Created: {game.createdAt.toLocaleDateString()}</p>
-                    <p className="mb-1">
-                      <span className="font-medium">Players:</span> {getPlayerNames(game.players).join(', ')}
-                    </p>
-                    <p className="text-sm text-gray-600">
-                      <span className="font-medium">Tracking:</span>{' '}
-                      {game.tracking.charAt(0).toUpperCase() + game.tracking.slice(1)}
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleEditGame(game.id)}
-                      className="p-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
-                      title="Edit game"
-                    >
-                      <Edit3 size={16} />
-                    </button>
-                    <button
-                      onClick={() => removeGame(game.id)}
-                      className="p-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-                      title="Delete game"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+        {/* Games List */}
+        <div>
+          {games.length === 0 ? (
+            <p className="text-gray-500 italic">No games yet. Add your first game!</p>
+          ) : (
+            <div>
+              {games.map(game => (
+                <div key={game.id} className="border border-gray-200 rounded-lg p-4 mb-3 bg-gray-50">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h3 className="font-semibold mb-1">Game {game.id.slice(0, 8)}</h3>
+                      <p className="text-gray-500 mb-1">Created: {game.createdAt.toLocaleDateString()}</p>
+
+                      <p className="mb-1">
+                        <span className="font-medium">Players:</span> {getPlayerNames(game.players).join(', ')}
+                      </p>
+
+                      <p className="text-sm text-gray-600">
+                        <span className="font-medium">Tracking:</span>{' '}
+                        {game.tracking.charAt(0).toUpperCase() + game.tracking.slice(1)}
+                      </p>
+                    </div>
+
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleEditGame(game.id)}
+                        className="p-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
+                        title="Edit game"
+                      >
+                        <Edit3 size={16} />
+                      </button>
+
+                      <button
+                        onClick={() => removeGame(game.id)}
+                        className="p-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                        title="Delete game"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Create Game Modal */}
@@ -117,6 +120,6 @@ export const Games: React.FC = () => {
           addUser={addUser}
         />
       )}
-    </div>
+    </>
   )
 }
