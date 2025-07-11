@@ -57,7 +57,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, 
   }, [onClose])
 
   return (
-    <dialog ref={dialogRef} className="rounded-lg p-0 m-2 border-0 shadow-lg overflow-y-auto">
+    <dialog ref={dialogRef} className="rounded-lg p-0 m-2 border-0 shadow-lg overflow-y-auto max-h-[90vh]">
       <div className="flex justify-between items-center pl-4 pt-2 pr-2" onClick={e => e.stopPropagation()}>
         <h3 className="text-xl font-semibold">{title}</h3>
 

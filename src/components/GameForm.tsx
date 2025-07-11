@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import { useDecks } from '../contexts/DecksContext'
 import { Deck } from './Deck'
 import { DeckForm } from './DeckForm'
-import { Modal } from './Modal'
 import { UserForm } from './UserForm'
 
 interface GameFormProps {
@@ -80,40 +79,32 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, user
 
   return (
     <>
-      <Modal isOpen={true} onClose={onCancel} title={mode === 'create' ? 'Add New Game' : 'Edit Game'}>
+      <div>
         {/* User Selection */}
         {users.length > 0 && (
-          <div className="mb-4">
-            <label className="block mb-2 font-medium">Select Existing Users:</label>
+          <div className="grid grid-cols-2 gap-2 justify-items-start">
+            {users.map(user => (
+              <label key={user.id} className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={selectedPlayers.some(p => p.userId === user.id)}
+                  onChange={() => handleUserSelect(user.id)}
+                  className="rounded"
+                />
 
-            <div className="grid grid-cols-2 gap-2 mb-3 max-h-32 overflow-y-auto">
-              {users.map(user => (
-                <label key={user.id} className="flex items-center space-x-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={selectedPlayers.some(p => p.userId === user.id)}
-                    onChange={() => handleUserSelect(user.id)}
-                    className="rounded"
-                  />
+                <span className="text-sm">{user.name}</span>
+              </label>
+            ))}
 
-                  <span className="text-sm">{user.name}</span>
-                </label>
-              ))}
-            </div>
+            {/* Add New User */}
+            <button
+              className="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+              onClick={() => setIsAddingUser(true)}
+            >
+              Add New User
+            </button>
           </div>
         )}
-
-        {/* Add New User */}
-        <div className="mb-4">
-          <label className="block mb-2 font-medium">Add New User:</label>
-
-          <button
-            onClick={() => setIsAddingUser(true)}
-            className="w-full px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-          >
-            Add New User
-          </button>
-        </div>
 
         {/* Selected Players with Deck Assignment */}
         {selectedPlayers.length > 0 && (
@@ -166,7 +157,7 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, user
         )}
 
         {/* Tracking Selection */}
-        <div className="mb-6">
+        <div>
           <label className="block mb-2 font-medium">Life Tracking:</label>
 
           <div className="space-y-2">
@@ -233,7 +224,7 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, user
             Cancel
           </button>
         </div>
-      </Modal>
+      </div>
 
       {/* Add User Modal */}
       {isAddingUser && <UserForm onSave={handleAddNewUser} onCancel={() => setIsAddingUser(false)} />}

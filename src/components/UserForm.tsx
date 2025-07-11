@@ -20,7 +20,7 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onSave, onCancel }) =>
   const mode = user ? 'edit' : 'create'
 
   return (
-    <Modal isOpen={true} onClose={onCancel} title={mode === 'create' ? 'Add New User' : 'Edit User'} maxWidth="md">
+    <Modal isOpen={true} onClose={onCancel} title={mode === 'create' ? 'Add New User' : 'Edit User'}>
       <div className="flex flex-col gap-4">
         {/* Name Input */}
         <input
