@@ -93,52 +93,7 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
   }
 
   return (
-    <div className="mb-6">
-      {/* Add Commander Input */}
-      <div>
-        <div className="flex gap-2 mb-3">
-          <input
-            type="text"
-            value={newCommander}
-            onChange={e => setNewCommander(e.target.value)}
-            onKeyDown={handleKeyPress}
-            onFocus={() => setShowSuggestions(true)}
-            placeholder="Commander (optional)"
-            className="flex-1 p-2 border border-gray-300 rounded"
-          />
-
-          <button
-            onClick={handleAddCommander}
-            disabled={!newCommander.trim() || commanders.includes(newCommander.trim())}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
-            Add
-          </button>
-        </div>
-
-        {/* Suggestions Dropdown */}
-        {showSuggestions && (suggestions.length > 0 || isLoading) && (
-          <div className="border border-gray-300 rounded-md max-h-60 overflow-y-auto">
-            {isLoading && (
-              <div className="p-3 text-center text-gray-500">
-                <div className="animate-spin inline-block w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full"></div>
-                <span className="ml-2">Searching...</span>
-              </div>
-            )}
-
-            {!isLoading &&
-              suggestions.map((card, index) => (
-                <Commander
-                  key={index}
-                  commander={card}
-                  onClick={() => handleSuggestionClick(card)}
-                  className="border-b border-gray-100 last:border-b-0"
-                />
-              ))}
-          </div>
-        )}
-      </div>
-
+    <div className="flex flex-col gap-2">
       {/* Commanders List */}
       {commanders.length > 0 && (
         <div className="space-y-2">
@@ -147,6 +102,49 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
               <Commander commander={commander} onRemove={() => handleRemoveCommander(index)} showRemoveButton={true} />
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Add Commander Input */}
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={newCommander}
+          onChange={e => setNewCommander(e.target.value)}
+          onKeyDown={handleKeyPress}
+          onFocus={() => setShowSuggestions(true)}
+          placeholder="Commander (optional)"
+          className="flex-1 p-2 border border-gray-300 rounded"
+        />
+
+        <button
+          onClick={handleAddCommander}
+          disabled={!newCommander.trim() || commanders.includes(newCommander.trim())}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+        >
+          Add
+        </button>
+      </div>
+
+      {/* Suggestions Dropdown */}
+      {showSuggestions && (suggestions.length > 0 || isLoading) && (
+        <div className="border border-gray-300 rounded-md max-h-60 overflow-y-auto">
+          {isLoading && (
+            <div className="p-3 text-center text-gray-500">
+              <div className="animate-spin inline-block w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full"></div>
+              <span className="ml-2">Searching...</span>
+            </div>
+          )}
+
+          {!isLoading &&
+            suggestions.map((card, index) => (
+              <Commander
+                key={index}
+                commander={card}
+                onClick={() => handleSuggestionClick(card)}
+                className="border-b border-gray-100 last:border-b-0"
+              />
+            ))}
         </div>
       )}
     </div>

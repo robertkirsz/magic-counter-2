@@ -37,16 +37,13 @@ export const Commander: React.FC<CommanderProps> = ({
   const colors = isScryfallCard ? commander.color_identity || commander.colors || [] : []
 
   const handleClick = () => {
-    if (onClick) {
-      onClick()
-    }
+    if (onClick) onClick()
   }
 
   const handleRemove = (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (onRemove) {
-      onRemove()
-    }
+
+    if (onRemove) onRemove()
   }
 
   return (
