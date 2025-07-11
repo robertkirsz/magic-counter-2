@@ -39,7 +39,7 @@ export const ManaPicker: React.FC<ManaPickerProps> = ({ selectedColors, onColorT
             />
 
             <img
-              src={`/mana/${filename}`}
+              src={`/icons/${filename}`}
               alt=""
               className={`w-8 h-8 transition-opacity hover:opacity-100 ${isSelected ? 'opacity-100' : 'opacity-20'}`}
             />

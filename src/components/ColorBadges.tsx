@@ -18,7 +18,7 @@ export const ColorBadges: React.FC<ColorBadgesProps> = ({ colors, className = ''
         return colorInfo ? (
           <img
             key={color}
-            src={`/mana/${colorInfo.filename}`}
+            src={`/icons/${colorInfo.filename}`}
             alt={colorInfo.label}
             title={colorInfo.label}
             className="w-3 h-3"
