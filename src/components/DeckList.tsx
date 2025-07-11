@@ -1,3 +1,4 @@
+import { Edit3, Trash2 } from 'lucide-react'
 import React from 'react'
 
 import { useUsers } from '../contexts/UsersContext'
@@ -66,18 +67,21 @@ export const DeckList: React.FC<DeckListProps> = ({
                 </div>
 
                 {showActions && onEditDeck && onRemoveDeck && (
-                  <div>
+                  <div className="flex gap-2">
                     <button
                       onClick={() => onEditDeck(deck.id)}
-                      className="px-3 py-1.5 bg-orange-500 text-white rounded hover:bg-orange-600 transition mr-2"
+                      className="p-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
+                      title="Edit deck"
                     >
-                      Edit
+                      <Edit3 size={16} />
                     </button>
+
                     <button
                       onClick={() => onRemoveDeck(deck.id)}
-                      className="px-3 py-1.5 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                      className="p-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                      title="Delete deck"
                     >
-                      Delete
+                      <Trash2 size={16} />
                     </button>
                   </div>
                 )}

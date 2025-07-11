@@ -1,3 +1,4 @@
+import { Edit3, Plus, Trash2 } from 'lucide-react'
 import React, { useState } from 'react'
 
 import { useDecks } from '../contexts/DecksContext'
@@ -41,8 +42,9 @@ export const Users: React.FC = () => {
       <div className="mb-5 p-4 border border-gray-200 rounded-lg">
         <button
           onClick={() => setIsAdding(true)}
-          className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+          className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2"
         >
+          <Plus size={20} />
           Add New User
         </button>
       </div>
@@ -61,18 +63,20 @@ export const Users: React.FC = () => {
                     <h3 className="font-semibold mb-1">{user.name}</h3>
                     <p className="text-gray-500 mb-1">Created: {user.createdAt.toLocaleDateString()}</p>
                   </div>
-                  <div>
+                  <div className="flex gap-2">
                     <button
                       onClick={() => handleEditUser(user.id)}
-                      className="px-3 py-1.5 bg-orange-500 text-white rounded hover:bg-orange-600 transition mr-2"
+                      className="p-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
+                      title="Edit user"
                     >
-                      Edit
+                      <Edit3 size={16} />
                     </button>
                     <button
                       onClick={() => removeUser(user.id)}
-                      className="px-3 py-1.5 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                      className="p-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                      title="Delete user"
                     >
-                      Delete
+                      <Trash2 size={16} />
                     </button>
                   </div>
                 </div>

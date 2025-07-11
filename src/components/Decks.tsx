@@ -1,3 +1,4 @@
+import { Plus } from 'lucide-react'
 import React, { useState } from 'react'
 
 import { useDecks } from '../contexts/DecksContext'
@@ -9,7 +10,7 @@ export const Decks: React.FC = () => {
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
 
-  const handleAddDeck = (data: { name: string; colors: ManaColor[]; commanders?: string[] }) => {
+  const handleAddDeck = (data: { name: string; colors: ManaColor[]; commanders?: ScryfallCard[] }) => {
     addDeck({
       name: data.name,
       colors: data.colors,
@@ -22,7 +23,7 @@ export const Decks: React.FC = () => {
     setEditingId(deckId)
   }
 
-  const handleSaveEdit = (data: { name: string; colors: ManaColor[]; commanders?: string[] }) => {
+  const handleSaveEdit = (data: { name: string; colors: ManaColor[]; commanders?: ScryfallCard[] }) => {
     if (editingId) {
       updateDeck(editingId, {
         name: data.name,
@@ -45,8 +46,9 @@ export const Decks: React.FC = () => {
       <div className="mb-5 p-4 border border-gray-200 rounded-lg">
         <button
           onClick={() => setIsAdding(true)}
-          className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+          className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2"
         >
+          <Plus size={20} />
           Add New Deck
         </button>
       </div>

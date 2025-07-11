@@ -1,3 +1,4 @@
+import { Edit3, Plus, Trash2 } from 'lucide-react'
 import React, { useState } from 'react'
 
 import { useGames } from '../contexts/GamesContext'
@@ -50,8 +51,9 @@ export const Games: React.FC = () => {
       <div className="mb-5 p-4 border border-gray-200 rounded-lg">
         <button
           onClick={() => setIsAdding(true)}
-          className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition"
+          className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2"
         >
+          <Plus size={20} />
           Add New Game
         </button>
       </div>
@@ -77,18 +79,20 @@ export const Games: React.FC = () => {
                       {game.tracking.charAt(0).toUpperCase() + game.tracking.slice(1)}
                     </p>
                   </div>
-                  <div>
+                  <div className="flex gap-2">
                     <button
                       onClick={() => handleEditGame(game.id)}
-                      className="px-3 py-1.5 bg-orange-500 text-white rounded hover:bg-orange-600 transition mr-2"
+                      className="p-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
+                      title="Edit game"
                     >
-                      Edit
+                      <Edit3 size={16} />
                     </button>
                     <button
                       onClick={() => removeGame(game.id)}
-                      className="px-3 py-1.5 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                      className="p-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                      title="Delete game"
                     >
-                      Delete
+                      <Trash2 size={16} />
                     </button>
                   </div>
                 </div>
