@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 
 import { CommanderSearch } from './CommanderSearch'
+import { ManaPicker } from './ManaPicker'
 import { Modal } from './Modal'
 
 type ManaColor = 'W' | 'U' | 'B' | 'R' | 'G' | 'C'
@@ -11,15 +12,6 @@ interface DeckFormProps {
   onSave: (data: { name: string; colors: ManaColor[]; commanders?: ScryfallCard[] }) => void
   onCancel: () => void
 }
-
-const MANA_COLORS: { value: ManaColor; label: string; color: string }[] = [
-  { value: 'W', label: 'White', color: 'bg-white text-black' },
-  { value: 'U', label: 'Blue', color: 'bg-blue-500 text-white' },
-  { value: 'B', label: 'Black', color: 'bg-gray-800 text-white' },
-  { value: 'R', label: 'Red', color: 'bg-red-500 text-white' },
-  { value: 'G', label: 'Green', color: 'bg-green-500 text-white' },
-  { value: 'C', label: 'Colorless', color: 'bg-gray-400 text-white' }
-]
 
 export const DeckForm: React.FC<DeckFormProps> = ({ mode, deck, onSave, onCancel }) => {
   const [name, setName] = useState(deck?.name || '')
@@ -77,21 +69,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ mode, deck, onSave, onCancel
 
         {/* Mana Colors */}
         <div>
-          <div className="grid grid-cols-3 gap-2">
-            {MANA_COLORS.map(({ value, label, color }) => (
-              <label key={value} className="flex items-center space-x-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={selectedColors.includes(value)}
-                  onChange={() => handleColorToggle(value)}
-                  className="rounded"
-                />
-                <span className={`px-2 py-1 rounded text-xs font-medium ${color}`}>{label}</span>
-              </label>
-            ))}
-          </div>
-
-          {selectedColors.length === 0 && <p className="text-red-500 text-sm mt-1">Please select at least one color</p>}
+          <ManaPicker selectedColors={selectedColors} onColorToggle={handleColorToggle} />
         </div>
 
         {/* Action Buttons */}
