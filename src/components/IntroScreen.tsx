@@ -54,21 +54,21 @@ export const IntroScreen: React.FC = () => {
 
       {/* Games Modal */}
       {showGames && (
-        <Modal isOpen={showGames} onClose={() => setShowGames(false)} title="Games" maxWidth="2xl">
+        <Modal isOpen={showGames} onClose={() => setShowGames(false)} title="Games">
           <Games />
         </Modal>
       )}
 
       {/* Users Modal */}
       {showUsers && (
-        <Modal isOpen={showUsers} onClose={() => setShowUsers(false)} title="Users" maxWidth="2xl">
+        <Modal isOpen={showUsers} onClose={() => setShowUsers(false)} title="Users">
           <Users />
         </Modal>
       )}
 
       {/* Decks Modal */}
       {showDecks && (
-        <Modal isOpen={showDecks} onClose={() => setShowDecks(false)} title="Decks" maxWidth="2xl">
+        <Modal isOpen={showDecks} onClose={() => setShowDecks(false)} title="Decks">
           <Decks />
         </Modal>
       )}

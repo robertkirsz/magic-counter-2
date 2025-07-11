@@ -59,8 +59,6 @@ export const Users: React.FC = () => {
   return (
     <>
       <div className="flex flex-col gap-4 items-start">
-        <h1 className="text-3xl font-bold text-gray-800">Users</h1>
-
         {/* Add User Section */}
         <button
           onClick={() => setIsAdding(true)}

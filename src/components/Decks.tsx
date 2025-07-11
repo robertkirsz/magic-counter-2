@@ -129,8 +129,6 @@ export const Decks: React.FC = () => {
   return (
     <>
       <div className="flex flex-col gap-4">
-        <h1 className="text-3xl font-bold text-gray-800">Decks</h1>
-
         {/* Controls Section */}
         <div className="flex gap-2 items-center w-full">
           {/* Search Bar */}

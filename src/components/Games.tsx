@@ -46,8 +46,6 @@ export const Games: React.FC = () => {
   return (
     <>
       <div className="flex flex-col gap-4 items-start">
-        <h1 className="text-3xl font-bold text-gray-800">Games</h1>
-
         {/* Add Game Section */}
         <button
           onClick={() => setIsAdding(true)}

@@ -1,3 +1,4 @@
+import { Wrench } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
 import { useDecks } from '../contexts/DecksContext'
@@ -187,16 +188,9 @@ export const DevToolsPanel: React.FC = () => {
   }
 
   return (
-    <div className="fixed bottom-5 right-5 z-50 min-w-[320px] max-w-md font-mono">
-      <button
-        onClick={() => setOpen(o => !o)}
-        className="w-full bg-gray-900 text-white rounded-lg px-4 py-2 font-semibold text-base shadow-md hover:bg-gray-800 transition-colors"
-      >
-        {open ? 'Hide DevTools ▲' : 'Show DevTools ▼'}
-      </button>
-
+    <div className="fixed gap-2 bottom-0 right-0 p-2 z-50 flex flex-col items-end w-full">
       {open && (
-        <div className="bg-white border border-gray-200 rounded-lg mt-2 p-4 shadow-lg max-h-[400px] overflow-y-auto text-xs">
+        <div className="flex flex-col gap-2 bg-white border border-gray-200 font-mono rounded-lg mt-2 p-4 shadow-lg max-h-[400px] w-full overflow-y-auto text-xs">
           {/* Import/Export Section */}
           <details open>
             <summary className="font-bold mb-2 cursor-pointer select-none">Import/Export</summary>
@@ -279,6 +273,16 @@ export const DevToolsPanel: React.FC = () => {
           </details>
         </div>
       )}
+
+      <button
+        onClick={() => setOpen(o => !o)}
+        className={`w-12 h-12 bg-gray-900 text-white rounded-full shadow-lg hover:bg-gray-800 transition-all duration-200 flex items-center justify-center ${
+          open ? 'rotate-12' : ''
+        }`}
+        title={open ? 'Hide DevTools' : 'Show DevTools'}
+      >
+        <Wrench size={20} />
+      </button>
     </div>
   )
 }

@@ -80,7 +80,7 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, user
 
   return (
     <>
-      <Modal isOpen={true} onClose={onCancel} title={mode === 'create' ? 'Add New Game' : 'Edit Game'} maxWidth="2xl">
+      <Modal isOpen={true} onClose={onCancel} title={mode === 'create' ? 'Add New Game' : 'Edit Game'}>
         {/* User Selection */}
         {users.length > 0 && (
           <div className="mb-4">

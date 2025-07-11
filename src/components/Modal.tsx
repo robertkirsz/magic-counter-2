@@ -6,26 +6,10 @@ interface ModalProps {
   onClose: () => void
   title: string
   children: React.ReactNode
-  maxWidth?: 'sm' | 'md' | 'lg' | 'xl' | '2xl'
   showCloseButton?: boolean
 }
 
-const maxWidthClasses = {
-  sm: 'max-w-sm',
-  md: 'max-w-md',
-  lg: 'max-w-lg',
-  xl: 'max-w-xl',
-  '2xl': 'max-w-2xl'
-}
-
-export const Modal: React.FC<ModalProps> = ({
-  isOpen,
-  onClose,
-  title,
-  children,
-  maxWidth = 'md',
-  showCloseButton = true
-}) => {
+export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, showCloseButton = true }) => {
   const dialogRef = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
@@ -57,11 +41,7 @@ export const Modal: React.FC<ModalProps> = ({
   }, [onClose])
 
   return (
-    <dialog
-      ref={dialogRef}
-      className={`rounded-lg p-0 border-0 shadow-lg ${maxWidthClasses[maxWidth]} max-h-[90vh] overflow-y-auto`}
-      style={{ padding: 0 }}
-    >
+    <dialog ref={dialogRef} className="rounded-lg p-0 m-2 border-0 shadow-lg overflow-y-auto">
       <div className="flex justify-between items-center pl-4 pt-2 pr-2">
         <h3 className="text-xl font-semibold">{title}</h3>
 
