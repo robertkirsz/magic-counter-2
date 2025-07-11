@@ -10,28 +10,24 @@ export const Decks: React.FC = () => {
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
 
-  const handleAddDeck = (data: { name: string; colors: ManaColor[]; commanders?: ScryfallCard[] }) => {
+  const handleAddDeck = (data: { name: Deck['name']; colors: Deck['colors']; commanders?: Deck['commanders'] }) => {
+    setIsAdding(false)
     addDeck({
       name: data.name,
       colors: data.colors,
       commanders: data.commanders
     })
-    setIsAdding(false)
   }
 
-  const handleSaveEdit = (data: { name: string; colors: ManaColor[]; commanders?: ScryfallCard[] }) => {
+  const handleSaveEdit = (data: { name: Deck['name']; colors: Deck['colors']; commanders?: Deck['commanders'] }) => {
     if (editingId) {
+      setEditingId(null)
       updateDeck(editingId, {
         name: data.name,
         colors: data.colors,
         commanders: data.commanders
       })
-      setEditingId(null)
     }
-  }
-
-  const handleCancelEdit = () => {
-    setEditingId(null)
   }
 
   return (
@@ -66,7 +62,11 @@ export const Decks: React.FC = () => {
 
         {/* Edit Deck Modal */}
         {editingId !== null && (
-          <DeckForm deck={decks.find(d => d.id === editingId)} onSave={handleSaveEdit} onCancel={handleCancelEdit} />
+          <DeckForm
+            deck={decks.find(d => d.id === editingId)}
+            onSave={handleSaveEdit}
+            onCancel={() => setEditingId(null)}
+          />
         )}
       </div>
     </>

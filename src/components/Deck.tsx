@@ -6,14 +6,14 @@ import { getGradientFromColors } from '../utils/gradients'
 import { ColorBadges } from './ColorBadges'
 import { Commander } from './Commander'
 
-interface DeckProps {
+interface DeckProps extends React.HTMLAttributes<HTMLDivElement> {
   deck: Deck
   showCreator?: boolean
   onEditDeck?: (deckId: string) => void
   onRemoveDeck?: (deckId: string) => void
 }
 
-export const Deck: React.FC<DeckProps> = ({ deck, showCreator = false, onEditDeck, onRemoveDeck }) => {
+export const Deck: React.FC<DeckProps> = ({ deck, showCreator = false, onEditDeck, onRemoveDeck, ...props }) => {
   const { users } = useUsers()
 
   const getCreatorName = (deck: Deck) => {
@@ -26,7 +26,7 @@ export const Deck: React.FC<DeckProps> = ({ deck, showCreator = false, onEditDec
   const gradientStyle = getGradientFromColors(deck.colors)
 
   return (
-    <div className="rounded-lg p-1 border border-gray-200" style={gradientStyle}>
+    <div className="rounded-lg p-1 border border-gray-200" style={gradientStyle} {...props}>
       <div className="flex flex-col gap-1 p-2 bg-white rounded">
         <div className="flex flex-col gap-2">
           <div className="flex gap-1 items-center">
