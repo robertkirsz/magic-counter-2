@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { ColorBadges } from './ColorBadges'
+
+import { Commander } from './Commander'
 
 interface ScryfallCard {
   name: string
@@ -74,6 +75,7 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
     if (!commanders.includes(card.name)) {
       onCommandersChange([...commanders, card.name])
     }
+   
     setNewCommander('')
     setSuggestions([])
     setShowSuggestions(false)
@@ -90,16 +92,10 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
     }
   }
 
-  const getColorIdentity = (card: ScryfallCard) => {
-    return card.color_identity || card.colors || []
-  }
-
   return (
     <div className="mb-6">
-      <label className="block mb-2 font-medium">Commanders (optional):</label>
-
       {/* Add Commander Input */}
-      <div className="relative">
+      <div>
         <div className="flex gap-2 mb-3">
           <input
             type="text"
@@ -107,7 +103,7 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
             onChange={e => setNewCommander(e.target.value)}
             onKeyDown={handleKeyPress}
             onFocus={() => setShowSuggestions(true)}
-            placeholder="Enter commander name"
+            placeholder="Commander (optional)"
             className="flex-1 p-2 border border-gray-300 rounded"
           />
 
@@ -122,7 +118,7 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
 
         {/* Suggestions Dropdown */}
         {showSuggestions && (suggestions.length > 0 || isLoading) && (
-          <div className="bg-white border border-gray-300 rounded-md max-h-60 overflow-y-auto">
+          <div className="border border-gray-300 rounded-md max-h-60 overflow-y-auto">
             {isLoading && (
               <div className="p-3 text-center text-gray-500">
                 <div className="animate-spin inline-block w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full"></div>
@@ -132,28 +128,12 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
 
             {!isLoading &&
               suggestions.map((card, index) => (
-                <div
+                <Commander
                   key={index}
+                  commander={card}
                   onClick={() => handleSuggestionClick(card)}
-                  className="p-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0 flex items-center gap-3"
-                >
-                  {card.image_uris?.art_crop || card.image_uris?.small ? (
-                    <img
-                      src={card.image_uris.art_crop || card.image_uris.small}
-                      alt={card.name}
-                      className="w-10 h-10 rounded-full object-cover border border-gray-300"
-                    />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-xs text-gray-400 border border-gray-300">
-                      ?
-                    </div>
-                  )}
-                  <div className="flex-1">
-                    <div className="font-medium text-sm">{card.name}</div>
-                    <div className="text-xs text-gray-500">{card.type_line}</div>
-                    <ColorBadges colors={getColorIdentity(card)} />
-                  </div>
-                </div>
+                  className="border-b border-gray-100 last:border-b-0"
+                />
               ))}
           </div>
         )}
@@ -165,18 +145,12 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
           <p className="text-sm font-medium text-gray-700">Current Commanders:</p>
 
           {commanders.map((commander, index) => (
-            <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded">
-              <span className="text-sm">{commander}</span>
-              <button
-                onClick={() => handleRemoveCommander(index)}
-                className="text-red-600 hover:text-red-800 text-sm font-medium"
-              >
-                Remove
-              </button>
+            <div key={index} className="bg-gray-50 rounded">
+              <Commander commander={commander} onRemove={() => handleRemoveCommander(index)} showRemoveButton={true} />
             </div>
           ))}
         </div>
       )}
     </div>
   )
-} 
+}

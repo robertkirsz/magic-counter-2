@@ -64,7 +64,7 @@ export const Modal: React.FC<ModalProps> = ({
       <form method="dialog">
         <div className="flex justify-between items-center mb-4 p-6 pb-0">
           <h3 className="text-xl font-semibold">{title}</h3>
-         
+
           {showCloseButton && (
             <button
               type="button"
@@ -78,7 +78,7 @@ export const Modal: React.FC<ModalProps> = ({
             </button>
           )}
         </div>
-     
+
         <div className="px-6 pb-6">{children}</div>
       </form>
 

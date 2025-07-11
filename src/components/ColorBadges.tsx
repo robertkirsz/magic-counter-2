@@ -33,4 +33,4 @@ export const ColorBadges: React.FC<ColorBadgesProps> = ({ colors, className = ''
       })}
     </div>
   )
-} 
+}
