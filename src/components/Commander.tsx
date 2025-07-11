@@ -21,13 +21,13 @@ export const Commander: React.FC<CommanderProps> = ({ commander, showRemoveButto
 
   return (
     <div className="rounded-lg p-1 border border-gray-200" style={gradientStyle} {...props}>
-      <div className="flex gap-1 bg-white rounded overflow-clip">
+      <div className="importance-4 flex gap-1 bg-white rounded overflow-clip">
         <div className="flex">
           {/* Card Image */}
           {imageUrl && (
             <div
               title={name}
-              className="flex-none h-full w-23"
+              className="importance-2 flex-none h-full w-23"
               style={{
                 backgroundImage: `url(${imageUrl})`,
                 backgroundSize: 'cover',
@@ -38,9 +38,9 @@ export const Commander: React.FC<CommanderProps> = ({ commander, showRemoveButto
 
           {/* Card Details */}
           <div className="flex flex-col p-2">
-            {colors.length > 0 && <ColorBadges colors={colors} className="flex-none" />}
+            {colors.length > 0 && <ColorBadges colors={colors} className="importance-3 flex-none" />}
             <div className="font-medium text-sm line-clamp-1">{name}</div>
-            {typeLine && <div className="text-xs text-gray-500 line-clamp-1">{typeLine}</div>}
+            {typeLine && <div className="importance-1 text-xs text-gray-500 line-clamp-1">{typeLine}</div>}
           </div>
         </div>
 
