@@ -35,7 +35,7 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
           name: card.name,
           type: card.type_line,
           colors: card.color_identity || card.colors,
-          image: card.card_faces?.[0]?.image_uris?.art_crop || card.image_uris?.art_crop,
+          image: card.card_faces?.[0]?.image_uris?.art_crop || card.image_uris?.art_crop
         }))
 
         setSuggestions(scryfallCards)

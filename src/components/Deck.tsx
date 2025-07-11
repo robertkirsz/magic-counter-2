@@ -1,6 +1,7 @@
 import { Edit3, Trash2 } from 'lucide-react'
 import React from 'react'
 
+import { useUsers } from '../contexts/UsersContext'
 import { ColorBadges } from './ColorBadges'
 import { Commander } from './Commander'
 
@@ -10,7 +11,7 @@ interface DeckProps {
   onRemoveDeck?: (deckId: string) => void
   showActions?: boolean
   showCreator?: boolean
-  creatorName?: string
+  className?: string
 }
 
 export const Deck: React.FC<DeckProps> = ({
@@ -19,10 +20,20 @@ export const Deck: React.FC<DeckProps> = ({
   onRemoveDeck,
   showActions = true,
   showCreator = false,
-  creatorName
+  className = ''
 }) => {
+  const { users } = useUsers()
+
+  const getCreatorName = (deck: Deck) => {
+    if (!deck.createdBy) return 'Global Deck'
+    const creator = users.find(user => user.id === deck.createdBy)
+    return creator ? creator.name : 'Unknown User'
+  }
+
+  const creatorName = getCreatorName(deck)
+
   return (
-    <div className="bg-white rounded border border-gray-300 flex flex-col items-start gap-1 p-2">
+    <div className={`rounded flex flex-col items-start gap-1 p-2 ${className}`}>
       <div className="flex justify-between items-center w-full">
         <span className="text-xs text-gray-500">Deck</span>
 
@@ -58,7 +69,7 @@ export const Deck: React.FC<DeckProps> = ({
           {deck.commanders && deck.commanders.length > 0 && (
             <div className="flex flex-col gap-2">
               {deck.commanders.map((commander, index) => (
-                <Commander key={index} commander={commander} />
+                <Commander key={index} commander={commander} className="border border-gray-200" />
               ))}
             </div>
           )}

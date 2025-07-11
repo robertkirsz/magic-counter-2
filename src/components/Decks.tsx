@@ -2,8 +2,8 @@ import { Plus } from 'lucide-react'
 import React, { useState } from 'react'
 
 import { useDecks } from '../contexts/DecksContext'
+import { Deck } from './Deck'
 import { DeckForm } from './DeckForm'
-import { DeckList } from './DeckList'
 
 export const Decks: React.FC = () => {
   const { decks, addDeck, removeDeck, updateDeck } = useDecks()
@@ -53,7 +53,25 @@ export const Decks: React.FC = () => {
         </button>
 
         {/* Decks List */}
-        <DeckList decks={decks} onEditDeck={handleEditDeck} onRemoveDeck={removeDeck} />
+        <div className="flex flex-col gap-2">
+          {decks.length === 0 ? (
+            <p className="text-gray-500 italic">No decks yet. Add your first deck!</p>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {decks.map(deck => (
+                <Deck
+                  key={deck.id}
+                  deck={deck}
+                  onEditDeck={handleEditDeck}
+                  onRemoveDeck={removeDeck}
+                  showActions
+                  showCreator
+                  className="border border-gray-200"
+                />
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Create Deck Modal */}
         {isAdding && <DeckForm mode="create" onSave={handleAddDeck} onCancel={() => setIsAdding(false)} />}

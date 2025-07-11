@@ -33,15 +33,12 @@ export const Commander: React.FC<CommanderProps> = ({
   }
 
   return (
-    <div
-      className={`rounded flex flex-col gap-1 p-2 ${className}`}
-      onClick={handleClick}
-    >
+    <div className={`rounded flex flex-col gap-1 p-2 ${className}`} onClick={handleClick}>
       <div className="flex justify-between items-center w-full">
         <span className="text-xs text-gray-500">Commander</span>
-         
-         {/* Remove Button */}
-         {showRemoveButton && onRemove && (
+
+        {/* Remove Button */}
+        {showRemoveButton && onRemove && (
           <button
             onClick={handleRemove}
             className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"

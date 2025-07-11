@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 
 import { useDecks } from '../contexts/DecksContext'
 import { useUsers } from '../contexts/UsersContext'
-import { DeckList } from './DeckList'
+import { Deck } from './Deck'
 import { UserForm } from './UserForm'
 
 export const Users: React.FC = () => {
@@ -51,40 +51,57 @@ export const Users: React.FC = () => {
           {users.length === 0 ? (
             <p className="text-gray-500 italic">No users yet. Add your first user!</p>
           ) : (
-            <div>
-              {users.map(user => (
-                <div
-                  key={user.id}
-                  className="bg-white rounded border border-gray-300 flex flex-col items-start gap-1 p-2"
-                >
-                  <div className="flex justify-between items-center w-full">
-                    <span className="text-xs text-gray-500">User</span>
+            <div className="flex flex-col gap-2">
+              {users.map(user => {
+                const filteredDecks = decks.filter(deck => deck.createdBy === user.id)
 
-                    <div className="flex gap-1">
-                      <button
-                        onClick={() => handleEditUser(user.id)}
-                        className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
-                        title="Edit user"
-                      >
-                        <Edit3 size={16} />
-                      </button>
+                return (
+                  <div key={user.id} className="rounded border border-gray-200 flex flex-col items-start gap-1 p-2">
+                    <div className="flex justify-between items-center w-full">
+                      <span className="text-xs text-gray-500">User</span>
 
-                      <button
-                        onClick={() => removeUser(user.id)}
-                        className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
-                        title="Delete user"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                      <div className="flex gap-1">
+                        <button
+                          onClick={() => handleEditUser(user.id)}
+                          className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
+                          title="Edit user"
+                        >
+                          <Edit3 size={16} />
+                        </button>
+
+                        <button
+                          onClick={() => removeUser(user.id)}
+                          className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
+                          title="Delete user"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <h3>{user.name}</h3>
+
+                    {/* User's Decks */}
+                    <div className="flex flex-col gap-2">
+                      {filteredDecks.length === 0 ? (
+                        <p className="text-gray-500 italic">No decks yet. Add your first deck!</p>
+                      ) : (
+                        <div className="flex flex-col gap-2">
+                          {filteredDecks.map(deck => (
+                            <Deck
+                              key={deck.id}
+                              deck={deck}
+                              showActions={false}
+                              showCreator={false}
+                              className="border border-gray-200"
+                            />
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </div>
-
-                  <h3>{user.name}</h3>
-
-                  {/* User's Decks */}
-                  <DeckList decks={decks} filterByUser={user.id} showActions={false} />
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </div>
