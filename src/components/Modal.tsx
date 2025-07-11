@@ -29,9 +29,9 @@ export const Modal: React.FC<ModalProps> = ({
 
   useEffect(() => {
     const dialog = dialogRef.current
-   
+
     if (!dialog) return
-   
+
     if (isOpen) {
       if (!dialog.open) dialog.showModal()
     } else {
@@ -41,14 +41,15 @@ export const Modal: React.FC<ModalProps> = ({
 
   useEffect(() => {
     const dialog = dialogRef.current
+
     if (!dialog) return
-    
+
     const handleClose = () => {
       onClose()
     }
-    
+
     dialog.addEventListener('close', handleClose)
-    
+
     return () => {
       dialog.removeEventListener('close', handleClose)
     }
@@ -60,9 +61,10 @@ export const Modal: React.FC<ModalProps> = ({
       className={`rounded-lg p-0 border-0 shadow-lg ${maxWidthClasses[maxWidth]} max-h-[90vh] overflow-y-auto`}
       style={{ padding: 0 }}
     >
-      <form method="dialog" className="w-full">
+      <form method="dialog">
         <div className="flex justify-between items-center mb-4 p-6 pb-0">
           <h3 className="text-xl font-semibold">{title}</h3>
+         
           {showCloseButton && (
             <button
               type="button"
@@ -76,9 +78,10 @@ export const Modal: React.FC<ModalProps> = ({
             </button>
           )}
         </div>
+     
         <div className="px-6 pb-6">{children}</div>
       </form>
-     
+
       <style>{`
         dialog[open] {
           animation: modal-fade-in 0.15s;
