@@ -13,6 +13,10 @@ interface ScryfallCard {
   name: string
   type_line: string
   oracle_text?: string
+  image_uris?: {
+    art_crop?: string
+    small?: string
+  }
 }
 
 const MANA_COLORS: { value: ManaColor; label: string; color: string }[] = [
@@ -191,10 +195,23 @@ export const DeckForm: React.FC<DeckFormProps> = ({ mode, deck, onSave, onCancel
                     <div
                       key={index}
                       onClick={() => handleSuggestionClick(card)}
-                      className="p-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0"
+                      className="p-3 hover:bg-gray-100 cursor-pointer border-b border-gray-100 last:border-b-0 flex items-center gap-3"
                     >
-                      <div className="font-medium text-sm">{card.name}</div>
-                      <div className="text-xs text-gray-500">{card.type_line}</div>
+                      {card.image_uris?.art_crop || card.image_uris?.small ? (
+                        <img
+                          src={card.image_uris.art_crop || card.image_uris.small}
+                          alt={card.name}
+                          className="w-10 h-10 rounded-full object-cover border border-gray-300"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-xs text-gray-400 border border-gray-300">
+                          ?
+                        </div>
+                      )}
+                      <div>
+                        <div className="font-medium text-sm">{card.name}</div>
+                        <div className="text-xs text-gray-500">{card.type_line}</div>
+                      </div>
                     </div>
                   ))}
               </div>
