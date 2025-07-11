@@ -1,6 +1,7 @@
 import { Trash2 } from 'lucide-react'
 import React from 'react'
 
+import { getGradientFromColors } from '../utils/gradients'
 import { ColorBadges } from './ColorBadges'
 
 interface CommanderProps {
@@ -24,22 +25,19 @@ export const Commander: React.FC<CommanderProps> = ({
   const imageUrl = isScryfallCard ? commander.image : null
   const colors = isScryfallCard ? commander.colors : []
 
-  return (
-    <div className={`rounded flex flex-col gap-1 p-2 ${className}`} onClick={onClick}>
-      <div className="flex justify-between items-center w-full">
-        <span className="text-xs text-gray-500">Commander</span>
+  const gradientStyle = getGradientFromColors(colors)
 
-        {/* Remove Button */}
-        {showRemoveButton && onRemove && (
-          <button
-            title="Remove commander"
-            className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
-            onClick={onRemove}
-          >
-            <Trash2 size={16} />
-          </button>
-        )}
-      </div>
+  return (
+    <div className={`rounded flex flex-col gap-1 p-2 ${className}`} style={gradientStyle} onClick={onClick}>
+      {showRemoveButton && onRemove && (
+        <button
+          title="Remove commander"
+          className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50 self-end"
+          onClick={onRemove}
+        >
+          <Trash2 size={16} />
+        </button>
+      )}
 
       <div className="flex items-center gap-2">
         {/* Card Image */}
