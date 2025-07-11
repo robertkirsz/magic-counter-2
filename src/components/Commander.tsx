@@ -24,32 +24,24 @@ export const Commander: React.FC<CommanderProps> = ({
   const imageUrl = isScryfallCard ? commander.image : null
   const colors = isScryfallCard ? commander.colors : []
 
-  const handleClick = () => {
-    if (onClick) onClick()
-  }
-
-  const handleRemove = () => {
-    if (onRemove) onRemove()
-  }
-
   return (
-    <div className={`rounded flex flex-col gap-1 p-2 ${className}`} onClick={handleClick}>
+    <div className={`rounded flex flex-col gap-1 p-2 ${className}`} onClick={onClick}>
       <div className="flex justify-between items-center w-full">
         <span className="text-xs text-gray-500">Commander</span>
 
         {/* Remove Button */}
         {showRemoveButton && onRemove && (
           <button
-            onClick={handleRemove}
-            className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
             title="Remove commander"
+            className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
+            onClick={onRemove}
           >
             <Trash2 size={16} />
           </button>
         )}
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
         {/* Card Image */}
         {imageUrl ? (
           <img src={imageUrl} alt={name} className="w-10 h-10 rounded-full object-cover border border-gray-300" />
@@ -60,13 +52,10 @@ export const Commander: React.FC<CommanderProps> = ({
         )}
 
         {/* Card Details */}
-        <div className="flex-1 flex flex-col gap-1">
-          <div className="flex gap-1 items-center">
-            <div className="flex-1 font-medium text-sm line-clamp-1">{name}</div>
-            {colors.length > 0 && <ColorBadges colors={colors} />}
-          </div>
-
-          {typeLine && <div className="text-xs text-gray-500">{typeLine}</div>}
+        <div className="flex flex-col gap-1">
+          {colors.length > 0 && <ColorBadges colors={colors} className="flex-none" />}
+          <div className="font-medium text-sm line-clamp-1">{name}</div>
+          {typeLine && <div className="text-xs text-gray-500 line-clamp-1">{typeLine}</div>}
         </div>
       </div>
     </div>

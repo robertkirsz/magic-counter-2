@@ -33,7 +33,7 @@ export const Deck: React.FC<DeckProps> = ({
   const creatorName = getCreatorName(deck)
 
   return (
-    <div className={`rounded flex flex-col items-start gap-1 p-2 ${className}`}>
+    <div className={`rounded flex flex-col gap-1 p-2 ${className}`}>
       <div className="flex justify-between items-center w-full">
         <span className="text-xs text-gray-500">Deck</span>
 
@@ -58,22 +58,20 @@ export const Deck: React.FC<DeckProps> = ({
         )}
       </div>
 
-      <div className="flex gap-2 justify-between items-start">
-        <div className="flex flex-col gap-2">
-          <div className="flex gap-1 items-center">
-            <h3>{deck.name}</h3>
-            {showCreator && creatorName && <span className="text-sm text-gray-500">({creatorName})</span>}
-            <ColorBadges colors={deck.colors} />
-          </div>
-
-          {deck.commanders && deck.commanders.length > 0 && (
-            <div className="flex flex-col gap-2">
-              {deck.commanders.map((commander, index) => (
-                <Commander key={index} commander={commander} className="border border-gray-200" />
-              ))}
-            </div>
-          )}
+      <div className="flex flex-col gap-2">
+        <div className="flex gap-1 items-center">
+          <h3>{deck.name}</h3>
+          {showCreator && creatorName && <span className="text-sm text-gray-500">({creatorName})</span>}
+          <ColorBadges colors={deck.colors} className="ml-auto" />
         </div>
+
+        {deck.commanders && deck.commanders.length > 0 && (
+          <div className="flex flex-col gap-2">
+            {deck.commanders.map((commander, index) => (
+              <Commander key={index} commander={commander} className="border border-gray-200" />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
