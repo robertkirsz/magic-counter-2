@@ -22,6 +22,7 @@ export const getGradientFromColors = (colors: string[]): React.CSSProperties => 
       const percentage = (index / (colors.length - 1)) * 100
       const colorInfo = MANA_COLORS.find(c => c.value === color)
       const colorValue = colorInfo?.gradientColor || MANA_COLORS.find(c => c.value === 'C')?.gradientColor || '#f9fafb'
+
       return `${colorValue} ${percentage}%`
     })
     .join(', ')

@@ -2,6 +2,7 @@ import { Edit3, Trash2 } from 'lucide-react'
 import React from 'react'
 
 import { useUsers } from '../contexts/UsersContext'
+import { getGradientFromColors } from '../utils/gradients'
 import { ColorBadges } from './ColorBadges'
 import { Commander } from './Commander'
 
@@ -31,47 +32,46 @@ export const Deck: React.FC<DeckProps> = ({
   }
 
   const creatorName = getCreatorName(deck)
+  const gradientStyle = getGradientFromColors(deck.colors)
 
   return (
-    <div className={`rounded flex flex-col gap-1 p-2 ${className}`}>
-      <div className="flex justify-between items-center w-full">
-        <span className="text-xs text-gray-500">Deck</span>
+    <div className={`rounded-lg p-1 ${className}`} style={gradientStyle}>
+      <div className="flex flex-col gap-1 p-2 bg-white rounded border border-gray-200 shadow-inner">
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-1 items-center">
+            <h3 className="line-clamp-1">{deck.name}</h3>
+            {showCreator && creatorName && <span className="text-sm text-gray-500">({creatorName})</span>}
+            <ColorBadges colors={deck.colors} />
 
-        {showActions && onEditDeck && onRemoveDeck && (
-          <div className="flex gap-1">
-            <button
-              onClick={() => onEditDeck(deck.id)}
-              className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
-              title="Edit deck"
-            >
-              <Edit3 size={16} />
-            </button>
+            {showActions && onEditDeck && onRemoveDeck && (
+              <div className="flex gap-1 ml-auto">
+                <button
+                  onClick={() => onEditDeck(deck.id)}
+                  className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
+                  title="Edit deck"
+                >
+                  <Edit3 size={16} />
+                </button>
 
-            <button
-              onClick={() => onRemoveDeck(deck.id)}
-              className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
-              title="Delete deck"
-            >
-              <Trash2 size={16} />
-            </button>
+                <button
+                  onClick={() => onRemoveDeck(deck.id)}
+                  className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
+                  title="Delete deck"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            )}
           </div>
-        )}
-      </div>
 
-      <div className="flex flex-col gap-2">
-        <div className="flex gap-1 items-center">
-          <h3>{deck.name}</h3>
-          {showCreator && creatorName && <span className="text-sm text-gray-500">({creatorName})</span>}
-          <ColorBadges colors={deck.colors} className="ml-auto" />
+          {deck.commanders && deck.commanders.length > 0 && (
+            <div className="flex gap-2">
+              {deck.commanders.map((commander, index) => (
+                <Commander key={index} commander={commander} className="border border-gray-200" />
+              ))}
+            </div>
+          )}
         </div>
-
-        {deck.commanders && deck.commanders.length > 0 && (
-          <div className="flex flex-col gap-2">
-            {deck.commanders.map((commander, index) => (
-              <Commander key={index} commander={commander} className="border border-gray-200" />
-            ))}
-          </div>
-        )}
       </div>
     </div>
   )
