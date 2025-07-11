@@ -2,21 +2,9 @@ import React, { useEffect, useState } from 'react'
 
 import { Commander } from './Commander'
 
-interface ScryfallCard {
-  name: string
-  type_line: string
-  oracle_text?: string
-  colors?: string[]
-  color_identity?: string[]
-  image_uris?: {
-    art_crop?: string
-    small?: string
-  }
-}
-
 interface CommanderSearchProps {
-  commanders: string[]
-  onCommandersChange: (commanders: string[]) => void
+  commanders: ScryfallCard[]
+  onCommandersChange: (commanders: ScryfallCard[]) => void
 }
 
 export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, onCommandersChange }) => {
@@ -63,8 +51,8 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
   }, [newCommander])
 
   const handleSuggestionClick = (card: ScryfallCard) => {
-    if (!commanders.includes(card.name)) {
-      onCommandersChange([...commanders, card.name])
+    if (!commanders.some(commander => commander.name === card.name)) {
+      onCommandersChange([...commanders, card])
     }
 
     setNewCommander('')

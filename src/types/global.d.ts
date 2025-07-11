@@ -2,7 +2,6 @@ type Tracking = 'full' | 'simple' | 'none'
 type GameState = 'active' | 'archived'
 type ManaColor = 'W' | 'U' | 'B' | 'R' | 'G' | 'C'
 
-
 type ScryfallCard = {
   name: string
   type_line: string
