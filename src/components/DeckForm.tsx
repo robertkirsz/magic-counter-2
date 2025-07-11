@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
 
+import type { ManaColor } from '../constants/mana'
 import { CommanderSearch } from './CommanderSearch'
 import { ManaPicker } from './ManaPicker'
 import { Modal } from './Modal'
 
-type ManaColor = 'W' | 'U' | 'B' | 'R' | 'G' | 'C'
-
 interface DeckFormProps {
-  mode: 'create' | 'edit'
+  mode: 'create' | 'edit' // TODO: derive based on deck
   deck?: Deck
   onSave: (data: { name: string; colors: ManaColor[]; commanders?: ScryfallCard[] }) => void
   onCancel: () => void
@@ -39,11 +38,8 @@ export const DeckForm: React.FC<DeckFormProps> = ({ mode, deck, onSave, onCancel
     const uniqueColors = [...new Set(allCommandersColors)]
 
     if (commanders.length > 0) {
-      if (uniqueColors.length > 0) {
-        setSelectedColors(uniqueColors)
-      } else {
-        setSelectedColors(['C'])
-      }
+      if (uniqueColors.length > 0) setSelectedColors(uniqueColors)
+      else setSelectedColors(['C'])
     } else {
       setSelectedColors([])
     }
@@ -68,24 +64,19 @@ export const DeckForm: React.FC<DeckFormProps> = ({ mode, deck, onSave, onCancel
         <CommanderSearch commanders={commanders} onCommandersChange={handleCommandersChange} />
 
         {/* Mana Colors */}
-        <div>
-          <ManaPicker selectedColors={selectedColors} onColorToggle={handleColorToggle} />
-        </div>
+        <ManaPicker selectedColors={selectedColors} onColorToggle={handleColorToggle} />
 
         {/* Action Buttons */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 justify-end">
           <button
             onClick={handleSave}
             disabled={!name.trim() || selectedColors.length === 0}
-            className="flex-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
             {mode === 'create' ? 'Save Deck' : 'Save Changes'}
           </button>
 
-          <button
-            onClick={onCancel}
-            className="flex-1 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-          >
+          <button onClick={onCancel} className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
             Cancel
           </button>
         </div>

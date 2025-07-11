@@ -1,13 +1,6 @@
 import React from 'react'
 
-const MANA_COLORS: { value: string; label: string; filename: string }[] = [
-  { value: 'W', label: 'White', filename: 'w.svg' },
-  { value: 'U', label: 'Blue', filename: 'u.svg' },
-  { value: 'B', label: 'Black', filename: 'b.svg' },
-  { value: 'R', label: 'Red', filename: 'r.svg' },
-  { value: 'G', label: 'Green', filename: 'g.svg' },
-  { value: 'C', label: 'Colorless', filename: 'c.svg' }
-]
+import { MANA_COLORS } from '../constants/mana'
 
 interface ColorBadgesProps {
   colors: string[]
@@ -21,7 +14,7 @@ export const ColorBadges: React.FC<ColorBadgesProps> = ({ colors, className = ''
     <div className={`flex gap-1 ${className}`}>
       {colors.map(color => {
         const colorInfo = MANA_COLORS.find(c => c.value === color)
-
+        
         return colorInfo ? (
           <img
             key={color}
