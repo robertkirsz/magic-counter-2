@@ -36,6 +36,7 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, user
   const handleUserSelect = (userId: string) => {
     setSelectedPlayers(prev => {
       const existing = prev.find(p => p.userId === userId)
+
       if (existing) {
         return prev.filter(p => p.userId !== userId)
       } else {
@@ -156,7 +157,7 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, user
                       </select>
                     </div>
 
-                    {deck && <Deck deck={deck} className="border border-gray-200" />}
+                    {deck && <Deck deck={deck} />}
                   </div>
                 )
               })}
@@ -235,12 +236,11 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, user
       </Modal>
 
       {/* Add User Modal */}
-      {isAddingUser && <UserForm mode="create" onSave={handleAddNewUser} onCancel={() => setIsAddingUser(false)} />}
+      {isAddingUser && <UserForm onSave={handleAddNewUser} onCancel={() => setIsAddingUser(false)} />}
 
       {/* Add Deck Modal */}
       {isAddingDeck && (
         <DeckForm
-          mode="create"
           onSave={handleCreateDeck}
           onCancel={() => {
             setIsAddingDeck(false)

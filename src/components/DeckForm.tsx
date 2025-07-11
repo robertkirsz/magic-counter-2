@@ -6,13 +6,12 @@ import { ManaPicker } from './ManaPicker'
 import { Modal } from './Modal'
 
 interface DeckFormProps {
-  mode: 'create' | 'edit' // TODO: derive based on deck
   deck?: Deck
   onSave: (data: { name: string; colors: ManaColor[]; commanders?: ScryfallCard[] }) => void
   onCancel: () => void
 }
 
-export const DeckForm: React.FC<DeckFormProps> = ({ mode, deck, onSave, onCancel }) => {
+export const DeckForm: React.FC<DeckFormProps> = ({ deck, onSave, onCancel }) => {
   const [name, setName] = useState(deck?.name || '')
   const [selectedColors, setSelectedColors] = useState<ManaColor[]>(deck?.colors || [])
   const [commanders, setCommanders] = useState<ScryfallCard[]>(deck?.commanders || [])
@@ -45,20 +44,20 @@ export const DeckForm: React.FC<DeckFormProps> = ({ mode, deck, onSave, onCancel
     }
   }
 
+  const mode = deck ? 'edit' : 'create'
+
   return (
     <Modal isOpen={true} onClose={onCancel} title={mode === 'create' ? 'Add New Deck' : 'Edit Deck'}>
       <div className="flex flex-col gap-4">
         {/* Name Input */}
-        <div>
-          <input
-            type="text"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            placeholder="Deck name"
-            className="w-full p-2 border border-gray-300 rounded"
-            autoFocus
-          />
-        </div>
+        <input
+          type="text"
+          value={name}
+          onChange={e => setName(e.target.value)}
+          placeholder="Deck name"
+          className="w-full p-2 border border-gray-300 rounded"
+          autoFocus
+        />
 
         {/* Commanders */}
         <CommanderSearch commanders={commanders} onCommandersChange={handleCommandersChange} />
@@ -69,9 +68,9 @@ export const DeckForm: React.FC<DeckFormProps> = ({ mode, deck, onSave, onCancel
         {/* Action Buttons */}
         <div className="flex gap-2 justify-end">
           <button
-            onClick={handleSave}
-            disabled={!name.trim() || selectedColors.length === 0}
             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+            disabled={!name.trim() || selectedColors.length === 0}
+            onClick={handleSave}
           >
             {mode === 'create' ? 'Save Deck' : 'Save Changes'}
           </button>

@@ -7,6 +7,16 @@ interface CommanderSearchProps {
   onCommandersChange: (commanders: ScryfallCard[]) => void
 }
 
+interface ScryfallCardRaw {
+  id: string
+  name: string
+  type_line: string
+  color_identity?: string[]
+  colors?: string[]
+  card_faces?: Array<{ image_uris?: { art_crop?: string } }>
+  image_uris?: { art_crop?: string }
+}
+
 export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, onCommandersChange }) => {
   const [newCommander, setNewCommander] = useState('')
   const [suggestions, setSuggestions] = useState<ScryfallCard[]>([])
@@ -31,7 +41,7 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
         const data = await response.json()
 
         // Only keep properties that exist in ScryfallCard type
-        const scryfallCards: ScryfallCard[] = (data.data || []).map((card: any) => ({
+        const scryfallCards: ScryfallCard[] = (data.data || []).map((card: ScryfallCardRaw) => ({
           id: card.id,
           name: card.name,
           type: card.type_line,
@@ -115,12 +125,7 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
 
           {!isLoading &&
             suggestions.map((card, index) => (
-              <Commander
-                key={index}
-                commander={card}
-                className="cursor-pointer"
-                onClick={() => handleSuggestionClick(card)}
-              />
+              <Commander key={index} commander={card} onClick={() => handleSuggestionClick(card)} />
             ))}
         </div>
       )}

@@ -4,13 +4,18 @@ import React, { useState } from 'react'
 import { useDecks } from '../contexts/DecksContext'
 import { useUsers } from '../contexts/UsersContext'
 import { Deck } from './Deck'
+import { DeckForm } from './DeckForm'
 import { UserForm } from './UserForm'
 
 export const Users: React.FC = () => {
   const { users, addUser, removeUser, updateUser } = useUsers()
-  const { decks } = useDecks()
+  const { decks, addDeck, removeDeck, updateDeck } = useDecks()
+
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [isAddingDeck, setIsAddingDeck] = useState(false)
+  const [selectedPlayerForDeck, setSelectedPlayerForDeck] = useState<string | null>(null)
+  const [deckEditingId, setDeckEditingId] = useState<string | null>(null)
 
   const handleAddUser = (data: { name: string }) => {
     addUser({ name: data.name })
@@ -32,6 +37,25 @@ export const Users: React.FC = () => {
     setEditingId(null)
   }
 
+  const handleCreateDeck = (deckData: { name: string; colors: ManaColor[]; commanders?: ScryfallCard[] }) => {
+    if (selectedPlayerForDeck) {
+      addDeck({ ...deckData, createdBy: selectedPlayerForDeck })
+      setIsAddingDeck(false)
+      setSelectedPlayerForDeck(null)
+    }
+  }
+
+  const handleSaveDeckEdit = (data: { name: string; colors: ManaColor[]; commanders?: ScryfallCard[] }) => {
+    if (deckEditingId) {
+      updateDeck(deckEditingId, { ...data })
+      setDeckEditingId(null)
+    }
+  }
+
+  const handleCancelDeckEdit = () => {
+    setDeckEditingId(null)
+  }
+
   return (
     <>
       <div className="flex flex-col gap-4 items-start">
@@ -47,75 +71,86 @@ export const Users: React.FC = () => {
         </button>
 
         {/* Users List */}
-        <div>
-          {users.length === 0 ? (
-            <p className="text-gray-500 italic">No users yet. Add your first user!</p>
-          ) : (
-            <div className="flex flex-col gap-2">
-              {users.map(user => {
-                const filteredDecks = decks.filter(deck => deck.createdBy === user.id)
+        {users.length === 0 ? (
+          <p className="text-gray-500 italic">No users yet. Add your first user!</p>
+        ) : (
+          <div className="flex flex-col gap-2 ">
+            {users.map(user => {
+              const filteredDecks = decks.filter(deck => deck.createdBy === user.id)
 
-                return (
-                  <div key={user.id} className="rounded border border-gray-200 flex flex-col items-start gap-1 p-2">
-                    <div className="flex justify-between items-center w-full">
-                      <span className="text-xs text-gray-500">User</span>
+              return (
+                <div key={user.id} className="flex flex-col gap-1 bg-white rounded-lg p-2 border border-gray-200">
+                  <div className="flex gap-1 items-center">
+                    <h3 className="line-clamp-1">{user.name}</h3>
 
-                      <div className="flex gap-1">
-                        <button
-                          onClick={() => handleEditUser(user.id)}
-                          className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
-                          title="Edit user"
-                        >
-                          <Edit3 size={16} />
-                        </button>
+                    <div className="flex gap-1 ml-auto">
+                      <button
+                        onClick={() => handleEditUser(user.id)}
+                        className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
+                        title="Edit user"
+                      >
+                        <Edit3 size={16} />
+                      </button>
 
-                        <button
-                          onClick={() => removeUser(user.id)}
-                          className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
-                          title="Delete user"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </div>
-
-                    <h3>{user.name}</h3>
-
-                    {/* User's Decks */}
-                    <div className="flex flex-col gap-2">
-                      {filteredDecks.length === 0 ? (
-                        <p className="text-gray-500 italic">No decks yet. Add your first deck!</p>
-                      ) : (
-                        <div className="flex flex-col gap-2">
-                          {filteredDecks.map(deck => (
-                            <Deck
-                              key={deck.id}
-                              deck={deck}
-                              showActions={false}
-                              showCreator={false}
-                              className="border border-gray-200"
-                            />
-                          ))}
-                        </div>
-                      )}
+                      <button
+                        onClick={() => removeUser(user.id)}
+                        className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
+                        title="Delete user"
+                      >
+                        <Trash2 size={16} />
+                      </button>
                     </div>
                   </div>
-                )
-              })}
-            </div>
-          )}
-        </div>
+
+                  {/* User's Decks */}
+                  {filteredDecks.length > 0 && (
+                    <div className="flex flex-col gap-2">
+                      {filteredDecks.map(deck => (
+                        <Deck key={deck.id} deck={deck} onEditDeck={setDeckEditingId} onRemoveDeck={removeDeck} />
+                      ))}
+                    </div>
+                  )}
+
+                  <button
+                    className="px-2 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition self-end"
+                    onClick={() => {
+                      setSelectedPlayerForDeck(user.id)
+                      setIsAddingDeck(true)
+                    }}
+                  >
+                    Create New Deck
+                  </button>
+                </div>
+              )
+            })}
+          </div>
+        )}
 
         {/* Create User Modal */}
-        {isAdding && <UserForm mode="create" onSave={handleAddUser} onCancel={() => setIsAdding(false)} />}
+        {isAdding && <UserForm onSave={handleAddUser} onCancel={() => setIsAdding(false)} />}
 
         {/* Edit User Modal */}
         {editingId !== null && (
-          <UserForm
-            mode="edit"
-            user={users.find(u => u.id === editingId)}
-            onSave={handleSaveEdit}
-            onCancel={handleCancelEdit}
+          <UserForm user={users.find(u => u.id === editingId)} onSave={handleSaveEdit} onCancel={handleCancelEdit} />
+        )}
+
+        {/* Add Deck Modal */}
+        {isAddingDeck && (
+          <DeckForm
+            onSave={handleCreateDeck}
+            onCancel={() => {
+              setIsAddingDeck(false)
+              setSelectedPlayerForDeck(null)
+            }}
+          />
+        )}
+
+        {/* Edit Deck Modal */}
+        {deckEditingId !== null && (
+          <DeckForm
+            deck={decks.find(d => d.id === deckEditingId)}
+            onSave={handleSaveDeckEdit}
+            onCancel={handleCancelDeckEdit}
           />
         )}
       </div>

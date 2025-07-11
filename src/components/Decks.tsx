@@ -19,10 +19,6 @@ export const Decks: React.FC = () => {
     setIsAdding(false)
   }
 
-  const handleEditDeck = (deckId: string) => {
-    setEditingId(deckId)
-  }
-
   const handleSaveEdit = (data: { name: string; colors: ManaColor[]; commanders?: ScryfallCard[] }) => {
     if (editingId) {
       updateDeck(editingId, {
@@ -59,31 +55,18 @@ export const Decks: React.FC = () => {
           ) : (
             <div className="flex flex-col gap-2">
               {decks.map(deck => (
-                <Deck
-                  key={deck.id}
-                  deck={deck}
-                  onEditDeck={handleEditDeck}
-                  onRemoveDeck={removeDeck}
-                  showActions
-                  showCreator
-                  className="border border-gray-200"
-                />
+                <Deck key={deck.id} deck={deck} showCreator onEditDeck={setEditingId} onRemoveDeck={removeDeck} />
               ))}
             </div>
           )}
         </div>
 
         {/* Create Deck Modal */}
-        {isAdding && <DeckForm mode="create" onSave={handleAddDeck} onCancel={() => setIsAdding(false)} />}
+        {isAdding && <DeckForm onSave={handleAddDeck} onCancel={() => setIsAdding(false)} />}
 
         {/* Edit Deck Modal */}
         {editingId !== null && (
-          <DeckForm
-            mode="edit"
-            deck={decks.find(d => d.id === editingId)}
-            onSave={handleSaveEdit}
-            onCancel={handleCancelEdit}
-          />
+          <DeckForm deck={decks.find(d => d.id === editingId)} onSave={handleSaveEdit} onCancel={handleCancelEdit} />
         )}
       </div>
     </>

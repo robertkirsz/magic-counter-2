@@ -4,21 +4,13 @@ import React from 'react'
 import { getGradientFromColors } from '../utils/gradients'
 import { ColorBadges } from './ColorBadges'
 
-interface CommanderProps {
+interface CommanderProps extends React.HTMLAttributes<HTMLDivElement> {
   commander: string | ScryfallCard
-  onRemove?: () => void
-  onClick?: () => void
   showRemoveButton?: boolean
-  className?: string
+  onRemove?: () => void
 }
 
-export const Commander: React.FC<CommanderProps> = ({
-  commander,
-  onRemove,
-  onClick,
-  showRemoveButton = false,
-  className = ''
-}) => {
+export const Commander: React.FC<CommanderProps> = ({ commander, showRemoveButton = false, onRemove, ...props }) => {
   const isScryfallCard = typeof commander === 'object'
   const name = isScryfallCard ? commander.name : commander
   const typeLine = isScryfallCard ? commander.type : ''
@@ -28,8 +20,8 @@ export const Commander: React.FC<CommanderProps> = ({
   const gradientStyle = getGradientFromColors(colors)
 
   return (
-    <div className={`rounded-lg p-1 ${className}`} style={gradientStyle} onClick={onClick}>
-      <div className="flex justify-between gap-1 bg-white rounded overflow-clip">
+    <div className="rounded-lg p-1 border border-gray-200" style={gradientStyle} {...props}>
+      <div className="flex gap-1 bg-white rounded overflow-clip">
         <div className="flex">
           {/* Card Image */}
           {imageUrl && (

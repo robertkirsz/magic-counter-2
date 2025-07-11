@@ -62,7 +62,7 @@ export const Modal: React.FC<ModalProps> = ({
       className={`rounded-lg p-0 border-0 shadow-lg ${maxWidthClasses[maxWidth]} max-h-[90vh] overflow-y-auto`}
       style={{ padding: 0 }}
     >
-      <div className="flex justify-between items-center mb-4 p-6 pb-0">
+      <div className="flex justify-between items-center pl-4 pt-2 pr-2">
         <h3 className="text-xl font-semibold">{title}</h3>
 
         {showCloseButton && (
@@ -77,7 +77,7 @@ export const Modal: React.FC<ModalProps> = ({
         )}
       </div>
 
-      <div className="px-6 pb-6">{children}</div>
+      <div className="px-4 pt-2 pb-4">{children}</div>
 
       <style>{`
         dialog[open] {

@@ -18,7 +18,7 @@ export const ManaPicker: React.FC<ManaPickerProps> = ({ selectedColors, onColorT
         return (
           <label
             key={value}
-            className="flex items-center gap-2 cursor-pointer rounded hover:bg-gray-50 p-1"
+            className="flex items-center gap-2 cursor-pointer rounded p-1"
             tabIndex={0}
             role="checkbox"
             aria-checked={isSelected}
@@ -35,15 +35,13 @@ export const ManaPicker: React.FC<ManaPickerProps> = ({ selectedColors, onColorT
               checked={isSelected}
               onChange={() => onColorToggle(value)}
               className="sr-only"
-              aria-hidden="true"
               tabIndex={-1}
             />
 
             <img
               src={`/mana/${filename}`}
               alt=""
-              aria-hidden="true"
-              className={`w-8 h-8 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-20'}`}
+              className={`w-8 h-8 transition-opacity hover:opacity-100 ${isSelected ? 'opacity-100' : 'opacity-20'}`}
             />
           </label>
         )
