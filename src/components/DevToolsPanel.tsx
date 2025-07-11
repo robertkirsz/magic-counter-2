@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useDecks } from '../contexts/DecksContext'
 import { useGames } from '../contexts/GamesContext'
@@ -12,13 +12,14 @@ function tryParseJSON<T>(value: string): [T | null, string | null] {
   }
 }
 
-// Validation helpers
 function isValidUser(obj: any): obj is User {
   return obj && typeof obj.id === 'string' && obj.createdAt && typeof obj.name === 'string'
 }
+
 function isValidDeck(obj: any): obj is Deck {
   return obj && typeof obj.id === 'string' && obj.createdAt && typeof obj.name === 'string' && Array.isArray(obj.colors)
 }
+
 function isValidGame(obj: any): obj is Game {
   return (
     obj &&
@@ -29,6 +30,7 @@ function isValidGame(obj: any): obj is Game {
     'tracking' in obj
   )
 }
+
 function reviveDates<T extends { createdAt: any }>(arr: T[]): T[] {
   return arr.map(obj => ({
     ...obj,
@@ -49,56 +51,139 @@ export const DevToolsPanel: React.FC = () => {
   const [usersError, setUsersError] = useState<string | null>(null)
   const [decksError, setDecksError] = useState<string | null>(null)
   const [gamesError, setGamesError] = useState<string | null>(null)
+  const [importError, setImportError] = useState<string | null>(null)
 
   // Keep textareas in sync with context changes
-  React.useEffect(() => {
+  useEffect(() => {
     setUsersText(JSON.stringify(users, null, 2))
   }, [users])
-  React.useEffect(() => {
+
+  useEffect(() => {
     setDecksText(JSON.stringify(decks, null, 2))
   }, [decks])
-  React.useEffect(() => {
+
+  useEffect(() => {
     setGamesText(JSON.stringify(games, null, 2))
   }, [games])
 
   const handleSave = (type: 'users' | 'decks' | 'games') => {
     if (type === 'users') {
       const [parsed, err] = tryParseJSON(usersText)
+
       if (err) {
         setUsersError(err)
         return
       }
+
       if (!Array.isArray(parsed) || !parsed.every(isValidUser)) {
         setUsersError('Invalid user data. Each user must have id, createdAt, and name.')
         return
       }
+
       setUsersError(null)
       setUsers(reviveDates(parsed))
     } else if (type === 'decks') {
       const [parsed, err] = tryParseJSON(decksText)
+
       if (err) {
         setDecksError(err)
         return
       }
+
       if (!Array.isArray(parsed) || !parsed.every(isValidDeck)) {
         setDecksError('Invalid deck data. Each deck must have id, createdAt, name, and colors.')
         return
       }
+
       setDecksError(null)
       setDecks(reviveDates(parsed))
     } else if (type === 'games') {
       const [parsed, err] = tryParseJSON(gamesText)
+
       if (err) {
         setGamesError(err)
         return
       }
+
       if (!Array.isArray(parsed) || !parsed.every(isValidGame)) {
         setGamesError('Invalid game data. Each game must have id, createdAt, state, players, and tracking.')
         return
       }
+
       setGamesError(null)
       setGames(reviveDates(parsed))
     }
+  }
+
+  const handleExport = () => {
+    const appData = {
+      users,
+      decks,
+      games,
+      exportedAt: new Date().toISOString()
+    }
+
+    const blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+
+    a.href = url
+    a.download = `magic-counter-data-${new Date().toISOString().split('T')[0]}.json`
+    document.body.appendChild(a)
+
+    a.click()
+
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+
+  const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+
+    if (!file) return
+
+    const reader = new FileReader()
+
+    reader.onload = e => {
+      const content = e.target?.result as string
+      const [parsed, err] = tryParseJSON(content)
+
+      if (err) {
+        setImportError(`Invalid JSON: ${err}`)
+        return
+      }
+
+      if (!parsed || typeof parsed !== 'object') {
+        setImportError('Invalid data format')
+        return
+      }
+
+      const { users: importedUsers, decks: importedDecks, games: importedGames } = parsed as any
+
+      // Validate imported data
+      if (!Array.isArray(importedUsers) || !importedUsers.every(isValidUser)) {
+        setImportError('Invalid users data in imported file')
+        return
+      }
+
+      if (!Array.isArray(importedDecks) || !importedDecks.every(isValidDeck)) {
+        setImportError('Invalid decks data in imported file')
+        return
+      }
+
+      if (!Array.isArray(importedGames) || !importedGames.every(isValidGame)) {
+        setImportError('Invalid games data in imported file')
+        return
+      }
+
+      // Apply imported data
+      setUsers(reviveDates(importedUsers))
+      setDecks(reviveDates(importedDecks))
+      setGames(reviveDates(importedGames))
+      setImportError(null)
+    }
+
+    reader.readAsText(file)
   }
 
   return (
@@ -109,17 +194,42 @@ export const DevToolsPanel: React.FC = () => {
       >
         {open ? 'Hide DevTools ▲' : 'Show DevTools ▼'}
       </button>
+
       {open && (
         <div className="bg-white border border-gray-200 rounded-lg mt-2 p-4 shadow-lg max-h-[400px] overflow-y-auto text-xs">
+          {/* Import/Export Section */}
+          <details open>
+            <summary className="font-bold mb-2 cursor-pointer select-none">Import/Export</summary>
+
+            <div className="flex gap-2 mb-3">
+              <button
+                className="bg-green-600 text-white rounded px-2 py-1 text-xs font-semibold hover:bg-green-700 transition"
+                onClick={handleExport}
+              >
+                Export All Data
+              </button>
+
+              <label className="bg-blue-600 text-white rounded px-2 py-1 text-xs font-semibold hover:bg-blue-700 transition cursor-pointer">
+                Import Data
+                <input type="file" accept=".json" onChange={handleImport} className="hidden" />
+              </label>
+            </div>
+
+            {importError && <div className="text-red-600 text-xs mb-2">{importError}</div>}
+          </details>
+
           <details open>
             <summary className="font-bold mb-1 cursor-pointer select-none">Users</summary>
+
             <textarea
               className={`bg-gray-100 p-2 rounded mb-1 w-full h-28 resize-vertical border ${usersError ? 'border-red-500' : 'border-gray-200'} focus:outline-none`}
               value={usersText}
               onChange={e => setUsersText(e.target.value)}
               spellCheck={false}
             />
+
             {usersError && <div className="text-red-600 text-xs mb-1">{usersError}</div>}
+
             <button
               className="bg-blue-600 text-white rounded px-2 py-1 text-xs font-semibold hover:bg-blue-700 transition mb-2"
               onClick={() => handleSave('users')}
@@ -127,15 +237,19 @@ export const DevToolsPanel: React.FC = () => {
               Save
             </button>
           </details>
+
           <details open className="mt-3">
             <summary className="font-bold mb-1 cursor-pointer select-none">Decks</summary>
+
             <textarea
               className={`bg-gray-100 p-2 rounded mb-1 w-full h-28 resize-vertical border ${decksError ? 'border-red-500' : 'border-gray-200'} focus:outline-none`}
               value={decksText}
               onChange={e => setDecksText(e.target.value)}
               spellCheck={false}
             />
+
             {decksError && <div className="text-red-600 text-xs mb-1">{decksError}</div>}
+
             <button
               className="bg-blue-600 text-white rounded px-2 py-1 text-xs font-semibold hover:bg-blue-700 transition mb-2"
               onClick={() => handleSave('decks')}
@@ -143,15 +257,19 @@ export const DevToolsPanel: React.FC = () => {
               Save
             </button>
           </details>
+
           <details open className="mt-3">
             <summary className="font-bold mb-1 cursor-pointer select-none">Games</summary>
+
             <textarea
               className={`bg-gray-100 p-2 rounded mb-1 w-full h-28 resize-vertical border ${gamesError ? 'border-red-500' : 'border-gray-200'} focus:outline-none`}
               value={gamesText}
               onChange={e => setGamesText(e.target.value)}
               spellCheck={false}
             />
+
             {gamesError && <div className="text-red-600 text-xs mb-1">{gamesError}</div>}
+
             <button
               className="bg-blue-600 text-white rounded px-2 py-1 text-xs font-semibold hover:bg-blue-700 transition mb-2"
               onClick={() => handleSave('games')}
