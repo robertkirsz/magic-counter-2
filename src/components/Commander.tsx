@@ -28,15 +28,13 @@ export const Commander: React.FC<CommanderProps> = ({
     if (onClick) onClick()
   }
 
-  const handleRemove = (e: React.MouseEvent) => {
-    e.stopPropagation()
-
+  const handleRemove = () => {
     if (onRemove) onRemove()
   }
 
   return (
     <div
-      className={`flex items-center gap-3 p-3 ${onClick ? 'cursor-pointer hover:bg-gray-100' : ''} ${className}`}
+      className={`flex items-center gap-3 p-2 ${onClick ? 'cursor-pointer hover:bg-gray-100' : ''} ${className}`}
       onClick={handleClick}
     >
       {/* Card Image */}
@@ -49,10 +47,13 @@ export const Commander: React.FC<CommanderProps> = ({
       )}
 
       {/* Card Details */}
-      <div className="flex-1">
-        <div className="font-medium text-sm">{name}</div>
+      <div className="flex-1 flex flex-col gap-1">
+        <div className="flex gap-1 items-center">
+          <div className="font-medium text-sm">{name}</div>
+          {colors.length > 0 && <ColorBadges colors={colors} />}
+        </div>
+
         {typeLine && <div className="text-xs text-gray-500">{typeLine}</div>}
-        {colors.length > 0 && <ColorBadges colors={colors} />}
       </div>
 
       {/* Remove Button */}
