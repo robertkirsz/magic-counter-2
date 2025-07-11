@@ -1,9 +1,7 @@
-import { Edit3, Trash2 } from 'lucide-react'
 import React from 'react'
 
 import { useUsers } from '../contexts/UsersContext'
-import { ColorBadges } from './ColorBadges'
-import { Commander } from './Commander'
+import { Deck } from './Deck'
 
 interface DeckListProps {
   decks: Deck[]
@@ -39,47 +37,15 @@ export const DeckList: React.FC<DeckListProps> = ({
       ) : (
         <div className="flex flex-col gap-2">
           {filteredDecks.map(deck => (
-            <div key={deck.id} className="border border-gray-200 rounded-lg p-2 bg-gray-50">
-              <div className="flex gap-2 justify-between items-start">
-                <div className="flex flex-col gap-2">
-                  <div className="flex gap-1 items-center">
-                    <h3>{deck.name}</h3>
-                    {!filterByUser && <span className="text-sm text-gray-500">({getCreatorName(deck)})</span>}
-                    <ColorBadges colors={deck.colors} />
-                  </div>
-
-                  {deck.commanders && deck.commanders.length > 0 && (
-                    <div className="flex flex-col gap-2">
-                      {deck.commanders.map((commander, index) => (
-                        <div key={index} className="bg-white rounded border border-gray-200">
-                          <Commander commander={commander} />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {showActions && onEditDeck && onRemoveDeck && (
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => onEditDeck(deck.id)}
-                      className="p-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
-                      title="Edit deck"
-                    >
-                      <Edit3 size={16} />
-                    </button>
-
-                    <button
-                      onClick={() => onRemoveDeck(deck.id)}
-                      className="p-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-                      title="Delete deck"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                )}
-              </div>
-            </div>
+            <Deck
+              key={deck.id}
+              deck={deck}
+              onEditDeck={onEditDeck}
+              onRemoveDeck={onRemoveDeck}
+              showActions={showActions}
+              showCreator={!filterByUser}
+              creatorName={!filterByUser ? getCreatorName(deck) : undefined}
+            />
           ))}
         </div>
       )}

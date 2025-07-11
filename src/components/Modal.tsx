@@ -30,7 +30,9 @@ export const Modal: React.FC<ModalProps> = ({
 
   useEffect(() => {
     const dialog = dialogRef.current
+    
     if (!dialog) return
+    
     if (isOpen) {
       if (!dialog.open) dialog.showModal()
     } else {
@@ -40,11 +42,15 @@ export const Modal: React.FC<ModalProps> = ({
 
   useEffect(() => {
     const dialog = dialogRef.current
+    
     if (!dialog) return
+    
     const handleClose = () => {
       onClose()
     }
+    
     dialog.addEventListener('close', handleClose)
+    
     return () => {
       dialog.removeEventListener('close', handleClose)
     }

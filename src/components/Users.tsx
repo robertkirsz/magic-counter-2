@@ -53,17 +53,17 @@ export const Users: React.FC = () => {
           ) : (
             <div>
               {users.map(user => (
-                <div key={user.id} className="border border-gray-200 rounded-lg p-4 mb-6 bg-gray-50">
-                  <div className="flex justify-between items-center mb-4">
-                    <div>
-                      <h3 className="font-semibold mb-1">{user.name}</h3>
-                      <p className="text-gray-500 mb-1">Created: {user.createdAt.toLocaleDateString()}</p>
-                    </div>
+                <div
+                  key={user.id}
+                  className="bg-white rounded border border-gray-300 flex flex-col items-start gap-1 p-2"
+                >
+                  <div className="flex justify-between items-center w-full">
+                    <span className="text-xs text-gray-500">User</span>
 
-                    <div className="flex gap-2">
+                    <div className="flex gap-1">
                       <button
                         onClick={() => handleEditUser(user.id)}
-                        className="p-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
+                        className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
                         title="Edit user"
                       >
                         <Edit3 size={16} />
@@ -71,13 +71,15 @@ export const Users: React.FC = () => {
 
                       <button
                         onClick={() => removeUser(user.id)}
-                        className="p-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                        className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
                         title="Delete user"
                       >
                         <Trash2 size={16} />
                       </button>
                     </div>
                   </div>
+
+                  <h3>{user.name}</h3>
 
                   {/* User's Decks */}
                   <DeckList decks={decks} filterByUser={user.id} showActions={false} />
