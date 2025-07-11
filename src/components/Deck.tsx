@@ -65,9 +65,9 @@ export const Deck: React.FC<DeckProps> = ({
           </div>
 
           {deck.commanders && deck.commanders.length > 0 && (
-            <div className="flex gap-2">
-              {deck.commanders.map((commander, index) => (
-                <Commander key={index} commander={commander} className="border border-gray-200" />
+            <div className="flex flex-wrap gap-1">
+              {deck.commanders.map(commander => (
+                <Commander key={commander.id} commander={commander} className="border border-gray-200" />
               ))}
             </div>
           )}

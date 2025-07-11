@@ -29,34 +29,40 @@ export const Commander: React.FC<CommanderProps> = ({
 
   return (
     <div className={`rounded-lg p-1 ${className}`} style={gradientStyle} onClick={onClick}>
-      <div className="flex justify-between items-center bg-white p-2 rounded border border-gray-200 shadow-inner">
-        {showRemoveButton && onRemove && (
-          <button
-            title="Remove commander"
-            className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50 self-end"
-            onClick={onRemove}
-          >
-            <Trash2 size={16} />
-          </button>
-        )}
-
-        <div className="flex items-center gap-2">
+      <div className="flex justify-between gap-1 bg-white rounded overflow-clip">
+        <div className="flex">
           {/* Card Image */}
-          {imageUrl ? (
-            <img src={imageUrl} alt={name} className="w-10 h-10 rounded-full object-cover border border-gray-300" />
-          ) : (
-            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-xs text-gray-400 border border-gray-300">
-              ?
-            </div>
+          {imageUrl && (
+            <div
+              title={name}
+              className="flex-none h-full w-23"
+              style={{
+                backgroundImage: `url(${imageUrl})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+              }}
+            />
           )}
 
           {/* Card Details */}
-          <div className="flex flex-col">
+          <div className="flex flex-col p-2">
             {colors.length > 0 && <ColorBadges colors={colors} className="flex-none" />}
             <div className="font-medium text-sm line-clamp-1">{name}</div>
             {typeLine && <div className="text-xs text-gray-500 line-clamp-1">{typeLine}</div>}
           </div>
         </div>
+
+        {showRemoveButton && onRemove && (
+          <div className="flex p-1 self-start">
+            <button
+              title="Remove commander"
+              className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
+              onClick={onRemove}
+            >
+              <Trash2 size={16} />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )

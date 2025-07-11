@@ -32,6 +32,7 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
 
         // Only keep properties that exist in ScryfallCard type
         const scryfallCards: ScryfallCard[] = (data.data || []).map((card: any) => ({
+          id: card.id,
           name: card.name,
           type: card.type_line,
           colors: card.color_identity || card.colors,
@@ -100,7 +101,7 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
 
       {/* Suggestions Dropdown */}
       {showSuggestions && (suggestions.length > 0 || isLoading) && (
-        <div className="flex flex-col border border-gray-300 rounded-md max-h-60 overflow-y-auto">
+        <div className="flex flex-col gap-1 p-1 border border-gray-300 rounded-md max-h-67 overflow-y-auto">
           {isLoading && (
             <div className="p-3 text-center text-gray-500">
               <div className="animate-spin inline-block w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full"></div>
@@ -117,8 +118,8 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
               <Commander
                 key={index}
                 commander={card}
+                className="cursor-pointer"
                 onClick={() => handleSuggestionClick(card)}
-                className="border-b border-gray-100 last:border-b-0 cursor-pointer hover:bg-gray-50"
               />
             ))}
         </div>

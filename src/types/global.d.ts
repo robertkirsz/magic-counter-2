@@ -3,6 +3,7 @@ type GameState = 'active' | 'archived'
 type ManaColor = 'W' | 'U' | 'B' | 'R' | 'G' | 'C'
 
 type ScryfallCard = {
+  id: string
   name: string
   type: string
   colors: string[]
