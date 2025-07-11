@@ -1,4 +1,5 @@
 import { Decks } from './components/Decks'
+import { DevToolsPanel } from './components/DevToolsPanel'
 import { Games } from './components/Games'
 import { Users } from './components/Users'
 import { DecksProvider } from './contexts/DecksContext'
@@ -21,6 +22,7 @@ export default function App() {
               <Decks />
             </div>
           </div>
+          <DevToolsPanel />
         </DecksProvider>
       </GamesProvider>
     </UsersProvider>

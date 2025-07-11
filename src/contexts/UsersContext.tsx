@@ -5,6 +5,7 @@ interface UsersContextType {
   addUser: (user: Omit<User, 'id' | 'createdAt'>) => User
   removeUser: (userId: string) => void
   updateUser: (userId: string, updates: Partial<User>) => void
+  setUsers: React.Dispatch<React.SetStateAction<User[]>>
 }
 
 const UsersContext = createContext<UsersContextType | undefined>(undefined)
@@ -48,7 +49,8 @@ export const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
     users,
     addUser,
     removeUser,
-    updateUser
+    updateUser,
+    setUsers
   }
 
   return <UsersContext.Provider value={value}>{children}</UsersContext.Provider>

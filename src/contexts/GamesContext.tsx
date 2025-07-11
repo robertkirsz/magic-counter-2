@@ -5,6 +5,7 @@ interface GamesContextType {
   addGame: (game: Omit<Game, 'id' | 'createdAt'>) => void
   removeGame: (gameId: string) => void
   updateGame: (gameId: string, updates: Partial<Game>) => void
+  setGames: React.Dispatch<React.SetStateAction<Game[]>>
 }
 
 const GamesContext = createContext<GamesContextType | undefined>(undefined)
@@ -49,7 +50,8 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
     games,
     addGame,
     removeGame,
-    updateGame
+    updateGame,
+    setGames
   }
 
   return <GamesContext.Provider value={value}>{children}</GamesContext.Provider>
