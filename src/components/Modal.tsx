@@ -33,16 +33,32 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, 
       onClose()
     }
 
+    const handleBackdropClick = (event: MouseEvent) => {
+      // Check if the click was on the backdrop (not on the dialog content)
+      const rect = dialog.getBoundingClientRect()
+      const isInDialog =
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom
+
+      if (!isInDialog) {
+        onClose()
+      }
+    }
+
     dialog.addEventListener('close', handleClose)
+    dialog.addEventListener('click', handleBackdropClick)
 
     return () => {
       dialog.removeEventListener('close', handleClose)
+      dialog.removeEventListener('click', handleBackdropClick)
     }
   }, [onClose])
 
   return (
     <dialog ref={dialogRef} className="rounded-lg p-0 m-2 border-0 shadow-lg overflow-y-auto">
-      <div className="flex justify-between items-center pl-4 pt-2 pr-2">
+      <div className="flex justify-between items-center pl-4 pt-2 pr-2" onClick={e => e.stopPropagation()}>
         <h3 className="text-xl font-semibold">{title}</h3>
 
         {showCloseButton && (
@@ -57,7 +73,9 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, 
         )}
       </div>
 
-      <div className="px-4 pt-2 pb-4">{children}</div>
+      <div className="px-4 pt-2 pb-4" onClick={e => e.stopPropagation()}>
+        {children}
+      </div>
 
       <style>{`
         dialog[open] {
@@ -67,6 +85,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, 
         
         dialog::backdrop {
           background: rgba(0,0,0,0.5);
+          cursor: pointer;
         }
         
         @keyframes modal-fade-in {
