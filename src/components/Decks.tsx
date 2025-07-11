@@ -1,4 +1,4 @@
-import { ChevronDown, Plus } from 'lucide-react'
+import { Plus, Search } from 'lucide-react'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useDecks } from '../contexts/DecksContext'
@@ -14,6 +14,7 @@ export const Decks: React.FC = () => {
   const [sortBy, setSortBy] = useState<SortOption>('name')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
   const dropdownRef = useRef<HTMLDivElement>(null)
 
   // Close dropdown when clicking outside
@@ -62,8 +63,39 @@ export const Decks: React.FC = () => {
     }
   }
 
+  // Filter decks based on search query
+  const filteredDecks = useMemo(() => {
+    if (!searchQuery.trim()) return decks
+
+    const query = searchQuery.toLowerCase().trim()
+    return decks.filter(deck => {
+      // Search by name
+      if (deck.name.toLowerCase().includes(query)) return true
+
+      // Search by colors
+      const colorNames = {
+        W: 'white',
+        U: 'blue',
+        B: 'black',
+        R: 'red',
+        G: 'green',
+        C: 'colorless'
+      }
+      const deckColors = deck.colors.map(color => colorNames[color] || color).join(' ')
+      if (deckColors.includes(query)) return true
+
+      // Search by commanders
+      if (deck.commanders) {
+        const commanderNames = deck.commanders.map(c => c.name.toLowerCase()).join(' ')
+        if (commanderNames.includes(query)) return true
+      }
+
+      return false
+    })
+  }, [decks, searchQuery])
+
   const sortedDecks = useMemo(() => {
-    const sorted = [...decks].sort((a, b) => {
+    const sorted = [...filteredDecks].sort((a, b) => {
       let comparison = 0
 
       switch (sortBy) {
@@ -92,32 +124,36 @@ export const Decks: React.FC = () => {
     })
 
     return sorted
-  }, [decks, sortBy, sortDirection])
+  }, [filteredDecks, sortBy, sortDirection])
 
   return (
     <>
-      <div className="flex flex-col gap-4 items-start">
+      <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-bold text-gray-800">Decks</h1>
 
         {/* Controls Section */}
-        <div className="flex gap-4 items-center">
-          {/* Add Deck Button */}
-          <button
-            onClick={() => setIsAdding(true)}
-            className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2"
-          >
-            <Plus size={20} />
-            Add New Deck
-          </button>
+        <div className="flex gap-2 items-center w-full">
+          {/* Search Bar */}
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+
+            <input
+              type="text"
+              placeholder="Search decks by name, colors, or commanders..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
 
           {/* Sort Dropdown */}
           <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition flex items-center gap-2"
+              className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
             >
-              Sort by: {sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}
-              <ChevronDown size={16} />
+              {sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}
+              <span className="ml-2 text-xs">{sortDirection === 'asc' ? '↑' : '↓'}</span>
             </button>
 
             {isDropdownOpen && (
@@ -140,12 +176,23 @@ export const Decks: React.FC = () => {
               </div>
             )}
           </div>
+
+          {/* Add Deck Button */}
+          <button
+            onClick={() => setIsAdding(true)}
+            className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2"
+          >
+            <Plus size={20} />
+            Add Deck
+          </button>
         </div>
 
         {/* Decks List */}
         <div className="flex flex-col gap-2">
           {sortedDecks.length === 0 ? (
-            <p className="text-gray-500 italic">No decks yet. Add your first deck!</p>
+            <p className="text-gray-500 italic">
+              {searchQuery.trim() ? 'No decks match your search.' : 'No decks yet. Add your first deck!'}
+            </p>
           ) : (
             <div className="flex flex-col gap-2">
               {sortedDecks.map(deck => (

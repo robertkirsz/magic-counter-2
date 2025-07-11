@@ -3,32 +3,32 @@ import React from 'react'
 import { MANA_COLORS } from '../constants/mana'
 import type { ManaColor } from '../constants/mana'
 
-interface ManaPickerProps {
+interface ManaPickerProps extends React.HTMLAttributes<HTMLDivElement> {
   selectedColors: ManaColor[]
   onColorToggle: (color: ManaColor) => void
-  className?: string
 }
 
-export const ManaPicker: React.FC<ManaPickerProps> = ({ selectedColors, onColorToggle, className = '' }) => {
+export const ManaPicker: React.FC<ManaPickerProps> = ({ selectedColors, onColorToggle, ...props }) => {
   return (
-    <div className={`flex flex-wrap gap-1 justify-center ${className}`} role="group" aria-label="Mana color selection">
+    <div className="flex flex-wrap gap-1 justify-center" role="group" aria-label="Mana color selection" {...props}>
       {MANA_COLORS.map(({ value, label, filename }) => {
+        const handleKeyDown = (e: React.KeyboardEvent<HTMLLabelElement>) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault()
+            onColorToggle(value)
+          }
+        }
+
         const isSelected = selectedColors.includes(value)
 
         return (
           <label
             key={value}
             className="flex items-center gap-2 cursor-pointer rounded p-1"
-            tabIndex={0}
             role="checkbox"
             aria-checked={isSelected}
             aria-label={`${label} mana (${isSelected ? 'selected' : 'not selected'})`}
-            onKeyDown={e => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault()
-                onColorToggle(value)
-              }
-            }}
+            onKeyDown={handleKeyDown}
           >
             <input
               type="checkbox"
@@ -38,6 +38,7 @@ export const ManaPicker: React.FC<ManaPickerProps> = ({ selectedColors, onColorT
               tabIndex={-1}
             />
 
+            {/* TODO: CHange opacity on hover on desktop only */}
             <img
               src={`/icons/${filename}`}
               alt=""
