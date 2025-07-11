@@ -33,11 +33,9 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
         // Only keep properties that exist in ScryfallCard type
         const scryfallCards: ScryfallCard[] = (data.data || []).map((card: any) => ({
           name: card.name,
-          type_line: card.type_line,
-          oracle_text: card.oracle_text,
-          colors: card.colors,
-          color_identity: card.color_identity,
-          image_uris: card.image_uris
+          type: card.type_line,
+          colors: card.color_identity || card.colors,
+          image: card.card_faces?.[0]?.image_uris?.art_crop || card.image_uris?.art_crop,
         }))
 
         setSuggestions(scryfallCards)

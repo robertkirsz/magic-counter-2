@@ -20,9 +20,9 @@ export const Commander: React.FC<CommanderProps> = ({
 }) => {
   const isScryfallCard = typeof commander === 'object'
   const name = isScryfallCard ? commander.name : commander
-  const typeLine = isScryfallCard ? commander.type_line : ''
-  const imageUrl = isScryfallCard ? commander.image_uris?.art_crop || commander.image_uris?.small : null
-  const colors = isScryfallCard ? commander.color_identity || commander.colors || [] : []
+  const typeLine = isScryfallCard ? commander.type : ''
+  const imageUrl = isScryfallCard ? commander.image : null
+  const colors = isScryfallCard ? commander.colors : []
 
   const handleClick = () => {
     if (onClick) onClick()

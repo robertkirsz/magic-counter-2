@@ -24,7 +24,6 @@ const readGames = (): Game[] => {
 
 export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
   const [games, setGames] = useState<Game[]>(readGames())
-  console.log(games)
 
   useEffect(() => localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(games)), [games])
 

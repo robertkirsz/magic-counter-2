@@ -4,14 +4,9 @@ type ManaColor = 'W' | 'U' | 'B' | 'R' | 'G' | 'C'
 
 type ScryfallCard = {
   name: string
-  type_line: string
-  oracle_text?: string
-  colors?: string[]
-  color_identity?: string[]
-  image_uris?: {
-    art_crop?: string
-    small?: string
-  }
+  type: string
+  colors: string[]
+  image?: string
 }
 
 type Deck = {
