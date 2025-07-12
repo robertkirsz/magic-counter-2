@@ -7,7 +7,7 @@ import { Modal } from './Modal'
 
 interface DeckFormProps {
   deck?: Deck
-  onSave: (data: { name: string; colors: ManaColor[]; commanders?: ScryfallCard[] }) => void
+  onSave: (data: { name: Deck['name']; colors: Deck['colors']; commanders: Deck['commanders'] }) => void
   onCancel: () => void
 }
 
@@ -25,7 +25,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deck, onSave, onCancel }) =>
       onSave({
         name: name.trim(),
         colors: selectedColors,
-        commanders: commanders.length > 0 ? commanders : undefined
+        commanders: commanders.length > 0 ? commanders : null
       })
     }
   }

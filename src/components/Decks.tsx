@@ -34,22 +34,24 @@ export const Decks: React.FC = () => {
     }
   }, [isDropdownOpen])
 
-  const handleAddDeck = (data: { name: Deck['name']; colors: Deck['colors']; commanders?: Deck['commanders'] }) => {
+  const handleAddDeck = (data: { name: Deck['name']; colors: Deck['colors']; commanders: Deck['commanders'] }) => {
     setIsAdding(false)
     addDeck({
       name: data.name,
       colors: data.colors,
-      commanders: data.commanders
+      commanders: data.commanders,
+      createdBy: null
     })
   }
 
-  const handleSaveEdit = (data: { name: Deck['name']; colors: Deck['colors']; commanders?: Deck['commanders'] }) => {
+  const handleSaveEdit = (data: { name: Deck['name']; colors: Deck['colors']; commanders: Deck['commanders'] }) => {
     if (editingId) {
       setEditingId(null)
       updateDeck(editingId, {
         name: data.name,
         colors: data.colors,
-        commanders: data.commanders
+        commanders: data.commanders,
+        createdBy: null
       })
     }
   }

@@ -7,16 +7,16 @@ type ScryfallCard = {
   name: string
   type: string
   colors: string[]
-  image?: string
+  image: string | null
 }
 
 type Deck = {
   id: string
   createdAt: Date
-  createdBy?: User['id']
+  createdBy: User['id'] | null
   name: string
   colors: ManaColor[]
-  commanders?: ScryfallCard[]
+  commanders: ScryfallCard[] | null
 }
 
 type User = {
@@ -26,7 +26,8 @@ type User = {
 }
 
 type Player = {
-  userId: User['id']
+  id: string
+  userId: User['id'] | null
   life: number
   deck: Deck['id'] | null
 }

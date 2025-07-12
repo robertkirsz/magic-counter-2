@@ -37,7 +37,11 @@ export const Users: React.FC = () => {
     setEditingId(null)
   }
 
-  const handleCreateDeck = (deckData: { name: string; colors: ManaColor[]; commanders?: ScryfallCard[] }) => {
+  const handleCreateDeck = (deckData: {
+    name: Deck['name']
+    colors: Deck['colors']
+    commanders: Deck['commanders']
+  }) => {
     if (selectedPlayerForDeck) {
       addDeck({ ...deckData, createdBy: selectedPlayerForDeck })
       setIsAddingDeck(false)
@@ -45,7 +49,7 @@ export const Users: React.FC = () => {
     }
   }
 
-  const handleSaveDeckEdit = (data: { name: string; colors: ManaColor[]; commanders?: ScryfallCard[] }) => {
+  const handleSaveDeckEdit = (data: { name: Deck['name']; colors: Deck['colors']; commanders: Deck['commanders'] }) => {
     if (deckEditingId) {
       updateDeck(deckEditingId, { ...data })
       setDeckEditingId(null)

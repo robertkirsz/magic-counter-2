@@ -1,96 +1,54 @@
-import { Edit3, Trash2 } from 'lucide-react'
-import React, { useState } from 'react'
+import { Trash2 } from 'lucide-react'
+import React from 'react'
 
 import { useGames } from '../contexts/GamesContext'
-import { useUsers } from '../contexts/UsersContext'
-import { GameForm } from './GameForm'
 
 export const Games: React.FC = () => {
-  const { games, removeGame, updateGame } = useGames()
-  const { users, addUser } = useUsers()
-  const [editingId, setEditingId] = useState<string | null>(null)
-
-  const handleEditGame = (gameId: string) => {
-    setEditingId(gameId)
-  }
-
-  const handleSaveEdit = (data: { players: Player[]; tracking: Game['tracking'] }) => {
-    if (editingId) {
-      updateGame(editingId, { players: data.players, tracking: data.tracking })
-      setEditingId(null)
-    }
-  }
-
-  const handleCancelEdit = () => {
-    setEditingId(null)
-  }
-
-  const getPlayerNames = (players: Player[]) => {
-    return players.map(player => {
-      const user = users.find(u => u.id === player.userId)
-      return user ? user.name : 'Unknown'
-    })
-  }
+  const { games, removeGame } = useGames()
 
   return (
-    <>
-      <div className="flex flex-col gap-4 items-start">
-        {/* Games List */}
-        {games.length === 0 ? (
-          <p className="text-gray-500 italic">No games yet. Add your first game!</p>
-        ) : (
-          <div>
-            {games.map(game => (
-              <div key={game.id} className="border border-gray-200 rounded-lg p-4 mb-3 bg-gray-50">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <h3 className="font-semibold mb-1">Game {game.id.slice(0, 8)}</h3>
-                    <p className="text-gray-500 mb-1">Created: {game.createdAt.toLocaleDateString()}</p>
+    <div className="flex flex-col gap-4 items-start">
+      {/* Games List */}
+      {games.length === 0 ? (
+        <p className="text-gray-500 italic">No games yet. Add your first game!</p>
+      ) : (
+        <div>
+          {games.map(game => (
+            <div key={game.id} className="flex flex-col gap-2 border border-gray-200 rounded-lg p-4 mb-3 bg-gray-50">
+              <h3 className="font-semibold flex gap-1">
+                Game {game.id.slice(0, 8)}...
+                <span className="text-gray-500">({game.createdAt.toLocaleDateString()})</span>
+              </h3>
 
-                    <p className="mb-1">
-                      <span className="font-medium">Players:</span> {getPlayerNames(game.players).join(', ')}
-                    </p>
-
-                    <p className="text-sm text-gray-600">
-                      <span className="font-medium">Tracking:</span>{' '}
-                      {game.tracking.charAt(0).toUpperCase() + game.tracking.slice(1)}
-                    </p>
+              <div className="mb-1 flex gap-1">
+                {game.players.map(player => (
+                  <div key={player.id} className="flex flex-col gap-1 border border-gray-200 rounded-lg p-2">
+                    <span>ID: {player.id}</span>
+                    <span>User: {player.userId}</span>
+                    <span>Life: {player.life}</span>
+                    <span>Deck: {player.deck}</span>
                   </div>
-
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => handleEditGame(game.id)}
-                      className="p-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition"
-                      title="Edit game"
-                    >
-                      <Edit3 size={16} />
-                    </button>
-
-                    <button
-                      onClick={() => removeGame(game.id)}
-                      className="p-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-                      title="Delete game"
-                    >
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
-        )}
-      </div>
 
-      {/* Edit Game Modal */}
-      {editingId !== null && (
-        <GameForm
-          game={games.find(g => g.id === editingId)}
-          onSave={handleSaveEdit}
-          onCancel={handleCancelEdit}
-          users={users}
-          addUser={addUser}
-        />
+              <p className="text-sm text-gray-600">
+                <span className="font-medium">Tracking:</span>{' '}
+                {game.tracking.charAt(0).toUpperCase() + game.tracking.slice(1)}
+              </p>
+
+              <div className="flex gap-2">
+                <button
+                  onClick={() => removeGame(game.id)}
+                  className="p-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                  title="Delete game"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       )}
-    </>
+    </div>
   )
 }

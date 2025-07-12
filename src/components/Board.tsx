@@ -1,178 +1,79 @@
-import { Play, Plus, Settings, X } from 'lucide-react'
+import { Play, Settings } from 'lucide-react'
 import React, { useState } from 'react'
 
-import { useDecks } from '../contexts/DecksContext'
 import { useGames } from '../contexts/GamesContext'
 import { useUsers } from '../contexts/UsersContext'
-import { Deck } from './Deck'
+import { GameForm } from './GameForm'
 import { Modal } from './Modal'
 
 interface BoardProps {
   game: Game
 }
 
-interface PlayerSection {
-  id: string
-  userId: string | null
-  deckId: string | null
-}
-
 export const Board: React.FC<BoardProps> = ({ game }) => {
-  const { users } = useUsers()
-  const { decks } = useDecks()
   const { updateGame } = useGames()
-
-  const [playerSections, setPlayerSections] = useState<PlayerSection[]>(() => {
-    // Initialize with existing players from game
-    const sections: PlayerSection[] = game.players.map(player => ({
-      id: crypto.randomUUID(),
-      userId: player.userId,
-      deckId: player.deck
-    }))
-
-    // Add at least one empty section
-    if (sections.length === 0) {
-      sections.push({ id: crypto.randomUUID(), userId: null, deckId: null })
-    }
-
-    return sections
-  })
+  const { users } = useUsers()
 
   const [showSettings, setShowSettings] = useState(false)
   const [showUserSelect, setShowUserSelect] = useState<string | null>(null)
-  const [startingLife, setStartingLife] = useState<number>(game.players[0]?.life || 20)
-  const [tracking, setTracking] = useState<Game['tracking']>(game.tracking)
 
-  const addPlayerSection = () => {
-    const newPlayerSections = [...playerSections, { id: crypto.randomUUID(), userId: null, deckId: null }]
-    setPlayerSections(newPlayerSections)
-    updateGamePlayers(newPlayerSections)
+  const handlePlay = () => {
+    updateGame(game.id, { state: 'active' })
   }
 
-  const updateGamePlayers = (newPlayerSections: PlayerSection[]) => {
-    const players: Player[] = newPlayerSections
-      .filter(section => section.userId && section.deckId)
-      .map(section => ({
-        userId: section.userId!,
-        life: startingLife,
-        deck: section.deckId!
-      }))
-
+  const handleUserSelect = (playerId: string, userId: string | null) => {
     updateGame(game.id, {
-      players,
-      tracking
+      players: game.players.map(player => (player.id === playerId ? { ...player, userId } : player))
     })
-  }
-
-  const removePlayerSection = (sectionId: string) => {
-    const newPlayerSections = playerSections.filter(section => section.id !== sectionId)
-    setPlayerSections(newPlayerSections)
-    updateGamePlayers(newPlayerSections)
-  }
-
-  const selectUser = (sectionId: string, userId: string) => {
-    const newPlayerSections = playerSections.map(section =>
-      section.id === sectionId ? { ...section, userId, deckId: null } : section
-    )
-    setPlayerSections(newPlayerSections)
-    updateGamePlayers(newPlayerSections)
     setShowUserSelect(null)
   }
 
-  const selectDeck = (sectionId: string, deckId: string) => {
-    const newPlayerSections = playerSections.map(section =>
-      section.id === sectionId ? { ...section, deckId } : section
-    )
-    setPlayerSections(newPlayerSections)
-    updateGamePlayers(newPlayerSections)
-  }
-
-  const handlePlay = () => {
-    const players: Player[] = playerSections
-      .filter(section => section.userId && section.deckId)
-      .map(section => ({
-        userId: section.userId!,
-        life: startingLife,
-        deck: section.deckId!
-      }))
-
+  const handleGameSettingsSave = (data: { players: Player[]; tracking: Game['tracking'] }) => {
     updateGame(game.id, {
-      players,
-      tracking,
-      state: 'active'
+      players: data.players,
+      tracking: data.tracking
     })
+    setShowSettings(false)
   }
 
-  const validPlayers = playerSections.filter(section => section.userId && section.deckId)
+  const getUserName = (userId: string) => {
+    const user = users.find(u => u.id === userId)
+    return user?.name || 'Unknown User'
+  }
+
+  const validPlayers = game.players.filter(player => player.userId && player.deck)
   const canPlay = validPlayers.length >= 2
 
-  const getUserById = (userId: string) => users.find(u => u.id === userId)
-  const getDeckById = (deckId: string) => decks.find(d => d.id === deckId)
-
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-green-50 to-blue-50">
+    <div className="flex min-h-screen w-full bg-gradient-to-br from-green-50 to-blue-50">
       {/* Player Sections */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4">
-        {playerSections.map(section => (
-          <div key={section.id} className="bg-white rounded-lg shadow-lg p-6 border-2 border-gray-200">
-            {section.userId ? (
-              // Player is selected
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-xl font-bold text-gray-800">{getUserById(section.userId)?.name || 'Unknown'}</h3>
-                  <button
-                    onClick={() => removePlayerSection(section.id)}
-                    className="text-red-600 hover:text-red-800 transition-colors"
-                  >
-                    <X size={20} />
-                  </button>
-                </div>
+      <div className="flex-1 grid grid-cols-2 grid-rows-2">
+        {game.players.map(player => (
+          <div key={player.id} className="flex flex-col gap-1 border border-gray-200 rounded-lg p-2">
+            <span>{player.id}</span>
+            <span>{player.userId ? getUserName(player.userId) : 'No user assigned'}</span>
+            <span>Life: {player.life}</span>
+            <span>Deck: {player.deck}</span>
 
-                {section.deckId ? (
-                  // Deck is selected
-                  <div>
-                    <Deck deck={getDeckById(section.deckId)!} />
-                  </div>
-                ) : (
-                  // Need to select deck
-                  <div className="space-y-2">
-                    <label className="block text-sm font-medium text-gray-700">Select Deck:</label>
-                    <select
-                      value=""
-                      onChange={e => selectDeck(section.id, e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded"
-                    >
-                      <option value="">Choose a deck...</option>
-                      {decks.map(deck => (
-                        <option key={deck.id} value={deck.id}>
-                          {deck.name} ({deck.colors.join(', ')})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                )}
-              </div>
-            ) : (
-              // No player selected - show plus sign
+            {!player.userId && (
               <button
-                onClick={() => setShowUserSelect(section.id)}
-                className="w-full h-32 flex flex-col items-center justify-center text-gray-400 hover:text-gray-600 transition-colors border-2 border-dashed border-gray-300 rounded-lg hover:border-gray-400"
+                onClick={() => setShowUserSelect(player.id)}
+                className="bg-blue-500 text-white rounded-lg p-2 w-full"
               >
-                <Plus size={48} />
-                <span className="mt-2 text-lg font-medium">Add Player</span>
+                Select User
+              </button>
+            )}
+
+            {player.userId && (
+              <button
+                onClick={() => handleUserSelect(player.id, null)}
+                className="bg-red-500 text-white rounded-lg p-2 w-full"
+              >
+                Remove User
               </button>
             )}
           </div>
         ))}
-
-        {/* Add more players button */}
-        <button
-          onClick={addPlayerSection}
-          className="bg-white rounded-lg shadow-lg p-6 border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors flex flex-col items-center justify-center text-gray-400 hover:text-gray-600"
-        >
-          <Plus size={48} />
-          <span className="mt-2 text-lg font-medium">Add Player</span>
-        </button>
       </div>
 
       {/* Settings Overlay */}
@@ -186,122 +87,56 @@ export const Board: React.FC<BoardProps> = ({ game }) => {
       </div>
 
       {/* Play Button */}
-      {canPlay && (
-        <div className="fixed bottom-4 right-4">
-          <button
-            onClick={handlePlay}
-            className="bg-green-600 hover:bg-green-700 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all flex items-center gap-2"
-          >
-            <Play size={32} />
-            <span className="text-lg font-bold">PLAY</span>
-          </button>
-        </div>
-      )}
-
-      {/* User Selection Modal */}
-      {showUserSelect && (
-        <Modal isOpen={!!showUserSelect} onClose={() => setShowUserSelect(null)} title="Select Player">
-          <div className="space-y-2">
-            {users.map(user => (
-              <button
-                key={user.id}
-                onClick={() => selectUser(showUserSelect!, user.id)}
-                className="w-full p-3 text-left border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <span className="font-medium">{user.name}</span>
-              </button>
-            ))}
-          </div>
-        </Modal>
-      )}
+      <div className="fixed bottom-2 left-1/2 -translate-x-1/2 flex justify-center w-full">
+        <button
+          disabled={!canPlay}
+          onClick={handlePlay}
+          className="bg-green-600 hover:bg-green-700 text-white rounded-full px-4 py-2 shadow-lg hover:shadow-xl transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <Play size={32} />
+          <span className="text-lg font-bold">PLAY</span>
+        </button>
+      </div>
 
       {/* Settings Modal */}
       {showSettings && (
         <Modal isOpen={showSettings} onClose={() => setShowSettings(false)} title="Game Settings">
-          <div className="space-y-6">
-            {/* Starting Life */}
-            <div>
-              <h3 className="text-lg font-semibold mb-3">Starting Life</h3>
-              <div className="flex items-center space-x-3">
-                <label className="text-sm font-medium">Starting Life:</label>
-                <input
-                  type="number"
-                  min="1"
-                  max="999"
-                  value={startingLife}
-                  onChange={e => {
-                    const newLife = parseInt(e.target.value) || 20
-                    setStartingLife(newLife)
-                    updateGamePlayers(playerSections)
-                  }}
-                  className="w-20 p-2 border border-gray-300 rounded text-center"
-                />
-                <span className="text-sm text-gray-600">life points</span>
+          <GameForm game={game} onSave={handleGameSettingsSave} onCancel={() => setShowSettings(false)} />
+        </Modal>
+      )}
+
+      {/* User Selection Modal */}
+      {showUserSelect && (
+        <Modal isOpen={!!showUserSelect} onClose={() => setShowUserSelect(null)} title="Select User">
+          <div className="flex flex-col gap-2">
+            {users.length > 0 ? (
+              <div className="flex flex-col gap-2">
+                {users
+                  .filter(user => !game.players.some(player => player.userId === user.id))
+                  .map(user => (
+                    <button
+                      key={user.id}
+                      onClick={() => handleUserSelect(showUserSelect!, user.id)}
+                      className="p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition text-left"
+                    >
+                      <div className="font-medium">{user.name}</div>
+                    </button>
+                  ))}
               </div>
-            </div>
-
-            {/* Tracking Type */}
-            <div>
-              <h3 className="text-lg font-semibold mb-3">Life Tracking</h3>
-              <div className="space-y-3">
-                <label className="flex items-start space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="tracking"
-                    value="full"
-                    checked={tracking === 'full'}
-                    onChange={e => {
-                      const newTracking = e.target.value as 'full' | 'simple' | 'none'
-                      setTracking(newTracking)
-                      updateGamePlayers(playerSections)
-                    }}
-                    className="mt-1"
-                  />
-                  <div className="flex-1">
-                    <div className="font-medium">Full</div>
-                    <div className="text-sm text-gray-600">Track all life changes and game events</div>
-                  </div>
-                </label>
-
-                <label className="flex items-start space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="tracking"
-                    value="simple"
-                    checked={tracking === 'simple'}
-                    onChange={e => {
-                      const newTracking = e.target.value as 'full' | 'simple' | 'none'
-                      setTracking(newTracking)
-                      updateGamePlayers(playerSections)
-                    }}
-                    className="mt-1"
-                  />
-                  <div className="flex-1">
-                    <div className="font-medium">Simple</div>
-                    <div className="text-sm text-gray-600">Track only current life totals (no turn tracking)</div>
-                  </div>
-                </label>
-
-                <label className="flex items-start space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="tracking"
-                    value="none"
-                    checked={tracking === 'none'}
-                    onChange={e => {
-                      const newTracking = e.target.value as 'full' | 'simple' | 'none'
-                      setTracking(newTracking)
-                      updateGamePlayers(playerSections)
-                    }}
-                    className="mt-1"
-                  />
-                  <div className="flex-1">
-                    <div className="font-medium">None</div>
-                    <div className="text-sm text-gray-600">Game will not be tracked</div>
-                  </div>
-                </label>
+            ) : (
+              <div className="text-center text-gray-500">
+                <p>No users available.</p>
+                <p className="text-sm">Please add users first.</p>
               </div>
-            </div>
+            )}
+
+            {users.filter(user => !game.players.some(player => player.userId === user.id)).length === 0 &&
+              users.length > 0 && (
+                <div className="text-center text-gray-500">
+                  <p>All users are already assigned to players.</p>
+                  <p className="text-sm">You need to add more users first.</p>
+                </div>
+              )}
           </div>
         </Modal>
       )}

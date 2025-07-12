@@ -1,195 +1,137 @@
 import React, { useEffect, useState } from 'react'
 
-import { useDecks } from '../contexts/DecksContext'
-import { Deck } from './Deck'
-import { DeckForm } from './DeckForm'
-import { UserForm } from './UserForm'
-
 interface GameFormProps {
   game?: Game
   onSave: (data: { players: Player[]; tracking: Game['tracking'] }) => void
   onCancel: () => void
-  users: Array<{ id: string; name: string }>
-  addUser: (userData: { name: string }) => {
-    id: string
-    name: string
-    createdAt: Date
-  }
 }
 
-export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, users, addUser }) => {
-  const { decks, addDeck } = useDecks()
-  const mode = game ? 'edit' : 'create'
-  const [selectedPlayers, setSelectedPlayers] = useState<Player[]>(game?.players || [])
-  const [tracking, setTracking] = useState<Game['tracking']>(game?.tracking || 'full')
-  const [startingLife, setStartingLife] = useState<number>(20)
+export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel }) => {
+  const [numberOfPlayers, setNumberOfPlayers] = useState<number>(game?.players.length || 4)
+  const [customPlayerCount, setCustomPlayerCount] = useState<number>(game?.players.length || 4)
+  const [tracking, setTracking] = useState<'full' | 'simple' | 'none'>(game?.tracking || 'none')
+  const [startingLife, setStartingLife] = useState<number>(game?.players[0]?.life || 40)
   const [hasUserChangedLife, setHasUserChangedLife] = useState<boolean>(false)
-  const [isAddingUser, setIsAddingUser] = useState(false)
-  const [isAddingDeck, setIsAddingDeck] = useState(false)
-  const [selectedPlayerForDeck, setSelectedPlayerForDeck] = useState<number | null>(null)
 
   // Auto-adjust starting life based on player count (only if user hasn't manually changed it)
   useEffect(() => {
-    if (!hasUserChangedLife) {
-      if (selectedPlayers.length >= 3) {
-        setStartingLife(40)
-      } else {
-        setStartingLife(20)
-      }
+    if (!hasUserChangedLife && numberOfPlayers >= 3) {
+      setStartingLife(40)
+    } else if (!hasUserChangedLife && numberOfPlayers < 3) {
+      setStartingLife(20)
     }
-  }, [selectedPlayers.length, hasUserChangedLife])
+  }, [numberOfPlayers, hasUserChangedLife])
 
-  const handleAddNewUser = (userData: { name: string }) => {
-    const newUser = addUser(userData)
-    setSelectedPlayers(prev => [...prev, { userId: newUser.id, life: 40, deck: null }])
-    setIsAddingUser(false)
+  const handlePlayerCountSelect = (count: number) => {
+    setNumberOfPlayers(count)
   }
 
-  const handleUserSelect = (userId: string) => {
-    setSelectedPlayers(prev => {
-      const existing = prev.find(p => p.userId === userId)
-
-      if (existing) {
-        return prev.filter(p => p.userId !== userId)
-      } else {
-        return [...prev, { userId, life: 40, deck: null }]
-      }
-    })
-  }
-
-  const handleDeckSelect = (playerIndex: number, deckId: string) => {
-    setSelectedPlayers(prev =>
-      prev.map((player, index) => (index === playerIndex ? { ...player, deck: deckId } : player))
-    )
-  }
-
-  const handleCreateDeck = (deckData: { name: string; colors: ManaColor[]; commanders?: ScryfallCard[] }) => {
-    // Get the user ID of the player for whom we're creating the deck
-    const playerUserId = selectedPlayerForDeck !== null ? selectedPlayers[selectedPlayerForDeck].userId : undefined
-    const newDeck = addDeck({ ...deckData, createdBy: playerUserId })
-
-    if (selectedPlayerForDeck !== null) {
-      handleDeckSelect(selectedPlayerForDeck, newDeck.id)
-    }
-
-    setIsAddingDeck(false)
-    setSelectedPlayerForDeck(null)
+  const handleCustomPlayerCount = (count: number) => {
+    setCustomPlayerCount(count)
+    setNumberOfPlayers(count)
   }
 
   const handleSave = () => {
-    if (selectedPlayers.length > 0) {
-      // Update all players with the current starting life value
-      const playersWithLife = selectedPlayers.map(player => ({
-        ...player,
-        life: startingLife
-      }))
+    if (numberOfPlayers > 0) {
+      // If editing existing game, preserve existing players and their assignments
+      if (game) {
+        let updatedPlayers: Player[]
 
-      onSave({
-        players: playersWithLife,
-        tracking
-      })
+        if (numberOfPlayers > game.players.length) {
+          // Add new players
+          const newPlayers = Array.from({ length: numberOfPlayers - game.players.length }, (_, index) => ({
+            id: `player-${game.players.length + index + 1}`,
+            userId: null,
+            deck: null,
+            life: startingLife
+          }))
+          updatedPlayers = [...game.players, ...newPlayers]
+        } else if (numberOfPlayers < game.players.length) {
+          // Remove players from the end
+          updatedPlayers = game.players.slice(0, numberOfPlayers)
+        } else {
+          // Same number of players, just update life
+          updatedPlayers = game.players
+        }
+
+        // Update life for all players
+        updatedPlayers = updatedPlayers.map(player => ({
+          ...player,
+          life: startingLife
+        }))
+
+        onSave({
+          players: updatedPlayers,
+          tracking
+        })
+      } else {
+        // Creating new game
+        onSave({
+          players: Array.from({ length: numberOfPlayers }, (_, index) => ({
+            id: `player-${index + 1}`,
+            userId: null,
+            deck: null,
+            life: startingLife
+          })),
+          tracking
+        })
+      }
     }
   }
 
-  const getUserById = (userId: string) => {
-    return users.find(u => u.id === userId)
+  // Validation: Check if number of players is set and tracking is selected
+  const isValidGameSetup = () => {
+    return numberOfPlayers > 0
   }
 
-  // Validation: Check if at least 2 players are selected and each has exactly one deck
-  const isValidGameSetup = () => {
-    if (selectedPlayers.length < 2) return false
-    return selectedPlayers.every(player => player.deck !== null && player.deck !== '')
-  }
+  const isEditMode = !!game
 
   return (
     <>
       <div className="space-y-6">
-        {/* Section 1: List of Users */}
+        {/* Section 1: Number of Players */}
         <div>
-          <h3 className="text-lg font-semibold mb-3">Select Players</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {users.map(user => (
-              <div
-                key={user.id}
-                className="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50"
+          <h3 className="text-lg font-semibold mb-3">Number of Players</h3>
+
+          {/* Predefined buttons */}
+          <div className="grid grid-cols-4 gap-2 mb-4">
+            {[2, 3, 4].map(count => (
+              <button
+                key={count}
+                onClick={() => handlePlayerCountSelect(count)}
+                className={`px-4 py-3 text-sm font-medium rounded-lg transition ${
+                  numberOfPlayers === count ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
               >
-                <input
-                  type="checkbox"
-                  checked={selectedPlayers.some(p => p.userId === user.id)}
-                  onChange={() => handleUserSelect(user.id)}
-                  className="rounded"
-                />
-                <div className="flex-1">
-                  <span className="font-medium">{user.name}</span>
-                </div>
-              </div>
+                {count} Players
+              </button>
             ))}
-            <button
-              className="px-4 py-3 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center justify-center"
-              onClick={() => setIsAddingUser(true)}
-            >
-              Add New User
-            </button>
-          </div>
-        </div>
 
-        {/* Section 2: Selected Users with Deck Assignment */}
-        {selectedPlayers.length > 0 && (
-          <div>
-            <h3 className="text-lg font-semibold mb-3">Selected Players & Decks</h3>
-            <div className="space-y-4">
-              {selectedPlayers.map((player, index) => {
-                const user = getUserById(player.userId)
-                const playerDecks = decks.filter(d => d.createdBy === player.userId)
-                const otherDecks = decks.filter(d => d.createdBy !== player.userId)
-                const allDecks = [...playerDecks, ...otherDecks]
-
-                return (
-                  <div key={player.userId} className="p-4 border border-gray-200 rounded-lg bg-gray-50">
-                    <div className="flex justify-between items-center mb-3">
-                      <h4 className="font-semibold">{user?.name || 'Unknown'}</h4>
-                      <button
-                        onClick={() => {
-                          setSelectedPlayerForDeck(index)
-                          setIsAddingDeck(true)
-                        }}
-                        className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700 transition"
-                      >
-                        Create New Deck
-                      </button>
-                    </div>
-
-                    <div className="space-y-3">
-                      <div>
-                        <label className="block text-sm font-medium mb-2">Assigned Deck:</label>
-                        <select
-                          value={player.deck || ''}
-                          onChange={e => handleDeckSelect(index, e.target.value)}
-                          className="w-full p-2 border border-gray-300 rounded"
-                        >
-                          <option value="">No deck assigned</option>
-                          {allDecks.map(deck => (
-                            <option key={deck.id} value={deck.id}>
-                              {deck.name} ({deck.colors.join(', ')}){deck.createdBy === player.userId ? ' (yours)' : ''}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-
-                      {player.deck && (
-                        <div>
-                          <Deck deck={decks.find(d => d.id === player.deck)!} />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )
-              })}
+            {/* Custom input */}
+            <div className="flex items-center space-x-3">
+              <input
+                type="number"
+                min="1"
+                max="10"
+                value={customPlayerCount}
+                placeholder="Other"
+                onChange={e => handleCustomPlayerCount(parseInt(e.target.value) || 1)}
+                className="w-full p-2 border border-gray-300 rounded text-center"
+              />
             </div>
           </div>
-        )}
 
-        {/* Section 3: Starting Life */}
+          {isEditMode && numberOfPlayers < game.players.length && (
+            <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <p className="text-sm text-yellow-800">
+                Warning: Reducing players from {game.players.length} to {numberOfPlayers}. Players will be removed from
+                the end of the list.
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Section 2: Starting Life */}
         <div>
           <h3 className="text-lg font-semibold mb-3">Starting Life</h3>
           <div className="flex items-center space-x-3">
@@ -209,7 +151,7 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, user
           </div>
         </div>
 
-        {/* Section 4: Tracking Type */}
+        {/* Section 3: Tracking Type */}
         <div>
           <h3 className="text-lg font-semibold mb-3">Life Tracking</h3>
           <div className="space-y-3">
@@ -261,13 +203,9 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, user
         </div>
 
         {/* Validation Message */}
-        {selectedPlayers.length > 0 && !isValidGameSetup() && (
+        {!isValidGameSetup() && (
           <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-sm text-yellow-800">
-              {selectedPlayers.length < 2
-                ? `Please select at least 2 players (currently ${selectedPlayers.length})`
-                : 'Please assign a deck to each selected player'}
-            </p>
+            <p className="text-sm text-yellow-800">Please select the number of players to continue</p>
           </div>
         )}
 
@@ -278,7 +216,7 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, user
             disabled={!isValidGameSetup()}
             className="flex-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
           >
-            {mode === 'create' ? 'Create Game' : 'Save Changes'}
+            {isEditMode ? 'Save Changes' : 'Create Game'}
           </button>
 
           <button
@@ -289,20 +227,6 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel, user
           </button>
         </div>
       </div>
-
-      {/* Add User Modal */}
-      {isAddingUser && <UserForm onSave={handleAddNewUser} onCancel={() => setIsAddingUser(false)} />}
-
-      {/* Add Deck Modal */}
-      {isAddingDeck && (
-        <DeckForm
-          onSave={handleCreateDeck}
-          onCancel={() => {
-            setIsAddingDeck(false)
-            setSelectedPlayerForDeck(null)
-          }}
-        />
-      )}
     </>
   )
 }
