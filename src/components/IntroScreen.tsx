@@ -2,9 +2,9 @@ import { BookOpen, History, Plus, Users as UsersIcon } from 'lucide-react'
 import React, { useState } from 'react'
 
 import { useGames } from '../contexts/GamesContext'
-import { useUsers } from '../contexts/UsersContext'
 import { Decks } from './Decks'
-import { GameForm } from './GameForm'
+// TODO: Remove this?
+// import { GameForm } from './GameForm'
 import { Games } from './Games'
 import { Modal } from './Modal'
 import { Users } from './Users'
@@ -13,19 +13,16 @@ export const IntroScreen: React.FC = () => {
   const [showGames, setShowGames] = useState(false)
   const [showUsers, setShowUsers] = useState(false)
   const [showDecks, setShowDecks] = useState(false)
-  const [showGameForm, setShowGameForm] = useState(false)
 
-  const { users, addUser } = useUsers()
   const { addGame } = useGames()
 
-  const handleCreateGame = (data: { players: Player[]; tracking: Game['tracking'] }) => {
+  const handleCreateGame = () => {
     addGame({
-      players: data.players,
+      players: [],
       activePlayer: null,
-      tracking: data.tracking,
+      tracking: 'none',
       state: 'setup'
     })
-    setShowGameForm(false)
   }
 
   return (
@@ -36,7 +33,7 @@ export const IntroScreen: React.FC = () => {
 
         <div className="space-y-4">
           <button
-            onClick={() => setShowGameForm(true)}
+            onClick={handleCreateGame}
             className="w-full px-4 md:px-6 py-3 md:py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 active:bg-green-800 transition-colors flex items-center justify-center gap-2 md:gap-3 text-base md:text-lg font-medium touch-manipulation"
           >
             <Plus size={20} className="md:w-6 md:h-6" />
@@ -68,13 +65,6 @@ export const IntroScreen: React.FC = () => {
           </button>
         </div>
       </div>
-
-      {/* GameForm Modal */}
-      {showGameForm && (
-        <Modal isOpen={showGameForm} onClose={() => setShowGameForm(false)} title="Add New Game">
-          <GameForm onSave={handleCreateGame} onCancel={() => setShowGameForm(false)} users={users} addUser={addUser} />
-        </Modal>
-      )}
 
       {/* Games Modal */}
       {showGames && (
