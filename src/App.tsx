@@ -1,3 +1,4 @@
+import { Board } from './components/Board'
 import { Decks } from './components/Decks'
 import { DevToolsPanel } from './components/DevToolsPanel'
 import { Games } from './components/Games'
@@ -30,7 +31,12 @@ const AppContent: React.FC = () => {
 
 const AppMain: React.FC = () => {
   const { games } = useGames()
+  const setupGames = games.filter(game => game.state === 'setup')
   const activeGames = games.filter(game => game.state === 'active')
+
+  if (setupGames.length > 0) {
+    return <Board game={setupGames[0]} />
+  }
 
   if (activeGames.length === 0) {
     return <IntroScreen />

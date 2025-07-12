@@ -1,5 +1,5 @@
 type Tracking = 'full' | 'simple' | 'none'
-type GameState = 'active' | 'finished'
+type GameState = 'setup' | 'active' | 'finished'
 type ManaColor = 'W' | 'U' | 'B' | 'R' | 'G' | 'C'
 
 type ScryfallCard = {

@@ -23,7 +23,7 @@ export const IntroScreen: React.FC = () => {
       players: data.players,
       activePlayer: null,
       tracking: data.tracking,
-      state: 'active'
+      state: 'setup'
     })
     setShowGameForm(false)
   }
