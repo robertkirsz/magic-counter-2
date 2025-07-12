@@ -176,7 +176,7 @@ export const Board: React.FC<BoardProps> = ({ game }) => {
       </div>
 
       {/* Settings Overlay */}
-      <div className="fixed bottom-4 left-4">
+      <div className="fixed top-2 right-2">
         <button
           onClick={() => setShowSettings(true)}
           className="bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-shadow"
