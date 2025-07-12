@@ -34,26 +34,23 @@ const AppMain: React.FC = () => {
   const setupGames = games.filter(game => game.state === 'setup')
   const activeGames = games.filter(game => game.state === 'active')
 
-  if (setupGames.length > 0) {
-    return <Board game={setupGames[0]} />
-  }
-
-  if (activeGames.length === 0) {
-    return <IntroScreen />
-  }
-
   return (
-    <div className="flex flex-col lg:flex-row gap-8 p-4">
-      <div className="flex-1">
-        <Games />
+    <>
+      {setupGames.length > 0 && <Board game={setupGames[0]} />}
+      {activeGames.length === 0 && <IntroScreen />}
+
+      <div className="flex flex-col lg:flex-row gap-8 p-4">
+        <div className="flex-1">
+          <Games />
+        </div>
+        <div className="flex-1">
+          <Users />
+        </div>
+        <div className="flex-1">
+          <Decks />
+        </div>
       </div>
-      <div className="flex-1">
-        <Users />
-      </div>
-      <div className="flex-1">
-        <Decks />
-      </div>
-    </div>
+    </>
   )
 }
 
