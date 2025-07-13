@@ -1,4 +1,3 @@
-import { X } from 'lucide-react'
 import React, { useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
@@ -7,6 +6,7 @@ import { useUsers } from '../hooks/useUsers'
 import { Deck } from './Deck'
 import { DeckForm } from './DeckForm'
 import { Modal } from './Modal'
+import { ThreeDotMenu } from './ThreeDotMenu'
 import { UserForm } from './UserForm'
 
 interface PlayerSectionProps {
@@ -70,15 +70,11 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ playerId }) => {
     <>
       <div className="flex flex-col items-center justify-center gap-1 border border-gray-200 rounded-lg p-2">
         {player.userId && (
-          <div className="flex items-center gap-2">
-            <h1 className="text-lg font-bold">{getUserName(player.userId)}</h1>
-            <button
-              onClick={() => handleUserSelect(null)}
-              className="p-1 text-gray-500 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
-              title="Remove user"
-            >
-              <X size={16} />
+          <div className="flex items-center gap-1">
+            <button onClick={() => setShowUserSelect(true)}>
+              <h1 className="text-lg font-bold">{getUserName(player.userId)}</h1>
             </button>
+            <ThreeDotMenu onClose={() => handleUserSelect(null)} />
           </div>
         )}
 
@@ -89,9 +85,12 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ playerId }) => {
         )}
 
         {player.deckId && (
-          <button onClick={() => setShowDeckSelect(true)}>
-            <Deck id={player.deckId} />
-          </button>
+          <div className="flex items-center gap-1">
+            <button onClick={() => setShowDeckSelect(true)}>
+              <Deck id={player.deckId} />
+            </button>
+            <ThreeDotMenu onClose={() => handleDeckSelect(null)} />
+          </div>
         )}
 
         {!player.deckId && (

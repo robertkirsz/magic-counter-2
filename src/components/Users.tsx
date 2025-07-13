@@ -1,10 +1,11 @@
-import { Edit3, Plus, Trash2 } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import React, { useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
 import { useUsers } from '../hooks/useUsers'
 import { Deck } from './Deck'
 import { DeckForm } from './DeckForm'
+import { ThreeDotMenu } from './ThreeDotMenu'
 import { UserForm } from './UserForm'
 
 export const Users: React.FC = () => {
@@ -32,6 +33,7 @@ export const Users: React.FC = () => {
           <p className="text-gray-500 italic">No users yet. Add your first user!</p>
         ) : (
           <div className="flex flex-col gap-2 ">
+            {/* TDOO: Create User component */}
             {users.map(user => {
               const filteredDecks = decks.filter(deck => deck.createdBy === user.id)
 
@@ -39,24 +41,7 @@ export const Users: React.FC = () => {
                 <div key={user.id} className="flex flex-col gap-1 bg-white rounded-lg p-2 border border-gray-200">
                   <div className="flex gap-1 items-center">
                     <h3 className="line-clamp-1">{user.name}</h3>
-
-                    <div className="flex gap-1 ml-auto">
-                      <button
-                        onClick={() => setEditingId(user.id)}
-                        className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
-                        title="Edit user"
-                      >
-                        <Edit3 size={16} />
-                      </button>
-
-                      <button
-                        onClick={() => removeUser(user.id)}
-                        className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
-                        title="Delete user"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
+                    <ThreeDotMenu onEdit={() => setEditingId(user.id)} onRemove={() => removeUser(user.id)} />
                   </div>
 
                   {/* User's Decks */}

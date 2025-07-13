@@ -1,7 +1,7 @@
-import { Trash2 } from 'lucide-react'
 import React from 'react'
 
 import { useGames } from '../hooks/useGames'
+import { ThreeDotMenu } from './ThreeDotMenu'
 
 export const Games: React.FC = () => {
   const { games, removeGame } = useGames()
@@ -36,15 +36,7 @@ export const Games: React.FC = () => {
                 {game.tracking.charAt(0).toUpperCase() + game.tracking.slice(1)}
               </p>
 
-              <div className="flex gap-2">
-                <button
-                  onClick={() => removeGame(game.id)}
-                  className="p-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-                  title="Delete game"
-                >
-                  <Trash2 size={16} />
-                </button>
-              </div>
+              <ThreeDotMenu onRemove={() => removeGame(game.id)} />
             </div>
           ))}
         </div>
