@@ -27,7 +27,7 @@ export const Commander: React.FC<CommanderProps> = ({ commander, showRemoveButto
           {imageUrl && (
             <div
               title={name}
-              className="importance-2 flex-none h-full w-23"
+              className="importance-2 flex-none h-full w-full max-w-1/3"
               style={{
                 backgroundImage: `url(${imageUrl})`,
                 backgroundSize: 'cover',

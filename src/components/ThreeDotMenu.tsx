@@ -1,15 +1,25 @@
-import { Edit3, MoreHorizontal, Trash2, X } from 'lucide-react'
+import { Edit3, MoreVertical, Trash2, X } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 
-interface ThreeDotMenuProps {
+import { Modal } from './Modal'
+
+interface ThreeDotMenuProps extends React.HTMLAttributes<HTMLDivElement> {
+  asMenu?: boolean
   onEdit?: () => void
   onClose?: () => void
   onRemove?: () => void
-  asMenu?: boolean
 }
 
-export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({ onEdit, onClose, onRemove, asMenu = true }) => {
+export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
+  asMenu = true,
+  onEdit,
+  onClose,
+  onRemove,
+  className,
+  ...props
+}) => {
   const [isOpen, setIsOpen] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
   const [menuPosition, setMenuPosition] = useState<'bottom' | 'top'>('bottom')
   const [menuAlignment, setMenuAlignment] = useState<'right' | 'left'>('right')
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -38,7 +48,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({ onEdit, onClose, onR
 
   if (!asMenu) {
     return (
-      <div className="flex gap-1 empty:hidden">
+      <div className={`flex gap-1 empty:hidden ${className}`} {...props}>
         {onEdit && (
           <button
             onClick={onEdit}
@@ -51,7 +61,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({ onEdit, onClose, onR
 
         {onRemove && (
           <button
-            onClick={onRemove}
+            onClick={() => setShowConfirm(true)}
             className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
             title="Delete"
           >
@@ -73,19 +83,19 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({ onEdit, onClose, onR
   }
 
   return (
-    <div className="relative border border-gray-200 rounded-lg flex max-w-fit max-h-fit" ref={wrapperRef}>
+    <div ref={wrapperRef} className={`relative flex max-w-fit max-h-fit ${className}`} {...props}>
       <button
         title="More options"
         className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <MoreHorizontal size={16} />
+        <MoreVertical size={16} />
       </button>
 
       {isOpen && (
         <div
           ref={menuRef}
-          className={`absolute bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[120px] ${
+          className={`absolute bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[120px] empty:hidden ${
             menuPosition === 'bottom' ? 'top-full mt-1' : 'bottom-full mb-1'
           } ${menuAlignment === 'right' ? 'right-0' : 'left-0'}`}
         >
@@ -105,7 +115,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({ onEdit, onClose, onR
           {onRemove && (
             <button
               onClick={() => {
-                onRemove()
+                setShowConfirm(true)
                 setIsOpen(false)
               }}
               className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
@@ -128,6 +138,32 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({ onEdit, onClose, onR
             </button>
           )}
         </div>
+      )}
+
+      {/* Confirmation Dialog */}
+      {showConfirm && (
+        <Modal isOpen={showConfirm} onClose={() => setShowConfirm(false)} title="Confirm Delete">
+          <div className="flex flex-col gap-4">
+            <p className="text-gray-600">Are you sure you want to delete this item? This action cannot be undone.</p>
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  onRemove?.()
+                  setShowConfirm(false)
+                }}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </Modal>
       )}
     </div>
   )

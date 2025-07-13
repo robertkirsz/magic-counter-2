@@ -14,10 +14,11 @@ export const Games: React.FC = () => {
       ) : (
         <div className="flex flex-col gap-2">
           {games.map(game => (
-            <div key={game.id} className="flex flex-col gap-2 border border-gray-200 rounded-lg p-4 mb-3 bg-gray-50">
-              <h3 className="font-semibold flex gap-1">
-                Game {game.id.slice(0, 8)}...
+            <div key={game.id} className="flex flex-col gap-2 border border-gray-200 rounded-lg p-4 bg-gray-50">
+              <h3 className=" flex gap-1">
+                <span className="font-semibold">{game.id.slice(0, 8)}...</span>
                 <span className="text-gray-500">({game.createdAt.toLocaleDateString()})</span>
+                <ThreeDotMenu onRemove={() => removeGame(game.id)} asMenu={false} className="ml-auto" />
               </h3>
 
               <div className="flex gap-1 flex-wrap">
@@ -34,8 +35,6 @@ export const Games: React.FC = () => {
                 <span className="font-medium">Tracking:</span>{' '}
                 {game.tracking.charAt(0).toUpperCase() + game.tracking.slice(1)}
               </p>
-
-              <ThreeDotMenu onRemove={() => removeGame(game.id)} />
             </div>
           ))}
         </div>

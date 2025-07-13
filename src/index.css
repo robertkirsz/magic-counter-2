@@ -2,21 +2,29 @@
 
 button {
   cursor: pointer;
+
+  > * {
+    text-align: initial;
+  }
 }
 
 /* Hide elements with importance lower than current setting */
 .importance-1.hidden-importance {
   display: none;
 }
+
 .importance-2.hidden-importance {
   display: none;
 }
+
 .importance-3.hidden-importance {
   display: none;
 }
+
 .importance-4.hidden-importance {
   display: none;
 }
+
 .importance-5.hidden-importance {
   display: none;
 }
