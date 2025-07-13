@@ -13,6 +13,7 @@ export const UserForm: React.FC<UserFormProps> = ({ user, onSave, onCancel }) =>
 
   const handleSave = () => {
     if (name.trim()) {
+      // TODO: Move logic here, return only userId
       onSave({ name: name.trim() })
     }
   }

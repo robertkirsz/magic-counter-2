@@ -18,7 +18,7 @@ const LOCAL_STORAGE_KEY = 'games'
 
 const readGames = (): Game[] => {
   const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
-  if (stored) return JSON.parse(stored).map((g: any) => ({ ...g, createdAt: new Date(g.createdAt) }))
+  if (stored) return JSON.parse(stored).map((g: Game) => ({ ...g, createdAt: new Date(g.createdAt) }))
   return []
 }
 

@@ -26,7 +26,7 @@ export const Games: React.FC = () => {
                     <span>ID: {player.id}</span>
                     <span>User: {player.userId}</span>
                     <span>Life: {player.life}</span>
-                    <span>Deck: {player.deck}</span>
+                    <span>Deck: {player.deckId}</span>
                   </div>
                 ))}
               </div>

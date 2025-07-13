@@ -35,6 +35,7 @@ export const DecksProvider: React.FC<DecksProviderProps> = ({ children }) => {
     }
 
     setDecks(prev => [...prev, newDeck])
+
     return newDeck
   }
 

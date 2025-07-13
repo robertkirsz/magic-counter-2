@@ -42,7 +42,7 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel }) =>
           const newPlayers = Array.from({ length: numberOfPlayers - game.players.length }, (_, index) => ({
             id: `player-${game.players.length + index + 1}`,
             userId: null,
-            deck: null,
+            deckId: null,
             life: startingLife
           }))
           updatedPlayers = [...game.players, ...newPlayers]
@@ -70,7 +70,7 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel }) =>
           players: Array.from({ length: numberOfPlayers }, (_, index) => ({
             id: `player-${index + 1}`,
             userId: null,
-            deck: null,
+            deckId: null,
             life: startingLife
           })),
           tracking

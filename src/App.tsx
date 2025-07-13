@@ -36,7 +36,7 @@ const AppMain: React.FC = () => {
 
   return (
     <>
-      {setupGames.length > 0 && <Board game={setupGames[0]} />}
+      {setupGames[0] && <Board gameId={setupGames[0].id} />}
       {activeGames.length === 0 && <IntroScreen />}
 
       <div className="flex flex-col lg:flex-row gap-8 p-4">

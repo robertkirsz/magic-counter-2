@@ -1,17 +1,21 @@
 import React, { useState } from 'react'
 
 import type { ManaColor } from '../constants/mana'
+import { useDecks } from '../contexts/DecksContext'
 import { CommanderSearch } from './CommanderSearch'
 import { ManaPicker } from './ManaPicker'
 import { Modal } from './Modal'
 
 interface DeckFormProps {
-  deck?: Deck
-  onSave: (data: { name: Deck['name']; colors: Deck['colors']; commanders: Deck['commanders'] }) => void
+  deckId?: string
+  userId?: User['id'] | null
+  onSave: (deckId: string) => void
   onCancel: () => void
 }
 
-export const DeckForm: React.FC<DeckFormProps> = ({ deck, onSave, onCancel }) => {
+export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSave, onCancel }) => {
+  const { decks, addDeck, updateDeck } = useDecks()
+  const deck = decks.find(d => d.id === deckId)
   const [name, setName] = useState(deck?.name || '')
   const [selectedColors, setSelectedColors] = useState<ManaColor[]>(deck?.colors || [])
   const [commanders, setCommanders] = useState<ScryfallCard[]>(deck?.commanders || [])
@@ -22,11 +26,25 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deck, onSave, onCancel }) =>
 
   const handleSave = () => {
     if (name.trim() && selectedColors.length > 0) {
-      onSave({
+      if (deckId) {
+        updateDeck(deckId, {
+          name: name.trim(),
+          colors: selectedColors,
+          commanders: commanders.length > 0 ? commanders : null
+        })
+
+        onSave(deckId)
+        return
+      }
+
+      const newDeck = addDeck({
         name: name.trim(),
         colors: selectedColors,
-        commanders: commanders.length > 0 ? commanders : null
+        commanders: commanders.length > 0 ? commanders : null,
+        createdBy: userId
       })
+
+      onSave(newDeck.id)
     }
   }
 

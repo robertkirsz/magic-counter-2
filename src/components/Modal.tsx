@@ -33,26 +33,27 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, 
       onClose()
     }
 
-    const handleBackdropClick = (event: MouseEvent) => {
-      // Check if the click was on the backdrop (not on the dialog content)
-      const rect = dialog.getBoundingClientRect()
-      const isInDialog =
-        event.clientX >= rect.left &&
-        event.clientX <= rect.right &&
-        event.clientY >= rect.top &&
-        event.clientY <= rect.bottom
+    // TODO: buggy
+    // const handleBackdropClick = (event: MouseEvent) => {
+    //   // Check if the click was on the backdrop (not on the dialog content)
+    //   const rect = dialog.getBoundingClientRect()
+    //   const isInDialog =
+    //     event.clientX >= rect.left &&
+    //     event.clientX <= rect.right &&
+    //     event.clientY >= rect.top &&
+    //     event.clientY <= rect.bottom
 
-      if (!isInDialog) {
-        onClose()
-      }
-    }
+    //   if (!isInDialog) {
+    //     onClose()
+    //   }
+    // }
 
     dialog.addEventListener('close', handleClose)
-    dialog.addEventListener('click', handleBackdropClick)
+    // dialog.addEventListener('click', handleBackdropClick)
 
     return () => {
       dialog.removeEventListener('close', handleClose)
-      dialog.removeEventListener('click', handleBackdropClick)
+      // dialog.removeEventListener('click', handleBackdropClick)
     }
   }, [onClose])
 

@@ -29,7 +29,7 @@ type Player = {
   id: string
   userId: User['id'] | null
   life: number
-  deck: Deck['id'] | null
+  deckId: Deck['id'] | null
 }
 
 type Game = {

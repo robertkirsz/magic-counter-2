@@ -2,30 +2,23 @@ import { Play, Settings } from 'lucide-react'
 import React, { useState } from 'react'
 
 import { useGames } from '../contexts/GamesContext'
-import { useUsers } from '../contexts/UsersContext'
 import { GameForm } from './GameForm'
 import { Modal } from './Modal'
+import { PlayerSection } from './PlayerSection'
 
 interface BoardProps {
-  game: Game
+  gameId: string
 }
 
-export const Board: React.FC<BoardProps> = ({ game }) => {
-  const { updateGame } = useGames()
-  const { users } = useUsers()
-
+export const Board: React.FC<BoardProps> = ({ gameId }) => {
+  const { games, updateGame } = useGames()
   const [showSettings, setShowSettings] = useState(false)
-  const [showUserSelect, setShowUserSelect] = useState<string | null>(null)
+  const game = games.find(g => g.id === gameId)
+
+  if (!game) return <div>Game not found</div>
 
   const handlePlay = () => {
     updateGame(game.id, { state: 'active' })
-  }
-
-  const handleUserSelect = (playerId: string, userId: string | null) => {
-    updateGame(game.id, {
-      players: game.players.map(player => (player.id === playerId ? { ...player, userId } : player))
-    })
-    setShowUserSelect(null)
   }
 
   const handleGameSettingsSave = (data: { players: Player[]; tracking: Game['tracking'] }) => {
@@ -33,46 +26,19 @@ export const Board: React.FC<BoardProps> = ({ game }) => {
       players: data.players,
       tracking: data.tracking
     })
+
     setShowSettings(false)
   }
 
-  const getUserName = (userId: string) => {
-    const user = users.find(u => u.id === userId)
-    return user?.name || 'Unknown User'
-  }
-
-  const validPlayers = game.players.filter(player => player.userId && player.deck)
-  const canPlay = validPlayers.length >= 2
+  const validPlayers = game.players.filter(player => player.userId && player.deckId)
+  const canPlay = validPlayers.length === game.players.length
 
   return (
     <div className="flex min-h-screen w-full bg-gradient-to-br from-green-50 to-blue-50">
       {/* Player Sections */}
       <div className="flex-1 grid grid-cols-2 grid-rows-2">
         {game.players.map(player => (
-          <div key={player.id} className="flex flex-col gap-1 border border-gray-200 rounded-lg p-2">
-            <span>{player.id}</span>
-            <span>{player.userId ? getUserName(player.userId) : 'No user assigned'}</span>
-            <span>Life: {player.life}</span>
-            <span>Deck: {player.deck}</span>
-
-            {!player.userId && (
-              <button
-                onClick={() => setShowUserSelect(player.id)}
-                className="bg-blue-500 text-white rounded-lg p-2 w-full"
-              >
-                Select User
-              </button>
-            )}
-
-            {player.userId && (
-              <button
-                onClick={() => handleUserSelect(player.id, null)}
-                className="bg-red-500 text-white rounded-lg p-2 w-full"
-              >
-                Remove User
-              </button>
-            )}
-          </div>
+          <PlayerSection key={player.id} playerId={player.id} />
         ))}
       </div>
 
@@ -102,42 +68,6 @@ export const Board: React.FC<BoardProps> = ({ game }) => {
       {showSettings && (
         <Modal isOpen={showSettings} onClose={() => setShowSettings(false)} title="Game Settings">
           <GameForm game={game} onSave={handleGameSettingsSave} onCancel={() => setShowSettings(false)} />
-        </Modal>
-      )}
-
-      {/* User Selection Modal */}
-      {showUserSelect && (
-        <Modal isOpen={!!showUserSelect} onClose={() => setShowUserSelect(null)} title="Select User">
-          <div className="flex flex-col gap-2">
-            {users.length > 0 ? (
-              <div className="flex flex-col gap-2">
-                {users
-                  .filter(user => !game.players.some(player => player.userId === user.id))
-                  .map(user => (
-                    <button
-                      key={user.id}
-                      onClick={() => handleUserSelect(showUserSelect!, user.id)}
-                      className="p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition text-left"
-                    >
-                      <div className="font-medium">{user.name}</div>
-                    </button>
-                  ))}
-              </div>
-            ) : (
-              <div className="text-center text-gray-500">
-                <p>No users available.</p>
-                <p className="text-sm">Please add users first.</p>
-              </div>
-            )}
-
-            {users.filter(user => !game.players.some(player => player.userId === user.id)).length === 0 &&
-              users.length > 0 && (
-                <div className="text-center text-gray-500">
-                  <p>All users are already assigned to players.</p>
-                  <p className="text-sm">You need to add more users first.</p>
-                </div>
-              )}
-          </div>
         </Modal>
       )}
     </div>

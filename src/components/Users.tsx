@@ -9,12 +9,12 @@ import { UserForm } from './UserForm'
 
 export const Users: React.FC = () => {
   const { users, addUser, removeUser, updateUser } = useUsers()
-  const { decks, addDeck, removeDeck, updateDeck } = useDecks()
+  const { decks, removeDeck } = useDecks()
 
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [isAddingDeck, setIsAddingDeck] = useState(false)
-  const [selectedPlayerForDeck, setSelectedPlayerForDeck] = useState<string | null>(null)
+  const [selectedUser, setSelectedUser] = useState<string | null>(null)
   const [deckEditingId, setDeckEditingId] = useState<string | null>(null)
 
   const handleAddUser = (data: { name: string }) => {
@@ -35,29 +35,6 @@ export const Users: React.FC = () => {
 
   const handleCancelEdit = () => {
     setEditingId(null)
-  }
-
-  const handleCreateDeck = (deckData: {
-    name: Deck['name']
-    colors: Deck['colors']
-    commanders: Deck['commanders']
-  }) => {
-    if (selectedPlayerForDeck) {
-      addDeck({ ...deckData, createdBy: selectedPlayerForDeck })
-      setIsAddingDeck(false)
-      setSelectedPlayerForDeck(null)
-    }
-  }
-
-  const handleSaveDeckEdit = (data: { name: Deck['name']; colors: Deck['colors']; commanders: Deck['commanders'] }) => {
-    if (deckEditingId) {
-      updateDeck(deckEditingId, { ...data })
-      setDeckEditingId(null)
-    }
-  }
-
-  const handleCancelDeckEdit = () => {
-    setDeckEditingId(null)
   }
 
   return (
@@ -116,7 +93,7 @@ export const Users: React.FC = () => {
                   <button
                     className="px-2 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition self-end"
                     onClick={() => {
-                      setSelectedPlayerForDeck(user.id)
+                      setSelectedUser(user.id)
                       setIsAddingDeck(true)
                     }}
                   >
@@ -139,10 +116,14 @@ export const Users: React.FC = () => {
         {/* Add Deck Modal */}
         {isAddingDeck && (
           <DeckForm
-            onSave={handleCreateDeck}
+            userId={selectedUser}
+            onSave={() => {
+              setIsAddingDeck(false)
+              setSelectedUser(null)
+            }}
             onCancel={() => {
               setIsAddingDeck(false)
-              setSelectedPlayerForDeck(null)
+              setSelectedUser(null)
             }}
           />
         )}
@@ -150,9 +131,10 @@ export const Users: React.FC = () => {
         {/* Edit Deck Modal */}
         {deckEditingId !== null && (
           <DeckForm
-            deck={decks.find(d => d.id === deckEditingId)}
-            onSave={handleSaveDeckEdit}
-            onCancel={handleCancelDeckEdit}
+            userId={selectedUser}
+            deckId={deckEditingId}
+            onSave={() => setDeckEditingId(null)}
+            onCancel={() => setDeckEditingId(null)}
           />
         )}
       </div>

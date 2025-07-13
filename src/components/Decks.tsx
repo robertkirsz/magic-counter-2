@@ -7,10 +7,14 @@ import { DeckForm } from './DeckForm'
 
 type SortOption = 'name' | 'date' | 'colors' | 'creator'
 
-export const Decks: React.FC = () => {
-  const { decks, addDeck, removeDeck, updateDeck } = useDecks()
-  const [isAdding, setIsAdding] = useState(false)
-  const [editingId, setEditingId] = useState<string | null>(null)
+interface DecksProps {
+  userId: string
+}
+
+export const Decks: React.FC<DecksProps> = ({ userId }) => {
+  const { decks, removeDeck } = useDecks()
+  const [deckFormVisible, setDeckFormVisible] = useState(false)
+  const [editingId, setEditingId] = useState<string>()
   const [sortBy, setSortBy] = useState<SortOption>('name')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -33,28 +37,6 @@ export const Decks: React.FC = () => {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [isDropdownOpen])
-
-  const handleAddDeck = (data: { name: Deck['name']; colors: Deck['colors']; commanders: Deck['commanders'] }) => {
-    setIsAdding(false)
-    addDeck({
-      name: data.name,
-      colors: data.colors,
-      commanders: data.commanders,
-      createdBy: null
-    })
-  }
-
-  const handleSaveEdit = (data: { name: Deck['name']; colors: Deck['colors']; commanders: Deck['commanders'] }) => {
-    if (editingId) {
-      setEditingId(null)
-      updateDeck(editingId, {
-        name: data.name,
-        colors: data.colors,
-        commanders: data.commanders,
-        createdBy: null
-      })
-    }
-  }
 
   const handleSortChange = (newSortBy: SortOption) => {
     if (sortBy === newSortBy) {
@@ -179,7 +161,7 @@ export const Decks: React.FC = () => {
 
           {/* Add Deck Button */}
           <button
-            onClick={() => setIsAdding(true)}
+            onClick={() => setDeckFormVisible(true)}
             className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2"
           >
             <Plus size={20} />
@@ -202,15 +184,19 @@ export const Decks: React.FC = () => {
           )}
         </div>
 
-        {/* Create Deck Modal */}
-        {isAdding && <DeckForm onSave={handleAddDeck} onCancel={() => setIsAdding(false)} />}
-
-        {/* Edit Deck Modal */}
-        {editingId !== null && (
+        {/* Deck Form Modal */}
+        {(deckFormVisible || editingId) && (
           <DeckForm
-            deck={decks.find(d => d.id === editingId)}
-            onSave={handleSaveEdit}
-            onCancel={() => setEditingId(null)}
+            userId={userId}
+            deckId={editingId}
+            onSave={() => {
+              setDeckFormVisible(false)
+              setEditingId(undefined)
+            }}
+            onCancel={() => {
+              setDeckFormVisible(false)
+              setEditingId(undefined)
+            }}
           />
         )}
       </div>
