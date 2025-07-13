@@ -1,14 +1,6 @@
-import React, { type ReactNode, createContext, useContext, useEffect, useState } from 'react'
+import React, { type ReactNode, useEffect, useState } from 'react'
 
-interface UsersContextType {
-  users: User[]
-  addUser: (user: Omit<User, 'id' | 'createdAt'>) => User
-  removeUser: (userId: string) => void
-  updateUser: (userId: string, updates: Partial<User>) => void
-  setUsers: React.Dispatch<React.SetStateAction<User[]>>
-}
-
-const UsersContext = createContext<UsersContextType | undefined>(undefined)
+import { UsersContext, type UsersContextType } from './UsersContextDef'
 
 interface UsersProviderProps {
   children: ReactNode
@@ -18,7 +10,7 @@ const LOCAL_STORAGE_KEY = 'users'
 
 const readUsers = (): User[] => {
   const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
-  if (stored) return JSON.parse(stored).map((u: any) => ({ ...u, createdAt: new Date(u.createdAt) }))
+  if (stored) return JSON.parse(stored).map((u: User) => ({ ...u, createdAt: new Date(u.createdAt) }))
   return []
 }
 
@@ -33,7 +25,9 @@ export const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
       id: crypto.randomUUID(),
       createdAt: new Date()
     }
+
     setUsers(prev => [...prev, newUser])
+
     return newUser
   }
 
@@ -54,10 +48,4 @@ export const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   }
 
   return <UsersContext.Provider value={value}>{children}</UsersContext.Provider>
-}
-
-export const useUsers = (): UsersContextType => {
-  const context = useContext(UsersContext)
-  if (context === undefined) throw new Error('useUsers must be used within a UsersProvider')
-  return context
 }

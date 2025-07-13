@@ -1,7 +1,7 @@
 import { Play, Settings } from 'lucide-react'
 import React, { useState } from 'react'
 
-import { useGames } from '../contexts/GamesContext'
+import { useGames } from '../hooks/useGames'
 import { GameForm } from './GameForm'
 import { Modal } from './Modal'
 import { PlayerSection } from './PlayerSection'
@@ -19,15 +19,6 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
   const handlePlay = () => {
     updateGame(game.id, { state: 'active' })
-  }
-
-  const handleGameSettingsSave = (data: { players: Player[]; tracking: Game['tracking'] }) => {
-    updateGame(game.id, {
-      players: data.players,
-      tracking: data.tracking
-    })
-
-    setShowSettings(false)
   }
 
   const validPlayers = game.players.filter(player => player.userId && player.deckId)
@@ -67,7 +58,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       {/* Settings Modal */}
       {showSettings && (
         <Modal isOpen={showSettings} onClose={() => setShowSettings(false)} title="Game Settings">
-          <GameForm game={game} onSave={handleGameSettingsSave} onCancel={() => setShowSettings(false)} />
+          <GameForm gameId={gameId} onSave={() => setShowSettings(false)} onCancel={() => setShowSettings(false)} />
         </Modal>
       )}
     </div>

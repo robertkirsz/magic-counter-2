@@ -1,7 +1,7 @@
 import { Edit3, Trash2 } from 'lucide-react'
 import React from 'react'
 
-import { useUsers } from '../contexts/UsersContext'
+import { useUsers } from '../hooks/useUsers'
 import { getGradientFromColors } from '../utils/gradients'
 import { ColorBadges } from './ColorBadges'
 import { Commander } from './Commander'

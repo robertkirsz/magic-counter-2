@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from 'react'
 
+import { useGames } from '../hooks/useGames'
+
 interface GameFormProps {
-  game?: Game
-  onSave: (data: { players: Player[]; tracking: Game['tracking'] }) => void
+  gameId?: Game['id']
+  onSave: (gameId: string) => void
   onCancel: () => void
 }
 
-export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel }) => {
+export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel }) => {
+  const { games, updateGame, addGame } = useGames()
+  const game = games.find(g => g.id === gameId)
+
   const [numberOfPlayers, setNumberOfPlayers] = useState<number>(game?.players.length || 4)
   const [customPlayerCount, setCustomPlayerCount] = useState<number>(game?.players.length || 4)
   const [tracking, setTracking] = useState<'full' | 'simple' | 'none'>(game?.tracking || 'none')
@@ -60,13 +65,14 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel }) =>
           life: startingLife
         }))
 
-        onSave({
+        updateGame(game.id, {
           players: updatedPlayers,
           tracking
         })
+
+        onSave(game.id)
       } else {
-        // Creating new game
-        onSave({
+        const newGameId = addGame({
           players: Array.from({ length: numberOfPlayers }, (_, index) => ({
             id: `player-${index + 1}`,
             userId: null,
@@ -75,6 +81,8 @@ export const GameForm: React.FC<GameFormProps> = ({ game, onSave, onCancel }) =>
           })),
           tracking
         })
+
+        onSave(newGameId)
       }
     }
   }

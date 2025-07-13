@@ -1,38 +1,67 @@
 import { Wrench } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
-import { useDecks } from '../contexts/DecksContext'
-import { useGames } from '../contexts/GamesContext'
-import { useUsers } from '../contexts/UsersContext'
+import { useDecks } from '../hooks/useDecks'
+import { useGames } from '../hooks/useGames'
+import { useUsers } from '../hooks/useUsers'
 
 function tryParseJSON<T>(value: string): [T | null, string | null] {
   try {
     return [JSON.parse(value), null]
-  } catch (e: any) {
-    return [null, e.message]
+  } catch (e: unknown) {
+    const error = e as Error
+    return [null, error.message]
   }
 }
 
-function isValidUser(obj: any): obj is User {
-  return obj && typeof obj.id === 'string' && obj.createdAt && typeof obj.name === 'string'
-}
-
-function isValidDeck(obj: any): obj is Deck {
-  return obj && typeof obj.id === 'string' && obj.createdAt && typeof obj.name === 'string' && Array.isArray(obj.colors)
-}
-
-function isValidGame(obj: any): obj is Game {
+function isValidUser(obj: unknown): obj is User {
   return (
-    obj &&
-    typeof obj.id === 'string' &&
-    obj.createdAt &&
-    typeof obj.state === 'string' &&
-    Array.isArray(obj.players) &&
+    !!obj &&
+    typeof obj === 'object' &&
+    obj !== null &&
+    'id' in obj &&
+    typeof (obj as User).id === 'string' &&
+    'createdAt' in obj &&
+    !!(obj as User).createdAt &&
+    'name' in obj &&
+    typeof (obj as User).name === 'string'
+  )
+}
+
+function isValidDeck(obj: unknown): obj is Deck {
+  return (
+    !!obj &&
+    typeof obj === 'object' &&
+    obj !== null &&
+    'id' in obj &&
+    typeof (obj as Deck).id === 'string' &&
+    'createdAt' in obj &&
+    !!(obj as Deck).createdAt &&
+    'name' in obj &&
+    typeof (obj as Deck).name === 'string' &&
+    'colors' in obj &&
+    Array.isArray((obj as Deck).colors)
+  )
+}
+
+function isValidGame(obj: unknown): obj is Game {
+  return (
+    !!obj &&
+    typeof obj === 'object' &&
+    obj !== null &&
+    'id' in obj &&
+    typeof (obj as Game).id === 'string' &&
+    'createdAt' in obj &&
+    !!(obj as Game).createdAt &&
+    'state' in obj &&
+    typeof (obj as Game).state === 'string' &&
+    'players' in obj &&
+    Array.isArray((obj as Game).players) &&
     'tracking' in obj
   )
 }
 
-function reviveDates<T extends { createdAt: any }>(arr: T[]): T[] {
+function reviveDates<T extends { createdAt: string | Date }>(arr: T[]): T[] {
   return arr.map(obj => ({
     ...obj,
     createdAt: typeof obj.createdAt === 'string' ? new Date(obj.createdAt) : obj.createdAt
@@ -159,7 +188,15 @@ export const DevToolsPanel: React.FC = () => {
         return
       }
 
-      const { users: importedUsers, decks: importedDecks, games: importedGames } = parsed as any
+      const {
+        users: importedUsers,
+        decks: importedDecks,
+        games: importedGames
+      } = parsed as {
+        users: unknown[]
+        decks: unknown[]
+        games: unknown[]
+      }
 
       // Validate imported data
       if (!Array.isArray(importedUsers) || !importedUsers.every(isValidUser)) {

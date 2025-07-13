@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import type { ManaColor } from '../constants/mana'
-import { useDecks } from '../contexts/DecksContext'
+import { useDecks } from '../hooks/useDecks'
 import { CommanderSearch } from './CommanderSearch'
 import { ManaPicker } from './ManaPicker'
 import { Modal } from './Modal'

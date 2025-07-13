@@ -1,12 +1,13 @@
 import { X } from 'lucide-react'
 import React, { useState } from 'react'
 
-import { useDecks } from '../contexts/DecksContext'
-import { useGames } from '../contexts/GamesContext'
-import { useUsers } from '../contexts/UsersContext'
+import { useDecks } from '../hooks/useDecks'
+import { useGames } from '../hooks/useGames'
+import { useUsers } from '../hooks/useUsers'
 import { Deck } from './Deck'
 import { DeckForm } from './DeckForm'
 import { Modal } from './Modal'
+import { UserForm } from './UserForm'
 
 interface PlayerSectionProps {
   playerId: Player['id']
@@ -19,6 +20,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ playerId }) => {
   const [showUserSelect, setShowUserSelect] = useState<boolean>(false)
   const [showDeckSelect, setShowDeckSelect] = useState<boolean>(false)
   const [showDeckForm, setShowDeckForm] = useState<boolean>(false)
+  const [showUserForm, setShowUserForm] = useState<boolean>(false)
 
   const game = games[games.length - 1]
 
@@ -102,7 +104,17 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ playerId }) => {
       {/* User Selection Modal */}
       {showUserSelect && (
         <Modal isOpen={showUserSelect} onClose={() => setShowUserSelect(false)} title="Select User">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-4">
+            <div className="flex justify-between items-center">
+              <p className="text-sm text-gray-600">Select a user for this player:</p>
+              <button
+                onClick={() => setShowUserForm(true)}
+                className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+              >
+                Create New User
+              </button>
+            </div>
+
             {users.length > 0 ? (
               <div className="flex flex-col gap-2">
                 {users
@@ -179,6 +191,17 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ playerId }) => {
             setShowDeckForm(false)
           }}
           onCancel={() => setShowDeckForm(false)}
+        />
+      )}
+
+      {/* User Form Modal */}
+      {showUserForm && (
+        <UserForm
+          onSave={(userId: string) => {
+            handleUserSelect(userId)
+            setShowUserForm(false)
+          }}
+          onCancel={() => setShowUserForm(false)}
         />
       )}
     </>

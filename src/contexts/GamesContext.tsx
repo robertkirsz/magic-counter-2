@@ -1,17 +1,9 @@
-import React, { type ReactNode, createContext, useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-interface GamesContextType {
-  games: Game[]
-  addGame: (game: Omit<Game, 'id' | 'createdAt'>) => void
-  removeGame: (gameId: string) => void
-  updateGame: (gameId: string, updates: Partial<Game>) => void
-  setGames: React.Dispatch<React.SetStateAction<Game[]>>
-}
-
-const GamesContext = createContext<GamesContextType | undefined>(undefined)
+import { GamesContext, type GamesContextType } from './GamesContextDef'
 
 interface GamesProviderProps {
-  children: ReactNode
+  children: React.ReactNode
 }
 
 const LOCAL_STORAGE_KEY = 'games'
@@ -27,14 +19,18 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
 
   useEffect(() => localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(games)), [games])
 
-  const addGame = (gameData: Omit<Game, 'id' | 'createdAt'>) => {
+  const addGame: GamesContextType['addGame'] = gameData => {
     const newGame: Game = {
       ...gameData,
       id: crypto.randomUUID(),
-      createdAt: new Date()
+      createdAt: new Date(),
+      state: 'setup',
+      activePlayer: null
     }
 
     setGames(prev => [...prev, newGame])
+
+    return newGame.id
   }
 
   const removeGame = (gameId: string) => {
@@ -54,10 +50,4 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
   }
 
   return <GamesContext.Provider value={value}>{children}</GamesContext.Provider>
-}
-
-export const useGames = (): GamesContextType => {
-  const context = useContext(GamesContext)
-  if (context === undefined) throw new Error('useGames must be used within a GamesProvider')
-  return context
 }

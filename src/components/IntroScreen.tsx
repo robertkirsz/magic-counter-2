@@ -1,7 +1,6 @@
 import { BookOpen, History, Plus, Users as UsersIcon } from 'lucide-react'
 import React, { useState } from 'react'
 
-import { useGames } from '../contexts/GamesContext'
 import { Decks } from './Decks'
 import { GameForm } from './GameForm'
 import { Games } from './Games'
@@ -13,19 +12,6 @@ export const IntroScreen: React.FC = () => {
   const [showUsers, setShowUsers] = useState(false)
   const [showDecks, setShowDecks] = useState(false)
   const [showGameForm, setShowGameForm] = useState(false)
-
-  const { addGame } = useGames()
-
-  const handleCreateGame = (data: { players: Player[]; tracking: Game['tracking'] }) => {
-    addGame({
-      state: 'setup',
-      players: data.players,
-      tracking: data.tracking,
-      activePlayer: null
-    })
-
-    setShowGameForm(false)
-  }
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4 safe-area-inset-top safe-area-inset-bottom">
@@ -71,7 +57,7 @@ export const IntroScreen: React.FC = () => {
       {/* GameForm Modal */}
       {showGameForm && (
         <Modal isOpen={showGameForm} onClose={() => setShowGameForm(false)} title="Add New Game">
-          <GameForm onSave={handleCreateGame} onCancel={() => setShowGameForm(false)} />
+          <GameForm onSave={() => setShowGameForm(false)} onCancel={() => setShowGameForm(false)} />
         </Modal>
       )}
 

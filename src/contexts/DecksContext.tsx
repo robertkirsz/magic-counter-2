@@ -1,14 +1,6 @@
-import React, { type ReactNode, createContext, useContext, useEffect, useState } from 'react'
+import React, { type ReactNode, useEffect, useState } from 'react'
 
-interface DecksContextType {
-  decks: Deck[]
-  addDeck: (deck: Omit<Deck, 'id' | 'createdAt'> & { createdBy: User['id'] | null }) => Deck
-  removeDeck: (deckId: string) => void
-  updateDeck: (deckId: string, updates: Partial<Deck>) => void
-  setDecks: React.Dispatch<React.SetStateAction<Deck[]>>
-}
-
-const DecksContext = createContext<DecksContextType | undefined>(undefined)
+import { DecksContext, type DecksContextType } from './DecksContextDef'
 
 interface DecksProviderProps {
   children: ReactNode
@@ -56,10 +48,4 @@ export const DecksProvider: React.FC<DecksProviderProps> = ({ children }) => {
   }
 
   return <DecksContext.Provider value={value}>{children}</DecksContext.Provider>
-}
-
-export const useDecks = (): DecksContextType => {
-  const context = useContext(DecksContext)
-  if (context === undefined) throw new Error('useDecks must be used within a DecksProvider')
-  return context
 }

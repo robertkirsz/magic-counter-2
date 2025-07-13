@@ -1,41 +1,21 @@
 import { Edit3, Plus, Trash2 } from 'lucide-react'
 import React, { useState } from 'react'
 
-import { useDecks } from '../contexts/DecksContext'
-import { useUsers } from '../contexts/UsersContext'
+import { useDecks } from '../hooks/useDecks'
+import { useUsers } from '../hooks/useUsers'
 import { Deck } from './Deck'
 import { DeckForm } from './DeckForm'
 import { UserForm } from './UserForm'
 
 export const Users: React.FC = () => {
-  const { users, addUser, removeUser, updateUser } = useUsers()
+  const { users, removeUser } = useUsers()
   const { decks, removeDeck } = useDecks()
 
   const [isAdding, setIsAdding] = useState(false)
-  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editingId, setEditingId] = useState<string>()
   const [isAddingDeck, setIsAddingDeck] = useState(false)
   const [selectedUser, setSelectedUser] = useState<string | null>(null)
   const [deckEditingId, setDeckEditingId] = useState<string | null>(null)
-
-  const handleAddUser = (data: { name: string }) => {
-    addUser({ name: data.name })
-    setIsAdding(false)
-  }
-
-  const handleEditUser = (userId: string) => {
-    setEditingId(userId)
-  }
-
-  const handleSaveEdit = (data: { name: string }) => {
-    if (editingId) {
-      updateUser(editingId, { name: data.name })
-      setEditingId(null)
-    }
-  }
-
-  const handleCancelEdit = () => {
-    setEditingId(null)
-  }
 
   return (
     <>
@@ -64,7 +44,7 @@ export const Users: React.FC = () => {
 
                     <div className="flex gap-1 ml-auto">
                       <button
-                        onClick={() => handleEditUser(user.id)}
+                        onClick={() => setEditingId(user.id)}
                         className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
                         title="Edit user"
                       >
@@ -106,11 +86,18 @@ export const Users: React.FC = () => {
         )}
 
         {/* Create User Modal */}
-        {isAdding && <UserForm onSave={handleAddUser} onCancel={() => setIsAdding(false)} />}
-
-        {/* Edit User Modal */}
-        {editingId !== null && (
-          <UserForm user={users.find(u => u.id === editingId)} onSave={handleSaveEdit} onCancel={handleCancelEdit} />
+        {(isAdding || editingId) && (
+          <UserForm
+            userId={editingId}
+            onSave={() => {
+              setEditingId(undefined)
+              setIsAdding(false)
+            }}
+            onCancel={() => {
+              setEditingId(undefined)
+              setIsAdding(false)
+            }}
+          />
         )}
 
         {/* Add Deck Modal */}

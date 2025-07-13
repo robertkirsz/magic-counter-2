@@ -1,24 +1,33 @@
 import React, { useState } from 'react'
 
+import { useUsers } from '../hooks/useUsers'
 import { Modal } from './Modal'
 
 interface UserFormProps {
-  user?: User
-  onSave: (data: { name: string }) => void
+  userId?: User['id']
+  onSave: (userId: string) => void
   onCancel: () => void
 }
 
-export const UserForm: React.FC<UserFormProps> = ({ user, onSave, onCancel }) => {
+export const UserForm: React.FC<UserFormProps> = ({ userId, onSave, onCancel }) => {
+  const { addUser, updateUser, users } = useUsers()
+  const user = users.find(u => u.id === userId)
+
   const [name, setName] = useState(user?.name || '')
 
   const handleSave = () => {
     if (name.trim()) {
-      // TODO: Move logic here, return only userId
-      onSave({ name: name.trim() })
+      if (userId) {
+        updateUser(userId, { name: name.trim() })
+        onSave(userId)
+      } else {
+        const newUser = addUser({ name: name.trim() })
+        onSave(newUser.id)
+      }
     }
   }
 
-  const mode = user ? 'edit' : 'create'
+  const mode = userId ? 'edit' : 'create'
 
   return (
     <Modal isOpen={true} onClose={onCancel} title={mode === 'create' ? 'Add New User' : 'Edit User'}>

@@ -7,9 +7,9 @@ import { IntroScreen } from './components/IntroScreen'
 import { Users } from './components/Users'
 import { DecksProvider } from './contexts/DecksContext'
 import { GamesProvider } from './contexts/GamesContext'
-import { useGames } from './contexts/GamesContext'
 import { ImportanceProvider } from './contexts/ImportanceContext'
 import { UsersProvider } from './contexts/UsersContext'
+import { useGames } from './hooks/useGames'
 import { useImportanceVisibility } from './hooks/useImportanceVisibility'
 
 const AppContent: React.FC = () => {

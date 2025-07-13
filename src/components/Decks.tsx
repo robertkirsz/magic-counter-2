@@ -1,14 +1,14 @@
 import { Plus, Search } from 'lucide-react'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
-import { useDecks } from '../contexts/DecksContext'
+import { useDecks } from '../hooks/useDecks'
 import { Deck } from './Deck'
 import { DeckForm } from './DeckForm'
 
 type SortOption = 'name' | 'date' | 'colors' | 'creator'
 
 interface DecksProps {
-  userId: string
+  userId?: string
 }
 
 export const Decks: React.FC<DecksProps> = ({ userId }) => {

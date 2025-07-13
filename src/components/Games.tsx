@@ -1,7 +1,7 @@
 import { Trash2 } from 'lucide-react'
 import React from 'react'
 
-import { useGames } from '../contexts/GamesContext'
+import { useGames } from '../hooks/useGames'
 
 export const Games: React.FC = () => {
   const { games, removeGame } = useGames()
