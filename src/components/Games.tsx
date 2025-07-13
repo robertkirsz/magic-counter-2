@@ -12,7 +12,7 @@ export const Games: React.FC = () => {
       {games.length === 0 ? (
         <p className="text-gray-500 italic">No games yet. Add your first game!</p>
       ) : (
-        <div>
+        <div className="flex flex-col gap-2">
           {games.map(game => (
             <div key={game.id} className="flex flex-col gap-2 border border-gray-200 rounded-lg p-4 mb-3 bg-gray-50">
               <h3 className="font-semibold flex gap-1">
@@ -20,10 +20,9 @@ export const Games: React.FC = () => {
                 <span className="text-gray-500">({game.createdAt.toLocaleDateString()})</span>
               </h3>
 
-              <div className="mb-1 flex gap-1">
+              <div className="flex gap-1 flex-wrap">
                 {game.players.map(player => (
                   <div key={player.id} className="flex flex-col gap-1 border border-gray-200 rounded-lg p-2">
-                    <span>ID: {player.id}</span>
                     <span>User: {player.userId}</span>
                     <span>Life: {player.life}</span>
                     <span>Deck: {player.deckId}</span>

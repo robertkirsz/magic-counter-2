@@ -74,7 +74,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ playerId }) => {
             <button onClick={() => setShowUserSelect(true)}>
               <h1 className="text-lg font-bold">{getUserName(player.userId)}</h1>
             </button>
-            <ThreeDotMenu onClose={() => handleUserSelect(null)} />
+            <ThreeDotMenu onClose={() => handleUserSelect(null)} asMenu={false} />
           </div>
         )}
 
@@ -89,7 +89,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ playerId }) => {
             <button onClick={() => setShowDeckSelect(true)}>
               <Deck id={player.deckId} />
             </button>
-            <ThreeDotMenu onClose={() => handleDeckSelect(null)} />
+            <ThreeDotMenu onClose={() => handleDeckSelect(null)} asMenu={false} />
           </div>
         )}
 

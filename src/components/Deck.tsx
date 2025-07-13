@@ -26,9 +26,10 @@ export const Deck: React.FC<DeckProps> = ({ id, useContextControls, showCreator 
   if (!deck) return <p>Deck not found</p>
 
   const creator = users.find(user => user.id === deck.createdBy)
-
   const creatorName = creator?.name || 'Global'
+
   const gradientStyle = getGradientFromColors(deck.colors)
+  const menuVisible = useContextControls || onRemove
 
   const handleEdit = () => {
     if (useContextControls) setDeckFormVisible(true)
@@ -50,10 +51,12 @@ export const Deck: React.FC<DeckProps> = ({ id, useContextControls, showCreator 
 
             {showCreator && creatorName && <span className="text-sm text-gray-500">({creatorName})</span>}
 
-            <ThreeDotMenu
-              onEdit={useContextControls ? handleEdit : undefined}
-              onRemove={useContextControls || onRemove ? handleRemove : undefined}
-            />
+            {menuVisible && (
+              <ThreeDotMenu
+                onEdit={useContextControls ? handleEdit : undefined}
+                onRemove={useContextControls || onRemove ? handleRemove : undefined}
+              />
+            )}
           </div>
 
           {deck.commanders && deck.commanders.length > 0 && (
