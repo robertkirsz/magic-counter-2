@@ -90,7 +90,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ playerId }) => {
 
         {player.deckId && (
           <button onClick={() => setShowDeckSelect(true)}>
-            <Deck deck={decks.find(d => d.id === player.deckId)!} />
+            <Deck id={player.deckId} />
           </button>
         )}
 
@@ -104,17 +104,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ playerId }) => {
       {/* User Selection Modal */}
       {showUserSelect && (
         <Modal isOpen={showUserSelect} onClose={() => setShowUserSelect(false)} title="Select User">
-          <div className="flex flex-col gap-4">
-            <div className="flex justify-between items-center">
-              <p className="text-sm text-gray-600">Select a user for this player:</p>
-              <button
-                onClick={() => setShowUserForm(true)}
-                className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-              >
-                Create New User
-              </button>
-            </div>
-
+          <div className="flex flex-col gap-2">
             {users.length > 0 ? (
               <div className="flex flex-col gap-2">
                 {users
@@ -130,18 +120,19 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ playerId }) => {
                   ))}
               </div>
             ) : (
-              <div className="text-center text-gray-500">
-                <p>No users available.</p>
-                <p className="text-sm">Please add users first.</p>
-              </div>
+              <p className="text-center text-gray-500">No users available.</p>
             )}
 
             {users.filter(user => !game.players.some(p => p.userId === user.id)).length === 0 && users.length > 0 && (
-              <div className="text-center text-gray-500">
-                <p>All users are already assigned to players.</p>
-                <p className="text-sm">You need to add more users first.</p>
-              </div>
+              <p className="text-center text-gray-500">All users are already assigned to players.</p>
             )}
+
+            <button
+              onClick={() => setShowUserForm(true)}
+              className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            >
+              Create New User
+            </button>
           </div>
         </Modal>
       )}
@@ -168,7 +159,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ playerId }) => {
                     onClick={() => handleDeckSelect(deck.id)}
                     className="text-left hover:bg-gray-50 transition p-2 rounded"
                   >
-                    <Deck deck={deck} showCreator={true} />
+                    <Deck id={deck.id} />
                   </button>
                 ))}
               </div>

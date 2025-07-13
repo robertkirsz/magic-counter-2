@@ -1,6 +1,7 @@
 import { BookOpen, History, Plus, Users as UsersIcon } from 'lucide-react'
 import React, { useState } from 'react'
 
+import { useGames } from '../hooks/useGames'
 import { Decks } from './Decks'
 import { GameForm } from './GameForm'
 import { Games } from './Games'
@@ -13,6 +14,11 @@ export const IntroScreen: React.FC = () => {
   const [showDecks, setShowDecks] = useState(false)
   const [showGameForm, setShowGameForm] = useState(false)
 
+  const { games } = useGames()
+
+  const hasGamesInProgress = games.some(game => game.state === 'active' || game.state === 'setup')
+  const hasFinishedGames = games.some(game => game.state === 'finished')
+
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4 safe-area-inset-top safe-area-inset-bottom">
       <div className="text-center max-w-md mx-auto px-4">
@@ -20,21 +26,25 @@ export const IntroScreen: React.FC = () => {
         <p className="text-base md:text-lg text-gray-600 mb-8 md:mb-12">Track your Magic: The Gathering games</p>
 
         <div className="space-y-4">
-          <button
-            onClick={() => setShowGameForm(true)}
-            className="w-full px-4 md:px-6 py-3 md:py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 active:bg-green-800 transition-colors flex items-center justify-center gap-2 md:gap-3 text-base md:text-lg font-medium touch-manipulation"
-          >
-            <Plus size={20} className="md:w-6 md:h-6" />
-            Create Game
-          </button>
+          {!hasGamesInProgress && (
+            <button
+              onClick={() => setShowGameForm(true)}
+              className="w-full px-4 md:px-6 py-3 md:py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 active:bg-green-800 transition-colors flex items-center justify-center gap-2 md:gap-3 text-base md:text-lg font-medium touch-manipulation"
+            >
+              <Plus size={20} className="md:w-6 md:h-6" />
+              Create Game
+            </button>
+          )}
 
-          <button
-            onClick={() => setShowGames(true)}
-            className="w-full px-4 md:px-6 py-3 md:py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors flex items-center justify-center gap-2 md:gap-3 text-base md:text-lg font-medium touch-manipulation"
-          >
-            <History size={20} className="md:w-6 md:h-6" />
-            Past Games
-          </button>
+          {hasFinishedGames && (
+            <button
+              onClick={() => setShowGames(true)}
+              className="w-full px-4 md:px-6 py-3 md:py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors flex items-center justify-center gap-2 md:gap-3 text-base md:text-lg font-medium touch-manipulation"
+            >
+              <History size={20} className="md:w-6 md:h-6" />
+              Past Games
+            </button>
+          )}
 
           <button
             onClick={() => setShowUsers(true)}
