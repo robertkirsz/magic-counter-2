@@ -9,8 +9,8 @@ import { Modal } from './Modal'
 interface DeckFormProps {
   deckId?: string
   userId?: User['id'] | null
-  onSave: (deckId: string) => void
-  onCancel: () => void
+  onSave?: (deckId: string) => void
+  onCancel?: () => void
 }
 
 export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSave, onCancel }) => {
@@ -33,7 +33,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
           commanders: commanders.length > 0 ? commanders : null
         })
 
-        onSave(deckId)
+        onSave?.(deckId)
         return
       }
 
@@ -44,7 +44,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
         createdBy: userId
       })
 
-      onSave(newDeck.id)
+      onSave?.(newDeck.id)
     }
   }
 
@@ -65,7 +65,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
   const mode = deck ? 'edit' : 'create'
 
   return (
-    <Modal isOpen={true} onClose={onCancel} title={mode === 'create' ? 'Add New Deck' : 'Edit Deck'}>
+    <Modal isOpen={true} onClose={() => onCancel?.()} title={mode === 'create' ? 'Add New Deck' : 'Edit Deck'}>
       <div className="flex flex-col gap-4">
         {/* Name Input */}
         <input

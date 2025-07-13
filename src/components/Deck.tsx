@@ -1,29 +1,51 @@
 import { Edit3, Trash2 } from 'lucide-react'
-import React from 'react'
+import React, { useState } from 'react'
 
+import { useDecks } from '../hooks/useDecks'
 import { useUsers } from '../hooks/useUsers'
 import { getGradientFromColors } from '../utils/gradients'
 import { ColorBadges } from './ColorBadges'
 import { Commander } from './Commander'
+import { DeckForm } from './DeckForm'
 
 interface DeckProps extends React.HTMLAttributes<HTMLDivElement> {
-  deck: Deck
+  id: Deck['id']
+  useContextControls?: boolean
   showCreator?: boolean
-  onEditDeck?: (deckId: string) => void
-  onRemoveDeck?: (deckId: string) => void
+  onEdit?: (deckId: string) => void
+  onRemove?: (deckId: string) => void
 }
 
-export const Deck: React.FC<DeckProps> = ({ deck, showCreator = false, onEditDeck, onRemoveDeck, ...props }) => {
+export const Deck: React.FC<DeckProps> = ({
+  id,
+  useContextControls,
+  showCreator = true,
+  onEdit,
+  onRemove,
+  ...props
+}) => {
+  const { decks, removeDeck } = useDecks()
   const { users } = useUsers()
 
-  const getCreatorName = (deck: Deck) => {
-    if (!deck.createdBy) return 'Global'
-    const creator = users.find(user => user.id === deck.createdBy)
-    return creator ? creator.name : 'Unknown'
+  const [deckFormVisible, setDeckFormVisible] = useState(false)
+
+  const deck = decks.find(d => d.id === id)
+
+  if (!deck) return <p>Deck not found</p>
+
+  const creator = users.find(user => user.id === deck.createdBy)
+
+  const creatorName = creator?.name || 'Global'
+  const gradientStyle = getGradientFromColors(deck.colors)
+
+  const handleEdit = () => {
+    if (useContextControls) setDeckFormVisible(true)
   }
 
-  const creatorName = getCreatorName(deck)
-  const gradientStyle = getGradientFromColors(deck.colors)
+  const handleRemove = () => {
+    if (useContextControls) removeDeck(deck.id)
+    if (onRemove) onRemove(deck.id)
+  }
 
   return (
     <div className="rounded-lg p-1 border border-gray-200" style={gradientStyle} {...props}>
@@ -34,29 +56,27 @@ export const Deck: React.FC<DeckProps> = ({ deck, showCreator = false, onEditDec
             <ColorBadges colors={deck.colors} />
             {showCreator && creatorName && <span className="text-sm text-gray-500">({creatorName})</span>}
 
-            {(onEditDeck || onRemoveDeck) && (
-              <div className="flex gap-1 ml-auto">
-                {onEditDeck && (
-                  <button
-                    onClick={() => onEditDeck(deck.id)}
-                    className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
-                    title="Edit deck"
-                  >
-                    <Edit3 size={16} />
-                  </button>
-                )}
+            <div className="flex gap-1 ml-auto empty:hidden">
+              {(useContextControls || onEdit) && (
+                <button
+                  onClick={handleEdit}
+                  className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
+                  title="Edit deck"
+                >
+                  <Edit3 size={16} />
+                </button>
+              )}
 
-                {onRemoveDeck && (
-                  <button
-                    onClick={() => onRemoveDeck(deck.id)}
-                    className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
-                    title="Delete deck"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                )}
-              </div>
-            )}
+              {(useContextControls || onRemove) && (
+                <button
+                  onClick={handleRemove}
+                  className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
+                  title="Delete deck"
+                >
+                  <Trash2 size={16} />
+                </button>
+              )}
+            </div>
           </div>
 
           {deck.commanders && deck.commanders.length > 0 && (
@@ -68,6 +88,14 @@ export const Deck: React.FC<DeckProps> = ({ deck, showCreator = false, onEditDec
           )}
         </div>
       </div>
+
+      {useContextControls && deckFormVisible && (
+        <DeckForm
+          deckId={deck.id}
+          onSave={() => setDeckFormVisible(false)}
+          onCancel={() => setDeckFormVisible(false)}
+        />
+      )}
     </div>
   )
 }

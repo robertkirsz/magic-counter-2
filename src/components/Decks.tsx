@@ -12,9 +12,8 @@ interface DecksProps {
 }
 
 export const Decks: React.FC<DecksProps> = ({ userId }) => {
-  const { decks, removeDeck } = useDecks()
+  const { decks } = useDecks()
   const [deckFormVisible, setDeckFormVisible] = useState(false)
-  const [editingId, setEditingId] = useState<string>()
   const [sortBy, setSortBy] = useState<SortOption>('name')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -52,6 +51,7 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
     if (!searchQuery.trim()) return decks
 
     const query = searchQuery.toLowerCase().trim()
+
     return decks.filter(deck => {
       // Search by name
       if (deck.name.toLowerCase().includes(query)) return true
@@ -65,6 +65,7 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
         G: 'green',
         C: 'colorless'
       }
+
       const deckColors = deck.colors.map(color => colorNames[color] || color).join(' ')
       if (deckColors.includes(query)) return true
 
@@ -178,24 +179,21 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
           ) : (
             <div className="flex flex-col gap-2">
               {sortedDecks.map(deck => (
-                <Deck key={deck.id} deck={deck} showCreator onEditDeck={setEditingId} onRemoveDeck={removeDeck} />
+                <Deck key={deck.id} id={deck.id} useContextControls />
               ))}
             </div>
           )}
         </div>
 
         {/* Deck Form Modal */}
-        {(deckFormVisible || editingId) && (
+        {deckFormVisible && (
           <DeckForm
             userId={userId}
-            deckId={editingId}
             onSave={() => {
               setDeckFormVisible(false)
-              setEditingId(undefined)
             }}
             onCancel={() => {
               setDeckFormVisible(false)
-              setEditingId(undefined)
             }}
           />
         )}

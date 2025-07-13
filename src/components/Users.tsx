@@ -9,13 +9,11 @@ import { UserForm } from './UserForm'
 
 export const Users: React.FC = () => {
   const { users, removeUser } = useUsers()
-  const { decks, removeDeck } = useDecks()
+  const { decks } = useDecks()
 
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState<string>()
-  const [isAddingDeck, setIsAddingDeck] = useState(false)
   const [selectedUser, setSelectedUser] = useState<string | null>(null)
-  const [deckEditingId, setDeckEditingId] = useState<string | null>(null)
 
   return (
     <>
@@ -62,20 +60,15 @@ export const Users: React.FC = () => {
                   </div>
 
                   {/* User's Decks */}
-                  {filteredDecks.length > 0 && (
-                    <div className="flex flex-col gap-2">
-                      {filteredDecks.map(deck => (
-                        <Deck key={deck.id} deck={deck} onEditDeck={setDeckEditingId} onRemoveDeck={removeDeck} />
-                      ))}
-                    </div>
-                  )}
+                  <div className="flex flex-col gap-2 empty:hidden">
+                    {filteredDecks.map(deck => (
+                      <Deck key={deck.id} id={deck.id} useContextControls />
+                    ))}
+                  </div>
 
                   <button
                     className="px-2 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition self-end"
-                    onClick={() => {
-                      setSelectedUser(user.id)
-                      setIsAddingDeck(true)
-                    }}
+                    onClick={() => setSelectedUser(user.id)}
                   >
                     Create New Deck
                   </button>
@@ -101,28 +94,8 @@ export const Users: React.FC = () => {
         )}
 
         {/* Add Deck Modal */}
-        {isAddingDeck && (
-          <DeckForm
-            userId={selectedUser}
-            onSave={() => {
-              setIsAddingDeck(false)
-              setSelectedUser(null)
-            }}
-            onCancel={() => {
-              setIsAddingDeck(false)
-              setSelectedUser(null)
-            }}
-          />
-        )}
-
-        {/* Edit Deck Modal */}
-        {deckEditingId !== null && (
-          <DeckForm
-            userId={selectedUser}
-            deckId={deckEditingId}
-            onSave={() => setDeckEditingId(null)}
-            onCancel={() => setDeckEditingId(null)}
-          />
+        {selectedUser && (
+          <DeckForm userId={selectedUser} onSave={() => setSelectedUser(null)} onCancel={() => setSelectedUser(null)} />
         )}
       </div>
     </>
