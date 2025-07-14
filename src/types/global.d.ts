@@ -1,4 +1,3 @@
-type Tracking = 'full' | 'simple' | 'none'
 type GameState = 'setup' | 'active' | 'finished'
 type ManaColor = 'W' | 'U' | 'B' | 'R' | 'G' | 'C'
 
@@ -38,5 +37,5 @@ type Game = {
   state: GameState
   players: Player[]
   activePlayer: User['id'] | null
-  tracking: Tracking
+  turnTracking: boolean
 }

@@ -31,10 +31,7 @@ export const Games: React.FC = () => {
                 ))}
               </div>
 
-              <p className="text-sm text-gray-600">
-                <span className="font-medium">Tracking:</span>{' '}
-                {game.tracking.charAt(0).toUpperCase() + game.tracking.slice(1)}
-              </p>
+              <p className="text-sm text-gray-600">Turn tracking: {game.turnTracking ? 'Yes' : 'No'}</p>
             </div>
           ))}
         </div>

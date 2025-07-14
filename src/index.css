@@ -30,23 +30,17 @@ button {
 }
 
 /* Modal */
-dialog[open] {
-  animation: modal-fade-in 0.15s;
+dialog {
   margin: auto;
+}
+
+dialog:not([open]) {
+  display: none;
 }
 
 dialog::backdrop {
   background: rgba(0, 0, 0, 0.5);
   cursor: pointer;
-}
-
-@keyframes modal-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }
 
 /* Test IDs */
@@ -73,3 +67,17 @@ dialog::backdrop {
     border-radius: 4px;
   }
 } */
+
+/* Hide number input arrows for Chrome, Safari, Edge, Opera */
+.hide-number-arrows::-webkit-outer-spin-button,
+.hide-number-arrows::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+/* Hide number input arrows for Firefox */
+.hide-number-arrows[type='number'] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

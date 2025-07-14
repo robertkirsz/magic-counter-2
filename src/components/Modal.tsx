@@ -11,6 +11,7 @@ interface ModalProps {
 
 export const Modal: React.FC<ModalProps> = ({ testId = '', isOpen, title, children, onClose }) => {
   const dialogRef = useRef<HTMLDialogElement>(null)
+  const childrenRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -29,31 +30,18 @@ export const Modal: React.FC<ModalProps> = ({ testId = '', isOpen, title, childr
 
     if (!dialog) return
 
-    const handleClose = () => {
-      onClose?.()
+    const handleClose = () => onClose?.()
+
+    const handleBackdropClick = (event: MouseEvent) => {
+      if (!childrenRef.current?.contains(event.target as Node)) onClose?.()
     }
 
-    // TODO: buggy
-    // const handleBackdropClick = (event: MouseEvent) => {
-    //   // Check if the click was on the backdrop (not on the dialog content)
-    //   const rect = dialog.getBoundingClientRect()
-    //   const isInDialog =
-    //     event.clientX >= rect.left &&
-    //     event.clientX <= rect.right &&
-    //     event.clientY >= rect.top &&
-    //     event.clientY <= rect.bottom
-
-    //   if (!isInDialog) {
-    //     onClose()
-    //   }
-    // }
-
     dialog.addEventListener('close', handleClose)
-    // dialog.addEventListener('click', handleBackdropClick)
+    dialog.addEventListener('click', handleBackdropClick)
 
     return () => {
       dialog.removeEventListener('close', handleClose)
-      // dialog.removeEventListener('click', handleBackdropClick)
+      dialog.removeEventListener('click', handleBackdropClick)
     }
   }, [onClose])
 
@@ -63,9 +51,9 @@ export const Modal: React.FC<ModalProps> = ({ testId = '', isOpen, title, childr
     <dialog
       ref={dialogRef}
       data-testid={testIdPrefix}
-      className="flex flex-col rounded-lg p-0 m-2 border-0 shadow-lg max-h-[90vh] overflow-visible"
+      className="flex flex-col rounded-lg shadow-lg max-h-[90vh] overflow-y-auto"
     >
-      <div className="flex flex-none justify-between items-center pl-4 pt-2 pr-2" onClick={e => e.stopPropagation()}>
+      <div ref={childrenRef} className="flex flex-col gap-2 px-2 pt-2 pb-4">
         {title && <h3 className="text-xl font-semibold">{title}</h3>}
 
         {onClose && (
@@ -73,15 +61,13 @@ export const Modal: React.FC<ModalProps> = ({ testId = '', isOpen, title, childr
             type="button"
             data-testid={`${testIdPrefix}-close`}
             aria-label="Close modal"
-            className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
+            className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50 ml-auto"
             onClick={onClose}
           >
             <X size={24} />
           </button>
         )}
-      </div>
 
-      <div className="px-4 pt-2 pb-4 flex-1" onClick={e => e.stopPropagation()}>
         {children}
       </div>
     </dialog>
