@@ -89,8 +89,8 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
       )}
 
       {!player.userId && (
-        <button onClick={() => setShowUserSelect(true)} className="bg-blue-500 text-white rounded-lg p-2 w-full">
-          Select User
+        <button onClick={() => setShowUserSelect(true)} className="bg-blue-500 text-white rounded-lg px-4 py-2">
+          User
         </button>
       )}
 
@@ -99,13 +99,14 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
           <button onClick={() => setShowDeckSelect(true)}>
             <Deck id={player.deckId} />
           </button>
+
           <ThreeDotMenu onClose={() => handleDeckSelect(null)} asMenu={false} />
         </div>
       )}
 
       {!player.deckId && (
-        <button onClick={() => setShowDeckSelect(true)} className="bg-green-500 text-white rounded-lg p-2 w-full">
-          Choose Deck
+        <button onClick={() => setShowDeckSelect(true)} className="bg-green-500 text-white rounded-lg px-4 py-2">
+          Deck
         </button>
       )}
 
