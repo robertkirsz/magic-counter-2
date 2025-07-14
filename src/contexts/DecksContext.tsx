@@ -1,4 +1,5 @@
 import React, { type ReactNode, useEffect, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 
 import { DecksContext, type DecksContextType } from './DecksContextDef'
 
@@ -22,7 +23,7 @@ export const DecksProvider: React.FC<DecksProviderProps> = ({ children }) => {
   const addDeck = (deckData: Omit<Deck, 'id' | 'createdAt'> & { createdBy: User['id'] | null }) => {
     const newDeck: Deck = {
       ...deckData,
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       createdAt: new Date()
     }
 

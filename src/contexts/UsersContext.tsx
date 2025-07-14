@@ -1,4 +1,5 @@
 import React, { type ReactNode, useEffect, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 
 import { UsersContext, type UsersContextType } from './UsersContextDef'
 
@@ -22,7 +23,7 @@ export const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   const addUser = (userData: Omit<User, 'id' | 'createdAt'>) => {
     const newUser: User = {
       ...userData,
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       createdAt: new Date()
     }
 

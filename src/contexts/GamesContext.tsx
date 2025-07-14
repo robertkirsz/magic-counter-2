@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 
 import { GamesContext, type GamesContextType } from './GamesContextDef'
 
@@ -22,7 +23,7 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
   const addGame: GamesContextType['addGame'] = gameData => {
     const newGame: Game = {
       ...gameData,
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       createdAt: new Date(),
       state: 'setup',
       activePlayer: null
