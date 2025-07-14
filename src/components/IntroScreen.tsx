@@ -66,24 +66,32 @@ export const IntroScreen: React.FC = () => {
       </div>
 
       {/* GameForm Modal */}
-      <Modal isOpen={showGameForm} onClose={() => setShowGameForm(false)}>
-        <GameForm onSave={() => setShowGameForm(false)} onCancel={() => setShowGameForm(false)} />
-      </Modal>
+      {showGameForm && (
+        <Modal isOpen={showGameForm} onClose={() => setShowGameForm(false)}>
+          <GameForm onSave={() => setShowGameForm(false)} onCancel={() => setShowGameForm(false)} />
+        </Modal>
+      )}
 
       {/* Games Modal */}
-      <Modal testId="games" isOpen={showGames} onClose={() => setShowGames(false)} title="Games">
-        <Games />
-      </Modal>
+      {showGames && (
+        <Modal testId="games" isOpen={showGames} onClose={() => setShowGames(false)} title="Games">
+          <Games />
+        </Modal>
+      )}
 
       {/* Users Modal */}
-      <Modal testId="users" isOpen={showUsers} onClose={() => setShowUsers(false)} title="Users">
-        <Users />
-      </Modal>
+      {showUsers && (
+        <Modal testId="users" isOpen={showUsers} onClose={() => setShowUsers(false)} title="Users">
+          <Users />
+        </Modal>
+      )}
 
       {/* Decks Modal */}
-      <Modal testId="decks" isOpen={showDecks} onClose={() => setShowDecks(false)} title="Decks">
-        <Decks />
-      </Modal>
+      {showDecks && (
+        <Modal testId="decks" isOpen={showDecks} onClose={() => setShowDecks(false)} title="Decks">
+          <Decks />
+        </Modal>
+      )}
     </div>
   )
 }
