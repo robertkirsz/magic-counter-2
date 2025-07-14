@@ -54,19 +54,21 @@ export const Modal: React.FC<ModalProps> = ({ testId = '', isOpen, title, childr
       className="flex flex-col rounded-lg shadow-lg max-h-[90vh] overflow-y-auto"
     >
       <div ref={childrenRef} className="flex flex-col gap-2 px-2 pt-2 pb-4">
-        {title && <h3 className="text-xl font-semibold">{title}</h3>}
+        <div className="flex justify-between items-center">
+          {title && <h3 className="text-xl font-semibold">{title}</h3>}
 
-        {onClose && (
-          <button
-            type="button"
-            data-testid={`${testIdPrefix}-close`}
-            aria-label="Close modal"
-            className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50 ml-auto"
-            onClick={onClose}
-          >
-            <X size={24} />
-          </button>
-        )}
+          {onClose && (
+            <button
+              type="button"
+              data-testid={`${testIdPrefix}-close`}
+              aria-label="Close modal"
+              className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50 ml-auto"
+              onClick={onClose}
+            >
+              <X size={24} />
+            </button>
+          )}
+        </div>
 
         {children}
       </div>

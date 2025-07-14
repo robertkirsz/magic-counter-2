@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 import type { ManaColor } from '../constants/mana'
 import { useDecks } from '../hooks/useDecks'
+import { Commander } from './Commander'
 import { CommanderSearch } from './CommanderSearch'
 import { ManaPicker } from './ManaPicker'
 import { Modal } from './Modal'
@@ -49,8 +50,13 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
     }
   }
 
-  const handleCommandersChange = (commanders: ScryfallCard[]) => {
-    setCommanders(commanders)
+  const handleRemoveCommander = (index: number) => {
+    console.log('🚀 ~ handleRemoveCommander ~ index:', index)
+    setCommanders(commanders.filter((_, i) => i !== index))
+  }
+
+  const handleCommandersChange = (commander: ScryfallCard) => {
+    setCommanders([...commanders, commander])
 
     const allCommandersColors = commanders.map(commander => commander.colors).flat() as ManaColor[]
     const uniqueColors = [...new Set(allCommandersColors)]
@@ -68,13 +74,8 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
   const testIdPrefix = testId ? `${testId}-${baseId}` : baseId
 
   return (
-    <Modal
-      isOpen={true}
-      onClose={() => onCancel?.()}
-      title={mode === 'create' ? 'Add New Deck' : 'Edit Deck'}
-      testId={testIdPrefix}
-    >
-      <div className="flex flex-col gap-4">
+    <Modal isOpen={true} onClose={() => onCancel?.()} testId={testIdPrefix}>
+      <div className="flex flex-col gap-2">
         {/* Name Input */}
         <input
           data-testid={`${testIdPrefix}-name`}
@@ -87,7 +88,21 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
         />
 
         {/* Commanders */}
-        <CommanderSearch commanders={commanders} onCommandersChange={handleCommandersChange} />
+        {commanders.length > 0 && (
+          <div className="flex flex-col gap-2">
+            {commanders.map((commander, index) => (
+              <div key={index} className="bg-gray-50 rounded p-1">
+                <Commander
+                  commander={commander}
+                  onRemove={() => handleRemoveCommander(index)}
+                  showRemoveButton={true}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+
+        <CommanderSearch onCommandersChange={handleCommandersChange} />
 
         {/* Mana Colors */}
         <ManaPicker selectedColors={selectedColors} onColorToggle={handleColorToggle} />
@@ -100,7 +115,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
             disabled={!name.trim() || selectedColors.length === 0}
             onClick={handleSave}
           >
-            {mode === 'create' ? 'Save Deck' : 'Save Changes'}
+            Save
           </button>
 
           <button

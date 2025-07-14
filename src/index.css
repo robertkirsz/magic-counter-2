@@ -56,8 +56,6 @@ dialog::backdrop {
   &::before {
     content: attr(data-testid);
     position: absolute;
-    top: 2px;
-    left: 2px;
     background-color: red;
     color: white;
     font-size: 7px;

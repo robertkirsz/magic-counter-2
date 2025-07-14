@@ -112,7 +112,7 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
   }, [filteredDecks, sortBy, sortDirection])
 
   const hasDecks = sortedDecks.length > 0
-  const hasMultipleDecks = sortedDecks.length > 1
+  const hasMultipleDecks = decks.length > 1
 
   return (
     <>

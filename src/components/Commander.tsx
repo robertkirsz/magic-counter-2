@@ -1,16 +1,23 @@
-import { Trash2 } from 'lucide-react'
 import React from 'react'
 
 import { getGradientFromColors } from '../utils/gradients'
 import { ColorBadges } from './ColorBadges'
+import { ThreeDotMenu } from './ThreeDotMenu'
 
 interface CommanderProps extends React.HTMLAttributes<HTMLDivElement> {
-  commander: string | ScryfallCard
+  testIdIndex?: number
+  commander: ScryfallCard
   showRemoveButton?: boolean
   onRemove?: () => void
 }
 
-export const Commander: React.FC<CommanderProps> = ({ commander, showRemoveButton = false, onRemove, ...props }) => {
+export const Commander: React.FC<CommanderProps> = ({
+  testIdIndex = 0,
+  commander,
+  showRemoveButton = false,
+  onRemove,
+  ...props
+}) => {
   const isScryfallCard = typeof commander === 'object'
   const name = isScryfallCard ? commander.name : commander
   const typeLine = isScryfallCard ? commander.type : ''
@@ -19,42 +26,38 @@ export const Commander: React.FC<CommanderProps> = ({ commander, showRemoveButto
 
   const gradientStyle = getGradientFromColors(colors)
 
-  return (
-    <div className="rounded-lg p-1 border border-gray-200" style={gradientStyle} {...props}>
-      <div className="importance-4 flex gap-1 bg-white rounded overflow-clip">
-        <div className="flex">
-          {/* Card Image */}
-          {imageUrl && (
-            <div
-              title={name}
-              className="importance-2 flex-none h-full w-full max-w-1/3"
-              style={{
-                backgroundImage: `url(${imageUrl})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center'
-              }}
-            />
-          )}
+  const testId = `commander-${testIdIndex}`
+  const testIdPrefix = testId ? `${testId}-...` : '...'
 
-          {/* Card Details */}
-          <div className="flex flex-col p-2">
-            {colors.length > 0 && <ColorBadges colors={colors} className="importance-3 flex-none" />}
-            <div className="font-medium text-sm line-clamp-1">{name}</div>
-            {typeLine && <div className="importance-1 text-xs text-gray-500 line-clamp-1">{typeLine}</div>}
+  return (
+    <div className="rounded-lg p-1 border border-gray-200" style={gradientStyle} data-testid={testId} {...props}>
+      <div className="importance-4 flex gap-1 bg-white rounded overflow-clip">
+        {/* Card Image */}
+        {imageUrl && (
+          <img
+            title={name}
+            className="flex-none max-w-25 object-cover object-center"
+            src={imageUrl}
+            data-testid={`${testIdPrefix}-image`}
+          />
+        )}
+
+        {/* Card Details */}
+        <div className="flex flex-col p-2">
+          {colors.length > 0 && <ColorBadges colors={colors} className="importance-3 flex-none" />}
+
+          <div className="font-medium text-sm line-clamp-1" data-testid={`${testIdPrefix}-name`}>
+            {name}
           </div>
+
+          {typeLine && (
+            <div className="importance-1 text-xs text-gray-500 line-clamp-1" data-testid={`${testIdPrefix}-type-line`}>
+              {typeLine}
+            </div>
+          )}
         </div>
 
-        {showRemoveButton && onRemove && (
-          <div className="flex p-1 self-start">
-            <button
-              title="Remove commander"
-              className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
-              onClick={onRemove}
-            >
-              <Trash2 size={16} />
-            </button>
-          </div>
-        )}
+        {showRemoveButton && onRemove && <ThreeDotMenu asMenu={false} onClose={onRemove} testId={testId} />}
       </div>
     </div>
   )

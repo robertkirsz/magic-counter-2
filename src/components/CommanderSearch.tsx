@@ -3,8 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Commander } from './Commander'
 
 interface CommanderSearchProps {
-  commanders: ScryfallCard[]
-  onCommandersChange: (commanders: ScryfallCard[]) => void
+  onCommandersChange: (commander: ScryfallCard) => void
 }
 
 interface ScryfallCardRaw {
@@ -17,7 +16,7 @@ interface ScryfallCardRaw {
   image_uris?: { art_crop?: string }
 }
 
-export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, onCommandersChange }) => {
+export const CommanderSearch: React.FC<CommanderSearchProps> = ({ onCommandersChange }) => {
   const [newCommander, setNewCommander] = useState('')
   const [suggestions, setSuggestions] = useState<ScryfallCard[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -71,32 +70,14 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ commanders, on
   }, [newCommander])
 
   const handleSuggestionClick = (card: ScryfallCard) => {
-    if (!commanders.some(commander => commander.name === card.name)) {
-      onCommandersChange([...commanders, card])
-    }
-
+    onCommandersChange(card)
     setNewCommander('')
     setSuggestions([])
     setShowSuggestions(false)
   }
 
-  const handleRemoveCommander = (index: number) => {
-    onCommandersChange(commanders.filter((_, i) => i !== index))
-  }
-
   return (
     <div className="flex flex-col gap-2">
-      {/* Commanders List */}
-      {commanders.length > 0 && (
-        <div className="space-y-2">
-          {commanders.map((commander, index) => (
-            <div key={index} className="bg-gray-50 rounded">
-              <Commander commander={commander} onRemove={() => handleRemoveCommander(index)} showRemoveButton={true} />
-            </div>
-          ))}
-        </div>
-      )}
-
       {/* Search Commander Input */}
       <div>
         <input
