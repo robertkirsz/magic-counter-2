@@ -69,7 +69,8 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
       if (uniqueColors.length > 0) setSelectedColors(uniqueColors)
       else setSelectedColors(['C'])
     } else {
-      setSelectedColors([])
+      // Only clear colors if we're in create mode or if the deck has no existing colors
+      if (!deck || deck.colors.length === 0) setSelectedColors([])
     }
   }
 

@@ -1,4 +1,4 @@
-import { Play, Settings } from 'lucide-react'
+import { List, Play, Settings } from 'lucide-react'
 import React, { useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
@@ -13,6 +13,7 @@ interface BoardProps {
 export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const { games, updateGame } = useGames()
   const [showSettings, setShowSettings] = useState(false)
+  const [showActions, setShowActions] = useState(false)
   const game = games.find(g => g.id === gameId)
 
   if (!game) return <div>Game not found</div>
@@ -28,6 +29,19 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const validPlayers = game.players.filter(player => player.userId && player.deckId)
   const canPlay = validPlayers.length === game.players.length
 
+  const formatAction = (action: LifeChangeAction | TurnChangeAction) => {
+    const date = new Date(action.createdAt).toLocaleTimeString()
+
+    if (action.type === 'life-change') {
+      const sign = action.value > 0 ? '+' : ''
+      return `${date}: ${sign}${action.value} life`
+    } else if (action.type === 'turn-change') {
+      return `${date}: Turn change`
+    }
+
+    return `${date}: Unknown action`
+  }
+
   return (
     <div className="flex min-h-screen w-full bg-gradient-to-br from-green-50 to-blue-50">
       {/* Player Sections */}
@@ -38,12 +52,19 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       </div>
 
       {/* Settings Overlay */}
-      <div className="fixed top-2 right-2">
+      <div className="fixed top-2 right-2 flex flex-col gap-2">
         <button
           onClick={() => setShowSettings(true)}
           className="bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-shadow"
         >
           <Settings size={24} />
+        </button>
+
+        <button
+          onClick={() => setShowActions(true)}
+          className="bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-shadow"
+        >
+          <List size={24} />
         </button>
       </div>
 
@@ -71,6 +92,25 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       {showSettings && (
         <Modal isOpen={showSettings} onClose={() => setShowSettings(false)} title="Game Settings">
           <GameForm gameId={gameId} onSave={() => setShowSettings(false)} onCancel={() => setShowSettings(false)} />
+        </Modal>
+      )}
+
+      {/* Actions Modal */}
+      {showActions && (
+        <Modal isOpen={showActions} onClose={() => setShowActions(false)} title="Game Actions">
+          <div className="flex flex-col gap-2">
+            {game.actions.length === 0 ? (
+              <p className="text-center text-gray-500">No actions recorded yet.</p>
+            ) : (
+              <div className="space-y-2">
+                {game.actions.map(action => (
+                  <div key={action.id} className="p-2 border border-gray-200 rounded">
+                    {formatAction(action)}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </Modal>
       )}
     </div>

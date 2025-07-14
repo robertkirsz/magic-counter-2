@@ -26,7 +26,8 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
       id: uuidv4(),
       createdAt: new Date(),
       state: 'setup',
-      activePlayer: null
+      activePlayer: null,
+      actions: []
     }
 
     setGames(prev => [...prev, newGame])

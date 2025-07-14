@@ -38,4 +38,22 @@ type Game = {
   players: Player[]
   activePlayer: User['id'] | null
   turnTracking: boolean
+  actions: (LifeChangeAction | TurnChangeAction)[]
+}
+
+type LifeChangeAction = {
+  id: string
+  createdAt: Date
+  type: 'life-change'
+  value: number
+  from?: User['id']
+  to?: User['id'][]
+}
+
+type TurnChangeAction = {
+  id: string
+  createdAt: Date
+  type: 'turn-change'
+  from: User['id']
+  to: User['id']
 }

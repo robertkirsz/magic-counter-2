@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 
 import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
@@ -30,6 +31,42 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   const player = game.players.find(p => p.id === playerId)
 
   if (!player) return <div>Player not found</div>
+
+  // Calculate current life from actions
+  const calculateLifeFromActions = (playerId: string) => {
+    const player = game.players.find(p => p.id === playerId)
+    if (!player) return 0
+
+    let life = player.life // Start with initial life
+
+    // Apply all life change actions for this player
+    game.actions.forEach(action => {
+      if (action.type === 'life-change') {
+        if (action.to?.includes(playerId)) {
+          life += action.value
+        }
+      }
+    })
+
+    return life
+  }
+
+  const currentLife = calculateLifeFromActions(playerId)
+
+  const handleLifeChange = (value: number) => {
+    const newAction: LifeChangeAction = {
+      id: uuidv4(),
+      createdAt: new Date(),
+      type: 'life-change',
+      value,
+      from: playerId,
+      to: [playerId]
+    }
+
+    updateGame(game.id, {
+      actions: [...game.actions, newAction]
+    })
+  }
 
   const handleUserSelect = (userId: string | null) => {
     updateGame(game.id, {
@@ -72,7 +109,21 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   if (gameIsActive) {
     return (
       <div className="flex flex-col items-center justify-center gap-1 border border-gray-200 rounded-lg p-2">
-        <div className="flex items-center gap-1">{player.life}</div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => handleLifeChange(-1)}
+            className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+          >
+            -
+          </button>
+          <div className="text-xl font-bold">{currentLife}</div>
+          <button
+            onClick={() => handleLifeChange(1)}
+            className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition"
+          >
+            +
+          </button>
+        </div>
       </div>
     )
   }
