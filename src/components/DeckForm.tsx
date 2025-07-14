@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import type { ManaColor } from '../constants/mana'
 import { useDecks } from '../hooks/useDecks'
@@ -18,9 +18,12 @@ interface DeckFormProps {
 export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId = null, onSave, onCancel }) => {
   const { decks, addDeck, updateDeck } = useDecks()
   const deck = decks.find(d => d.id === deckId)
-  const [name, setName] = useState(deck?.name || '')
-  const [selectedColors, setSelectedColors] = useState<ManaColor[]>(deck?.colors || [])
-  const [commanders, setCommanders] = useState<ScryfallCard[]>(deck?.commanders || [])
+
+  const [name, setName] = useState<Deck['name']>(deck?.name || '')
+  const [selectedColors, setSelectedColors] = useState<Deck['colors']>(deck?.colors || [])
+  const [commanders, setCommanders] = useState<Deck['commanders']>(deck?.commanders || [])
+
+  useEffect(() => updateColors(commanders), [commanders])
 
   const handleColorToggle = (color: ManaColor) => {
     setSelectedColors(prev => (prev.includes(color) ? prev.filter(c => c !== color) : [...prev, color]))
@@ -32,7 +35,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
         updateDeck(deckId, {
           name: name.trim(),
           colors: selectedColors,
-          commanders: commanders.length > 0 ? commanders : null
+          commanders: commanders.length > 0 ? commanders : []
         })
 
         onSave?.(deckId)
@@ -42,7 +45,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
       const newDeck = addDeck({
         name: name.trim(),
         colors: selectedColors,
-        commanders: commanders.length > 0 ? commanders : null,
+        commanders: commanders.length > 0 ? commanders : [],
         createdBy: userId
       })
 
@@ -50,18 +53,19 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
     }
   }
 
-  const handleRemoveCommander = (index: number) => {
-    console.log('🚀 ~ handleRemoveCommander ~ index:', index)
-    setCommanders(commanders.filter((_, i) => i !== index))
+  const handleCommanderChange = (commander: ScryfallCard) => {
+    setCommanders(commanders => [...commanders, commander])
   }
 
-  const handleCommandersChange = (commander: ScryfallCard) => {
-    setCommanders([...commanders, commander])
+  const handleRemoveCommander = (index: number) => {
+    setCommanders(commanders => commanders.filter((_, i) => i !== index))
+  }
 
-    const allCommandersColors = commanders.map(commander => commander.colors).flat() as ManaColor[]
+  const updateColors = (newCommanders: ScryfallCard[]) => {
+    const allCommandersColors = newCommanders.map(commander => commander.colors).flat() as ManaColor[]
     const uniqueColors = [...new Set(allCommandersColors)]
 
-    if (commanders.length > 0) {
+    if (newCommanders.length > 0) {
       if (uniqueColors.length > 0) setSelectedColors(uniqueColors)
       else setSelectedColors(['C'])
     } else {
@@ -102,7 +106,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
           </div>
         )}
 
-        <CommanderSearch onCommandersChange={handleCommandersChange} />
+        <CommanderSearch onChange={handleCommanderChange} />
 
         {/* Mana Colors */}
         <ManaPicker selectedColors={selectedColors} onColorToggle={handleColorToggle} />

@@ -15,7 +15,7 @@ type Deck = {
   createdBy: User['id'] | null
   name: string
   colors: ManaColor[]
-  commanders: ScryfallCard[] | null
+  commanders: ScryfallCard[]
 }
 
 type User = {

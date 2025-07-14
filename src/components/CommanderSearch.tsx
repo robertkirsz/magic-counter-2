@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { Commander } from './Commander'
 
 interface CommanderSearchProps {
-  onCommandersChange: (commander: ScryfallCard) => void
+  onChange: (commander: ScryfallCard) => void
 }
 
 interface ScryfallCardRaw {
@@ -16,7 +16,7 @@ interface ScryfallCardRaw {
   image_uris?: { art_crop?: string }
 }
 
-export const CommanderSearch: React.FC<CommanderSearchProps> = ({ onCommandersChange }) => {
+export const CommanderSearch: React.FC<CommanderSearchProps> = ({ onChange }) => {
   const [newCommander, setNewCommander] = useState('')
   const [suggestions, setSuggestions] = useState<ScryfallCard[]>([])
   const [isLoading, setIsLoading] = useState(false)
@@ -70,7 +70,7 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ onCommandersCh
   }, [newCommander])
 
   const handleSuggestionClick = (card: ScryfallCard) => {
-    onCommandersChange(card)
+    onChange(card)
     setNewCommander('')
     setSuggestions([])
     setShowSuggestions(false)
