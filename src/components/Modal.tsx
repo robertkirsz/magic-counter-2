@@ -2,14 +2,14 @@ import { X } from 'lucide-react'
 import React, { useEffect, useRef } from 'react'
 
 interface ModalProps {
+  testId?: string
   isOpen: boolean
-  onClose: () => void
-  title: string
+  title?: string
   children: React.ReactNode
-  showCloseButton?: boolean
+  onClose?: () => void
 }
 
-export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, showCloseButton = true }) => {
+export const Modal: React.FC<ModalProps> = ({ testId = '', isOpen, title, children, onClose }) => {
   const dialogRef = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, 
     if (!dialog) return
 
     const handleClose = () => {
-      onClose()
+      onClose?.()
     }
 
     // TODO: buggy
@@ -57,20 +57,24 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, 
     }
   }, [onClose])
 
+  const testIdPrefix = testId ? `${testId}-modal` : 'modal'
+
   return (
     <dialog
       ref={dialogRef}
+      data-testid={testIdPrefix}
       className="flex flex-col rounded-lg p-0 m-2 border-0 shadow-lg max-h-[90vh] overflow-visible"
     >
       <div className="flex flex-none justify-between items-center pl-4 pt-2 pr-2" onClick={e => e.stopPropagation()}>
-        <h3 className="text-xl font-semibold">{title}</h3>
+        {title && <h3 className="text-xl font-semibold">{title}</h3>}
 
-        {showCloseButton && (
+        {onClose && (
           <button
             type="button"
-            onClick={onClose}
-            className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
+            data-testid={`${testIdPrefix}-close`}
             aria-label="Close modal"
+            className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
+            onClick={onClose}
           >
             <X size={24} />
           </button>
@@ -80,23 +84,6 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, 
       <div className="px-4 pt-2 pb-4 flex-1" onClick={e => e.stopPropagation()}>
         {children}
       </div>
-
-      <style>{`
-        dialog[open] {
-          animation: modal-fade-in 0.15s;
-          margin: auto;
-        }
-        
-        dialog::backdrop {
-          background: rgba(0,0,0,0.5);
-          cursor: pointer;
-        }
-        
-        @keyframes modal-fade-in {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-      `}</style>
     </dialog>
   )
 }

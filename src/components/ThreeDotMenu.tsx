@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Modal } from './Modal'
 
 interface ThreeDotMenuProps extends React.HTMLAttributes<HTMLDivElement> {
+  testId?: string
   asMenu?: boolean
   onEdit?: () => void
   onClose?: () => void
@@ -11,6 +12,7 @@ interface ThreeDotMenuProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
+  testId = '',
   asMenu = true,
   onEdit,
   onClose,
@@ -24,6 +26,8 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
   const [menuAlignment, setMenuAlignment] = useState<'right' | 'left'>('right')
   const wrapperRef = useRef<HTMLDivElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
+
+  const testIdPrefix = testId ? `${testId}-...` : '...'
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -51,6 +55,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
       <div className={`flex gap-1 empty:hidden ${className}`} {...props}>
         {onEdit && (
           <button
+            data-testid={`${testIdPrefix}-edit-button`}
             onClick={onEdit}
             className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
             title="Edit"
@@ -61,6 +66,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
 
         {onRemove && (
           <button
+            data-testid={`${testIdPrefix}-delete-button`}
             onClick={() => setShowConfirm(true)}
             className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
             title="Delete"
@@ -88,6 +94,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
         title="More options"
         className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
         onClick={() => setIsOpen(!isOpen)}
+        data-testid={testIdPrefix}
       >
         <MoreVertical size={16} />
       </button>
@@ -101,6 +108,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
         >
           {onEdit && (
             <button
+              data-testid={`${testIdPrefix}-edit`}
               onClick={() => {
                 onEdit()
                 setIsOpen(false)
@@ -114,6 +122,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
 
           {onRemove && (
             <button
+              data-testid={`${testIdPrefix}-delete`}
               onClick={() => {
                 setShowConfirm(true)
                 setIsOpen(false)
@@ -147,12 +156,14 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
             <p className="text-gray-600">Are you sure you want to delete this item? This action cannot be undone.</p>
             <div className="flex gap-2 justify-end">
               <button
+                data-testid={`${testIdPrefix}-confirm-cancel-button`}
                 onClick={() => setShowConfirm(false)}
                 className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
               >
                 Cancel
               </button>
               <button
+                data-testid={`${testIdPrefix}-confirm-delete-button`}
                 onClick={() => {
                   onRemove?.()
                   setShowConfirm(false)

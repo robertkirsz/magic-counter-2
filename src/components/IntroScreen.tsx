@@ -47,6 +47,7 @@ export const IntroScreen: React.FC = () => {
           )}
 
           <button
+            data-testid="intro-screen-users-button"
             onClick={() => setShowUsers(true)}
             className="w-full px-4 md:px-6 py-3 md:py-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 active:bg-purple-800 transition-colors flex items-center justify-center gap-2 md:gap-3 text-base md:text-lg font-medium touch-manipulation"
           >
@@ -73,21 +74,21 @@ export const IntroScreen: React.FC = () => {
 
       {/* Games Modal */}
       {showGames && (
-        <Modal isOpen={showGames} onClose={() => setShowGames(false)} title="Games">
+        <Modal testId="games" isOpen={showGames} onClose={() => setShowGames(false)} title="Games">
           <Games />
         </Modal>
       )}
 
       {/* Users Modal */}
       {showUsers && (
-        <Modal isOpen={showUsers} onClose={() => setShowUsers(false)} title="Users">
+        <Modal testId="users" isOpen={showUsers} onClose={() => setShowUsers(false)} title="Users">
           <Users />
         </Modal>
       )}
 
       {/* Decks Modal */}
       {showDecks && (
-        <Modal isOpen={showDecks} onClose={() => setShowDecks(false)} title="Decks">
+        <Modal testId="decks" isOpen={showDecks} onClose={() => setShowDecks(false)} title="Decks">
           <Decks />
         </Modal>
       )}

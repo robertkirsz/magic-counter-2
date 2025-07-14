@@ -1,10 +1,10 @@
 import { Board } from './components/Board'
-import { Decks } from './components/Decks'
+// import { Decks } from './components/Decks'
 import { DevToolsPanel } from './components/DevToolsPanel'
-import { Games } from './components/Games'
+// import { Games } from './components/Games'
 import { ImportanceSlider } from './components/ImportanceSlider'
 import { IntroScreen } from './components/IntroScreen'
-import { Users } from './components/Users'
+// import { Users } from './components/Users'
 import { DecksProvider } from './contexts/DecksContext'
 import { GamesProvider } from './contexts/GamesContext'
 import { ImportanceProvider } from './contexts/ImportanceContext'
@@ -39,7 +39,7 @@ const AppMain: React.FC = () => {
       {setupGames[0] && <Board gameId={setupGames[0].id} />}
       {activeGames.length === 0 && <IntroScreen />}
 
-      <div className="flex flex-col lg:flex-row gap-8 p-4 pb-16">
+      {/* <div className="flex flex-col lg:flex-row gap-8 p-4 pb-16">
         <div className="flex-1">
           <Games />
         </div>
@@ -49,7 +49,7 @@ const AppMain: React.FC = () => {
         <div className="flex-1">
           <Decks />
         </div>
-      </div>
+      </div> */}
     </>
   )
 }

@@ -7,13 +7,14 @@ import { ManaPicker } from './ManaPicker'
 import { Modal } from './Modal'
 
 interface DeckFormProps {
+  testId?: string
   deckId?: string
   userId?: User['id'] | null
   onSave?: (deckId: string) => void
   onCancel?: () => void
 }
 
-export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSave, onCancel }) => {
+export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId = null, onSave, onCancel }) => {
   const { decks, addDeck, updateDeck } = useDecks()
   const deck = decks.find(d => d.id === deckId)
   const [name, setName] = useState(deck?.name || '')
@@ -63,12 +64,20 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
   }
 
   const mode = deck ? 'edit' : 'create'
+  const baseId = `deck-form-${mode}`
+  const testIdPrefix = testId ? `${testId}-${baseId}` : baseId
 
   return (
-    <Modal isOpen={true} onClose={() => onCancel?.()} title={mode === 'create' ? 'Add New Deck' : 'Edit Deck'}>
+    <Modal
+      isOpen={true}
+      onClose={() => onCancel?.()}
+      title={mode === 'create' ? 'Add New Deck' : 'Edit Deck'}
+      testId={testIdPrefix}
+    >
       <div className="flex flex-col gap-4">
         {/* Name Input */}
         <input
+          data-testid={`${testIdPrefix}-name`}
           type="text"
           value={name}
           onChange={e => setName(e.target.value)}
@@ -86,6 +95,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
         {/* Action Buttons */}
         <div className="flex gap-2 justify-end">
           <button
+            data-testid={`${testIdPrefix}-save`}
             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
             disabled={!name.trim() || selectedColors.length === 0}
             onClick={handleSave}
@@ -93,7 +103,11 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
             {mode === 'create' ? 'Save Deck' : 'Save Changes'}
           </button>
 
-          <button onClick={onCancel} className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
+          <button
+            data-testid={`${testIdPrefix}-cancel`}
+            onClick={onCancel}
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+          >
             Cancel
           </button>
         </div>

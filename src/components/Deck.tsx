@@ -10,12 +10,22 @@ import { ThreeDotMenu } from './ThreeDotMenu'
 
 interface DeckProps extends React.HTMLAttributes<HTMLDivElement> {
   id: Deck['id']
+  testId?: string
+  testIndex?: number
   useContextControls?: boolean
   showCreator?: boolean
   onRemove?: (deckId: string) => void
 }
 
-export const Deck: React.FC<DeckProps> = ({ id, useContextControls, showCreator = true, onRemove, ...props }) => {
+export const Deck: React.FC<DeckProps> = ({
+  id,
+  testId = '',
+  testIndex = 0,
+  useContextControls,
+  showCreator = true,
+  onRemove,
+  ...props
+}) => {
   const { decks, removeDeck } = useDecks()
   const { users } = useUsers()
 
@@ -40,8 +50,10 @@ export const Deck: React.FC<DeckProps> = ({ id, useContextControls, showCreator 
     if (onRemove) onRemove(deck.id)
   }
 
+  const testIdPrefix = testId ? `${testId}-deck-${testIndex}` : `deck-${testIndex}`
+
   return (
-    <div className="rounded-lg p-1 border border-gray-200" style={gradientStyle} {...props}>
+    <div data-testid={testIdPrefix} className="rounded-lg p-1 border border-gray-200" style={gradientStyle} {...props}>
       <div className="flex flex-col gap-1 p-2 bg-white rounded">
         <div className="flex flex-col gap-2">
           <div className="flex gap-1 items-center">
@@ -53,6 +65,7 @@ export const Deck: React.FC<DeckProps> = ({ id, useContextControls, showCreator 
 
             {menuVisible && (
               <ThreeDotMenu
+                testId={testIdPrefix}
                 onEdit={useContextControls ? handleEdit : undefined}
                 onRemove={useContextControls || onRemove ? handleRemove : undefined}
               />
