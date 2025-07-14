@@ -5,6 +5,7 @@ import { useGames } from '../hooks/useGames'
 import { GameForm } from './GameForm'
 import { Modal } from './Modal'
 import { PlayerSection } from './PlayerSection'
+import { ThreeDotMenu } from './ThreeDotMenu'
 
 interface BoardProps {
   gameId: string
@@ -34,12 +35,18 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
     if (action.type === 'life-change') {
       const sign = action.value > 0 ? '+' : ''
-      return `${date}: ${sign}${action.value} life`
+      return `${date}: ${action.from} ${sign}${action.value} life`
     } else if (action.type === 'turn-change') {
       return `${date}: Turn change`
     }
 
     return `${date}: Unknown action`
+  }
+
+  const handleActionRemove = (actionId: string) => {
+    updateGame(game.id, {
+      actions: game.actions.filter(action => action.id !== actionId)
+    })
   }
 
   return (
@@ -104,8 +111,9 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
             ) : (
               <div className="space-y-2">
                 {game.actions.map(action => (
-                  <div key={action.id} className="p-2 border border-gray-200 rounded">
+                  <div key={action.id} className="flex gap-1 p-2 border border-gray-200 rounded">
                     {formatAction(action)}
+                    <ThreeDotMenu onClose={() => handleActionRemove(action.id)} asMenu={false} />
                   </div>
                 ))}
               </div>
