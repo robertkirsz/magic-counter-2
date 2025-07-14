@@ -4,5 +4,5 @@
 [build.environment]
   NODE_VERSION = "24"
 
-[build.lifecycle]
-  postBuild = "npm run cy:run || true" 
+[[plugins]]
+  package = "netlify-plugin-cypress"
