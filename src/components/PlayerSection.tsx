@@ -56,7 +56,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   const player = game.players.find(p => p.id === playerId)
 
   if (!player) return <div>Player not found</div>
-
   // Calculate current life from actions
   const calculateLifeFromActions = (playerId: string) => {
     const player = game.players.find(p => p.id === playerId)

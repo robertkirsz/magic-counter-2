@@ -5,11 +5,12 @@ interface ModalProps {
   testId?: string
   isOpen: boolean
   title?: string
+  fullSize?: boolean
   children: React.ReactNode
   onClose?: () => void
 }
 
-export const Modal: React.FC<ModalProps> = ({ testId = '', isOpen, title, children, onClose }) => {
+export const Modal: React.FC<ModalProps> = ({ testId = '', isOpen, title, children, onClose, fullSize = false }) => {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const childrenRef = useRef<HTMLDivElement>(null)
 
@@ -51,9 +52,9 @@ export const Modal: React.FC<ModalProps> = ({ testId = '', isOpen, title, childr
     <dialog
       ref={dialogRef}
       data-testid={testIdPrefix}
-      className="flex flex-col rounded-lg shadow-lg max-h-[90vh] overflow-y-auto"
+      className={`flex flex-col rounded-lg shadow-lg overflow-y-auto ${fullSize ? 'w-full h-full' : ''}`}
     >
-      <div ref={childrenRef} className="flex flex-col gap-2 px-2 pt-2 pb-4">
+      <div ref={childrenRef} className="flex flex-col gap-2 px-4 pt-2 pb-4">
         <div className="flex justify-between items-center">
           {title && <h3 className="text-xl font-semibold">{title}</h3>}
 

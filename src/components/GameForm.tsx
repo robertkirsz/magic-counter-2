@@ -112,7 +112,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel }) 
         <div className="flex gap-2 items-center">
           <button
             className="px-4 py-2 bg-gray-200 rounded-lg transition-colors hover:bg-gray-300"
-            onClick={() => handleLifeChange(startingLife - 1)}
+            onClick={() => handleLifeChange(startingLife - 5)}
           >
             -
           </button>
@@ -133,7 +133,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel }) 
 
           <button
             className="px-4 py-2 bg-gray-200 rounded-lg transition-colors hover:bg-gray-300"
-            onClick={() => handleLifeChange(startingLife + 1)}
+            onClick={() => handleLifeChange(startingLife + 5)}
           >
             +
           </button>

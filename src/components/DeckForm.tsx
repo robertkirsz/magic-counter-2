@@ -79,7 +79,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
   const testIdPrefix = testId ? `${testId}-${baseId}` : baseId
 
   return (
-    <Modal isOpen={true} onClose={() => onCancel?.()} testId={testIdPrefix}>
+    <Modal isOpen onClose={() => onCancel?.()} testId={testIdPrefix}>
       <div className="flex flex-col gap-2">
         {/* Name Input */}
         <input
@@ -97,11 +97,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
           <div className="flex flex-col gap-2">
             {commanders.map((commander, index) => (
               <div key={index} className="bg-gray-50 rounded p-1">
-                <Commander
-                  commander={commander}
-                  onRemove={() => handleRemoveCommander(index)}
-                  showRemoveButton={true}
-                />
+                <Commander commander={commander} onRemove={() => handleRemoveCommander(index)} showRemoveButton />
               </div>
             ))}
           </div>
