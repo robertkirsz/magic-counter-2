@@ -58,8 +58,11 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, 
   }, [onClose])
 
   return (
-    <dialog ref={dialogRef} className="rounded-lg p-0 m-2 border-0 shadow-lg overflow-y-auto max-h-[90vh]">
-      <div className="flex justify-between items-center pl-4 pt-2 pr-2" onClick={e => e.stopPropagation()}>
+    <dialog
+      ref={dialogRef}
+      className="flex flex-col rounded-lg p-0 m-2 border-0 shadow-lg max-h-[90vh] overflow-visible"
+    >
+      <div className="flex flex-none justify-between items-center pl-4 pt-2 pr-2" onClick={e => e.stopPropagation()}>
         <h3 className="text-xl font-semibold">{title}</h3>
 
         {showCloseButton && (
@@ -74,7 +77,7 @@ export const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, 
         )}
       </div>
 
-      <div className="px-4 pt-2 pb-4" onClick={e => e.stopPropagation()}>
+      <div className="px-4 pt-2 pb-4 flex-1" onClick={e => e.stopPropagation()}>
         {children}
       </div>
 
