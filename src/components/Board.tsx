@@ -21,15 +21,19 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
     updateGame(game.id, { state: 'active' })
   }
 
+  const handleFinish = () => {
+    updateGame(game.id, { state: 'finished' })
+  }
+
   const validPlayers = game.players.filter(player => player.userId && player.deckId)
   const canPlay = validPlayers.length === game.players.length
 
   return (
     <div className="flex min-h-screen w-full bg-gradient-to-br from-green-50 to-blue-50">
       {/* Player Sections */}
-      <div className="flex-1 grid grid-cols-2 grid-rows-2">
+      <div className="flex-1 grid grid-cols-2">
         {game.players.map(player => (
-          <PlayerSection key={player.id} playerId={player.id} />
+          <PlayerSection key={player.id} gameId={gameId} playerId={player.id} />
         ))}
       </div>
 
@@ -43,16 +47,24 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         </button>
       </div>
 
-      {/* Play Button */}
+      {/* Play/Finish Button */}
       <div className="fixed bottom-2 left-1/2 -translate-x-1/2 flex justify-center w-full">
-        <button
-          disabled={!canPlay}
-          onClick={handlePlay}
-          className="bg-green-600 hover:bg-green-700 text-white rounded-full px-4 py-2 shadow-lg hover:shadow-xl transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <Play size={32} />
-          <span className="text-lg font-bold">PLAY</span>
-        </button>
+        {game.state !== 'finished' && (
+          <button
+            disabled={!canPlay && game.state !== 'active'}
+            onClick={game.state === 'active' ? handleFinish : handlePlay}
+            className={`bg-green-600 hover:bg-green-700 text-white rounded-full px-4 py-2 shadow-lg hover:shadow-xl transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
+          >
+            {game.state === 'active' ? (
+              <span className="text-lg font-bold">FINISH</span>
+            ) : (
+              <>
+                <Play size={32} />
+                <span className="text-lg font-bold">PLAY</span>
+              </>
+            )}
+          </button>
+        )}
       </div>
 
       {/* Settings Modal */}

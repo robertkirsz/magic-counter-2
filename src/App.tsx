@@ -1,10 +1,7 @@
 import { Board } from './components/Board'
-// import { Decks } from './components/Decks'
 import { DevToolsPanel } from './components/DevToolsPanel'
-// import { Games } from './components/Games'
 import { ImportanceSlider } from './components/ImportanceSlider'
 import { IntroScreen } from './components/IntroScreen'
-// import { Users } from './components/Users'
 import { DecksProvider } from './contexts/DecksContext'
 import { GamesProvider } from './contexts/GamesContext'
 import { ImportanceProvider } from './contexts/ImportanceContext'
@@ -31,25 +28,13 @@ const AppContent: React.FC = () => {
 
 const AppMain: React.FC = () => {
   const { games } = useGames()
-  const setupGames = games.filter(game => game.state === 'setup')
   const activeGames = games.filter(game => game.state === 'active')
+  const lastNotFinishedGame = games.filter(game => game.state !== 'finished').pop()
 
   return (
     <>
-      {setupGames[0] && <Board gameId={setupGames[0].id} />}
+      {lastNotFinishedGame && <Board gameId={lastNotFinishedGame.id} />}
       {activeGames.length === 0 && <IntroScreen />}
-
-      {/* <div className="flex flex-col lg:flex-row gap-8 p-4 pb-16">
-        <div className="flex-1">
-          <Games />
-        </div>
-        <div className="flex-1">
-          <Users />
-        </div>
-        <div className="flex-1">
-          <Decks />
-        </div>
-      </div> */}
     </>
   )
 }

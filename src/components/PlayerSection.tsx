@@ -10,10 +10,11 @@ import { ThreeDotMenu } from './ThreeDotMenu'
 import { UserForm } from './UserForm'
 
 interface PlayerSectionProps {
+  gameId: Game['id']
   playerId: Player['id']
 }
 
-export const PlayerSection: React.FC<PlayerSectionProps> = ({ playerId }) => {
+export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }) => {
   const { users } = useUsers()
   const { decks } = useDecks()
   const { games, updateGame } = useGames()
@@ -22,9 +23,9 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ playerId }) => {
   const [showDeckForm, setShowDeckForm] = useState<boolean>(false)
   const [showUserForm, setShowUserForm] = useState<boolean>(false)
 
-  const game = games[games.length - 1]
+  const game = games.find(g => g.id === gameId)
 
-  if (!game || !['setup', 'active'].includes(game.state)) return <div>Game not found</div>
+  if (!game) return <div>Game not found</div>
 
   const player = game.players.find(p => p.id === playerId)
 
@@ -66,39 +67,47 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ playerId }) => {
     return 0
   })
 
-  return (
-    <>
+  const gameIsActive = game.state === 'active'
+
+  if (gameIsActive) {
+    return (
       <div className="flex flex-col items-center justify-center gap-1 border border-gray-200 rounded-lg p-2">
-        {player.userId && (
-          <div className="flex items-center gap-1">
-            <button onClick={() => setShowUserSelect(true)}>
-              <h1 className="text-lg font-bold">{getUserName(player.userId)}</h1>
-            </button>
-            <ThreeDotMenu onClose={() => handleUserSelect(null)} asMenu={false} />
-          </div>
-        )}
-
-        {!player.userId && (
-          <button onClick={() => setShowUserSelect(true)} className="bg-blue-500 text-white rounded-lg p-2 w-full">
-            Select User
-          </button>
-        )}
-
-        {player.deckId && (
-          <div className="flex items-center gap-1">
-            <button onClick={() => setShowDeckSelect(true)}>
-              <Deck id={player.deckId} />
-            </button>
-            <ThreeDotMenu onClose={() => handleDeckSelect(null)} asMenu={false} />
-          </div>
-        )}
-
-        {!player.deckId && (
-          <button onClick={() => setShowDeckSelect(true)} className="bg-green-500 text-white rounded-lg p-2 w-full">
-            Choose Deck
-          </button>
-        )}
+        <div className="flex items-center gap-1">{player.life}</div>
       </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col items-center justify-center gap-1 border border-gray-200 rounded-lg p-2">
+      {player.userId && (
+        <div className="flex items-center gap-1">
+          <button onClick={() => setShowUserSelect(true)}>
+            <h1 className="text-lg font-bold">{getUserName(player.userId)}</h1>
+          </button>
+          <ThreeDotMenu onClose={() => handleUserSelect(null)} asMenu={false} />
+        </div>
+      )}
+
+      {!player.userId && (
+        <button onClick={() => setShowUserSelect(true)} className="bg-blue-500 text-white rounded-lg p-2 w-full">
+          Select User
+        </button>
+      )}
+
+      {player.deckId && (
+        <div className="flex items-center gap-1">
+          <button onClick={() => setShowDeckSelect(true)}>
+            <Deck id={player.deckId} />
+          </button>
+          <ThreeDotMenu onClose={() => handleDeckSelect(null)} asMenu={false} />
+        </div>
+      )}
+
+      {!player.deckId && (
+        <button onClick={() => setShowDeckSelect(true)} className="bg-green-500 text-white rounded-lg p-2 w-full">
+          Choose Deck
+        </button>
+      )}
 
       {/* User Selection Modal */}
       {showUserSelect && (
@@ -194,6 +203,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ playerId }) => {
           onCancel={() => setShowUserForm(false)}
         />
       )}
-    </>
+    </div>
   )
 }

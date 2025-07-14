@@ -6,7 +6,7 @@ export const ImportanceSlider: React.FC = () => {
   const { importance, setImportance } = useImportance()
 
   return (
-    <div className="flex flex-col items-center space-y-2 fixed bottom-2 left-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-2 border border-gray-200 dark:border-gray-700 z-50">
+    <div className="flex flex-col items-center space-y-2 fixed bottom-2 left-2 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-2 border border-gray-200 dark:border-gray-700">
       <input
         id="importance-slider"
         type="range"
