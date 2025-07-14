@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import { useDecks } from '../hooks/useDecks'
@@ -23,8 +23,33 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   const [showDeckSelect, setShowDeckSelect] = useState<boolean>(false)
   const [showDeckForm, setShowDeckForm] = useState<boolean>(false)
   const [showUserForm, setShowUserForm] = useState<boolean>(false)
+  const [pendingLifeChanges, setPendingLifeChanges] = useState<number>(0)
+
+  // Debouncing for life changes
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const pendingLifeChangesRef = useRef<number>(0)
 
   const game = games.find(g => g.id === gameId)
+
+  const commitLifeChanges = useCallback(() => {
+    if (!game || pendingLifeChangesRef.current === 0) return
+
+    const newAction: LifeChangeAction = {
+      id: uuidv4(),
+      createdAt: new Date(),
+      type: 'life-change',
+      value: pendingLifeChangesRef.current,
+      from: playerId,
+      to: [playerId]
+    }
+
+    updateGame(game.id, {
+      actions: [...game.actions, newAction]
+    })
+
+    pendingLifeChangesRef.current = 0
+    setPendingLifeChanges(0)
+  }, [game, playerId, updateGame])
 
   if (!game) return <div>Game not found</div>
 
@@ -52,20 +77,22 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   }
 
   const currentLife = calculateLifeFromActions(playerId)
+  const displayLife = currentLife + pendingLifeChanges
 
   const handleLifeChange = (value: number) => {
-    const newAction: LifeChangeAction = {
-      id: uuidv4(),
-      createdAt: new Date(),
-      type: 'life-change',
-      value,
-      from: playerId,
-      to: [playerId]
+    // Clear existing timeout
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current)
     }
 
-    updateGame(game.id, {
-      actions: [...game.actions, newAction]
-    })
+    // Add to pending changes
+    pendingLifeChangesRef.current += value
+    setPendingLifeChanges(prev => prev + value)
+
+    // Set new timeout
+    debounceTimeoutRef.current = setTimeout(() => {
+      commitLifeChanges()
+    }, 1000)
   }
 
   const handleUserSelect = (userId: string | null) => {
@@ -116,7 +143,15 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
           >
             -
           </button>
-          <div className="text-xl font-bold">{currentLife}</div>
+          <div className={`text-xl font-bold ${pendingLifeChanges !== 0 ? 'text-blue-600' : ''}`}>
+            {displayLife}
+            {pendingLifeChanges !== 0 && (
+              <span className="text-sm text-gray-500 ml-1">
+                ({pendingLifeChanges > 0 ? '+' : ''}
+                {pendingLifeChanges})
+              </span>
+            )}
+          </div>
           <button
             onClick={() => handleLifeChange(1)}
             className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition"
