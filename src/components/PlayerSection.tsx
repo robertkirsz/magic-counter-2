@@ -91,8 +91,10 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
     // Set new timeout
     debounceTimeoutRef.current = setTimeout(() => {
       commitLifeChanges()
-    }, 1000)
+    }, 1500)
   }
+
+  // TODO: When two life changes happens at one, the previous one gets reverted/not commited
 
   const handleUserSelect = (userId: string | null) => {
     updateGame(game.id, {
@@ -131,10 +133,37 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   })
 
   const gameIsActive = game.state === 'active'
+  const playerIsActive = game.activePlayer === playerId
 
   if (gameIsActive) {
     return (
       <div className="flex flex-col items-center justify-center gap-1 border border-gray-200 rounded-lg p-2">
+        {playerIsActive && <div className="text-sm text-gray-500">Active</div>}
+        {playerIsActive && (
+          <button
+            className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition text-xs mb-1"
+            onClick={() => {
+              updateGame(game.id, { activePlayer: undefined })
+            }}
+          >
+            Clear Active Player
+          </button>
+        )}
+        {playerIsActive && game.turnTracking && (
+          <button
+            className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 transition text-xs mb-1"
+            onClick={() => {
+              // Find the next player in turn order
+              const currentIndex = game.players.findIndex(p => p.id === playerId)
+              const nextIndex = (currentIndex + 1) % game.players.length
+              const nextPlayer = game.players[nextIndex]
+              updateGame(game.id, { activePlayer: nextPlayer.id })
+            }}
+          >
+            Pass Turn
+          </button>
+        )}
+
         <div className="flex items-center gap-2">
           <button
             onClick={() => handleLifeChange(-1)}
@@ -158,6 +187,18 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
             +
           </button>
         </div>
+
+        {/* Gain Priority Button */}
+        {game.turnTracking && !playerIsActive && (
+          <button
+            className="px-3 py-1 bg-purple-600 text-white rounded hover:bg-purple-700 transition text-xs mb-1"
+            onClick={() => {
+              updateGame(game.id, { activePlayer: player.id })
+            }}
+          >
+            Gain Priority
+          </button>
+        )}
       </div>
     )
   }

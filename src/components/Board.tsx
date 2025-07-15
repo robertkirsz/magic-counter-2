@@ -1,7 +1,8 @@
 import { List, Play, Settings } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
+import { useUsers } from '../hooks/useUsers'
 import { GameForm } from './GameForm'
 import { Modal } from './Modal'
 import { PlayerSection } from './PlayerSection'
@@ -13,14 +14,44 @@ interface BoardProps {
 
 export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const { games, updateGame } = useGames()
+  const { users } = useUsers()
+
+  const game = games.find(g => g.id === gameId)
+  const previousActivePlayerRef = useRef<string | null | undefined>(game?.activePlayer)
+
+  const [showStartModal, setShowStartModal] = useState(game?.state === 'active' && game?.activePlayer === undefined)
   const [showSettings, setShowSettings] = useState(false)
   const [showActions, setShowActions] = useState(false)
-  const game = games.find(g => g.id === gameId)
+  const [showPlayerChoice, setShowPlayerChoice] = useState(false)
+
+  // Track activePlayer changes and dispatch TurnChangeAction
+  useEffect(() => {
+    if (!game) return
+
+    const currentActivePlayer = game.activePlayer
+    const previousActivePlayer = previousActivePlayerRef.current
+
+    if (currentActivePlayer !== previousActivePlayer) {
+      const newAction: TurnChangeAction = {
+        id: crypto.randomUUID(),
+        createdAt: new Date(),
+        type: 'turn-change',
+        from: previousActivePlayer || null,
+        to: currentActivePlayer || null
+      }
+
+      updateGame(game.id, { actions: [...game.actions, newAction] })
+    }
+
+    // Update the ref for next comparison
+    previousActivePlayerRef.current = currentActivePlayer
+  }, [game?.activePlayer, game, updateGame])
 
   if (!game) return <div>Game not found</div>
 
   const handlePlay = () => {
     updateGame(game.id, { state: 'active' })
+    setShowStartModal(true)
   }
 
   const handleFinish = () => {
@@ -30,6 +61,30 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const validPlayers = game.players.filter(player => player.userId && player.deckId)
   const canPlay = validPlayers.length === game.players.length
 
+  const handleChooseAtRandom = () => {
+    const players = validPlayers
+    const randomIndex = Math.floor(Math.random() * players.length)
+    const selectedPlayer = players[randomIndex]
+
+    updateGame(game.id, { activePlayer: selectedPlayer.id })
+    setShowStartModal(false)
+  }
+
+  const handleChoosePlayer = (playerId: string) => {
+    updateGame(game.id, { activePlayer: playerId })
+    resetState()
+  }
+
+  const handleSkip = () => {
+    updateGame(game.id, { activePlayer: null })
+    resetState()
+  }
+
+  const resetState = () => {
+    setShowStartModal(false)
+    setShowPlayerChoice(false)
+  }
+
   const formatAction = (action: LifeChangeAction | TurnChangeAction) => {
     const date = new Date(action.createdAt).toLocaleTimeString()
 
@@ -37,7 +92,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       const sign = action.value > 0 ? '+' : ''
       return `${date}: ${action.from} ${sign}${action.value} life`
     } else if (action.type === 'turn-change') {
-      return `${date}: Turn change`
+      return `${date}: Turn change from ${action.from} to ${action.to}`
     }
 
     return `${date}: Unknown action`
@@ -49,8 +104,21 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
     })
   }
 
+  const getPlayerName = (playerId: string) => {
+    const player = game.players.find(p => p.id === playerId)
+    if (!player?.userId) return 'Unknown Player'
+    const user = users.find(u => u.id === player.userId)
+    return user?.name || 'Unknown User'
+  }
+
   return (
     <div className="flex min-h-screen w-full bg-gradient-to-br from-green-50 to-blue-50">
+      <span style={{ position: 'absolute' }}>
+        {game.activePlayer}
+        {game.activePlayer === undefined && 'undefined'}
+        {game.activePlayer === null && 'null'}
+      </span>
+
       {/* Player Sections */}
       <div className="flex-1 grid grid-cols-2">
         {game.players.map(player => (
@@ -119,6 +187,51 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
               </div>
             )}
           </div>
+        </Modal>
+      )}
+
+      {/* Start Game Modal */}
+      {showStartModal && (
+        <Modal isOpen={showStartModal} onClose={handleSkip} title="Who starts?">
+          {!showPlayerChoice && (
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={handleChooseAtRandom}
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+                >
+                  Random
+                </button>
+                <button
+                  onClick={() => setShowPlayerChoice(true)}
+                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+                >
+                  Choose
+                </button>
+                <button
+                  onClick={handleSkip}
+                  className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
+                >
+                  Skip
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Player Choice Modal */}
+          {showPlayerChoice && (
+            <div className="flex flex-col gap-2">
+              {validPlayers.map(player => (
+                <button
+                  key={player.id}
+                  onClick={() => handleChoosePlayer(player.id)}
+                  className="p-3 border border-gray-200 rounded hover:bg-gray-50 transition text-left"
+                >
+                  {getPlayerName(player.id)}
+                </button>
+              ))}
+            </div>
+          )}
         </Modal>
       )}
     </div>
