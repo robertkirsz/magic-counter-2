@@ -10,9 +10,24 @@ interface DecksProviderProps {
 const LOCAL_STORAGE_KEY = 'decks'
 
 const readDecks = (): Deck[] => {
-  const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
-  if (stored) return JSON.parse(stored).map((deck: Deck) => ({ ...deck, createdAt: new Date(deck.createdAt) }))
-  return []
+  try {
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
+
+    if (stored) return JSON.parse(stored).map((deck: Deck) => ({ ...deck, createdAt: new Date(deck.createdAt) }))
+
+    return []
+  } catch (e) {
+    window.alert(
+      `Could not load deck data from localStorage (key: ${LOCAL_STORAGE_KEY}).\nError: ${e instanceof Error ? e.message : e}`
+    )
+
+    if (window.confirm('Clear the corrupted data and load default state?')) {
+      localStorage.removeItem(LOCAL_STORAGE_KEY)
+      window.location.reload()
+    }
+
+    return []
+  }
 }
 
 export const DecksProvider: React.FC<DecksProviderProps> = ({ children }) => {

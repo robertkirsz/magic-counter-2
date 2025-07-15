@@ -10,9 +10,24 @@ interface UsersProviderProps {
 const LOCAL_STORAGE_KEY = 'users'
 
 const readUsers = (): User[] => {
-  const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
-  if (stored) return JSON.parse(stored).map((u: User) => ({ ...u, createdAt: new Date(u.createdAt) }))
-  return []
+  try {
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
+
+    if (stored) return JSON.parse(stored).map((user: User) => ({ ...user, createdAt: new Date(user.createdAt) }))
+
+    return []
+  } catch (e) {
+    window.alert(
+      `Could not load user data from localStorage (key: ${LOCAL_STORAGE_KEY}).\nError: ${e instanceof Error ? e.message : e}`
+    )
+
+    if (window.confirm('Clear the corrupted data and load default state?')) {
+      localStorage.removeItem(LOCAL_STORAGE_KEY)
+      window.location.reload()
+    }
+
+    return []
+  }
 }
 
 export const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {

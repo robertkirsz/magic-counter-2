@@ -10,9 +10,24 @@ interface GamesProviderProps {
 const LOCAL_STORAGE_KEY = 'games'
 
 const readGames = (): Game[] => {
-  const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
-  if (stored) return JSON.parse(stored).map((g: Game) => ({ ...g, createdAt: new Date(g.createdAt) }))
-  return []
+  try {
+    const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
+
+    if (stored) return JSON.parse(stored).map((g: Game) => ({ ...g, createdAt: new Date(g.createdAt) }))
+
+    return []
+  } catch (e) {
+    window.alert(
+      `Could not load game data from localStorage (key: ${LOCAL_STORAGE_KEY}).\nError: ${e instanceof Error ? e.message : e}`
+    )
+
+    if (window.confirm('Clear the corrupted data and load default state?')) {
+      localStorage.removeItem(LOCAL_STORAGE_KEY)
+      window.location.reload()
+    }
+
+    return []
+  }
 }
 
 export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
