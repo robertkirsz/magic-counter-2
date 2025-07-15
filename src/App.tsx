@@ -7,13 +7,13 @@ import { GamesProvider } from './contexts/GamesContext'
 import { ImportanceProvider } from './contexts/ImportanceContext'
 import { UsersProvider } from './contexts/UsersContext'
 import { useGames } from './hooks/useGames'
-import { useImportanceVisibility } from './hooks/useImportanceVisibility'
+// import { useImportanceVisibility } from './hooks/useImportanceVisibility'
 import pkg from '../package.json' assert { type: 'json' }
 const APP_VERSION = pkg.version
 
 const AppContent: React.FC = () => {
   // Initialize the importance visibility system
-  useImportanceVisibility()
+  // useImportanceVisibility()
 
   return (
     <>
