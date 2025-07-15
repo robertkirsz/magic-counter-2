@@ -8,21 +8,27 @@ import { ImportanceProvider } from './contexts/ImportanceContext'
 import { UsersProvider } from './contexts/UsersContext'
 import { useGames } from './hooks/useGames'
 import { useImportanceVisibility } from './hooks/useImportanceVisibility'
+import pkg from '../package.json' assert { type: 'json' }
+const APP_VERSION = pkg.version
 
 const AppContent: React.FC = () => {
   // Initialize the importance visibility system
   useImportanceVisibility()
 
   return (
-    <UsersProvider>
-      <GamesProvider>
-        <DecksProvider>
-          <AppMain />
-          <DevToolsPanel />
-          {/* <ImportanceSlider /> */}
-        </DecksProvider>
-      </GamesProvider>
-    </UsersProvider>
+    <>
+      <div className="fixed top-1 left-1 text-xs text-gray-400 bg-white/80 px-2 py-1 rounded-md z-50 pointer-events-none">v{APP_VERSION}</div>
+
+      <UsersProvider>
+        <GamesProvider>
+          <DecksProvider>
+            <AppMain />
+            <DevToolsPanel />
+            {/* <ImportanceSlider /> */}
+          </DecksProvider>
+        </GamesProvider>
+      </UsersProvider>
+    </>
   )
 }
 
