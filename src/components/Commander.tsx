@@ -31,7 +31,7 @@ export const Commander: React.FC<CommanderProps> = ({
 
   return (
     <div className="rounded-lg p-1 border border-gray-200" style={gradientStyle} data-testid={testId} {...props}>
-      <div className="importance-4 flex gap-1 bg-white rounded overflow-clip">
+      <div className="flex rounded overflow-clip relative">
         {/* Card Image */}
         {imageUrl && (
           <img
@@ -42,22 +42,22 @@ export const Commander: React.FC<CommanderProps> = ({
           />
         )}
 
-        {/* Card Details */}
-        <div className="flex flex-col p-2">
-          {colors.length > 0 && <ColorBadges colors={colors} className="importance-3 flex-none" />}
+        {/* Card Details Overlay */}
+        <div className="flex-1 bg-black/90 p-2">
+          {colors.length > 0 && <ColorBadges colors={colors} className="flex-none mb-1" />}
 
-          <div className="font-medium text-sm line-clamp-1" data-testid={`${testIdPrefix}-name`}>
+          <div className="font-medium text-sm line-clamp-1 text-white" data-testid={`${testIdPrefix}-name`}>
             {name}
           </div>
 
-          {typeLine && (
-            <div className="importance-1 text-xs text-gray-500 line-clamp-1" data-testid={`${testIdPrefix}-type-line`}>
-              {typeLine}
-            </div>
-          )}
+          {typeLine && <div className="text-xs text-gray-200 line-clamp-1">{typeLine.split('—')[1]}</div>}
         </div>
 
-        {showRemoveButton && onRemove && <ThreeDotMenu asMenu={false} onClose={onRemove} testId={testId} />}
+        {showRemoveButton && onRemove && (
+          <div className="absolute top-1 right-1">
+            <ThreeDotMenu asMenu={false} onClose={onRemove} testId={testId} />
+          </div>
+        )}
       </div>
     </div>
   )

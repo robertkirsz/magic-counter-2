@@ -123,7 +123,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
     <div ref={wrapperRef} className={`relative flex max-w-fit max-h-fit ${className}`} {...props}>
       <button
         title="More options"
-        className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
+        className="bg-white/75 backdrop-blur-sm stext-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
         onClick={() => setIsOpen(!isOpen)}
         data-testid={testIdPrefix}
       >
