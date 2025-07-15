@@ -1,6 +1,6 @@
 import { Board } from './components/Board'
 import { DevToolsPanel } from './components/DevToolsPanel'
-import { ImportanceSlider } from './components/ImportanceSlider'
+// import { ImportanceSlider } from './components/ImportanceSlider'
 import { IntroScreen } from './components/IntroScreen'
 import { DecksProvider } from './contexts/DecksContext'
 import { GamesProvider } from './contexts/GamesContext'
@@ -19,7 +19,7 @@ const AppContent: React.FC = () => {
         <DecksProvider>
           <AppMain />
           <DevToolsPanel />
-          <ImportanceSlider />
+          {/* <ImportanceSlider /> */}
         </DecksProvider>
       </GamesProvider>
     </UsersProvider>

@@ -172,14 +172,14 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
       {/* Actions Modal */}
       {showActions && (
-        <Modal isOpen={showActions} onClose={() => setShowActions(false)} title="Game Actions">
+        <Modal fullSize isOpen={showActions} onClose={() => setShowActions(false)} title="Game Actions">
           <div className="flex flex-col gap-2">
             {game.actions.length === 0 ? (
               <p className="text-center text-gray-500">No actions recorded yet.</p>
             ) : (
               <div className="space-y-2">
                 {game.actions.map(action => (
-                  <div key={action.id} className="flex gap-1 p-2 border border-gray-200 rounded">
+                  <div key={action.id} className="flex justify-between gap-1 p-2 border border-gray-200 rounded">
                     {formatAction(action)}
                     <ThreeDotMenu onClose={() => handleActionRemove(action.id)} asMenu={false} />
                   </div>
@@ -192,7 +192,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
       {/* Start Game Modal */}
       {showStartModal && (
-        <Modal isOpen={showStartModal} onClose={handleSkip} title="Who starts?">
+        <Modal isOpen={showStartModal} onClose={handleSkip} title="Who starts?" hideCloseButton>
           {!showPlayerChoice && (
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">

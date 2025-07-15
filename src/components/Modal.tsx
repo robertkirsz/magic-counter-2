@@ -6,11 +6,20 @@ interface ModalProps {
   isOpen: boolean
   title?: string
   fullSize?: boolean
+  hideCloseButton?: boolean
   children: React.ReactNode
   onClose?: () => void
 }
 
-export const Modal: React.FC<ModalProps> = ({ testId = '', isOpen, title, children, onClose, fullSize = false }) => {
+export const Modal: React.FC<ModalProps> = ({
+  testId = '',
+  isOpen,
+  title,
+  children,
+  onClose,
+  fullSize = false,
+  hideCloseButton = false
+}) => {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const childrenRef = useRef<HTMLDivElement>(null)
 
@@ -58,7 +67,7 @@ export const Modal: React.FC<ModalProps> = ({ testId = '', isOpen, title, childr
         <div className="flex justify-between items-center">
           {title && <h3 className="text-xl font-semibold">{title}</h3>}
 
-          {onClose && (
+          {onClose && !hideCloseButton && (
             <button
               type="button"
               data-testid={`${testIdPrefix}-close`}

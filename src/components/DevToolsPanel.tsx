@@ -57,7 +57,7 @@ function isValidGame(obj: unknown): obj is Game {
     typeof (obj as Game).state === 'string' &&
     'players' in obj &&
     Array.isArray((obj as Game).players) &&
-    'tracking' in obj
+    'turnTracking' in obj
   )
 }
 
