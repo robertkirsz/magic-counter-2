@@ -39,8 +39,14 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
     setGames(prev => prev.filter(game => game.id !== gameId))
   }
 
-  const updateGame = (gameId: string, updates: Partial<Game>) => {
-    setGames(prev => prev.map(game => (game.id === gameId ? { ...game, ...updates } : game)))
+  const updateGame = (gameId: string, updates: Partial<Game> | ((game: Game) => Partial<Game>)) => {
+    setGames(prev =>
+      prev.map(game => {
+        if (game.id !== gameId) return game
+        const updateObj = typeof updates === 'function' ? updates(game) : updates
+        return { ...game, ...updateObj }
+      })
+    )
   }
 
   const value: GamesContextType = {

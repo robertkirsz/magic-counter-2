@@ -15,8 +15,21 @@ describe('Active Game', () => {
     cy.fixture('game-started.json').then(data => {
       const game = data.games[0]
 
-      game.players.forEach((player, idx) => {
-        cy.get(`[data-testid="player-${idx + 1}-life"]`).should('have.text', '40')
+      game.players.forEach(player => {
+        cy.get(`[data-testid="${player.id}-life"]`).should('have.text', '40')
+
+        cy.get(`[data-testid="${player.id}-add-life"]`).click()
+        cy.get(`[data-testid="${player.id}-add-life"]`).click()
+        cy.get(`[data-testid="${player.id}-add-life"]`).click()
+
+        cy.get(`[data-testid="${player.id}-life"]`).should('have.text', '43')
+      })
+
+      // Wait for the life changes to be committed
+      cy.wait(1600)
+
+      game.players.forEach(player => {
+        cy.get(`[data-testid="${player.id}-life"]`).should('have.text', '43')
       })
     })
   })

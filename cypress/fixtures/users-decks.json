@@ -24,21 +24,13 @@
   "decks": [
     {
       "name": "Prossh Upgraded",
-      "colors": [
-        "B",
-        "G",
-        "R"
-      ],
+      "colors": ["B", "G", "R"],
       "commanders": [
         {
           "id": "889c1a0f-7df2-4497-8058-04358173d7e8",
           "name": "Prossh, Skyraider of Kher",
           "type": "Legendary Creature — Dragon",
-          "colors": [
-            "B",
-            "G",
-            "R"
-          ],
+          "colors": ["B", "G", "R"],
           "image": "https://cards.scryfall.io/art_crop/front/8/8/889c1a0f-7df2-4497-8058-04358173d7e8.jpg?1562438016"
         }
       ],
@@ -48,17 +40,13 @@
     },
     {
       "name": "Cat Factory",
-      "colors": [
-        "W"
-      ],
+      "colors": ["W"],
       "commanders": [
         {
           "id": "dacc4290-6a72-4c00-8bdd-e40ae28885a8",
           "name": "Kemba, Kha Regent",
           "type": "Legendary Creature — Cat Cleric",
-          "colors": [
-            "W"
-          ],
+          "colors": ["W"],
           "image": "https://cards.scryfall.io/art_crop/front/d/a/dacc4290-6a72-4c00-8bdd-e40ae28885a8.jpg?1689995780"
         }
       ],
@@ -68,19 +56,13 @@
     },
     {
       "name": "Jump Scare",
-      "colors": [
-        "G",
-        "U"
-      ],
+      "colors": ["G", "U"],
       "commanders": [
         {
           "id": "30f23588-5064-48d9-a271-039df757f8d2",
           "name": "Zimone, Mystery Unraveler",
           "type": "Legendary Creature — Human Wizard",
-          "colors": [
-            "G",
-            "U"
-          ],
+          "colors": ["G", "U"],
           "image": "https://cards.scryfall.io/art_crop/front/3/0/30f23588-5064-48d9-a271-039df757f8d2.jpg?1726596680"
         }
       ],
@@ -90,19 +72,13 @@
     },
     {
       "name": "Zombie",
-      "colors": [
-        "B",
-        "G"
-      ],
+      "colors": ["B", "G"],
       "commanders": [
         {
           "id": "70ea66cd-587a-4ca9-9ca8-d7d2046bfbed",
           "name": "Izoni, Center of the Web",
           "type": "Legendary Creature — Elf Detective",
-          "colors": [
-            "B",
-            "G"
-          ],
+          "colors": ["B", "G"],
           "image": "https://cards.scryfall.io/art_crop/front/7/0/70ea66cd-587a-4ca9-9ca8-d7d2046bfbed.jpg?1706242180"
         }
       ],
@@ -112,25 +88,13 @@
     },
     {
       "name": "Slivers",
-      "colors": [
-        "B",
-        "G",
-        "R",
-        "U",
-        "W"
-      ],
+      "colors": ["B", "G", "R", "U", "W"],
       "commanders": [
         {
           "id": "2b902f64-7795-4f1f-81e6-26db7c78a10c",
           "name": "Sliver Hivelord",
           "type": "Legendary Creature — Sliver",
-          "colors": [
-            "B",
-            "G",
-            "R",
-            "U",
-            "W"
-          ],
+          "colors": ["B", "G", "R", "U", "W"],
           "image": "https://cards.scryfall.io/art_crop/front/2/b/2b902f64-7795-4f1f-81e6-26db7c78a10c.jpg?1690005330"
         }
       ],

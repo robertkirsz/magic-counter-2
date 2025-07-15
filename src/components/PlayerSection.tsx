@@ -43,9 +43,9 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
       to: [playerId]
     }
 
-    updateGame(game.id, {
-      actions: [...game.actions, newAction]
-    })
+    updateGame(game.id, prevGame => ({
+      actions: [...prevGame.actions, newAction]
+    }))
 
     pendingLifeChangesRef.current = 0
     setPendingLifeChanges(0)
