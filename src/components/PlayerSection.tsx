@@ -137,10 +137,14 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   return (
     <div
       data-testid={playerId}
-      className="PlayerSection flex flex-col items-center justify-center gap-1 h-full border border-gray-100 rounded-sm p-2"
+      className={`PlayerSection flex flex-col items-center justify-center gap-1 h-full border border-gray-100 rounded-sm p-2 ${
+        currentActivePlayer === playerId ? 'outline-2 outline-blue-500 -outline-offset-6' : ''
+      }`}
     >
       <div className="flex items-center gap-1">
-        <span>{currentActivePlayer === playerId && <Star className="w-4 h-4 text-yellow-500" />}</span>
+        <span>
+          {game.turnTracking && currentActivePlayer === playerId && <Star className="w-4 h-4 text-yellow-500" />}
+        </span>
         <span>{getUserName(player.userId)}</span>
         <span>({player.id})</span>
       </div>

@@ -70,23 +70,6 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
     updateGame(game.id, { state: 'finished' })
   }
 
-  const validPlayers = game.players.filter(player => player.userId && player.deckId)
-  const canPlay = validPlayers.length === game.players.length
-  const currentActivePlayer = getCurrentActivePlayer()
-  const showStartModal = game?.state === 'active' && !currentActivePlayer
-
-  const handleChoosePlayer = (playerId: string) => {
-    const newAction: TurnChangeAction = {
-      id: uuidv4(),
-      createdAt: new Date(),
-      type: 'turn-change',
-      from: currentActivePlayer,
-      to: playerId
-    }
-
-    updateGame(game.id, prevGame => ({ actions: [...prevGame.actions, newAction] }))
-  }
-
   const formatAction = (action: LifeChangeAction | TurnChangeAction) => {
     const date = new Date(action.createdAt).toLocaleTimeString()
 
@@ -134,25 +117,28 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   }
 
   // Pass turn to next player (append TurnChangeAction)
-  const handlePassTurn = () => {
-    if (!game || !currentActivePlayer) return
+  const handlePassTurn = (playerId?: string) => {
+    if (!game || !game.turnTracking) return
 
     const currentIndex = game.players.findIndex(p => p.id === currentActivePlayer)
-
-    if (currentIndex === -1) return
-
     const nextIndex = (currentIndex + 1) % game.players.length
-    const nextPlayer = game.players[nextIndex]
+    const nextPlayer = game.players[nextIndex] || game.players[0]
+
     const newAction: TurnChangeAction = {
-      id: crypto.randomUUID(),
+      id: uuidv4(),
       createdAt: new Date(),
       type: 'turn-change',
       from: currentActivePlayer,
-      to: nextPlayer.id
+      to: playerId || nextPlayer.id
     }
 
     updateGame(game.id, prevGame => ({ actions: [...prevGame.actions, newAction] }))
   }
+
+  const validPlayers = game.players.filter(player => player.userId && player.deckId)
+  const canPlay = validPlayers.length === game.players.length
+  const currentActivePlayer = getCurrentActivePlayer()
+  const showStartModal = game.state === 'active' && !currentActivePlayer && game.turnTracking
 
   return (
     <div className="Board flex min-h-screen w-full">
@@ -205,10 +191,10 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       </div>
 
       {/* Pass Turn Button */}
-      {game.state === 'active' && currentActivePlayer && (
+      {game.state === 'active' && game.turnTracking && currentActivePlayer && (
         <button
           className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3 shadow-lg text-lg font-bold"
-          onClick={handlePassTurn}
+          onClick={() => handlePassTurn()}
         >
           <ArrowBigRightDash size={32} />
         </button>
@@ -245,7 +231,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       <StartGameModal
         isOpen={showStartModal}
         validPlayers={validPlayers}
-        onChoosePlayer={handleChoosePlayer}
+        onChoosePlayer={handlePassTurn}
         getPlayerName={getPlayerName}
       />
     </div>

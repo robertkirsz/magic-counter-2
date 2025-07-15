@@ -56,9 +56,13 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
 
     if (!game) return null
 
+    if (game.state !== 'active') return null
+
     const lastTurn = [...game.actions].reverse().find(a => a.type === 'turn-change') as TurnChangeAction | undefined
 
-    return lastTurn?.to || null
+    if (!lastTurn) return null
+
+    return lastTurn.to
   }
 
   const value: GamesContextType = {
