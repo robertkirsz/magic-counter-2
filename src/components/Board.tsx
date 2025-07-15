@@ -1,4 +1,8 @@
-import { List, Play, Settings } from 'lucide-react'
+import { DndContext, closestCenter } from '@dnd-kit/core'
+import type { DragEndEvent } from '@dnd-kit/core'
+import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import { GripVertical, List, Play, Settings } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
@@ -10,6 +14,37 @@ import { ThreeDotMenu } from './ThreeDotMenu'
 
 interface BoardProps {
   gameId: string
+}
+
+// Sortable wrapper for PlayerSection
+function SortablePlayerSection({ id, gameId }: { id: string; gameId: string }) {
+  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({
+    id
+  })
+  const style: React.CSSProperties = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 10 : 'auto',
+    position: 'relative'
+  }
+  return (
+    <div ref={setNodeRef} style={style}>
+      <button
+        ref={setActivatorNodeRef}
+        {...listeners}
+        {...attributes}
+        className="absolute top-2 right-2 z-20 bg-white rounded-full p-1 shadow hover:bg-gray-100 cursor-grab active:cursor-grabbing"
+        tabIndex={-1}
+        aria-label="Drag to reorder player"
+        type="button"
+      >
+        <GripVertical className="w-5 h-5 text-gray-400" />
+      </button>
+
+      <PlayerSection gameId={gameId} playerId={id} />
+    </div>
+  )
 }
 
 export const Board: React.FC<BoardProps> = ({ gameId }) => {
@@ -111,8 +146,19 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
     return user?.name || 'Unknown User'
   }
 
+  // Drag end handler for reordering players
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    if (!over || active.id === over.id) return
+    const oldIndex = game.players.findIndex(p => p.id === active.id)
+    const newIndex = game.players.findIndex(p => p.id === over.id)
+    if (oldIndex === -1 || newIndex === -1) return
+    const newPlayers = arrayMove(game.players, oldIndex, newIndex)
+    updateGame(game.id, { players: newPlayers })
+  }
+
   return (
-    <div className="flex min-h-screen w-full bg-gradient-to-br from-green-50 to-blue-50">
+    <div className="flex min-h-screen w-full">
       <span style={{ position: 'absolute' }}>
         {game.activePlayer}
         {game.activePlayer === undefined && 'undefined'}
@@ -120,11 +166,15 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       </span>
 
       {/* Player Sections */}
-      <div className="flex-1 grid grid-cols-2">
-        {game.players.map(player => (
-          <PlayerSection key={player.id} gameId={gameId} playerId={player.id} />
-        ))}
-      </div>
+      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={game.players.map(p => p.id)}>
+          <div className="flex-1 grid grid-cols-2">
+            {game.players.map(player => (
+              <SortablePlayerSection key={player.id} id={player.id} gameId={gameId} />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
 
       {/* Settings Overlay */}
       <div className="fixed top-2 right-2 flex flex-col gap-2">

@@ -135,7 +135,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
     return (
       <div
         data-testid={playerId}
-        className="flex flex-col items-center justify-center gap-1 border border-gray-200 rounded-lg p-2"
+        className="flex flex-col items-center justify-center gap-1 h-full border border-gray-200 rounded-lg p-2"
       >
         <PlayerLifeControls
           playerId={playerId}
@@ -161,7 +161,10 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   }
 
   return (
-    <div className="flex flex-col items-center justify-center gap-1 border border-gray-200 rounded-lg p-2">
+    <div
+      data-testid={playerId}
+      className="flex  flex-col items-center justify-center gap-1 h-full border border-gray-200 rounded-lg p-2"
+    >
       <PlayerUserSelector
         player={player}
         getUserName={getUserName}
