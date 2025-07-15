@@ -3,7 +3,8 @@ import type { DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { ArrowBigRightDash, GripVertical, List, Play, Settings } from 'lucide-react'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
+import { v4 as uuidv4 } from 'uuid'
 
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
@@ -11,6 +12,7 @@ import { GameForm } from './GameForm'
 import { Modal } from './Modal'
 import { PlayerSection } from './PlayerSection'
 import { ThreeDotMenu } from './ThreeDotMenu'
+import StartGameModal from './board/StartGameModal'
 
 interface BoardProps {
   gameId: string
@@ -21,6 +23,7 @@ function SortablePlayerSection({ id, gameId }: { id: string; gameId: string }) {
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({
     id
   })
+
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
@@ -28,6 +31,7 @@ function SortablePlayerSection({ id, gameId }: { id: string; gameId: string }) {
     zIndex: isDragging ? 10 : 'auto',
     position: 'relative'
   }
+
   return (
     <div ref={setNodeRef} style={style}>
       <button
@@ -48,45 +52,18 @@ function SortablePlayerSection({ id, gameId }: { id: string; gameId: string }) {
 }
 
 export const Board: React.FC<BoardProps> = ({ gameId }) => {
-  const { games, updateGame } = useGames()
+  const { games, updateGame, getCurrentActivePlayer } = useGames()
   const { users } = useUsers()
 
   const game = games.find(g => g.id === gameId)
-  const previousActivePlayerRef = useRef<string | null | undefined>(game?.activePlayer)
 
-  const [showStartModal, setShowStartModal] = useState(game?.state === 'active' && game?.activePlayer === undefined)
   const [showSettings, setShowSettings] = useState(false)
   const [showActions, setShowActions] = useState(false)
-  const [showPlayerChoice, setShowPlayerChoice] = useState(false)
-
-  // Track activePlayer changes and dispatch TurnChangeAction
-  useEffect(() => {
-    if (!game) return
-
-    const currentActivePlayer = game.activePlayer
-    const previousActivePlayer = previousActivePlayerRef.current
-
-    if (currentActivePlayer !== previousActivePlayer) {
-      const newAction: TurnChangeAction = {
-        id: crypto.randomUUID(),
-        createdAt: new Date(),
-        type: 'turn-change',
-        from: previousActivePlayer || null,
-        to: currentActivePlayer || null
-      }
-
-      updateGame(game.id, { actions: [...game.actions, newAction] })
-    }
-
-    // Update the ref for next comparison
-    previousActivePlayerRef.current = currentActivePlayer
-  }, [game?.activePlayer, game, updateGame])
 
   if (!game) return <div>Game not found</div>
 
   const handlePlay = () => {
     updateGame(game.id, { state: 'active' })
-    setShowStartModal(true)
   }
 
   const handleFinish = () => {
@@ -95,29 +72,19 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
   const validPlayers = game.players.filter(player => player.userId && player.deckId)
   const canPlay = validPlayers.length === game.players.length
-
-  const handleChooseAtRandom = () => {
-    const players = validPlayers
-    const randomIndex = Math.floor(Math.random() * players.length)
-    const selectedPlayer = players[randomIndex]
-
-    updateGame(game.id, { activePlayer: selectedPlayer.id })
-    setShowStartModal(false)
-  }
+  const currentActivePlayer = getCurrentActivePlayer()
+  const showStartModal = game?.state === 'active' && !currentActivePlayer
 
   const handleChoosePlayer = (playerId: string) => {
-    updateGame(game.id, { activePlayer: playerId })
-    resetState()
-  }
+    const newAction: TurnChangeAction = {
+      id: uuidv4(),
+      createdAt: new Date(),
+      type: 'turn-change',
+      from: currentActivePlayer,
+      to: playerId
+    }
 
-  const handleSkip = () => {
-    updateGame(game.id, { activePlayer: null })
-    resetState()
-  }
-
-  const resetState = () => {
-    setShowStartModal(false)
-    setShowPlayerChoice(false)
+    updateGame(game.id, prevGame => ({ actions: [...prevGame.actions, newAction] }))
   }
 
   const formatAction = (action: LifeChangeAction | TurnChangeAction) => {
@@ -127,7 +94,8 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       const sign = action.value > 0 ? '+' : ''
       return `${date}: ${action.from} ${sign}${action.value} life`
     } else if (action.type === 'turn-change') {
-      return `${date}: Turn change from ${action.from} to ${action.to}`
+      if (action.from === null) return `${date}: ${action.to} starts`
+      return `${date}: ${action.from} => ${action.to}`
     }
 
     return `${date}: Unknown action`
@@ -141,40 +109,53 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
   const getPlayerName = (playerId: string) => {
     const player = game.players.find(p => p.id === playerId)
+
     if (!player?.userId) return 'Unknown Player'
+
     const user = users.find(u => u.id === player.userId)
+
     return user?.name || 'Unknown User'
   }
 
   // Drag end handler for reordering players
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
+
     if (!over || active.id === over.id) return
+
     const oldIndex = game.players.findIndex(p => p.id === active.id)
     const newIndex = game.players.findIndex(p => p.id === over.id)
+
     if (oldIndex === -1 || newIndex === -1) return
+
     const newPlayers = arrayMove(game.players, oldIndex, newIndex)
+
     updateGame(game.id, { players: newPlayers })
   }
 
-  // Pass turn to next player
+  // Pass turn to next player (append TurnChangeAction)
   const handlePassTurn = () => {
-    if (!game || !game.activePlayer) return
-    const currentIndex = game.players.findIndex(p => p.id === game.activePlayer)
+    if (!game || !currentActivePlayer) return
+
+    const currentIndex = game.players.findIndex(p => p.id === currentActivePlayer)
+
     if (currentIndex === -1) return
+
     const nextIndex = (currentIndex + 1) % game.players.length
     const nextPlayer = game.players[nextIndex]
-    updateGame(game.id, { activePlayer: nextPlayer.id })
+    const newAction: TurnChangeAction = {
+      id: crypto.randomUUID(),
+      createdAt: new Date(),
+      type: 'turn-change',
+      from: currentActivePlayer,
+      to: nextPlayer.id
+    }
+
+    updateGame(game.id, prevGame => ({ actions: [...prevGame.actions, newAction] }))
   }
 
   return (
     <div className="Board flex min-h-screen w-full">
-      <span style={{ position: 'absolute' }}>
-        {game.activePlayer}
-        {game.activePlayer === undefined && 'undefined'}
-        {game.activePlayer === null && 'null'}
-      </span>
-
       {/* Player Sections */}
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={game.players.map(p => p.id)}>
@@ -224,7 +205,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       </div>
 
       {/* Pass Turn Button */}
-      {game.state === 'active' && game.activePlayer && (
+      {game.state === 'active' && currentActivePlayer && (
         <button
           className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3 shadow-lg text-lg font-bold"
           onClick={handlePassTurn}
@@ -261,49 +242,12 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       )}
 
       {/* Start Game Modal */}
-      {showStartModal && (
-        <Modal isOpen={showStartModal} onClose={handleSkip} title="Who starts?" hideCloseButton>
-          {!showPlayerChoice && (
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
-                <button
-                  onClick={handleChooseAtRandom}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                >
-                  Random
-                </button>
-                <button
-                  onClick={() => setShowPlayerChoice(true)}
-                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
-                >
-                  Choose
-                </button>
-                <button
-                  onClick={handleSkip}
-                  className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
-                >
-                  Skip
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Player Choice Modal */}
-          {showPlayerChoice && (
-            <div className="flex flex-col gap-2">
-              {validPlayers.map(player => (
-                <button
-                  key={player.id}
-                  onClick={() => handleChoosePlayer(player.id)}
-                  className="p-3 border border-gray-200 rounded hover:bg-gray-50 transition text-left"
-                >
-                  {getPlayerName(player.id)}
-                </button>
-              ))}
-            </div>
-          )}
-        </Modal>
-      )}
+      <StartGameModal
+        isOpen={showStartModal}
+        validPlayers={validPlayers}
+        onChoosePlayer={handleChoosePlayer}
+        getPlayerName={getPlayerName}
+      />
     </div>
   )
 }

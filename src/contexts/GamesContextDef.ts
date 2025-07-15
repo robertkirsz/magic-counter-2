@@ -6,6 +6,7 @@ export interface GamesContextType {
   removeGame: (gameId: string) => void
   updateGame: (gameId: string, updates: Partial<Game> | ((game: Game) => Partial<Game>)) => void
   setGames: React.Dispatch<React.SetStateAction<Game[]>>
+  getCurrentActivePlayer: (gameId?: Game['id']) => string | null
 }
 
 export const GamesContext = createContext<GamesContextType | undefined>(undefined)

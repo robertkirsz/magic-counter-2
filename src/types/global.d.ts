@@ -36,7 +36,7 @@ type Game = {
   createdAt: Date
   state: GameState
   players: Player[]
-  activePlayer: User['id'] | null | undefined
+  activePlayerId: User['id'] | null
   turnTracking: boolean
   actions: (LifeChangeAction | TurnChangeAction)[]
 }

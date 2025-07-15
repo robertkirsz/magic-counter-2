@@ -1,3 +1,4 @@
+import { Star } from 'lucide-react'
 import React, { useCallback, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -20,7 +21,7 @@ interface PlayerSectionProps {
 export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }) => {
   const { users } = useUsers()
   const { decks } = useDecks()
-  const { games, updateGame } = useGames()
+  const { games, updateGame, getCurrentActivePlayer } = useGames()
   const [showUserSelect, setShowUserSelect] = useState<boolean>(false)
   const [showDeckSelect, setShowDeckSelect] = useState<boolean>(false)
   const [showDeckForm, setShowDeckForm] = useState<boolean>(false)
@@ -106,8 +107,11 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
     setShowDeckSelect(false)
   }
 
-  const getUserName = (userId: string) => {
+  const getUserName = (userId: string | null) => {
+    if (!userId) return 'Unknown User'
+
     const user = users.find(u => u.id === userId)
+
     return user?.name || 'Unknown User'
   }
 
@@ -128,13 +132,19 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   })
 
   const gameIsActive = game.state === 'active'
+  const currentActivePlayer = getCurrentActivePlayer()
 
   return (
     <div
       data-testid={playerId}
       className="PlayerSection flex flex-col items-center justify-center gap-1 h-full border border-gray-100 rounded-sm p-2"
     >
-      {player.id}
+      <div className="flex items-center gap-1">
+        <span>{currentActivePlayer === playerId && <Star className="w-4 h-4 text-yellow-500" />}</span>
+        <span>{getUserName(player.userId)}</span>
+        <span>({player.id})</span>
+      </div>
+
       {gameIsActive && (
         <PlayerLifeControls
           playerId={playerId}
@@ -143,7 +153,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
           onLifeChange={handleLifeChange}
         />
       )}
-
       {!gameIsActive && (
         <>
           <PlayerUserSelector

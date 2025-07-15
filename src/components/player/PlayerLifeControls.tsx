@@ -14,6 +14,7 @@ const PlayerLifeControls: React.FC<{
     >
       -
     </button>
+
     <div className={`text-xl font-bold ${pendingLifeChanges !== 0 ? 'text-blue-600' : ''}`}>
       <span data-testid={`${playerId}-life`}>{displayLife}</span>
       {pendingLifeChanges !== 0 && (
@@ -23,6 +24,7 @@ const PlayerLifeControls: React.FC<{
         </span>
       )}
     </div>
+
     <button
       data-testid={`${playerId}-add-life`}
       onClick={() => onLifeChange(1)}

@@ -26,7 +26,7 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
       id: uuidv4(),
       createdAt: new Date(),
       state: 'setup',
-      activePlayer: null,
+      activePlayerId: null,
       actions: []
     }
 
@@ -49,12 +49,25 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
     )
   }
 
+  const latestActiveGame = games.filter(g => g.state === 'active').pop()
+
+  const getCurrentActivePlayer = (gameId?: string): string | null => {
+    const game = games.find(g => g.id === gameId) || latestActiveGame
+
+    if (!game) return null
+
+    const lastTurn = [...game.actions].reverse().find(a => a.type === 'turn-change') as TurnChangeAction | undefined
+
+    return lastTurn?.to || null
+  }
+
   const value: GamesContextType = {
     games,
     addGame,
     removeGame,
     updateGame,
-    setGames
+    setGames,
+    getCurrentActivePlayer
   }
 
   return <GamesContext.Provider value={value}>{children}</GamesContext.Provider>
