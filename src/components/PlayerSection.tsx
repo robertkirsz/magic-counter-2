@@ -131,83 +131,83 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   const gameIsActive = game.state === 'active'
   const playerIsActive = game.activePlayer === playerId
 
-  if (gameIsActive) {
-    return (
-      <div
-        data-testid={playerId}
-        className="flex flex-col items-center justify-center gap-1 h-full border border-gray-200 rounded-lg p-2"
-      >
-        <PlayerLifeControls
-          playerId={playerId}
-          displayLife={displayLife}
-          pendingLifeChanges={pendingLifeChanges}
-          onLifeChange={handleLifeChange}
-        />
-
-        <PlayerActiveControls
-          game={game}
-          playerIsActive={playerIsActive}
-          onClearActive={() => updateGame(game.id, { activePlayer: undefined })}
-          onPassTurn={() => {
-            const currentIndex = game.players.findIndex(p => p.id === playerId)
-            const nextIndex = (currentIndex + 1) % game.players.length
-            const nextPlayer = game.players[nextIndex]
-            updateGame(game.id, { activePlayer: nextPlayer.id })
-          }}
-          onGainPriority={() => updateGame(game.id, { activePlayer: player.id })}
-        />
-      </div>
-    )
-  }
-
   return (
     <div
       data-testid={playerId}
-      className="flex  flex-col items-center justify-center gap-1 h-full border border-gray-200 rounded-lg p-2"
+      className="PlayerSection flex flex-col items-center justify-center gap-1 h-full border border-gray-100 rounded-sm p-2"
     >
-      <PlayerUserSelector
-        player={player}
-        getUserName={getUserName}
-        onShowUserSelect={() => setShowUserSelect(true)}
-        onRemoveUser={() => handleUserSelect(null)}
-      />
+      {player.id}
+      {gameIsActive && (
+        <>
+          <PlayerLifeControls
+            playerId={playerId}
+            displayLife={displayLife}
+            pendingLifeChanges={pendingLifeChanges}
+            onLifeChange={handleLifeChange}
+          />
 
-      <PlayerDeckSelector
-        player={player}
-        onShowDeckSelect={() => setShowDeckSelect(true)}
-        onRemoveDeck={() => handleDeckSelect(null)}
-      />
-
-      <UserSelectionModal
-        isOpen={showUserSelect}
-        onClose={() => setShowUserSelect(false)}
-        game={game}
-        onSelect={handleUserSelect}
-        onCreateUser={() => setShowUserForm(true)}
-      />
-
-      <DeckSelectionModal
-        isOpen={showDeckSelect}
-        onClose={() => setShowDeckSelect(false)}
-        sortedDecks={sortedDecks}
-        onSelect={handleDeckSelect}
-        onCreateDeck={() => setShowDeckForm(true)}
-      />
-
-      {/* Deck Form Modal */}
-      {showDeckForm && (
-        <DeckForm
-          userId={playerId}
-          onSave={(deckId: string) => {
-            handleDeckSelect(deckId)
-            setShowDeckForm(false)
-          }}
-          onCancel={() => setShowDeckForm(false)}
-        />
+          <PlayerActiveControls
+            game={game}
+            playerIsActive={playerIsActive}
+            onClearActive={() => updateGame(game.id, { activePlayer: undefined })}
+            onPassTurn={() => {
+              const currentIndex = game.players.findIndex(p => p.id === playerId)
+              const nextIndex = (currentIndex + 1) % game.players.length
+              const nextPlayer = game.players[nextIndex]
+              updateGame(game.id, { activePlayer: nextPlayer.id })
+            }}
+            onGainPriority={() => updateGame(game.id, { activePlayer: player.id })}
+          />
+        </>
       )}
 
-      {/* User Form Modal */}
-      {showUserForm && <UserForm onSave={handleUserSelect} onCancel={() => setShowUserForm(false)} />}
+      {!gameIsActive && (
+        <>
+          <PlayerUserSelector
+            player={player}
+            getUserName={getUserName}
+            onShowUserSelect={() => setShowUserSelect(true)}
+            onRemoveUser={() => handleUserSelect(null)}
+          />
+
+          <PlayerDeckSelector
+            player={player}
+            onShowDeckSelect={() => setShowDeckSelect(true)}
+            onRemoveDeck={() => handleDeckSelect(null)}
+          />
+
+          <UserSelectionModal
+            isOpen={showUserSelect}
+            onClose={() => setShowUserSelect(false)}
+            game={game}
+            onSelect={handleUserSelect}
+            onCreateUser={() => setShowUserForm(true)}
+          />
+
+          <DeckSelectionModal
+            isOpen={showDeckSelect}
+            onClose={() => setShowDeckSelect(false)}
+            sortedDecks={sortedDecks}
+            onSelect={handleDeckSelect}
+            onCreateDeck={() => setShowDeckForm(true)}
+          />
+
+          {/* Deck Form Modal */}
+          {showDeckForm && (
+            <DeckForm
+              userId={playerId}
+              onSave={(deckId: string) => {
+                handleDeckSelect(deckId)
+                setShowDeckForm(false)
+              }}
+              onCancel={() => setShowDeckForm(false)}
+            />
+          )}
+
+          {/* User Form Modal */}
+          {showUserForm && <UserForm onSave={handleUserSelect} onCancel={() => setShowUserForm(false)} />}
+        </>
+      )}
     </div>
   )
 }

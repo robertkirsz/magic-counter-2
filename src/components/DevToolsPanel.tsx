@@ -225,7 +225,7 @@ export const DevToolsPanel: React.FC = () => {
   }
 
   return (
-    <div className="fixed gap-2 bottom-2 right-2 flex flex-col items-end">
+    <div className="fixed z-20 gap-2 bottom-2 right-2 flex flex-col items-end">
       {open && (
         <div className="flex flex-col gap-2 bg-white border border-gray-200 font-mono rounded-lg mt-2 p-4 shadow-lg max-h-[400px] w-full overflow-y-auto text-xs">
           {/* Import/Export Section */}

@@ -79,3 +79,88 @@ dialog::backdrop {
   -moz-appearance: textfield;
   appearance: textfield;
 }
+
+.PlayersSortingWrapper {
+  flex: 1;
+  display: grid;
+
+  > div {
+    &:nth-child(1) {
+      grid-area: player-1;
+    }
+
+    &:nth-child(2) {
+      grid-area: player-2;
+    }
+
+    &:nth-child(3) {
+      grid-area: player-3;
+    }
+
+    &:nth-child(4) {
+      grid-area: player-4;
+    }
+
+    &:nth-child(5) {
+      grid-area: player-5;
+    }
+  }
+
+  &[data-player-count='2'] {
+    grid-template-areas:
+      'player-1'
+      'player-2';
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr;
+
+    > div:nth-child(1) .PlayerSection {
+      transform: rotate(180deg);
+    }
+  }
+
+  &[data-player-count='3'] {
+    grid-template-areas:
+      'player-1 player-3'
+      'player-2 player-3';
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+
+    > div:nth-child(1) .PlayerSection {
+      transform: rotate(180deg);
+    }
+
+    > div:nth-child(3) .PlayerSection {
+      transform: rotate(-90deg);
+    }
+  }
+
+  &[data-player-count='4'] {
+    grid-template-areas:
+      'player-1 player-2'
+      'player-3 player-4';
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+
+    > div:nth-child(1) .PlayerSection,
+    > div:nth-child(2) .PlayerSection {
+      transform: rotate(180deg);
+    }
+  }
+
+  &[data-player-count='5'] {
+    grid-template-areas:
+      'player-1 player-2 player-5'
+      'player-3 player-4 player-5';
+    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
+
+    > div:nth-child(1) .PlayerSection,
+    > div:nth-child(2) .PlayerSection {
+      transform: rotate(180deg);
+    }
+
+    > div:nth-child(5) .PlayerSection {
+      transform: rotate(-90deg);
+    }
+  }
+}

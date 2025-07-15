@@ -34,7 +34,7 @@ function SortablePlayerSection({ id, gameId }: { id: string; gameId: string }) {
         ref={setActivatorNodeRef}
         {...listeners}
         {...attributes}
-        className="absolute top-2 right-2 z-20 bg-white rounded-full p-1 shadow hover:bg-gray-100 cursor-grab active:cursor-grabbing"
+        className="absolute top-2 left-1/2 -translate-x-1/2 z-10 bg-white rounded-full p-1 shadow hover:bg-gray-100 cursor-grab active:cursor-grabbing"
         tabIndex={-1}
         aria-label="Drag to reorder player"
         type="button"
@@ -158,7 +158,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   }
 
   return (
-    <div className="flex min-h-screen w-full">
+    <div className="Board flex min-h-screen w-full">
       <span style={{ position: 'absolute' }}>
         {game.activePlayer}
         {game.activePlayer === undefined && 'undefined'}
@@ -168,7 +168,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       {/* Player Sections */}
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={game.players.map(p => p.id)}>
-          <div className="flex-1 grid grid-cols-2">
+          <div className="PlayersSortingWrapper" data-player-count={game.players.length}>
             {game.players.map(player => (
               <SortablePlayerSection key={player.id} id={player.id} gameId={gameId} />
             ))}
@@ -177,7 +177,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       </DndContext>
 
       {/* Settings Overlay */}
-      <div className="fixed top-2 right-2 flex flex-col gap-2">
+      <div className="fixed top-2 right-2 flex flex-col gap-2 z-20">
         <button
           onClick={() => setShowSettings(true)}
           className="bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-shadow"
@@ -194,7 +194,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       </div>
 
       {/* Play/Finish Button */}
-      <div className="fixed bottom-2 left-1/2 -translate-x-1/2 flex justify-center w-full">
+      <div className="fixed bottom-2 left-1/2 -translate-x-1/2 flex justify-center w-full z-20">
         {game.state !== 'finished' && (
           <button
             disabled={!canPlay && game.state !== 'active'}
