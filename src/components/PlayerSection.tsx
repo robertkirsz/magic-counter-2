@@ -7,7 +7,6 @@ import { useUsers } from '../hooks/useUsers'
 import { DeckForm } from './DeckForm'
 import { UserForm } from './UserForm'
 import DeckSelectionModal from './player/DeckSelectionModal'
-import PlayerActiveControls from './player/PlayerActiveControls'
 import PlayerDeckSelector from './player/PlayerDeckSelector'
 import PlayerLifeControls from './player/PlayerLifeControls'
 import PlayerUserSelector from './player/PlayerUserSelector'
@@ -129,7 +128,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   })
 
   const gameIsActive = game.state === 'active'
-  const playerIsActive = game.activePlayer === playerId
 
   return (
     <div
@@ -138,27 +136,12 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
     >
       {player.id}
       {gameIsActive && (
-        <>
-          <PlayerLifeControls
-            playerId={playerId}
-            displayLife={displayLife}
-            pendingLifeChanges={pendingLifeChanges}
-            onLifeChange={handleLifeChange}
-          />
-
-          <PlayerActiveControls
-            game={game}
-            playerIsActive={playerIsActive}
-            onClearActive={() => updateGame(game.id, { activePlayer: undefined })}
-            onPassTurn={() => {
-              const currentIndex = game.players.findIndex(p => p.id === playerId)
-              const nextIndex = (currentIndex + 1) % game.players.length
-              const nextPlayer = game.players[nextIndex]
-              updateGame(game.id, { activePlayer: nextPlayer.id })
-            }}
-            onGainPriority={() => updateGame(game.id, { activePlayer: player.id })}
-          />
-        </>
+        <PlayerLifeControls
+          playerId={playerId}
+          displayLife={displayLife}
+          pendingLifeChanges={pendingLifeChanges}
+          onLifeChange={handleLifeChange}
+        />
       )}
 
       {!gameIsActive && (

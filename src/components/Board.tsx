@@ -2,7 +2,7 @@ import { DndContext, closestCenter } from '@dnd-kit/core'
 import type { DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { GripVertical, List, Play, Settings } from 'lucide-react'
+import { ArrowBigRightDash, GripVertical, List, Play, Settings } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
@@ -157,6 +157,16 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
     updateGame(game.id, { players: newPlayers })
   }
 
+  // Pass turn to next player
+  const handlePassTurn = () => {
+    if (!game || !game.activePlayer) return
+    const currentIndex = game.players.findIndex(p => p.id === game.activePlayer)
+    if (currentIndex === -1) return
+    const nextIndex = (currentIndex + 1) % game.players.length
+    const nextPlayer = game.players[nextIndex]
+    updateGame(game.id, { activePlayer: nextPlayer.id })
+  }
+
   return (
     <div className="Board flex min-h-screen w-full">
       <span style={{ position: 'absolute' }}>
@@ -212,6 +222,16 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
           </button>
         )}
       </div>
+
+      {/* Pass Turn Button */}
+      {game.state === 'active' && game.activePlayer && (
+        <button
+          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3 shadow-lg text-lg font-bold"
+          onClick={handlePassTurn}
+        >
+          <ArrowBigRightDash size={32} />
+        </button>
+      )}
 
       {/* Settings Modal */}
       {showSettings && (
