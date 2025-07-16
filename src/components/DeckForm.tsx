@@ -1,3 +1,4 @@
+import { X } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
 import type { ManaColor } from '../constants/mana'
@@ -95,10 +96,20 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
 
         {/* Commanders */}
         {commanders.length > 0 && (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1">
             {commanders.map((commander, index) => (
-              <div key={index} className="bg-gray-50 dark:bg-gray-900 rounded p-1">
-                <Commander commander={commander} onRemove={() => handleRemoveCommander(index)} showRemoveButton />
+              <div key={index} className="relative">
+                <Commander key={index} commander={commander} />
+
+                <Button
+                  variant="secondary"
+                  round
+                  small
+                  className="absolute top-2 right-2"
+                  onClick={() => handleRemoveCommander(index)}
+                >
+                  <X size={10} />
+                </Button>
               </div>
             ))}
           </div>

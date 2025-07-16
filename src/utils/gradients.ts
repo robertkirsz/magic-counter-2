@@ -3,7 +3,7 @@ import { MANA_COLORS } from '../constants/mana'
 export const getGradientFromColors = (colors: string[]): React.CSSProperties => {
   if (colors.length === 0) {
     return {
-      background: 'linear-gradient(to bottom right, #f9fafb, #f3f4f6)'
+      background: 'linear-gradient(to right, #f9fafb, #f3f4f6)'
     }
   }
 
@@ -12,7 +12,7 @@ export const getGradientFromColors = (colors: string[]): React.CSSProperties => 
     const colorValue = colorInfo?.gradientColor || MANA_COLORS.find(c => c.value === 'C')?.gradientColor || '#f9fafb'
 
     return {
-      background: `linear-gradient(to bottom right, ${colorValue}, ${colorValue})`
+      background: `linear-gradient(to right, ${colorValue}, ${colorValue})`
     }
   }
 
@@ -28,6 +28,6 @@ export const getGradientFromColors = (colors: string[]): React.CSSProperties => 
     .join(', ')
 
   return {
-    background: `linear-gradient(to bottom right, ${gradientStops})`
+    background: `linear-gradient(to right, ${gradientStops})`
   }
 }

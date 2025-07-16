@@ -92,7 +92,7 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ onChange }) =>
 
       {/* Suggestions Dropdown */}
       {showSuggestions && (suggestions.length > 0 || isLoading) && (
-        <div className="flex flex-col gap-1 p-1 border border-gray-300 rounded-md max-h-67 overflow-y-auto">
+        <div className="flex flex-col gap-1 max-h-58 overflow-y-auto">
           {isLoading && (
             <div className="p-3 text-center text-gray-500">
               <div className="animate-spin inline-block w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full"></div>
@@ -106,7 +106,12 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ onChange }) =>
 
           {!isLoading &&
             suggestions.map((card, index) => (
-              <Commander key={index} commander={card} onClick={() => handleSuggestionClick(card)} />
+              <Commander
+                key={index}
+                commander={card}
+                onClick={() => handleSuggestionClick(card)}
+                className="cursor-pointer"
+              />
             ))}
         </div>
       )}

@@ -52,7 +52,7 @@ export const Deck: React.FC<DeckProps> = ({
 
   return (
     <div data-testid={testIdPrefix} className="relative" {...props}>
-      <div className="flex gap-1 z-1 absolute top-2 left-2 right-2 items-start justify-between">
+      <div className="flex gap-1 items-start justify-between">
         <div className="flex flex-col items-start gap-1">
           <div className="flex gap-1 items-center bg-white/75 backdrop-blur-sm px-1 rounded">
             <h3 className="line-clamp-1">{deck.name}</h3>

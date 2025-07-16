@@ -5,9 +5,6 @@ import { Commander } from '../components/Commander'
 const meta: Meta<typeof Commander> = {
   title: 'Components/Commander',
   component: Commander,
-  parameters: {
-    layout: 'centered'
-  },
   tags: ['autodocs'],
   args: {
     commander: {

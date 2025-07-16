@@ -203,3 +203,23 @@ dialog::backdrop {
     opacity: 0;
   }
 }
+
+/* Commander container queries */
+.commander-container {
+  container-type: inline-size;
+}
+
+@container (max-width: 200px) {
+  .commander-inner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@container (min-width: 201px) {
+  .commander-inner {
+    .commander-image {
+      @apply max-w-25;
+    }
+  }
+}
