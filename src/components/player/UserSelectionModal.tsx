@@ -21,25 +21,20 @@ const UserSelectionModal: React.FC<{
             {users
               .filter(user => !game.players.some(p => p.userId === user.id))
               .map(user => (
-                <Button
-                  key={user.id}
-                  onClick={() => onSelect(user.id)}
-                  className="p-3 border border-gray-200 rounded-lg text-left"
-                  variant="secondary"
-                >
-                  <div className="font-medium">{user.name}</div>
+                <Button key={user.id} variant="secondary" onClick={() => onSelect(user.id)}>
+                  {user.name}
                 </Button>
               ))}
           </div>
         ) : (
-          <p className="text-center text-gray-500">No users available.</p>
+          <p>No users available.</p>
         )}
 
         {users.filter(user => !game.players.some(p => p.userId === user.id)).length === 0 && users.length > 0 && (
-          <p className="text-center text-gray-500">All users are already assigned to players.</p>
+          <p>All users are already assigned to players.</p>
         )}
 
-        <Button onClick={onCreateUser} className="px-3 py-1 text-sm" variant="primary">
+        <Button variant="primary" onClick={onCreateUser}>
           Create New User
         </Button>
       </div>

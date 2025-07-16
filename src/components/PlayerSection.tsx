@@ -137,7 +137,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   return (
     <div
       data-testid={playerId}
-      className={`PlayerSection flex flex-col items-center justify-center gap-1 h-full border border-gray-100 rounded-sm p-2 ${
+      className={`PlayerSection flex flex-col items-center justify-center gap-1 h-full border border-gray-100 ${
         currentActivePlayer === playerId ? 'outline-2 outline-blue-500 -outline-offset-6' : ''
       }`}
     >
@@ -157,6 +157,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
           onLifeChange={handleLifeChange}
         />
       )}
+
       {!gameIsActive && (
         <>
           <PlayerUserSelector

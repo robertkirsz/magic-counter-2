@@ -15,7 +15,7 @@ const DeckSelectionModal: React.FC<{
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
         <p className="text-sm text-gray-600">Select a deck for this player:</p>
-        <Button onClick={onCreateDeck} className="px-3 py-1 text-sm" variant="primary">
+        <Button variant="primary" onClick={onCreateDeck}>
           Create New Deck
         </Button>
       </div>
@@ -23,12 +23,7 @@ const DeckSelectionModal: React.FC<{
       {sortedDecks.length > 0 ? (
         <div className="grid grid-cols-2 gap-2 items-start">
           {sortedDecks.map(deck => (
-            <Button
-              key={deck.id}
-              onClick={() => onSelect(deck.id)}
-              className="text-left p-2 rounded"
-              variant="secondary"
-            >
+            <Button key={deck.id} variant="secondary" onClick={() => onSelect(deck.id)}>
               <Deck id={deck.id} />
             </Button>
           ))}

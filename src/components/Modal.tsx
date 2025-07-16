@@ -70,12 +70,22 @@ export const Modal: React.FC<ModalProps> = ({
           {title && <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{title}</h3>}
 
           {onClose && !hideCloseButton && (
-            <Button type="button" data-testid={`${testIdPrefix}-close`} aria-label="Close modal" onClick={onClose}>
-              <X size={24} />
+            <Button
+              data-testid={`${testIdPrefix}-close`}
+              type="button"
+              aria-label="Close modal"
+              round
+              small
+              variant="secondary"
+              className="ml-auto"
+              onClick={onClose}
+            >
+              <X size={20} />
             </Button>
           )}
         </div>
 
+        {/* TODO: Check if these styles neededr */}
         <div className="text-gray-900 dark:text-gray-100">{children}</div>
       </div>
     </dialog>

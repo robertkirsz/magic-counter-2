@@ -48,7 +48,8 @@ export const Commander: React.FC<CommanderProps> = ({
         )}
 
         {/* Card Details Overlay */}
-        <div className="flex-1 bg-black/90 dark:bg-gray-900/90 p-2">
+        <div className="flex-1 p-2">
+          {/* <div className="flex-1 bg-black/90 dark:bg-gray-900/90 p-2"> */}
           {colors.length > 0 && <ColorBadges colors={colors} className="flex-none mb-1" />}
 
           <div

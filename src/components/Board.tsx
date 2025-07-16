@@ -40,7 +40,10 @@ function SortablePlayerSection({ id, gameId }: { id: string; gameId: string }) {
         ref={setActivatorNodeRef}
         {...listeners}
         {...attributes}
-        className="absolute top-2 left-1/2 -translate-x-1/2 z-10 bg-white rounded-full p-1 shadow hover:bg-gray-100 cursor-grab active:cursor-grabbing"
+        className="absolute top-2 left-1/2 -translate-x-1/2 cursor-grab active:cursor-grabbing"
+        round
+        small
+        variant="secondary"
         tabIndex={-1}
         aria-label="Drag to reorder player"
         type="button"
@@ -143,7 +146,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const showStartModal = game.state === 'active' && !currentActivePlayer && game.turnTracking
 
   return (
-    <div className="Board flex min-h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="Board flex min-h-screen">
       {/* Player Sections */}
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={game.players.map(p => p.id)}>
@@ -156,53 +159,49 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       </DndContext>
 
       {/* Settings Overlay */}
-      <div className="fixed top-4 right-4 flex flex-col gap-3 z-20">
-        <Button
-          onClick={() => setShowSettings(true)}
-          className="bg-gray-800/90 hover:bg-gray-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 border border-gray-700 dark:bg-gray-900 dark:border-gray-700"
-        >
+      <div className="fixed top-2 right-2 flex flex-col items-start gap-2 z-20">
+        <Button variant="primary" round onClick={() => setShowSettings(true)}>
           <Settings size={24} className="text-white" />
         </Button>
 
         <ThemeToggle />
 
-        <Button
-          onClick={() => setShowActions(true)}
-          className="bg-gray-800/90 hover:bg-gray-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 border border-gray-700 dark:bg-gray-900 dark:border-gray-700"
-        >
+        <Button variant="primary" round onClick={() => setShowActions(true)}>
           <List size={24} className="text-white" />
         </Button>
-      </div>
-
-      {/* Play/Finish Button */}
-      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex justify-center w-full z-20">
-        {game.state !== 'finished' && (
-          <Button
-            disabled={!canPlay && game.state !== 'active'}
-            onClick={game.state === 'active' ? handleFinish : handlePlay}
-            className={`bg-gray-800/90 hover:bg-gray-700 text-white rounded-full px-6 py-3 shadow-lg transition-all duration-200 flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed border border-green-500/30 hover:border-green-500/50 dark:bg-gray-900 dark:border-green-700`}
-          >
-            {game.state === 'active' ? (
-              <span className="text-lg font-bold">FINISH</span>
-            ) : (
-              <>
-                <Play size={32} />
-                <span className="text-lg font-bold">PLAY</span>
-              </>
-            )}
-          </Button>
-        )}
       </div>
 
       {/* Pass Turn Button */}
       {game.state === 'active' && game.turnTracking && currentActivePlayer && (
         <Button
-          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 bg-gray-800/90 hover:bg-gray-700 text-white rounded-full p-4 shadow-lg text-lg font-bold transition-all duration-200 border border-blue-500/30 hover:border-blue-500/50 dark:bg-gray-900 dark:border-blue-700"
+          round
+          variant="primary"
+          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20"
           onClick={() => handlePassTurn()}
         >
           <ArrowBigRightDash size={32} />
         </Button>
       )}
+
+      {/* Play/Finish Button */}
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex justify-center w-full z-20">
+        {game.state !== 'finished' && (
+          <Button
+            variant="primary"
+            disabled={!canPlay && game.state !== 'active'}
+            onClick={game.state === 'active' ? handleFinish : handlePlay}
+          >
+            {game.state === 'active' ? (
+              <span>FINISH</span>
+            ) : (
+              <>
+                <Play size={32} />
+                <span>PLAY</span>
+              </>
+            )}
+          </Button>
+        )}
+      </div>
 
       {/* Settings Modal */}
       {showSettings && (

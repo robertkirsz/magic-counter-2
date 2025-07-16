@@ -21,51 +21,33 @@ export const IntroScreen: React.FC = () => {
   const hasFinishedGames = games.some(game => game.state === 'finished')
 
   return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 p-4 safe-area-inset-top safe-area-inset-bottom">
-      <div className="space-y-4 max-w-md mx-auto px-4">
-        <div className="flex flex-col gap-2 text-center bg-white dark:bg-gray-800 rounded-lg px-4 py-6 ring shadow-xl ring-gray-900/5">
-          <h1 className="text-2xl text-gray-900 dark:text-white">Magic Counter</h1>
-          <p className="text-gray-500 dark:text-gray-400">Track your Magic: The Gathering games</p>
-        </div>
+    <div className="min-h-screen flex flex-col items-center justify-center  p-4 safe-area-inset-top safe-area-inset-bottom">
+      <h1 className="mb-40 text-2xl text-gray-900 dark:text-white">Magic Counter</h1>
 
-        <div className="space-y-4">
-          {!hasGamesInProgress && (
-            <Button
-              onClick={() => setShowGameForm(true)}
-              className="w-full px-4 md:px-6 py-3 md:py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 active:bg-green-800 dark:bg-green-700 dark:hover:bg-green-800 transition-colors flex items-center justify-center gap-2 md:gap-3 text-base md:text-lg font-medium touch-manipulation"
-            >
-              <Plus size={20} className="md:w-6 md:h-6" />
-              Create Game
-            </Button>
-          )}
-
-          {hasFinishedGames && (
-            <Button
-              onClick={() => setShowGames(true)}
-              className="w-full px-4 md:px-6 py-3 md:py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 dark:bg-blue-700 dark:hover:bg-blue-800 transition-colors flex items-center justify-center gap-2 md:gap-3 text-base md:text-lg font-medium touch-manipulation"
-            >
-              <History size={20} className="md:w-6 md:h-6" />
-              Past Games
-            </Button>
-          )}
-
-          <Button
-            data-testid="intro-screen-users-button"
-            onClick={() => setShowUsers(true)}
-            className="w-full px-4 md:px-6 py-3 md:py-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 active:bg-purple-800 dark:bg-purple-700 dark:hover:bg-purple-800 transition-colors flex items-center justify-center gap-2 md:gap-3 text-base md:text-lg font-medium touch-manipulation"
-          >
-            <UsersIcon size={20} className="md:w-6 md:h-6" />
-            Users
+      <div className="flex flex-col items-center gap-2">
+        {!hasGamesInProgress && (
+          <Button variant="primary" onClick={() => setShowGameForm(true)}>
+            <Plus size={20} />
+            New Game
           </Button>
+        )}
 
-          <Button
-            onClick={() => setShowDecks(true)}
-            className="w-full px-4 md:px-6 py-3 md:py-4 bg-orange-600 text-white rounded-lg hover:bg-orange-700 active:bg-orange-800 dark:bg-orange-700 dark:hover:bg-orange-800 transition-colors flex items-center justify-center gap-2 md:gap-3 text-base md:text-lg font-medium touch-manipulation"
-          >
-            <BookOpen size={20} className="md:w-6 md:h-6" />
-            Decks
+        {hasFinishedGames && (
+          <Button variant="secondary" onClick={() => setShowGames(true)}>
+            <History size={20} />
+            Past Games
           </Button>
-        </div>
+        )}
+
+        <Button variant="secondary" data-testid="intro-screen-users-button" onClick={() => setShowUsers(true)}>
+          <UsersIcon size={20} />
+          Users
+        </Button>
+
+        <Button variant="secondary" onClick={() => setShowDecks(true)}>
+          <BookOpen size={20} />
+          Decks
+        </Button>
       </div>
 
       {/* GameForm Modal */}

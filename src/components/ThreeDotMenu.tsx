@@ -55,33 +55,26 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
     return (
       <div className={`flex gap-1 empty:hidden ${className}`} {...props}>
         {onEdit && (
-          <Button
-            data-testid={`${testIdPrefix}-edit-button`}
-            onClick={onEdit}
-            className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
-            title="Edit"
-          >
+          <Button data-testid={`${testIdPrefix}-edit`} round small variant="secondary" title="Edit" onClick={onEdit}>
             <Edit3 size={16} />
           </Button>
         )}
 
         {onRemove && (
           <Button
-            data-testid={`${testIdPrefix}-delete-button`}
-            onClick={() => setShowConfirm(true)}
-            className="text-red-600 hover:text-red-800 transition-colors p-1 rounded hover:bg-red-50"
+            data-testid={`${testIdPrefix}-delete`}
+            round
+            small
+            variant="danger"
             title="Delete"
+            onClick={() => setShowConfirm(true)}
           >
             <Trash2 size={16} />
           </Button>
         )}
 
         {onClose && (
-          <Button
-            onClick={onClose}
-            className="text-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
-            title="Close"
-          >
+          <Button data-testid={`${testIdPrefix}-close`} round small variant="secondary" title="Close" onClick={onClose}>
             <X size={16} />
           </Button>
         )}
@@ -95,20 +88,20 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
 
               <div className="flex gap-2 justify-end">
                 <Button
-                  data-testid={`${testIdPrefix}-confirm-cancel-button`}
+                  data-testid={`${testIdPrefix}-confirm-cancel`}
+                  variant="secondary"
                   onClick={() => setShowConfirm(false)}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
                 >
                   Cancel
                 </Button>
 
                 <Button
-                  data-testid={`${testIdPrefix}-confirm-delete-button`}
+                  data-testid={`${testIdPrefix}-confirm-delete`}
+                  variant="danger"
                   onClick={() => {
                     onRemove?.()
                     setShowConfirm(false)
                   }}
-                  className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
                 >
                   Delete
                 </Button>
@@ -123,10 +116,12 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
   return (
     <div ref={wrapperRef} className={`relative flex max-w-fit max-h-fit ${className}`} {...props}>
       <Button
-        title="More options"
-        className="bg-gray-800/80 hover:bg-gray-700 text-gray-300 hover:text-white transition-colors p-1 rounded-lg dark:bg-gray-900 dark:hover:bg-gray-800 dark:text-gray-100"
-        onClick={() => setIsOpen(!isOpen)}
         data-testid={testIdPrefix}
+        variant="secondary"
+        round
+        small
+        title="More options"
+        onClick={() => setIsOpen(!isOpen)}
       >
         <MoreVertical size={16} />
       </Button>
@@ -134,18 +129,19 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
       {isOpen && (
         <div
           ref={menuRef}
-          className={`absolute bg-gray-800/95 dark:bg-gray-900 border border-gray-700 dark:border-gray-600 rounded-lg shadow-lg z-10 min-w-[120px] empty:hidden ${
+          className={`flex flex-col absolute rounded-lg shadow-lg z-20 min-w-[120px] overflow-clip empty:hidden ${
             menuPosition === 'bottom' ? 'top-full mt-1' : 'bottom-full mb-1'
           } ${menuAlignment === 'right' ? 'right-0' : 'left-0'}`}
         >
           {onEdit && (
             <Button
               data-testid={`${testIdPrefix}-edit`}
+              variant="secondary"
+              className="rounded-none"
               onClick={() => {
                 onEdit()
                 setIsOpen(false)
               }}
-              className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 transition-colors flex items-center gap-2"
             >
               <Edit3 size={14} />
               Edit
@@ -155,11 +151,12 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
           {onRemove && (
             <Button
               data-testid={`${testIdPrefix}-delete`}
+              variant="danger"
+              className="rounded-none"
               onClick={() => {
                 setShowConfirm(true)
                 setIsOpen(false)
               }}
-              className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors flex items-center gap-2"
             >
               <Trash2 size={14} />
               Delete
@@ -168,11 +165,11 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
 
           {onClose && (
             <Button
+              variant="secondary"
               onClick={() => {
                 onClose()
                 setIsOpen(false)
               }}
-              className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 transition-colors flex items-center gap-2"
             >
               <X size={14} />
               Close
@@ -185,24 +182,24 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
       {showConfirm && (
         <Modal isOpen={showConfirm} onClose={() => setShowConfirm(false)} title="Confirm Delete">
           <div className="flex flex-col gap-4">
-            <p className="text-gray-600">Are you sure you want to delete this item? This action cannot be undone.</p>
+            <p>Are you sure you want to delete this item? This action cannot be undone.</p>
 
             <div className="flex gap-2 justify-end">
               <Button
                 data-testid={`${testIdPrefix}-confirm-cancel-button`}
+                variant="secondary"
                 onClick={() => setShowConfirm(false)}
-                className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
               >
                 Cancel
               </Button>
 
               <Button
                 data-testid={`${testIdPrefix}-confirm-delete-button`}
+                variant="danger"
                 onClick={() => {
                   onRemove?.()
                   setShowConfirm(false)
                 }}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
               >
                 Delete
               </Button>

@@ -1,36 +1,55 @@
 import React from 'react'
+import useRipple from 'useripple'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'default'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant
+  small?: boolean
+  round?: boolean
   loading?: boolean
 }
 
-const variantClasses: Record<ButtonVariant, string> = {
-  primary: 'bg-blue-600 text-white hover:bg-blue-700',
-  secondary: 'bg-gray-200 text-gray-700 hover:bg-gray-300',
-  danger: 'bg-red-600 text-white hover:bg-red-700',
-  default: 'bg-gray-100 text-gray-800 hover:bg-gray-200'
+const variantToClass: Record<ButtonVariant, string> = {
+  primary: 'btn primary',
+  secondary: 'btn secondary',
+  danger: 'btn danger',
+  default: 'btn'
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = 'default', className = '', disabled, loading, children, ...props }, ref) => {
+  (
+    {
+      variant = 'default',
+      small = false,
+      round = false,
+      className = '',
+      disabled,
+      loading,
+      children,
+      onClick,
+      ...props
+    },
+    ref
+  ) => {
+    const [addRipple, ripples] = useRipple()
     const isDisabled = disabled || loading
+
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      addRipple(e)
+      onClick?.(e)
+    }
 
     return (
       <button
         ref={ref}
-        className={`inline-flex items-center justify-center gap-1 px-4 py-2 rounded transition font-medium focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-60 disabled:cursor-not-allowed ${
-          variantClasses[variant]
-        } ${className}`}
+        className={`${variantToClass[variant]} ${small ? 'small' : ''} ${round ? 'round' : ''} ${className}`.trim()}
         disabled={isDisabled}
+        onClick={handleClick}
         {...props}
       >
-        {loading ? (
-          <span className="inline-block animate-spin mr-2 w-4 h-4 border-2 border-t-transparent border-current rounded-full align-middle" />
-        ) : null}
-
+        {ripples}
+        {loading && <span className="animate-spin" />}
         {children}
       </button>
     )

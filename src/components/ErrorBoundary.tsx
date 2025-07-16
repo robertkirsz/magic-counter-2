@@ -57,18 +57,13 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren, ErrorBounda
             </details>
           )}
 
-          <Button className="px-4 py-2 text-base font-semibold" variant="danger" onClick={this.handleReload}>
+          <Button variant="danger" onClick={this.handleReload}>
             Reload Page
           </Button>
 
           <div className="flex flex-col gap-1 mt-2">
             {STORAGE_KEYS.map(({ key, label }) => (
-              <Button
-                key={key}
-                className="px-3 py-1 text-xs font-medium"
-                variant="secondary"
-                onClick={() => this.handleClearKey(key)}
-              >
+              <Button key={key} variant="secondary" onClick={() => this.handleClearKey(key)}>
                 {label}
               </Button>
             ))}

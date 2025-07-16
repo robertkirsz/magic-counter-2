@@ -21,12 +21,7 @@ export const Users: React.FC = () => {
     <>
       <div className="flex flex-col gap-4 items-start">
         {/* Add User Section */}
-        <Button
-          data-testid="users-add"
-          onClick={() => setIsAdding(true)}
-          className="px-5 py-2 flex items-center gap-2"
-          variant="primary"
-        >
+        <Button data-testid="users-add" variant="primary" onClick={() => setIsAdding(true)}>
           <Plus size={20} />
           Add New User
         </Button>
@@ -68,7 +63,6 @@ export const Users: React.FC = () => {
 
                   <Button
                     data-testid={`${testId}-create-deck`}
-                    className="px-2 py-1 text-xs self-end"
                     variant="primary"
                     onClick={() => setSelectedUser(user.id)}
                   >

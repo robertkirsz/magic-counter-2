@@ -126,7 +126,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel }) 
             </span>
           </div>
 
-          <Button onClick={() => handleLifeChange(startingLife + 5)} variant="secondary">
+          <Button variant="secondary" onClick={() => handleLifeChange(startingLife + 5)}>
             +
           </Button>
         </div>

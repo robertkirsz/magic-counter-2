@@ -32,13 +32,17 @@ const ThemeToggle: React.FC = () => {
         document.documentElement.classList.toggle('dark', t === 'dark')
       }
     }
+
     applyTheme(theme)
+
     if (theme === 'system') {
       const listener = (e: MediaQueryListEvent) => {
         document.documentElement.classList.toggle('dark', e.matches)
       }
+
       const mql = window.matchMedia('(prefers-color-scheme: dark)')
       mql.addEventListener('change', listener)
+
       return () => mql.removeEventListener('change', listener)
     }
   }, [theme])
@@ -50,24 +54,22 @@ const ThemeToggle: React.FC = () => {
   }
 
   return (
-    <Button
-      onClick={nextTheme}
-      className="mt-2 flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-700 dark:border-gray-600 bg-gray-800 dark:bg-gray-900 text-white hover:bg-gray-700 dark:hover:bg-gray-800 transition"
-      title="Toggle theme"
-    >
+    <Button variant="primary" round title="Toggle theme" onClick={nextTheme}>
       {theme === 'light' && (
         <span aria-label="Light mode" title="Light mode">
-          🌞 Light
+          🌞
         </span>
       )}
+
       {theme === 'dark' && (
         <span aria-label="Dark mode" title="Dark mode">
-          🌚 Dark
+          🌚
         </span>
       )}
+
       {theme === 'system' && (
         <span aria-label="System" title="System">
-          💻 System
+          💻
         </span>
       )}
     </Button>

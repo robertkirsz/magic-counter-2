@@ -234,9 +234,11 @@ export const DevToolsPanel: React.FC = () => {
             <summary className="font-bold mb-2 cursor-pointer select-none">Import/Export</summary>
 
             <div className="flex gap-2 mb-3">
-              <Button onClick={handleExport}>Export All Data</Button>
+              <Button variant="secondary" onClick={handleExport}>
+                Export All Data
+              </Button>
 
-              <label className="bg-blue-600 text-white rounded px-2 py-1 text-xs font-semibold hover:bg-blue-700 transition cursor-pointer">
+              <label className="btn primary">
                 Import Data
                 <input type="file" accept=".json" onChange={handleImport} className="hidden" />
               </label>
@@ -257,7 +259,9 @@ export const DevToolsPanel: React.FC = () => {
 
             {usersError && <div className="text-red-600 text-xs mb-1">{usersError}</div>}
 
-            <Button onClick={() => handleSave('users')}>Save</Button>
+            <Button variant="secondary" onClick={() => handleSave('users')}>
+              Save
+            </Button>
           </details>
 
           <details open className="mt-3">
@@ -272,7 +276,9 @@ export const DevToolsPanel: React.FC = () => {
 
             {decksError && <div className="text-red-600 text-xs mb-1">{decksError}</div>}
 
-            <Button onClick={() => handleSave('decks')}>Save</Button>
+            <Button variant="secondary" onClick={() => handleSave('decks')}>
+              Save
+            </Button>
           </details>
 
           <details open className="mt-3">
@@ -287,17 +293,18 @@ export const DevToolsPanel: React.FC = () => {
 
             {gamesError && <div className="text-red-600 text-xs mb-1">{gamesError}</div>}
 
-            <Button onClick={() => handleSave('games')}>Save</Button>
+            <Button variant="secondary" onClick={() => handleSave('games')}>
+              Save
+            </Button>
           </details>
         </div>
       )}
 
       <Button
+        variant="primary"
+        round
+        className={`transition-all duration-200 ${open ? 'rotate-12' : ''}`}
         onClick={() => setOpen(o => !o)}
-        className={`w-12 h-12 bg-gray-900 text-white rounded-full shadow-lg hover:bg-gray-800 transition-all duration-200 flex items-center justify-center ${
-          open ? 'rotate-12' : ''
-        }`}
-        title={open ? 'Hide DevTools' : 'Show DevTools'}
       >
         <Wrench size={20} />
       </Button>

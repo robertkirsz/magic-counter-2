@@ -113,7 +113,6 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
         <div className="flex gap-2 justify-end">
           <Button
             data-testid={`${testIdPrefix}-save`}
-            className="px-4 py-2"
             variant="primary"
             disabled={!name.trim() || selectedColors.length === 0}
             onClick={handleSave}
@@ -121,7 +120,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
             Save
           </Button>
 
-          <Button data-testid={`${testIdPrefix}-cancel`} onClick={onCancel} className="px-4 py-2" variant="danger">
+          <Button data-testid={`${testIdPrefix}-cancel`} variant="danger" onClick={onCancel}>
             Cancel
           </Button>
         </div>

@@ -1,4 +1,4 @@
-import { Plus, Search } from 'lucide-react'
+import { ArrowDown, ArrowUp, Plus, Search } from 'lucide-react'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
@@ -68,11 +68,13 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
       }
 
       const deckColors = deck.colors.map(color => colorNames[color] || color).join(' ')
+
       if (deckColors.includes(query)) return true
 
       // Search by commanders
       if (deck.commanders) {
         const commanderNames = deck.commanders.map(c => c.name.toLowerCase()).join(' ')
+
         if (commanderNames.includes(query)) return true
       }
 
@@ -116,99 +118,85 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
   const hasMultipleDecks = decks.length > 1
 
   return (
-    <>
-      <div className="flex flex-col gap-4">
-        {/* Controls Section */}
-        <div className="flex gap-2 items-center w-full">
-          {/* Search Bar */}
-          {hasMultipleDecks && (
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+    <div className="flex flex-col gap-4">
+      {/* Controls Section */}
+      <div className="flex gap-2 items-center w-full">
+        {/* Search Bar */}
+        {hasMultipleDecks && (
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
 
-              <input
-                type="text"
-                placeholder="Search decks by name, colors, or commanders..."
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-          )}
+            <input
+              type="text"
+              placeholder="Search decks by name, colors, or commanders..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+          </div>
+        )}
 
-          {/* Sort Dropdown */}
-          {hasMultipleDecks && (
-            <div className="relative" ref={dropdownRef}>
-              <Button
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-100 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition"
-                variant="secondary"
-              >
-                {sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}
-                <span className="ml-2 text-xs">{sortDirection === 'asc' ? '↑' : '↓'}</span>
-              </Button>
+        {/* Sort Dropdown */}
+        {hasMultipleDecks && (
+          <div className="relative" ref={dropdownRef}>
+            <Button variant="secondary" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+              {sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}
+              {sortDirection === 'asc' ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
+            </Button>
 
-              {isDropdownOpen && (
-                <div className="absolute top-full left-0 mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10 min-w-[150px]">
-                  {(['name', 'date', 'colors', 'creator'] as SortOption[]).map(option => (
-                    <Button
-                      key={option}
-                      onClick={() => {
-                        handleSortChange(option)
-                        setIsDropdownOpen(false)
-                      }}
-                      className={`w-full text-left px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition ${
-                        sortBy === option
-                          ? 'bg-blue-50 text-blue-600 dark:bg-blue-900 dark:text-blue-300'
-                          : 'text-gray-700 dark:text-gray-100'
-                      }`}
-                      variant={sortBy === option ? 'primary' : 'secondary'}
-                    >
-                      {option.charAt(0).toUpperCase() + option.slice(1)}
-                      {sortBy === option && <span className="ml-2 text-xs">{sortDirection === 'asc' ? '↑' : '↓'}</span>}
-                    </Button>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+            {isDropdownOpen && (
+              <div className="flex flex-col absolute top-full left-0 mt-1 rounded-lg shadow-lg z-10 min-w-[150px] overflow-clip">
+                {(['name', 'date', 'colors', 'creator'] as SortOption[]).map(option => (
+                  <Button
+                    key={option}
+                    variant={sortBy === option ? 'primary' : 'secondary'}
+                    className="rounded-none"
+                    onClick={() => {
+                      handleSortChange(option)
+                      setIsDropdownOpen(false)
+                    }}
+                  >
+                    {option.charAt(0).toUpperCase() + option.slice(1)}
+                    {sortBy === option && (sortDirection === 'asc' ? <ArrowUp size={16} /> : <ArrowDown size={16} />)}
+                  </Button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
-          {/* Add Deck Button */}
-          <Button
-            onClick={() => setDeckFormVisible(true)}
-            className="px-5 py-2 flex items-center gap-2"
-            variant="primary"
-          >
-            <Plus size={20} />
-            Add Deck
-          </Button>
-        </div>
+        {/* Add Deck Button */}
+        <Button variant="primary" onClick={() => setDeckFormVisible(true)}>
+          <Plus size={20} />
+          Add Deck
+        </Button>
+      </div>
 
-        {/* Decks List */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-          {sortedDecks.map(deck => (
-            <Deck key={deck.id} id={deck.id} useContextControls />
-          ))}
+      {/* Decks List */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+        {sortedDecks.map(deck => (
+          <Deck key={deck.id} id={deck.id} useContextControls />
+        ))}
 
-          {!hasDecks && (
-            <p className="text-gray-500 italic">
-              {searchQuery.trim() ? 'No decks match your search.' : 'No decks yet. Add your first deck!'}
-            </p>
-          )}
-        </div>
-
-        {/* Deck Form Modal */}
-        {deckFormVisible && (
-          <DeckForm
-            userId={userId}
-            onSave={() => {
-              setDeckFormVisible(false)
-            }}
-            onCancel={() => {
-              setDeckFormVisible(false)
-            }}
-          />
+        {!hasDecks && (
+          <p className="text-gray-500 italic">
+            {searchQuery.trim() ? 'No decks match your search.' : 'No decks yet. Add your first deck!'}
+          </p>
         )}
       </div>
-    </>
+
+      {/* Deck Form Modal */}
+      {deckFormVisible && (
+        <DeckForm
+          userId={userId}
+          onSave={() => {
+            setDeckFormVisible(false)
+          }}
+          onCancel={() => {
+            setDeckFormVisible(false)
+          }}
+        />
+      )}
+    </div>
   )
 }
