@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
 import { useUsers } from '../hooks/useUsers'
+import { Button } from './Button'
 import { Deck } from './Deck'
 import { DeckForm } from './DeckForm'
 import { ThreeDotMenu } from './ThreeDotMenu'
@@ -20,14 +21,15 @@ export const Users: React.FC = () => {
     <>
       <div className="flex flex-col gap-4 items-start">
         {/* Add User Section */}
-        <button
+        <Button
           data-testid="users-add"
           onClick={() => setIsAdding(true)}
-          className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 transition flex items-center gap-2"
+          className="px-5 py-2 flex items-center gap-2"
+          variant="primary"
         >
           <Plus size={20} />
           Add New User
-        </button>
+        </Button>
 
         {/* Users List */}
         {users.length === 0 ? (
@@ -64,13 +66,14 @@ export const Users: React.FC = () => {
                     ))}
                   </div>
 
-                  <button
+                  <Button
                     data-testid={`${testId}-create-deck`}
-                    className="px-2 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition self-end"
+                    className="px-2 py-1 text-xs self-end"
+                    variant="primary"
                     onClick={() => setSelectedUser(user.id)}
                   >
                     Create New Deck
-                  </button>
+                  </Button>
                 </div>
               )
             })}

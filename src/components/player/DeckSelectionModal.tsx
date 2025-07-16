@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { Button } from '../Button'
 import { Deck } from '../Deck'
 import { Modal } from '../Modal'
 
@@ -14,24 +15,22 @@ const DeckSelectionModal: React.FC<{
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
         <p className="text-sm text-gray-600">Select a deck for this player:</p>
-        <button
-          onClick={onCreateDeck}
-          className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-        >
+        <Button onClick={onCreateDeck} className="px-3 py-1 text-sm" variant="primary">
           Create New Deck
-        </button>
+        </Button>
       </div>
 
       {sortedDecks.length > 0 ? (
         <div className="grid grid-cols-2 gap-2 items-start">
           {sortedDecks.map(deck => (
-            <button
+            <Button
               key={deck.id}
               onClick={() => onSelect(deck.id)}
-              className="text-left hover:bg-gray-50 transition p-2 rounded"
+              className="text-left p-2 rounded"
+              variant="secondary"
             >
               <Deck id={deck.id} />
-            </button>
+            </Button>
           ))}
         </div>
       ) : (

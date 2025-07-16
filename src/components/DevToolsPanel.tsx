@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
+import { Button } from './Button'
 
 function tryParseJSON<T>(value: string): [T | null, string | null] {
   try {
@@ -233,12 +234,7 @@ export const DevToolsPanel: React.FC = () => {
             <summary className="font-bold mb-2 cursor-pointer select-none">Import/Export</summary>
 
             <div className="flex gap-2 mb-3">
-              <button
-                className="bg-green-600 text-white rounded px-2 py-1 text-xs font-semibold hover:bg-green-700 transition"
-                onClick={handleExport}
-              >
-                Export All Data
-              </button>
+              <Button onClick={handleExport}>Export All Data</Button>
 
               <label className="bg-blue-600 text-white rounded px-2 py-1 text-xs font-semibold hover:bg-blue-700 transition cursor-pointer">
                 Import Data
@@ -261,12 +257,7 @@ export const DevToolsPanel: React.FC = () => {
 
             {usersError && <div className="text-red-600 text-xs mb-1">{usersError}</div>}
 
-            <button
-              className="bg-blue-600 text-white rounded px-2 py-1 text-xs font-semibold hover:bg-blue-700 transition mb-2"
-              onClick={() => handleSave('users')}
-            >
-              Save
-            </button>
+            <Button onClick={() => handleSave('users')}>Save</Button>
           </details>
 
           <details open className="mt-3">
@@ -281,12 +272,7 @@ export const DevToolsPanel: React.FC = () => {
 
             {decksError && <div className="text-red-600 text-xs mb-1">{decksError}</div>}
 
-            <button
-              className="bg-blue-600 text-white rounded px-2 py-1 text-xs font-semibold hover:bg-blue-700 transition mb-2"
-              onClick={() => handleSave('decks')}
-            >
-              Save
-            </button>
+            <Button onClick={() => handleSave('decks')}>Save</Button>
           </details>
 
           <details open className="mt-3">
@@ -301,17 +287,12 @@ export const DevToolsPanel: React.FC = () => {
 
             {gamesError && <div className="text-red-600 text-xs mb-1">{gamesError}</div>}
 
-            <button
-              className="bg-blue-600 text-white rounded px-2 py-1 text-xs font-semibold hover:bg-blue-700 transition mb-2"
-              onClick={() => handleSave('games')}
-            >
-              Save
-            </button>
+            <Button onClick={() => handleSave('games')}>Save</Button>
           </details>
         </div>
       )}
 
-      <button
+      <Button
         onClick={() => setOpen(o => !o)}
         className={`w-12 h-12 bg-gray-900 text-white rounded-full shadow-lg hover:bg-gray-800 transition-all duration-200 flex items-center justify-center ${
           open ? 'rotate-12' : ''
@@ -319,7 +300,7 @@ export const DevToolsPanel: React.FC = () => {
         title={open ? 'Hide DevTools' : 'Show DevTools'}
       >
         <Wrench size={20} />
-      </button>
+      </Button>
     </div>
   )
 }

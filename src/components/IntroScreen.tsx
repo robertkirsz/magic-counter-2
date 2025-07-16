@@ -2,6 +2,7 @@ import { BookOpen, History, Plus, Users as UsersIcon } from 'lucide-react'
 import React, { useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
+import { Button } from './Button'
 import { Decks } from './Decks'
 import { GameForm } from './GameForm'
 import { Games } from './Games'
@@ -29,41 +30,41 @@ export const IntroScreen: React.FC = () => {
 
         <div className="space-y-4">
           {!hasGamesInProgress && (
-            <button
+            <Button
               onClick={() => setShowGameForm(true)}
               className="w-full px-4 md:px-6 py-3 md:py-4 bg-green-600 text-white rounded-lg hover:bg-green-700 active:bg-green-800 dark:bg-green-700 dark:hover:bg-green-800 transition-colors flex items-center justify-center gap-2 md:gap-3 text-base md:text-lg font-medium touch-manipulation"
             >
               <Plus size={20} className="md:w-6 md:h-6" />
               Create Game
-            </button>
+            </Button>
           )}
 
           {hasFinishedGames && (
-            <button
+            <Button
               onClick={() => setShowGames(true)}
               className="w-full px-4 md:px-6 py-3 md:py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 active:bg-blue-800 dark:bg-blue-700 dark:hover:bg-blue-800 transition-colors flex items-center justify-center gap-2 md:gap-3 text-base md:text-lg font-medium touch-manipulation"
             >
               <History size={20} className="md:w-6 md:h-6" />
               Past Games
-            </button>
+            </Button>
           )}
 
-          <button
+          <Button
             data-testid="intro-screen-users-button"
             onClick={() => setShowUsers(true)}
             className="w-full px-4 md:px-6 py-3 md:py-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 active:bg-purple-800 dark:bg-purple-700 dark:hover:bg-purple-800 transition-colors flex items-center justify-center gap-2 md:gap-3 text-base md:text-lg font-medium touch-manipulation"
           >
             <UsersIcon size={20} className="md:w-6 md:h-6" />
             Users
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={() => setShowDecks(true)}
             className="w-full px-4 md:px-6 py-3 md:py-4 bg-orange-600 text-white rounded-lg hover:bg-orange-700 active:bg-orange-800 dark:bg-orange-700 dark:hover:bg-orange-800 transition-colors flex items-center justify-center gap-2 md:gap-3 text-base md:text-lg font-medium touch-manipulation"
           >
             <BookOpen size={20} className="md:w-6 md:h-6" />
             Decks
-          </button>
+          </Button>
         </div>
       </div>
 

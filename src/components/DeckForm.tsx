@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import type { ManaColor } from '../constants/mana'
 import { useDecks } from '../hooks/useDecks'
+import { Button } from './Button'
 import { Commander } from './Commander'
 import { CommanderSearch } from './CommanderSearch'
 import { ManaPicker } from './ManaPicker'
@@ -110,22 +111,19 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
 
         {/* Action Buttons */}
         <div className="flex gap-2 justify-end">
-          <button
+          <Button
             data-testid={`${testIdPrefix}-save`}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="px-4 py-2"
+            variant="primary"
             disabled={!name.trim() || selectedColors.length === 0}
             onClick={handleSave}
           >
             Save
-          </button>
+          </Button>
 
-          <button
-            data-testid={`${testIdPrefix}-cancel`}
-            onClick={onCancel}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-          >
+          <Button data-testid={`${testIdPrefix}-cancel`} onClick={onCancel} className="px-4 py-2" variant="danger">
             Cancel
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>

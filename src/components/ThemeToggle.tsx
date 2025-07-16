@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
+import { Button } from './Button'
+
 const THEME_KEY = 'theme'
 
 type Theme = 'light' | 'dark' | 'system'
@@ -48,7 +50,7 @@ const ThemeToggle: React.FC = () => {
   }
 
   return (
-    <button
+    <Button
       onClick={nextTheme}
       className="mt-2 flex items-center gap-2 px-3 py-2 rounded-lg border border-gray-700 dark:border-gray-600 bg-gray-800 dark:bg-gray-900 text-white hover:bg-gray-700 dark:hover:bg-gray-800 transition"
       title="Toggle theme"
@@ -68,7 +70,7 @@ const ThemeToggle: React.FC = () => {
           💻 System
         </span>
       )}
-    </button>
+    </Button>
   )
 }
 

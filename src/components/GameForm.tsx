@@ -2,6 +2,7 @@ import { HeartIcon, UserIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
+import { Button } from './Button'
 
 interface GameFormProps {
   gameId?: Game['id']
@@ -94,28 +95,21 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel }) 
         {/* Section 1: Number of Players */}
         <div className="grid grid-cols-4 gap-2">
           {[2, 3, 4, 5].map(count => (
-            <button
+            <Button
               key={count}
+              variant={numberOfPlayers === count ? 'primary' : 'secondary'}
               onClick={() => setNumberOfPlayers(count)}
-              className={`px-4 py-3 flex items-center gap-1 text-sm font-medium rounded-lg transition ${
-                numberOfPlayers === count
-                  ? 'bg-blue-600 text-white hover:bg-blue-700'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
             >
               {count} <UserIcon className="w-4 h-4" />
-            </button>
+            </Button>
           ))}
         </div>
 
         {/* Section 2: Starting Life */}
         <div className="flex gap-2 items-center">
-          <button
-            className="px-4 py-2 bg-gray-200 rounded-lg transition-colors hover:bg-gray-300"
-            onClick={() => handleLifeChange(startingLife - 5)}
-          >
+          <Button variant="secondary" onClick={() => handleLifeChange(startingLife - 5)}>
             -
-          </button>
+          </Button>
 
           <div className="relative">
             <input
@@ -124,6 +118,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel }) 
               max="999"
               value={startingLife}
               onChange={e => handleLifeChange(parseInt(e.target.value))}
+              // TODO: match Button classes
               className="px-4 py-2 bg-gray-200 rounded-lg pr-5 appearance-none hide-number-arrows transition-colors focus:bg-gray-100 hover:bg-gray-300"
             />
             <span className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
@@ -131,12 +126,9 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel }) 
             </span>
           </div>
 
-          <button
-            className="px-4 py-2 bg-gray-200 rounded-lg transition-colors hover:bg-gray-300"
-            onClick={() => handleLifeChange(startingLife + 5)}
-          >
+          <Button onClick={() => handleLifeChange(startingLife + 5)} variant="secondary">
             +
-          </button>
+          </Button>
         </div>
 
         {/* Section 3: Tracking Type */}
@@ -147,29 +139,15 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel }) 
           </label>
         </div>
 
-        {/* Validation Message */}
-        {!isValidGameSetup() && (
-          <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <p className="text-sm text-yellow-800">Please select the number of players to continue</p>
-          </div>
-        )}
-
         {/* Action Buttons */}
         <div className="flex gap-2">
-          <button
-            onClick={handleSave}
-            disabled={!isValidGameSetup()}
-            className="flex-1 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
+          <Button variant="primary" disabled={!isValidGameSetup()} onClick={handleSave}>
             {isEditMode ? 'Save' : 'Create'}
-          </button>
+          </Button>
 
-          <button
-            onClick={onCancel}
-            className="flex-1 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
-          >
+          <Button variant="secondary" onClick={onCancel}>
             Cancel
-          </button>
+          </Button>
         </div>
       </div>
     </>

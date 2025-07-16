@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
+import { Button } from './Button'
 import { GameForm } from './GameForm'
 import { Modal } from './Modal'
 import { PlayerSection } from './PlayerSection'
@@ -35,7 +36,7 @@ function SortablePlayerSection({ id, gameId }: { id: string; gameId: string }) {
 
   return (
     <div ref={setNodeRef} style={style}>
-      <button
+      <Button
         ref={setActivatorNodeRef}
         {...listeners}
         {...attributes}
@@ -45,7 +46,7 @@ function SortablePlayerSection({ id, gameId }: { id: string; gameId: string }) {
         type="button"
       >
         <GripVertical className="w-5 h-5 text-gray-400" />
-      </button>
+      </Button>
 
       <PlayerSection gameId={gameId} playerId={id} />
     </div>
@@ -156,27 +157,27 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
       {/* Settings Overlay */}
       <div className="fixed top-4 right-4 flex flex-col gap-3 z-20">
-        <button
+        <Button
           onClick={() => setShowSettings(true)}
           className="bg-gray-800/90 hover:bg-gray-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 border border-gray-700 dark:bg-gray-900 dark:border-gray-700"
         >
           <Settings size={24} className="text-white" />
-        </button>
+        </Button>
 
         <ThemeToggle />
 
-        <button
+        <Button
           onClick={() => setShowActions(true)}
           className="bg-gray-800/90 hover:bg-gray-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 border border-gray-700 dark:bg-gray-900 dark:border-gray-700"
         >
           <List size={24} className="text-white" />
-        </button>
+        </Button>
       </div>
 
       {/* Play/Finish Button */}
       <div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex justify-center w-full z-20">
         {game.state !== 'finished' && (
-          <button
+          <Button
             disabled={!canPlay && game.state !== 'active'}
             onClick={game.state === 'active' ? handleFinish : handlePlay}
             className={`bg-gray-800/90 hover:bg-gray-700 text-white rounded-full px-6 py-3 shadow-lg transition-all duration-200 flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed border border-green-500/30 hover:border-green-500/50 dark:bg-gray-900 dark:border-green-700`}
@@ -189,18 +190,18 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
                 <span className="text-lg font-bold">PLAY</span>
               </>
             )}
-          </button>
+          </Button>
         )}
       </div>
 
       {/* Pass Turn Button */}
       {game.state === 'active' && game.turnTracking && currentActivePlayer && (
-        <button
+        <Button
           className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 bg-gray-800/90 hover:bg-gray-700 text-white rounded-full p-4 shadow-lg text-lg font-bold transition-all duration-200 border border-blue-500/30 hover:border-blue-500/50 dark:bg-gray-900 dark:border-blue-700"
           onClick={() => handlePassTurn()}
         >
           <ArrowBigRightDash size={32} />
-        </button>
+        </Button>
       )}
 
       {/* Settings Modal */}

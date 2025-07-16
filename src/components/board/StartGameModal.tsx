@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
+import { Button } from '../Button'
 import { Modal } from '../Modal'
 
 interface StartGameModalProps {
@@ -33,7 +34,7 @@ const StartGameModal: React.FC<StartGameModalProps> = ({ isOpen, validPlayers, o
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           {validPlayers.map(player => (
-            <button
+            <Button
               key={player.id}
               onClick={() => setSelectedPlayerId(player.id)}
               className={`p-3 border rounded transition text-left ${
@@ -44,16 +45,16 @@ const StartGameModal: React.FC<StartGameModalProps> = ({ isOpen, validPlayers, o
             >
               {getPlayerName(player.id)}
               {selectedPlayerId === player.id && <span className="ml-2 text-blue-600">(Selected)</span>}
-            </button>
+            </Button>
           ))}
         </div>
-        <button
+        <Button
           className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition font-bold disabled:bg-gray-300 disabled:cursor-not-allowed"
           onClick={handleConfirm}
           disabled={!selectedPlayerId}
         >
           Confirm
-        </button>
+        </Button>
       </div>
     </Modal>
   )

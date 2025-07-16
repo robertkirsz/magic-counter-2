@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 
 import { useUsers } from '../hooks/useUsers'
+import { Button } from './Button'
 import { Modal } from './Modal'
 
 interface UserFormProps {
@@ -48,22 +49,19 @@ export const UserForm: React.FC<UserFormProps> = ({ testId = '', userId, onSave,
 
         {/* Action Buttons */}
         <div className="flex gap-2 justify-end">
-          <button
+          <Button
             data-testid={`${testIdPrefix}-save`}
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
+            className="px-4 py-2"
+            variant="primary"
             disabled={!name.trim()}
             onClick={handleSave}
           >
             {mode === 'create' ? 'Save User' : 'Save Changes'}
-          </button>
+          </Button>
 
-          <button
-            data-testid={`${testIdPrefix}-cancel`}
-            onClick={onCancel}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
-          >
+          <Button data-testid={`${testIdPrefix}-cancel`} onClick={onCancel} className="px-4 py-2" variant="danger">
             Cancel
-          </button>
+          </Button>
         </div>
       </div>
     </Modal>

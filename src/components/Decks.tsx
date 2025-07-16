@@ -2,6 +2,7 @@ import { Plus, Search } from 'lucide-react'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
+import { Button } from './Button'
 import { Deck } from './Deck'
 import { DeckForm } from './DeckForm'
 
@@ -137,18 +138,19 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
           {/* Sort Dropdown */}
           {hasMultipleDecks && (
             <div className="relative" ref={dropdownRef}>
-              <button
+              <Button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-100 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition"
+                variant="secondary"
               >
                 {sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}
                 <span className="ml-2 text-xs">{sortDirection === 'asc' ? '↑' : '↓'}</span>
-              </button>
+              </Button>
 
               {isDropdownOpen && (
                 <div className="absolute top-full left-0 mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10 min-w-[150px]">
                   {(['name', 'date', 'colors', 'creator'] as SortOption[]).map(option => (
-                    <button
+                    <Button
                       key={option}
                       onClick={() => {
                         handleSortChange(option)
@@ -159,10 +161,11 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
                           ? 'bg-blue-50 text-blue-600 dark:bg-blue-900 dark:text-blue-300'
                           : 'text-gray-700 dark:text-gray-100'
                       }`}
+                      variant={sortBy === option ? 'primary' : 'secondary'}
                     >
                       {option.charAt(0).toUpperCase() + option.slice(1)}
                       {sortBy === option && <span className="ml-2 text-xs">{sortDirection === 'asc' ? '↑' : '↓'}</span>}
-                    </button>
+                    </Button>
                   ))}
                 </div>
               )}
@@ -170,13 +173,14 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
           )}
 
           {/* Add Deck Button */}
-          <button
+          <Button
             onClick={() => setDeckFormVisible(true)}
-            className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2"
+            className="px-5 py-2 flex items-center gap-2"
+            variant="primary"
           >
             <Plus size={20} />
             Add Deck
-          </button>
+          </Button>
         </div>
 
         {/* Decks List */}

@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { Button } from '../Button'
+
 const PlayerLifeControls: React.FC<{
   playerId: string
   displayLife: number
@@ -7,13 +9,14 @@ const PlayerLifeControls: React.FC<{
   onLifeChange: (v: number) => void
 }> = ({ playerId, displayLife, pendingLifeChanges, onLifeChange }) => (
   <div className="flex items-center gap-2">
-    <button
+    <Button
       data-testid={`${playerId}-remove-life`}
       onClick={() => onLifeChange(-1)}
-      className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition"
+      className="px-2 py-1"
+      variant="danger"
     >
       -
-    </button>
+    </Button>
 
     <div className={`text-xl font-bold ${pendingLifeChanges !== 0 ? 'text-blue-600' : ''}`}>
       <span data-testid={`${playerId}-life`}>{displayLife}</span>
@@ -25,13 +28,14 @@ const PlayerLifeControls: React.FC<{
       )}
     </div>
 
-    <button
+    <Button
       data-testid={`${playerId}-add-life`}
       onClick={() => onLifeChange(1)}
-      className="px-2 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition"
+      className="px-2 py-1"
+      variant="primary"
     >
       +
-    </button>
+    </Button>
   </div>
 )
 

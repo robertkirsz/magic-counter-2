@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { Button } from '../Button'
 import { ThreeDotMenu } from '../ThreeDotMenu'
 
 const PlayerUserSelector: React.FC<{
@@ -11,17 +12,17 @@ const PlayerUserSelector: React.FC<{
   <>
     {player.userId && (
       <div className="flex items-center gap-1">
-        <button onClick={onShowUserSelect}>
+        <Button onClick={onShowUserSelect}>
           <h1 className="text-lg font-bold">{getUserName(player.userId)}</h1>
-        </button>
+        </Button>
         <ThreeDotMenu onClose={onRemoveUser} asMenu={false} />
       </div>
     )}
 
     {!player.userId && (
-      <button onClick={onShowUserSelect} className="bg-blue-500 text-white rounded-lg px-4 py-2">
+      <Button onClick={onShowUserSelect} className="bg-blue-500 text-white rounded-lg px-4 py-2">
         User
-      </button>
+      </Button>
     )}
   </>
 )

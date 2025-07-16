@@ -1,6 +1,8 @@
 import { X } from 'lucide-react'
 import React, { useEffect, useRef } from 'react'
 
+import { Button } from './Button'
+
 interface ModalProps {
   testId?: string
   isOpen: boolean
@@ -68,15 +70,9 @@ export const Modal: React.FC<ModalProps> = ({
           {title && <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{title}</h3>}
 
           {onClose && !hideCloseButton && (
-            <button
-              type="button"
-              data-testid={`${testIdPrefix}-close`}
-              aria-label="Close modal"
-              className="text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 transition-colors p-1 rounded hover:bg-gray-50 dark:hover:bg-gray-800 ml-auto"
-              onClick={onClose}
-            >
+            <Button type="button" data-testid={`${testIdPrefix}-close`} aria-label="Close modal" onClick={onClose}>
               <X size={24} />
-            </button>
+            </Button>
           )}
         </div>
 
