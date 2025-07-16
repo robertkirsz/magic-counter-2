@@ -123,7 +123,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
     <div ref={wrapperRef} className={`relative flex max-w-fit max-h-fit ${className}`} {...props}>
       <button
         title="More options"
-        className="bg-white/75 backdrop-blur-sm stext-gray-600 hover:text-gray-800 transition-colors p-1 rounded hover:bg-gray-50"
+        className="bg-gray-800/80 hover:bg-gray-700 text-gray-300 hover:text-white transition-colors p-1 rounded-lg dark:bg-gray-900 dark:hover:bg-gray-800 dark:text-gray-100"
         onClick={() => setIsOpen(!isOpen)}
         data-testid={testIdPrefix}
       >
@@ -133,7 +133,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
       {isOpen && (
         <div
           ref={menuRef}
-          className={`absolute bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[120px] empty:hidden ${
+          className={`absolute bg-gray-800/95 dark:bg-gray-900 border border-gray-700 dark:border-gray-600 rounded-lg shadow-lg z-10 min-w-[120px] empty:hidden ${
             menuPosition === 'bottom' ? 'top-full mt-1' : 'bottom-full mb-1'
           } ${menuAlignment === 'right' ? 'right-0' : 'left-0'}`}
         >

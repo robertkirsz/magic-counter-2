@@ -11,6 +11,7 @@ import { useUsers } from '../hooks/useUsers'
 import { GameForm } from './GameForm'
 import { Modal } from './Modal'
 import { PlayerSection } from './PlayerSection'
+import ThemeToggle from './ThemeToggle'
 import { ThreeDotMenu } from './ThreeDotMenu'
 import StartGameModal from './board/StartGameModal'
 
@@ -141,7 +142,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const showStartModal = game.state === 'active' && !currentActivePlayer && game.turnTracking
 
   return (
-    <div className="Board flex min-h-screen w-full">
+    <div className="Board flex min-h-screen w-full bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Player Sections */}
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={game.players.map(p => p.id)}>
@@ -154,29 +155,31 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       </DndContext>
 
       {/* Settings Overlay */}
-      <div className="fixed top-2 right-2 flex flex-col gap-2 z-20">
+      <div className="fixed top-4 right-4 flex flex-col gap-3 z-20">
         <button
           onClick={() => setShowSettings(true)}
-          className="bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-shadow"
+          className="bg-gray-800/90 hover:bg-gray-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 border border-gray-700 dark:bg-gray-900 dark:border-gray-700"
         >
-          <Settings size={24} />
+          <Settings size={24} className="text-white" />
         </button>
+
+        <ThemeToggle />
 
         <button
           onClick={() => setShowActions(true)}
-          className="bg-white rounded-full p-3 shadow-lg hover:shadow-xl transition-shadow"
+          className="bg-gray-800/90 hover:bg-gray-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 border border-gray-700 dark:bg-gray-900 dark:border-gray-700"
         >
-          <List size={24} />
+          <List size={24} className="text-white" />
         </button>
       </div>
 
       {/* Play/Finish Button */}
-      <div className="fixed bottom-2 left-1/2 -translate-x-1/2 flex justify-center w-full z-20">
+      <div className="fixed bottom-4 left-1/2 -translate-x-1/2 flex justify-center w-full z-20">
         {game.state !== 'finished' && (
           <button
             disabled={!canPlay && game.state !== 'active'}
             onClick={game.state === 'active' ? handleFinish : handlePlay}
-            className={`bg-green-600 hover:bg-green-700 text-white rounded-full px-4 py-2 shadow-lg hover:shadow-xl transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed`}
+            className={`bg-gray-800/90 hover:bg-gray-700 text-white rounded-full px-6 py-3 shadow-lg transition-all duration-200 flex items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed border border-green-500/30 hover:border-green-500/50 dark:bg-gray-900 dark:border-green-700`}
           >
             {game.state === 'active' ? (
               <span className="text-lg font-bold">FINISH</span>
@@ -193,7 +196,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       {/* Pass Turn Button */}
       {game.state === 'active' && game.turnTracking && currentActivePlayer && (
         <button
-          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-3 shadow-lg text-lg font-bold"
+          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 bg-gray-800/90 hover:bg-gray-700 text-white rounded-full p-4 shadow-lg text-lg font-bold transition-all duration-200 border border-blue-500/30 hover:border-blue-500/50 dark:bg-gray-900 dark:border-blue-700"
           onClick={() => handlePassTurn()}
         >
           <ArrowBigRightDash size={32} />

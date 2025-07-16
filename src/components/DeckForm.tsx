@@ -96,7 +96,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
         {commanders.length > 0 && (
           <div className="flex flex-col gap-2">
             {commanders.map((commander, index) => (
-              <div key={index} className="bg-gray-50 rounded p-1">
+              <div key={index} className="bg-gray-50 dark:bg-gray-900 rounded p-1">
                 <Commander commander={commander} onRemove={() => handleRemoveCommander(index)} showRemoveButton />
               </div>
             ))}

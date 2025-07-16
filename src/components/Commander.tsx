@@ -30,7 +30,12 @@ export const Commander: React.FC<CommanderProps> = ({
   const testIdPrefix = testId ? `${testId}-...` : '...'
 
   return (
-    <div className="rounded-lg p-1 border border-gray-200" style={gradientStyle} data-testid={testId} {...props}>
+    <div
+      className="rounded-lg p-1 border border-gray-200 dark:border-gray-700"
+      style={gradientStyle}
+      data-testid={testId}
+      {...props}
+    >
       <div className="flex rounded overflow-clip relative">
         {/* Card Image */}
         {imageUrl && (
@@ -43,14 +48,19 @@ export const Commander: React.FC<CommanderProps> = ({
         )}
 
         {/* Card Details Overlay */}
-        <div className="flex-1 bg-black/90 p-2">
+        <div className="flex-1 bg-black/90 dark:bg-gray-900/90 p-2">
           {colors.length > 0 && <ColorBadges colors={colors} className="flex-none mb-1" />}
 
-          <div className="font-medium text-sm line-clamp-1 text-white" data-testid={`${testIdPrefix}-name`}>
+          <div
+            className="font-medium text-sm line-clamp-1 text-white dark:text-gray-100"
+            data-testid={`${testIdPrefix}-name`}
+          >
             {name}
           </div>
 
-          {typeLine && <div className="text-xs text-gray-200 line-clamp-1">{typeLine.split('—')[1]}</div>}
+          {typeLine && (
+            <div className="text-xs text-gray-200 dark:text-gray-400 line-clamp-1">{typeLine.split('—')[1]}</div>
+          )}
         </div>
 
         {showRemoveButton && onRemove && (

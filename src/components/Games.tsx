@@ -14,7 +14,10 @@ export const Games: React.FC = () => {
       ) : (
         <div className="flex flex-col gap-2">
           {games.map(game => (
-            <div key={game.id} className="flex flex-col gap-2 border border-gray-200 rounded-lg p-4 bg-gray-50">
+            <div
+              key={game.id}
+              className="flex flex-col gap-2 border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900"
+            >
               <h3 className=" flex gap-1">
                 <span className="font-semibold">{game.id.slice(0, 8)}...</span>
                 <span className="text-gray-500">({game.createdAt.toLocaleDateString()})</span>

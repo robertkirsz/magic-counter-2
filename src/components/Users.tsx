@@ -23,7 +23,7 @@ export const Users: React.FC = () => {
         <button
           data-testid="users-add"
           onClick={() => setIsAdding(true)}
-          className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition flex items-center gap-2"
+          className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 dark:bg-green-700 dark:hover:bg-green-800 transition flex items-center gap-2"
         >
           <Plus size={20} />
           Add New User
@@ -42,7 +42,7 @@ export const Users: React.FC = () => {
               return (
                 <div
                   key={user.id}
-                  className="flex flex-col gap-1 bg-white rounded-lg p-2 border border-gray-200"
+                  className="flex flex-col gap-1 bg-white dark:bg-gray-900 rounded-lg p-2 border border-gray-200 dark:border-gray-700"
                   data-testid={testId}
                 >
                   <div className="flex gap-1 items-center">

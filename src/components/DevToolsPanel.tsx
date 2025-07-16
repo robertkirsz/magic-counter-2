@@ -227,7 +227,7 @@ export const DevToolsPanel: React.FC = () => {
   return (
     <div className="fixed z-20 gap-2 bottom-2 right-2 flex flex-col items-end">
       {open && (
-        <div className="flex flex-col gap-2 bg-white border border-gray-200 font-mono rounded-lg mt-2 p-4 shadow-lg max-h-[400px] w-full overflow-y-auto text-xs">
+        <div className="flex flex-col gap-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 font-mono rounded-lg mt-2 p-4 shadow-lg max-h-[400px] w-full overflow-y-auto text-xs">
           {/* Import/Export Section */}
           <details open>
             <summary className="font-bold mb-2 cursor-pointer select-none">Import/Export</summary>
@@ -253,7 +253,7 @@ export const DevToolsPanel: React.FC = () => {
             <summary className="font-bold mb-1 cursor-pointer select-none">Users</summary>
 
             <textarea
-              className={`bg-gray-100 p-2 rounded mb-1 w-full h-28 resize-vertical border ${usersError ? 'border-red-500' : 'border-gray-200'} focus:outline-none`}
+              className={`bg-gray-100 dark:bg-gray-900 p-2 rounded mb-1 w-full h-28 resize-vertical border ${usersError ? 'border-red-500' : 'border-gray-200 dark:border-gray-700'} focus:outline-none dark:text-gray-100`}
               value={usersText}
               onChange={e => setUsersText(e.target.value)}
               spellCheck={false}
@@ -273,7 +273,7 @@ export const DevToolsPanel: React.FC = () => {
             <summary className="font-bold mb-1 cursor-pointer select-none">Decks</summary>
 
             <textarea
-              className={`bg-gray-100 p-2 rounded mb-1 w-full h-28 resize-vertical border ${decksError ? 'border-red-500' : 'border-gray-200'} focus:outline-none`}
+              className={`bg-gray-100 dark:bg-gray-900 p-2 rounded mb-1 w-full h-28 resize-vertical border ${decksError ? 'border-red-500' : 'border-gray-200 dark:border-gray-700'} focus:outline-none dark:text-gray-100`}
               value={decksText}
               onChange={e => setDecksText(e.target.value)}
               spellCheck={false}
@@ -293,7 +293,7 @@ export const DevToolsPanel: React.FC = () => {
             <summary className="font-bold mb-1 cursor-pointer select-none">Games</summary>
 
             <textarea
-              className={`bg-gray-100 p-2 rounded mb-1 w-full h-28 resize-vertical border ${gamesError ? 'border-red-500' : 'border-gray-200'} focus:outline-none`}
+              className={`bg-gray-100 dark:bg-gray-900 p-2 rounded mb-1 w-full h-28 resize-vertical border ${gamesError ? 'border-red-500' : 'border-gray-200 dark:border-gray-700'} focus:outline-none dark:text-gray-100`}
               value={gamesText}
               onChange={e => setGamesText(e.target.value)}
               spellCheck={false}

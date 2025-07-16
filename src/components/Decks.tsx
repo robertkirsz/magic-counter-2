@@ -139,14 +139,14 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition"
+                className="flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-900 text-gray-700 dark:text-gray-100 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-800 transition"
               >
                 {sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}
                 <span className="ml-2 text-xs">{sortDirection === 'asc' ? '↑' : '↓'}</span>
               </button>
 
               {isDropdownOpen && (
-                <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10 min-w-[150px]">
+                <div className="absolute top-full left-0 mt-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10 min-w-[150px]">
                   {(['name', 'date', 'colors', 'creator'] as SortOption[]).map(option => (
                     <button
                       key={option}
@@ -154,8 +154,10 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
                         handleSortChange(option)
                         setIsDropdownOpen(false)
                       }}
-                      className={`w-full text-left px-4 py-2 hover:bg-gray-50 transition ${
-                        sortBy === option ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
+                      className={`w-full text-left px-4 py-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition ${
+                        sortBy === option
+                          ? 'bg-blue-50 text-blue-600 dark:bg-blue-900 dark:text-blue-300'
+                          : 'text-gray-700 dark:text-gray-100'
                       }`}
                     >
                       {option.charAt(0).toUpperCase() + option.slice(1)}

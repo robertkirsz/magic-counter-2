@@ -1,11 +1,13 @@
 import React from 'react'
-import pkg from '../../package.json' assert { type: 'json' }
+
+import pkg from '../../package.json'
+
 const APP_VERSION = pkg.version
 
 const STORAGE_KEYS = [
   { key: 'games', label: 'Clear Games Data' },
   { key: 'decks', label: 'Clear Decks Data' },
-  { key: 'users', label: 'Clear Users Data' },
+  { key: 'users', label: 'Clear Users Data' }
 ]
 
 interface ErrorBoundaryState {
@@ -39,45 +41,45 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren, ErrorBounda
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen w-full flex flex-col items-center justify-center gap-2 bg-red-50 text-red-900 font-sans p-8 relative">
+        <div className="min-h-screen w-full flex flex-col items-center justify-center gap-2 bg-red-50 dark:bg-gray-900 text-red-900 dark:text-red-200 font-sans p-8 relative">
           <h1 className="text-2xl font-bold">Something went wrong</h1>
-         
+
           {this.state.error && (
-            <pre className="whitespace-pre-wrap text-sm bg-red-100 rounded p-2 border border-red-200 max-w-xl overflow-x-auto">
+            <pre className="whitespace-pre-wrap text-sm bg-red-100 dark:bg-gray-800 rounded p-2 border border-red-200 dark:border-red-700 max-w-xl overflow-x-auto">
               {this.state.error.toString()}
             </pre>
           )}
-         
+
           {this.state.errorInfo && (
-            <details className="whitespace-pre-wrap text-xs bg-red-100 rounded p-2 border border-red-200 max-w-xl overflow-x-auto">
+            <details className="whitespace-pre-wrap text-xs bg-red-100 dark:bg-gray-800 rounded p-2 border border-red-200 dark:border-red-700 max-w-xl overflow-x-auto">
               {this.state.errorInfo.componentStack}
             </details>
           )}
-         
+
           <button
             className="px-4 py-2 bg-red-700 text-white rounded hover:bg-red-800 transition text-base font-semibold"
             onClick={this.handleReload}
           >
             Reload Page
           </button>
-         
+
           <div className="flex flex-col gap-1 mt-2">
             {STORAGE_KEYS.map(({ key, label }) => (
               <button
                 key={key}
-                className="px-3 py-1 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition text-xs font-medium"
+                className="px-3 py-1 bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-100 rounded hover:bg-gray-300 dark:hover:bg-gray-700 transition text-xs font-medium"
                 onClick={() => this.handleClearKey(key)}
               >
                 {label}
               </button>
             ))}
           </div>
-         
-          <div className="text-xs text-gray-500">v{APP_VERSION}</div>
+
+          <div className="text-xs text-gray-500 dark:text-gray-400">v{APP_VERSION}</div>
         </div>
       )
     }
-   
+
     return this.props.children
   }
 }
