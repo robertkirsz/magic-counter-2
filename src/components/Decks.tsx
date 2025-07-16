@@ -5,6 +5,7 @@ import { useDecks } from '../hooks/useDecks'
 import { Button } from './Button'
 import { Deck } from './Deck'
 import { DeckForm } from './DeckForm'
+import { FadeMask } from './FadeMask'
 
 type SortOption = 'name' | 'date' | 'colors' | 'creator'
 
@@ -118,9 +119,9 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
   const hasMultipleDecks = decks.length > 1
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex-1 flex flex-col gap-4 overflow-hidden">
       {/* Controls Section */}
-      <div className="flex gap-2 items-center w-full">
+      <div className="flex gap-2 items-center">
         {/* Search Bar */}
         {hasMultipleDecks && (
           <div className="flex-1 relative">
@@ -173,17 +174,21 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
       </div>
 
       {/* Decks List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-        {sortedDecks.map(deck => (
-          <Deck key={deck.id} id={deck.id} useContextControls />
-        ))}
+      {hasDecks && (
+        <FadeMask fadeHeight={24} showMask={sortedDecks.length > 3}>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+            {sortedDecks.map(deck => (
+              <Deck key={deck.id} id={deck.id} useContextControls />
+            ))}
+          </div>
+        </FadeMask>
+      )}
 
-        {!hasDecks && (
-          <p className="text-gray-500 italic">
-            {searchQuery.trim() ? 'No decks match your search.' : 'No decks yet. Add your first deck!'}
-          </p>
-        )}
-      </div>
+      {!hasDecks && (
+        <p className="flex-1 flex justify-center items-center text-gray-500 italic">
+          {searchQuery.trim() ? 'No decks match your search.' : 'No decks yet. Add your first deck!'}
+        </p>
+      )}
 
       {/* Deck Form Modal */}
       {deckFormVisible && (

@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { Commander } from './Commander'
+import { FadeMask } from './FadeMask'
 
 interface CommanderSearchProps {
   onChange: (commander: ScryfallCard) => void
@@ -21,9 +22,6 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ onChange }) =>
   const [suggestions, setSuggestions] = useState<ScryfallCard[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [showSuggestions, setShowSuggestions] = useState(false)
-  const [showTopFade, setShowTopFade] = useState(false)
-  const [showBottomFade, setShowBottomFade] = useState(false)
-  const scrollRef = useRef<HTMLDivElement>(null)
 
   const fetchCommanderSuggestions = async (query: string) => {
     if (query.length < 2) {
@@ -72,25 +70,6 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ onChange }) =>
     return () => clearTimeout(timeoutId)
   }, [newCommander])
 
-  useEffect(() => {
-    if (!showSuggestions) return
-
-    const el = scrollRef.current
-
-    if (!el) return
-
-    const handleScroll = () => {
-      setShowTopFade(el.scrollTop > 0)
-      console.log(el.scrollTop + el.clientHeight, el.scrollHeight)
-      setShowBottomFade(el.scrollTop + el.clientHeight < el.scrollHeight)
-    }
-
-    handleScroll()
-    el.addEventListener('scroll', handleScroll)
-
-    return () => el.removeEventListener('scroll', handleScroll)
-  }, [showSuggestions, suggestions.length, isLoading])
-
   const handleSuggestionClick = (card: ScryfallCard) => {
     onChange(card)
     setNewCommander('')
@@ -114,18 +93,12 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ onChange }) =>
 
       {/* Suggestions Dropdown */}
       {showSuggestions && (suggestions.length > 0 || isLoading) && (
-        <div className="relative">
-          <div
-            className={`pointer-events-none absolute top-0 left-0 w-full h-6 bg-gradient-to-b from-white dark:from-gray-900 to-transparent z-10 transition-opacity duration-100 ${
-              suggestions.length > 2 && showTopFade ? 'opacity-100' : 'opacity-0'
-            }`}
-          />
-
-          <div ref={scrollRef} className="flex flex-col gap-1 max-h-58 overflow-y-auto">
+        <FadeMask showMask={suggestions.length > 2}>
+          <div className="flex flex-col gap-1 max-h-58">
             {isLoading && (
-              <div className="p-3 text-center text-gray-500">
+              <div className="flex items-center justify-center gap-2 p-3 text-center text-gray-500">
                 <div className="animate-spin inline-block w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full"></div>
-                <span className="ml-2">Searching...</span>
+                Searching...
               </div>
             )}
 
@@ -143,13 +116,7 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ onChange }) =>
                 />
               ))}
           </div>
-
-          <div
-            className={`pointer-events-none absolute bottom-0 left-0 w-full h-6 bg-gradient-to-t from-white dark:from-gray-900 to-transparent z-10 transition-opacity duration-100 ${
-              suggestions.length > 2 && showBottomFade ? 'opacity-100' : 'opacity-0'
-            }`}
-          />
-        </div>
+        </FadeMask>
       )}
     </div>
   )

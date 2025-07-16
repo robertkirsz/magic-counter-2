@@ -6,6 +6,7 @@ import { useUsers } from '../hooks/useUsers'
 import { Button } from './Button'
 import { Deck } from './Deck'
 import { DeckForm } from './DeckForm'
+import { FadeMask } from './FadeMask'
 import { ThreeDotMenu } from './ThreeDotMenu'
 import { UserForm } from './UserForm'
 
@@ -17,61 +18,70 @@ export const Users: React.FC = () => {
   const [editingId, setEditingId] = useState<string>()
   const [selectedUser, setSelectedUser] = useState<string | null>(null)
 
+  const hasUsers = users.length > 0
+
   return (
     <>
-      <div className="flex flex-col gap-4 items-start">
-        {/* Add User Section */}
-        <Button data-testid="users-add" variant="primary" onClick={() => setIsAdding(true)}>
-          <Plus size={20} />
-          Add New User
-        </Button>
+      <div className="flex-1 flex flex-col gap-4 overflow-hidden">
+        {/* Controls Section */}
+        <div className="flex gap-2 items-center">
+          <Button data-testid="users-add" variant="primary" onClick={() => setIsAdding(true)}>
+            <Plus size={20} />
+            Add New User
+          </Button>
+        </div>
 
         {/* Users List */}
-        {users.length === 0 ? (
-          <p className="text-gray-500 italic">No users yet. Add your first user!</p>
-        ) : (
-          <div className="flex flex-col gap-2 ">
-            {/* TDOO: Create User component */}
-            {users.map((user, index) => {
-              const filteredDecks = decks.filter(deck => deck.createdBy === user.id)
-              const testId = `user-${index}`
+        {hasUsers && (
+          <FadeMask showMask={users.length > 3}>
+            <div className="flex flex-col gap-2">
+              {users.map((user, index) => {
+                const filteredDecks = decks.filter(deck => deck.createdBy === user.id)
+                const testId = `user-${index}`
 
-              return (
-                <div
-                  key={user.id}
-                  className="flex flex-col gap-1 bg-white dark:bg-gray-900 rounded-lg p-2 border border-gray-200 dark:border-gray-700"
-                  data-testid={testId}
-                >
-                  <div className="flex gap-1 items-center">
-                    <h3 className="line-clamp-1" data-testid={`${testId}-name`}>
-                      {user.name}
-                    </h3>
-
-                    <ThreeDotMenu
-                      testId={testId}
-                      onEdit={() => setEditingId(user.id)}
-                      onRemove={() => removeUser(user.id)}
-                    />
-                  </div>
-
-                  {/* User's Decks */}
-                  <div className="flex flex-col gap-2 empty:hidden">
-                    {filteredDecks.map((deck, index) => (
-                      <Deck key={deck.id} id={deck.id} testIndex={index} useContextControls />
-                    ))}
-                  </div>
-
-                  <Button
-                    data-testid={`${testId}-create-deck`}
-                    variant="primary"
-                    onClick={() => setSelectedUser(user.id)}
+                return (
+                  <div
+                    key={user.id}
+                    className="flex flex-col gap-1 bg-white dark:bg-gray-900 rounded-lg p-2 border border-gray-200 dark:border-gray-700"
+                    data-testid={testId}
                   >
-                    Create New Deck
-                  </Button>
-                </div>
-              )
-            })}
-          </div>
+                    <div className="flex gap-1 items-center">
+                      <h3 className="line-clamp-1" data-testid={`${testId}-name`}>
+                        {user.name}
+                      </h3>
+
+                      <ThreeDotMenu
+                        testId={testId}
+                        onEdit={() => setEditingId(user.id)}
+                        onRemove={() => removeUser(user.id)}
+                      />
+                    </div>
+
+                    {/* User's Decks */}
+                    <div className="flex flex-col gap-2 empty:hidden">
+                      {filteredDecks.map((deck, index) => (
+                        <Deck key={deck.id} id={deck.id} testIndex={index} useContextControls />
+                      ))}
+                    </div>
+
+                    <Button
+                      data-testid={`${testId}-create-deck`}
+                      variant="primary"
+                      onClick={() => setSelectedUser(user.id)}
+                    >
+                      Create New Deck
+                    </Button>
+                  </div>
+                )
+              })}
+            </div>
+          </FadeMask>
+        )}
+
+        {!hasUsers && (
+          <p className="flex-1 flex justify-center items-center text-gray-500 italic">
+            No users yet. Add your first user!
+          </p>
         )}
 
         {/* Create User Modal */}

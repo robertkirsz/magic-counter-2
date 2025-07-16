@@ -32,8 +32,17 @@ export const Modal: React.FC<ModalProps> = ({
 
     if (isOpen) {
       if (!dialog.open) dialog.showModal()
+      // Disable body scrolling when modal is open
+      document.body.style.overflow = 'hidden'
     } else {
       if (dialog.open) dialog.close()
+      // Re-enable body scrolling when modal closes
+      document.body.style.overflow = ''
+    }
+
+    // Cleanup function to ensure body scrolling is re-enabled
+    return () => {
+      document.body.style.overflow = ''
     }
   }, [isOpen])
 
@@ -63,10 +72,10 @@ export const Modal: React.FC<ModalProps> = ({
     <dialog
       ref={dialogRef}
       data-testid={testIdPrefix}
-      className={`flex flex-col rounded-lg shadow-lg overflow-y-auto bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 ${fullSize ? 'w-full h-full' : ''}`}
+      className={`overflow-hidden flex flex-col rounded-lg shadow-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 ${fullSize ? 'w-full h-full' : ''}`}
     >
-      <div ref={childrenRef} className="flex flex-col gap-2 px-4 pt-2 pb-4">
-        <div className="flex justify-between items-center">
+      <div ref={childrenRef} className="flex-1 flex flex-col gap-2 p-2 overflow-y-auto">
+        <div className="flex-none flex justify-between items-center">
           {title && <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{title}</h3>}
 
           {onClose && !hideCloseButton && (
@@ -85,8 +94,7 @@ export const Modal: React.FC<ModalProps> = ({
           )}
         </div>
 
-        {/* TODO: Check if these styles neededr */}
-        <div className="text-gray-900 dark:text-gray-100">{children}</div>
+        {children}
       </div>
     </dialog>
   )
