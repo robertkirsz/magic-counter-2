@@ -49,19 +49,15 @@ export const Commander: React.FC<CommanderProps> = ({
 
         {/* Card Details Overlay */}
         <div className="flex-1 p-2">
+          {/* TODO; What about his background? */}
           {/* <div className="flex-1 bg-black/90 dark:bg-gray-900/90 p-2"> */}
           {colors.length > 0 && <ColorBadges colors={colors} className="flex-none mb-1" />}
 
-          <div
-            className="font-medium text-sm line-clamp-1 text-white dark:text-gray-100"
-            data-testid={`${testIdPrefix}-name`}
-          >
+          <div data-testid={`${testIdPrefix}-name`} className="font-medium text-sm line-clamp-1">
             {name}
           </div>
 
-          {typeLine && (
-            <div className="text-xs text-gray-200 dark:text-gray-400 line-clamp-1">{typeLine.split('—')[1]}</div>
-          )}
+          {typeLine && <div className="text-xs line-clamp-1">{typeLine.split('—')[1]}</div>}
         </div>
 
         {showRemoveButton && onRemove && (

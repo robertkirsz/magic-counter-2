@@ -16,11 +16,15 @@ const meta: Meta<typeof Button> = {
     },
     loading: { control: 'boolean' },
     disabled: { control: 'boolean' },
-    children: { control: 'text' }
+    children: { control: 'text' },
+    small: { control: 'boolean' },
+    round: { control: 'boolean' }
   },
   args: {
     children: 'Button',
-    variant: 'default'
+    variant: 'default',
+    small: false,
+    round: false
   }
 }
 export default meta
@@ -67,5 +71,56 @@ export const Disabled: Story = {
     children: 'Disabled',
     disabled: true,
     variant: 'primary'
+  }
+}
+
+export const Small: Story = {
+  args: {
+    children: 'Small',
+    small: true
+  }
+}
+
+export const Round: Story = {
+  args: {
+    children: '🔔',
+    round: true,
+    'aria-label': 'Icon Button'
+  }
+}
+
+export const SmallPrimary: Story = {
+  args: {
+    children: 'Small Primary',
+    variant: 'primary',
+    small: true
+  }
+}
+
+export const RoundPrimary: Story = {
+  args: {
+    children: '+',
+    variant: 'primary',
+    round: true,
+    'aria-label': 'Add'
+  }
+}
+
+export const SmallRound: Story = {
+  args: {
+    children: '★',
+    small: true,
+    round: true,
+    'aria-label': 'Star'
+  }
+}
+
+export const SmallRoundPrimary: Story = {
+  args: {
+    children: '✓',
+    variant: 'primary',
+    small: true,
+    round: true,
+    'aria-label': 'Check'
   }
 }
