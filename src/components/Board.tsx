@@ -160,7 +160,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const showStartModal = game.state === 'active' && !currentActivePlayer && game.turnTracking
 
   return (
-    <div className="Board flex min-h-screen">
+    <div className="Board flex h-svh">
       {/* Player Sections */}
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={game.players.map(p => p.id)}>

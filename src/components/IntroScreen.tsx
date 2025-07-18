@@ -21,7 +21,7 @@ export const IntroScreen: React.FC = () => {
   const hasFinishedGames = games.some(game => game.state === 'finished')
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center  p-4 safe-area-inset-top safe-area-inset-bottom">
+    <div className="border h-svh flex flex-col items-center justify-center p-4">
       <h1 className="mb-40 text-2xl text-gray-900 dark:text-white">Magic Counter</h1>
 
       <div className="flex flex-col items-center gap-2">
