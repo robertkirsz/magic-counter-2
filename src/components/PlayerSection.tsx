@@ -37,12 +37,14 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   const commitLifeChanges = useCallback(() => {
     if (!game || pendingLifeChangesRef.current === 0) return
 
+    const fromId = getCurrentActivePlayer() || playerId
+
     const newAction: LifeChangeAction = {
       id: uuidv4(),
       createdAt: new Date(),
       type: 'life-change',
       value: pendingLifeChangesRef.current,
-      from: playerId,
+      from: fromId,
       to: [playerId]
     }
 
@@ -52,7 +54,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
 
     pendingLifeChangesRef.current = 0
     setPendingLifeChanges(0)
-  }, [game, playerId, updateGame])
+  }, [game, playerId, updateGame, getCurrentActivePlayer])
 
   if (!game) return <div>Game not found</div>
 

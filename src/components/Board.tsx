@@ -79,11 +79,23 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
     const date = new Date(action.createdAt).toLocaleTimeString()
 
     if (action.type === 'life-change') {
-      const sign = action.value > 0 ? '+' : ''
-      return `${date}: ${action.from} ${sign}${action.value} life`
+      const lifeGained = action.value > 0
+      const fromSelf = action.from === action.to?.[0] && action.to?.length === 1
+      const value = Math.abs(action.value)
+      const from = getPlayerName(action.from)
+      const to = action.to?.map(getPlayerName).join(', ')
+
+      if (lifeGained) return `${date}: ${from} gains ${value} life 💚`
+      if (fromSelf && !lifeGained) return `${date}: ${from} loses ${value} life 💔`
+      if (!lifeGained) return `${date}: ${from} deals ${value} damage to ${to} 💔`
+
+      return `${date}: Unknown message`
     } else if (action.type === 'turn-change') {
-      if (action.from === null) return `${date}: ${action.to} starts`
-      return `${date}: ${action.from} => ${action.to}`
+      const from = getPlayerName(action.from)
+      const to = getPlayerName(action.to)
+
+      if (action.from === null) return `${date}: ${to} starts`
+      return `${date}: ${from} => ${to}`
     }
 
     return `${date}: Unknown action`
@@ -95,14 +107,16 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
     })
   }
 
-  const getPlayerName = (playerId: string) => {
+  const getPlayerName = (playerId?: string | null) => {
+    if (!playerId) return 'Unknown'
+
     const player = game.players.find(p => p.id === playerId)
 
-    if (!player?.userId) return 'Unknown Player'
+    if (!player?.userId) return 'Unknown'
 
     const user = users.find(u => u.id === player.userId)
 
-    return user?.name || 'Unknown User'
+    return user?.name || 'Unknown'
   }
 
   // Drag end handler for reordering players

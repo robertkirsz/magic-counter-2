@@ -29,7 +29,19 @@ body {
 
 /* Modal */
 dialog {
-  margin: auto;
+  display: flex;
+  align-self: center;
+  justify-self: center;
+
+  &.w-full {
+    width: calc(100% - 40px);
+    max-width: 640px;
+  }
+
+  &.h-full {
+    height: calc(100% - 40px);
+    max-height: 800px;
+  }
 }
 
 dialog:not([open]) {

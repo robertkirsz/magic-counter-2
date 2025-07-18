@@ -121,7 +121,7 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
   return (
     <div className="flex-1 flex flex-col gap-4 overflow-hidden">
       {/* Controls Section */}
-      <div className="flex gap-2 items-center">
+      <div className="flex gap-2 items-center empty:hidden">
         {/* Search Bar */}
         {hasMultipleDecks && (
           <div className="flex-1 relative">
@@ -165,12 +165,6 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
             )}
           </div>
         )}
-
-        {/* Add Deck Button */}
-        <Button variant="primary" onClick={() => setDeckFormVisible(true)}>
-          <Plus size={20} />
-          Add Deck
-        </Button>
       </div>
 
       {/* Decks List */}
@@ -189,6 +183,16 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
           {searchQuery.trim() ? 'No decks match your search.' : 'No decks yet. Add your first deck!'}
         </p>
       )}
+
+      {/* Floating Add Deck Button */}
+      <Button
+        variant="primary"
+        round
+        onClick={() => setDeckFormVisible(true)}
+        className="absolute bottom-3 right-3 shadow-lg z-10"
+      >
+        <Plus size={36} />
+      </Button>
 
       {/* Deck Form Modal */}
       {deckFormVisible && (

@@ -56,6 +56,8 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
   }
 
   const handleCommanderChange = (commander: ScryfallCard) => {
+    if (commanders.length >= 2) return
+
     setCommanders(commanders => [...commanders, commander])
   }
 
@@ -81,8 +83,8 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
   const testIdPrefix = testId ? `${testId}-${baseId}` : baseId
 
   return (
-    <Modal isOpen onClose={() => onCancel?.()} testId={testIdPrefix}>
-      <div className="flex flex-col gap-2">
+    <Modal isOpen hideCloseButton testId={testIdPrefix} onClose={() => onCancel?.()}>
+      <div className="flex flex-col gap-4 p-2">
         {/* Name Input */}
         <input
           data-testid={`${testIdPrefix}-name`}
@@ -115,7 +117,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
           </div>
         )}
 
-        <CommanderSearch onChange={handleCommanderChange} />
+        {commanders.length < 2 && <CommanderSearch onChange={handleCommanderChange} />}
 
         {/* Mana Colors */}
         <ManaPicker selectedColors={selectedColors} onColorToggle={handleColorToggle} />
