@@ -132,7 +132,7 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
               placeholder="Search decks by name, colors, or commanders..."
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
-              className="input pl-10"
+              className="form-input pl-10"
             />
           </div>
         )}

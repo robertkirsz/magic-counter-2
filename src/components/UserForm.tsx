@@ -43,7 +43,7 @@ export const UserForm: React.FC<UserFormProps> = ({ testId = '', userId, onSave,
           value={name}
           onChange={e => setName(e.target.value)}
           placeholder="Name"
-          className="input"
+          className="form-input"
           autoFocus
         />
 

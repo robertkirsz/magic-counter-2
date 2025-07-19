@@ -14,7 +14,7 @@ export const ImportanceSlider: React.FC = () => {
         max={5}
         value={importance}
         onChange={e => setImportance(Number(e.target.value))}
-        className="input-range w-32"
+        className="form-input-range w-32"
       />
     </div>
   )

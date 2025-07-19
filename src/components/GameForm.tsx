@@ -124,7 +124,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
               max="999"
               value={startingLife}
               onChange={e => handleLifeChange(parseInt(e.target.value))}
-              className="input-number pr-5"
+              className="form-input-number hide-number-arrows pr-5"
             />
             <span className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
               <HeartIcon className="w-4 h-4 text-gray-500" />
@@ -143,7 +143,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
               type="checkbox"
               checked={turnTracking}
               onChange={() => setTurnTracking(!turnTracking)}
-              className="checkbox"
+              className="form-checkbox"
             />
             <span>Track turns</span>
           </label>

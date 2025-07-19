@@ -252,7 +252,7 @@ export const DevToolsPanel: React.FC = () => {
             <summary className="font-bold mb-1 cursor-pointer select-none">Users</summary>
 
             <textarea
-              className={`textarea mb-1 h-28 ${usersError ? 'border-red-500 dark:border-red-500' : ''}`}
+              className={`form-textarea resize-y mb-1 h-28 ${usersError ? 'border-red-500 dark:border-red-500' : ''}`}
               value={usersText}
               onChange={e => setUsersText(e.target.value)}
               spellCheck={false}
@@ -269,7 +269,7 @@ export const DevToolsPanel: React.FC = () => {
             <summary className="font-bold mb-1 cursor-pointer select-none">Decks</summary>
 
             <textarea
-              className={`textarea mb-1 h-28 ${decksError ? 'border-red-500 dark:border-red-500' : ''}`}
+              className={`form-textarea resize-y mb-1 h-28 ${decksError ? 'border-red-500 dark:border-red-500' : ''}`}
               value={decksText}
               onChange={e => setDecksText(e.target.value)}
               spellCheck={false}
@@ -286,7 +286,7 @@ export const DevToolsPanel: React.FC = () => {
             <summary className="font-bold mb-1 cursor-pointer select-none">Games</summary>
 
             <textarea
-              className={`textarea mb-1 h-28 ${gamesError ? 'border-red-500 dark:border-red-500' : ''}`}
+              className={`form-textarea resize-y mb-1 h-28 ${gamesError ? 'border-red-500 dark:border-red-500' : ''}`}
               value={gamesText}
               onChange={e => setGamesText(e.target.value)}
               spellCheck={false}
