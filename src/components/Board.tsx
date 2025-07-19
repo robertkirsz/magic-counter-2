@@ -20,6 +20,8 @@ interface BoardProps {
   gameId: string
 }
 
+// TODO: If a Player has no life, omit them when passing turn. Don't count them when counting rounds.
+
 // Game Timer Component
 const GameTimer: React.FC<{ gameId: string }> = ({ gameId }) => {
   const { games } = useGames()

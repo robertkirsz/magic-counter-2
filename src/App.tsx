@@ -2,6 +2,7 @@
 import pkg from '../package.json'
 import { ActionsList } from './components/ActionsList'
 import { Board } from './components/Board'
+import { Decks } from './components/Decks'
 import { DevToolsPanel } from './components/DevToolsPanel'
 // import { ImportanceSlider } from './components/ImportanceSlider'
 import { IntroScreen } from './components/IntroScreen'
@@ -50,6 +51,10 @@ const AppMain: React.FC = () => {
 
       <div className="flex-1 empty:hidden">
         <IntroScreen />
+      </div>
+
+      <div className="flex-1 empty:hidden">
+        <Decks />
       </div>
     </div>
   )

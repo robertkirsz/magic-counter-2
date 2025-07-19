@@ -225,13 +225,16 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
                     <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
                       <span className="text-blue-700 dark:text-blue-300 font-semibold text-sm">{roundGroup.round}</span>
                     </div>
+
                     <div>
                       <h3 className="font-semibold text-lg text-gray-800 dark:text-gray-200">
                         Round {roundGroup.round}
                       </h3>
+
                       {timeDisplay && <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{timeDisplay}</p>}
                     </div>
                   </div>
+
                   <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
@@ -250,14 +253,15 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
               <div className="p-4 space-y-3">
                 {roundGroup.turns.map((turnGroup, turnIndex) => {
                   const turnStartTime = getTurnStartTime(turnGroup)
+                  const previousTurnStartTime = turnIndex > 0 ? getTurnStartTime(roundGroup.turns[turnIndex - 1]) : null
 
                   let timeDisplay = ''
 
                   if (turnIndex > 0 && turnStartTime) {
                     timeDisplay = formatTime(turnStartTime)
 
-                    if (roundStartTime) {
-                      timeDisplay += ` (${formatRelativeTime(turnStartTime, roundStartTime)} later)`
+                    if (previousTurnStartTime) {
+                      timeDisplay += ` (${formatRelativeTime(turnStartTime, previousTurnStartTime)} later)`
                     }
                   }
 
@@ -284,10 +288,12 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
                               />
                             </svg>
                           </div>
+
                           <div className="flex-1">
                             <span className="text-blue-700 dark:text-blue-300 font-medium text-sm">
                               {formatAction(turnGroup.turn)}
                             </span>
+
                             {timeDisplay && (
                               <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{timeDisplay}</p>
                             )}

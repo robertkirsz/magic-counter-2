@@ -163,7 +163,9 @@ export const Games: React.FC = () => {
                                 <span className="text-sm text-gray-500 dark:text-gray-400">(Life: {player.life})</span>
                               </div>
 
-                              {player.deckId && <Deck id={player.deckId} showCreator={false} className="text-sm" />}
+                              {player.deckId && (
+                                <Deck id={player.deckId} showCreator={false} className="text-sm" showStats={false} />
+                              )}
                             </div>
                           </div>
                         ))}
