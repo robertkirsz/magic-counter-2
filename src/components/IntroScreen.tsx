@@ -21,8 +21,8 @@ export const IntroScreen: React.FC = () => {
   const hasFinishedGames = games.some(game => game.state === 'finished')
 
   return (
-    <div className="border h-svh flex flex-col items-center justify-center p-4">
-      <h1 className="mb-40 text-2xl text-gray-900 dark:text-white">Magic Counter</h1>
+    <div className="h-svh flex flex-col items-center justify-center p-4">
+      <h1 className="mb-40 text-2xl text-gray-900 dark:text-white text-center">Magic Counter</h1>
 
       <div className="flex flex-col items-center gap-2">
         {!hasGamesInProgress && (

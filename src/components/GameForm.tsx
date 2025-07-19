@@ -8,9 +8,10 @@ interface GameFormProps {
   gameId?: Game['id']
   onSave: (gameId: string) => void
   onCancel: () => void
+  onPlayerCountChange?: (count: number) => void
 }
 
-export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel }) => {
+export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, onPlayerCountChange }) => {
   const { games, updateGame, addGame } = useGames()
   const game = games.find(g => g.id === gameId)
 
@@ -24,6 +25,11 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel }) 
     if (!hasUserChangedLife && numberOfPlayers >= 3) setStartingLife(40)
     else if (!hasUserChangedLife && numberOfPlayers < 3) setStartingLife(20)
   }, [numberOfPlayers, hasUserChangedLife])
+
+  // Notify parent component of player count changes
+  useEffect(() => {
+    onPlayerCountChange?.(numberOfPlayers)
+  }, [numberOfPlayers, onPlayerCountChange])
 
   const handleSave = () => {
     if (numberOfPlayers === 0) return

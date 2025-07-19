@@ -1,10 +1,11 @@
-import React, { type ReactNode, useEffect, useState } from 'react'
+import { DateTime } from 'luxon'
+import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import { UsersContext, type UsersContextType } from './UsersContextDef'
 
 interface UsersProviderProps {
-  children: ReactNode
+  children: React.ReactNode
 }
 
 const LOCAL_STORAGE_KEY = 'users'
@@ -39,7 +40,7 @@ export const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
     const newUser: User = {
       ...userData,
       id: uuidv4(),
-      createdAt: new Date()
+      createdAt: DateTime.now().toJSDate()
     }
 
     setUsers(prev => [...prev, newUser])

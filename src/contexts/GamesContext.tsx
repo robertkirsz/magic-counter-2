@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon'
 import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -13,7 +14,17 @@ const readGames = (): Game[] => {
   try {
     const stored = localStorage.getItem(LOCAL_STORAGE_KEY)
 
-    if (stored) return JSON.parse(stored).map((g: Game) => ({ ...g, createdAt: new Date(g.createdAt) }))
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      return parsed.map((g: Game) => ({
+        ...g,
+        createdAt: new Date(g.createdAt),
+        actions: g.actions.map((action: LifeChangeAction | TurnChangeAction) => ({
+          ...action,
+          createdAt: new Date(action.createdAt)
+        }))
+      }))
+    }
 
     return []
   } catch (e) {
@@ -39,7 +50,7 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
     const newGame: Game = {
       ...gameData,
       id: uuidv4(),
-      createdAt: new Date(),
+      createdAt: DateTime.now().toJSDate(),
       state: 'setup',
       activePlayerId: null,
       actions: []

@@ -1,4 +1,5 @@
 import { Wrench } from 'lucide-react'
+import { DateTime } from 'luxon'
 import React, { useEffect, useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
@@ -65,7 +66,7 @@ function isValidGame(obj: unknown): obj is Game {
 function reviveDates<T extends { createdAt: string | Date }>(arr: T[]): T[] {
   return arr.map(obj => ({
     ...obj,
-    createdAt: typeof obj.createdAt === 'string' ? new Date(obj.createdAt) : obj.createdAt
+    createdAt: typeof obj.createdAt === 'string' ? DateTime.fromISO(obj.createdAt).toJSDate() : obj.createdAt
   }))
 }
 
@@ -151,7 +152,7 @@ export const DevToolsPanel: React.FC = () => {
       users,
       decks,
       games,
-      exportedAt: new Date().toISOString()
+      exportedAt: DateTime.now().toISO()
     }
 
     const blob = new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' })
@@ -159,7 +160,7 @@ export const DevToolsPanel: React.FC = () => {
     const a = document.createElement('a')
 
     a.href = url
-    a.download = `magic-counter-data-${new Date().toISOString().split('T')[0]}.json`
+    a.download = `magic-counter-data-${DateTime.now().toFormat('yyyy-MM-dd')}.json`
     document.body.appendChild(a)
 
     a.click()
@@ -303,7 +304,7 @@ export const DevToolsPanel: React.FC = () => {
       <Button
         variant="primary"
         round
-        className={`transition-all duration-200 ${open ? 'rotate-12' : ''}`}
+        className={`bg-green-500 transition-all duration-200 ${open ? 'rotate-12' : ''}`}
         onClick={() => setOpen(o => !o)}
       >
         <Wrench size={20} />

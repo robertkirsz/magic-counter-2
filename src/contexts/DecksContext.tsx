@@ -1,10 +1,11 @@
-import React, { type ReactNode, useEffect, useState } from 'react'
+import { DateTime } from 'luxon'
+import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import { DecksContext, type DecksContextType } from './DecksContextDef'
 
 interface DecksProviderProps {
-  children: ReactNode
+  children: React.ReactNode
 }
 
 const LOCAL_STORAGE_KEY = 'decks'
@@ -39,7 +40,7 @@ export const DecksProvider: React.FC<DecksProviderProps> = ({ children }) => {
     const newDeck: Deck = {
       ...deckData,
       id: uuidv4(),
-      createdAt: new Date()
+      createdAt: DateTime.now().toJSDate()
     }
 
     setDecks(prev => [...prev, newDeck])

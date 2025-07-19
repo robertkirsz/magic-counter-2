@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
+import { useGames } from '../../hooks/useGames'
+import { useUsers } from '../../hooks/useUsers'
 import { Button } from '../Button'
 import { Modal } from '../Modal'
 
@@ -7,11 +9,23 @@ interface StartGameModalProps {
   isOpen: boolean
   validPlayers: { id: string }[]
   onChoosePlayer: (playerId: string) => void
-  getPlayerName: (playerId: string) => string
 }
 
-const StartGameModal: React.FC<StartGameModalProps> = ({ isOpen, validPlayers, onChoosePlayer, getPlayerName }) => {
+const StartGameModal: React.FC<StartGameModalProps> = ({ isOpen, validPlayers, onChoosePlayer }) => {
+  const { games } = useGames()
+  const { users } = useUsers()
   const [selectedPlayerId, setSelectedPlayerId] = useState<string | null>(null)
+
+  const getPlayerName = (playerId: string) => {
+    const game = games.find(g => g.players.some(p => p.id === playerId))
+    if (!game) return 'Unknown'
+
+    const player = game.players.find(p => p.id === playerId)
+    if (!player?.userId) return 'Unknown'
+
+    const user = users.find(u => u.id === player.userId)
+    return user?.name || 'Unknown'
+  }
 
   useEffect(() => {
     if (isOpen && validPlayers.length > 0) {

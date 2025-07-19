@@ -54,7 +54,12 @@ const ThemeToggle: React.FC = () => {
   }
 
   return (
-    <Button variant="primary" round title="Toggle theme" onClick={nextTheme}>
+    <Button
+      title="Toggle theme"
+      // TODO: Move to Button styles?
+      className="bg-gray-800/90 hover:bg-gray-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 border border-gray-700 dark:bg-gray-900 dark:border-gray-700"
+      onClick={nextTheme}
+    >
       {theme === 'light' && (
         <span aria-label="Light mode" title="Light mode">
           🌞

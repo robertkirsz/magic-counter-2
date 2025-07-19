@@ -1,4 +1,4 @@
-import { Star } from 'lucide-react'
+import { DateTime } from 'luxon'
 import React, { useCallback, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
@@ -41,7 +41,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
 
     const newAction: LifeChangeAction = {
       id: uuidv4(),
-      createdAt: new Date(),
+      createdAt: DateTime.now().toJSDate(),
       type: 'life-change',
       value: pendingLifeChangesRef.current,
       from: fromId,
@@ -158,16 +158,11 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
       )}
 
       <div
-        className={`flex-1 relative flex flex-col items-center justify-center gap-1 rounded-3xl ${
+        className={`PlayerSectionContent flex-1 relative flex flex-col items-center justify-center gap-1 rounded-3xl ${
           currentActivePlayer === playerId ? 'outline-8 outline-blue-800' : ''
         }`}
       >
-        <div className="flex items-center gap-1">
-          <span>
-            {game.turnTracking && currentActivePlayer === playerId && <Star className="w-4 h-4 text-yellow-500" />}
-          </span>
-          <span className="text-white font-medium">{getUserName(player.userId)}</span>
-        </div>
+        <p className="text-white font-medium text-center">{getUserName(player.userId)}</p>
 
         {gameIsActive && (
           <PlayerLifeControls

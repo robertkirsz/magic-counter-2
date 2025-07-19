@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon'
 import React from 'react'
 
 import { useGames } from '../hooks/useGames'
@@ -20,7 +21,7 @@ export const Games: React.FC = () => {
             >
               <h3 className="flex gap-1">
                 <span className="font-semibold">{game.id.slice(0, 8)}...</span>
-                <span className="text-gray-500">({game.createdAt.toLocaleDateString()})</span>
+                <span className="text-gray-500">({DateTime.fromJSDate(game.createdAt).toFormat('yyyy-MM-dd')})</span>
                 <ThreeDotMenu onRemove={() => removeGame(game.id)} asMenu={false} className="ml-auto" />
               </h3>
 

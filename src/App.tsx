@@ -1,5 +1,6 @@
 // import { useImportanceVisibility } from './hooks/useImportanceVisibility'
 import pkg from '../package.json'
+import { ActionsList } from './components/ActionsList'
 import { Board } from './components/Board'
 import { DevToolsPanel } from './components/DevToolsPanel'
 // import { ImportanceSlider } from './components/ImportanceSlider'
@@ -41,10 +42,11 @@ const AppMain: React.FC = () => {
   const lastNotFinishedGame = games.filter(game => game.state !== 'finished').pop()
 
   return (
-    <>
+    <div className="flex">
       {lastNotFinishedGame && <Board gameId={lastNotFinishedGame.id} />}
-      {activeGames.length === 0 && <IntroScreen />}
-    </>
+      {activeGames.length > 0 && <ActionsList gameId={activeGames[0].id} />}
+      <IntroScreen />
+    </div>
   )
 }
 
