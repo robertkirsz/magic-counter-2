@@ -5,14 +5,16 @@
 /* Mobile PWA Fullscreen Styles */
 html {
   height: 100%;
-  overflow: hidden;
+  /* TODO */
+  /* overflow: hidden; */
 }
 
 body {
   @apply bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900;
   height: 100vh;
   height: 100dvh; /* Dynamic viewport height for mobile */
-  overflow: hidden;
+  /* TODO */
+  /* overflow: hidden; */
   /* Handle safe areas for notched devices */
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   /* Prevent zoom on double tap */
@@ -26,7 +28,8 @@ body {
 
 #root {
   height: 100%;
-  overflow: hidden;
+  /* TODO */
+  /* overflow: hidden; */
 }
 
 /* Ensure modals work properly in fullscreen */

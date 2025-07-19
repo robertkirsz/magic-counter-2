@@ -44,14 +44,27 @@ const AppMain: React.FC = () => {
   const { games } = useGames()
   const lastNotFinishedGame = games.filter(game => game.state !== 'finished').pop()
 
+  const isDevEnv = import.meta.env.DEV
+  // @ts-expect-error: Cypress is injected by the test runner in E2E tests
+  const isCypressEnv = window.Cypress
+
+  if (isDevEnv && !isCypressEnv) {
+    return (
+      <div className="DevelopmentLayoutWrapper">
+        {lastNotFinishedGame && <Board gameId={lastNotFinishedGame.id} />}
+        {lastNotFinishedGame && <ActionsList gameId={lastNotFinishedGame.id} />}
+        <IntroScreen />
+        <Decks />
+        <Users />
+      </div>
+    )
+  }
+
   return (
-    <div className="DevelopmentLayoutWrapper">
+    <>
       {lastNotFinishedGame && <Board gameId={lastNotFinishedGame.id} />}
-      {lastNotFinishedGame && <ActionsList gameId={lastNotFinishedGame.id} />}
-      <IntroScreen />
-      <Decks />
-      <Users />
-    </div>
+      {!lastNotFinishedGame && <IntroScreen />}
+    </>
   )
 }
 
