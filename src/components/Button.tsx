@@ -14,7 +14,7 @@ const variantToClass: Record<ButtonVariant, string> = {
   primary: 'btn primary',
   secondary: 'btn secondary',
   danger: 'btn danger',
-  default: 'btn'
+  default: 'btn default'
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
