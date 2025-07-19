@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
 import { ActionsList } from './ActionsList'
+import { DamageChart } from './DamageChart'
 import { Deck } from './Deck'
 import { LifeChart } from './LifeChart'
 import { ThreeDotMenu } from './ThreeDotMenu'
@@ -217,6 +218,7 @@ export const Games: React.FC = () => {
                       </div>
 
                       {game.actions.length > 0 && <LifeChart gameId={game.id} />}
+                      {game.actions.length > 0 && <DamageChart gameId={game.id} />}
                     </div>
                   </div>
                 </div>

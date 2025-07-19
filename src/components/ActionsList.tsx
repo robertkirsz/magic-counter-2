@@ -141,6 +141,7 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
     })
   }
 
+  // TODO; duplicated in DamageChart.tsx
   const getPlayerName = (playerId?: string | null) => {
     if (!playerId) return 'Unknown'
 
