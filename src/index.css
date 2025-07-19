@@ -2,6 +2,7 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* TODO: check if dark theme properly changes text color */
 body {
   @apply bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900;
 }
@@ -116,61 +117,68 @@ dialog::backdrop {
     }
   }
 
+  /* TODO: Add support for single player mode  */
+  &[data-player-count='1'] {
+    grid-template-areas: 'player-1';
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr;
+  }
+
   &[data-player-count='2'] {
     grid-template-areas:
-      'player-1'
-      'player-2';
+      'player-2'
+      'player-1';
     grid-template-rows: 1fr 1fr;
     grid-template-columns: 1fr;
 
-    > div:nth-child(1) .PlayerSection {
+    > div:nth-child(2) .PlayerSection {
       transform: rotate(180deg);
     }
   }
 
   &[data-player-count='3'] {
     grid-template-areas:
-      'player-1 player-3'
-      'player-2 player-3';
+      'player-2 player-3'
+      'player-1 player-3';
     grid-template-rows: 1fr 1fr;
     grid-template-columns: 1fr 1fr;
 
-    > div:nth-child(1) .PlayerSection {
+    > div:nth-child(2) .PlayerSection {
       transform: rotate(180deg);
     }
 
     > div:nth-child(3) .PlayerSection {
-      transform: rotate(-90deg);
+      /* transform: rotate(-90deg); */
     }
   }
 
   &[data-player-count='4'] {
     grid-template-areas:
-      'player-1 player-2'
-      'player-3 player-4';
+      'player-2 player-3'
+      'player-1 player-4';
     grid-template-rows: 1fr 1fr;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, calc(100vw / 2));
 
-    > div:nth-child(1) .PlayerSection,
-    > div:nth-child(2) .PlayerSection {
+    > div:nth-child(2) .PlayerSection,
+    > div:nth-child(3) .PlayerSection {
       transform: rotate(180deg);
     }
   }
 
   &[data-player-count='5'] {
     grid-template-areas:
-      'player-1 player-2 player-5'
-      'player-3 player-4 player-5';
+      'player-2 player-3 player-4'
+      'player-1 player-5 player-4';
     grid-template-rows: 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, calc(100vw / 3));
 
-    > div:nth-child(1) .PlayerSection,
-    > div:nth-child(2) .PlayerSection {
+    > div:nth-child(2) .PlayerSection,
+    > div:nth-child(3) .PlayerSection {
       transform: rotate(180deg);
     }
 
-    > div:nth-child(5) .PlayerSection {
-      transform: rotate(-90deg);
+    > div:nth-child(4) .PlayerSection {
+      /* transform: rotate(-90deg); */
     }
   }
 }

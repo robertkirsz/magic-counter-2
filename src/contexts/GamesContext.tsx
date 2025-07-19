@@ -80,13 +80,72 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
     return lastTurn.to
   }
 
+  // Derived round functions
+  const getCurrentRound = (gameId: string): number => {
+    const game = games.find(g => g.id === gameId)
+
+    // If no game, we're in round 1
+    if (!game) return 1
+
+    // Filter out the first turn change action, which is the start of the game
+    const turnChangeActions = game.actions.filter(action => action.type === 'turn-change' && action.from !== null)
+
+    // If no turns have been taken, we're in round 1
+    if (turnChangeActions.length === 0) return 1
+
+    // Calculate which round we're currently in
+    const completedRounds = Math.floor(turnChangeActions.length / game.players.length)
+    const currentRound = completedRounds + 1
+
+    return currentRound
+  }
+
+  const groupActionsByRound = (gameId: string) => {
+    const game = games.find(g => g.id === gameId)
+    if (!game) return []
+
+    const groups: Array<{ round: number; actions: (LifeChangeAction | TurnChangeAction)[] }> = []
+    let currentRound = 1
+    let roundActions: (LifeChangeAction | TurnChangeAction)[] = []
+    let turnCount = 0
+
+    game.actions.forEach(action => {
+      if (action.type === 'turn-change') {
+        turnCount++
+        // Only complete the round when all players have taken their turn
+        if (turnCount % game.players.length === 0) {
+          // Round complete - save current round and start next
+          roundActions.push(action)
+          groups.push({ round: currentRound, actions: roundActions })
+          currentRound++
+          roundActions = []
+        } else {
+          // Still in current round
+          roundActions.push(action)
+        }
+      } else {
+        // Non-turn actions go to current round
+        roundActions.push(action)
+      }
+    })
+
+    // Add any remaining actions to the current round
+    if (roundActions.length > 0) {
+      groups.push({ round: currentRound, actions: roundActions })
+    }
+
+    return groups
+  }
+
   const value: GamesContextType = {
     games,
     addGame,
     removeGame,
     updateGame,
     setGames,
-    getCurrentActivePlayer
+    getCurrentActivePlayer,
+    getCurrentRound,
+    groupActionsByRound
   }
 
   return <GamesContext.Provider value={value}>{children}</GamesContext.Provider>

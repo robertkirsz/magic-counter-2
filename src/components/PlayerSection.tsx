@@ -136,77 +136,96 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   const gameIsActive = game.state === 'active'
   const currentActivePlayer = getCurrentActivePlayer()
 
-  return (
-    <div
-      data-testid={playerId}
-      className={`PlayerSection flex flex-col items-center justify-center gap-1 h-full border border-gray-100 ${
-        currentActivePlayer === playerId ? 'outline-2 outline-blue-500 -outline-offset-6' : ''
-      }`}
-    >
-      <div className="flex items-center gap-1">
-        <span>
-          {game.turnTracking && currentActivePlayer === playerId && <Star className="w-4 h-4 text-yellow-500" />}
-        </span>
-        <span>{getUserName(player.userId)}</span>
-        <span>({player.id})</span>
-      </div>
+  // Get player's deck and commander image
+  const playerDeck = player.deckId ? decks.find(d => d.id === player.deckId) : null
+  const commanderImage = playerDeck?.commanders?.[0]?.image
 
-      {gameIsActive && (
-        <PlayerLifeControls
-          playerId={playerId}
-          displayLife={displayLife}
-          pendingLifeChanges={pendingLifeChanges}
-          onLifeChange={handleLifeChange}
+  return (
+    <div data-testid={playerId} className="PlayerSection flex-1 flex flex-col p-6 relative overflow-clip">
+      {/* Background image with effects */}
+      {commanderImage && (
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: `url(${commanderImage})`,
+            backgroundPosition: 'center',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundColor: 'black',
+            filter: 'brightness(0.25) blur(6px)'
+          }}
         />
       )}
 
-      {!gameIsActive && (
-        <>
-          <PlayerUserSelector
-            player={player}
-            getUserName={getUserName}
-            onShowUserSelect={() => setShowUserSelect(true)}
-            onRemoveUser={() => handleUserSelect(null)}
-          />
+      <div
+        className={`flex-1 relative flex flex-col items-center justify-center gap-1 rounded-3xl ${
+          currentActivePlayer === playerId ? 'outline-8 outline-blue-800' : ''
+        }`}
+      >
+        <div className="flex items-center gap-1">
+          <span>
+            {game.turnTracking && currentActivePlayer === playerId && <Star className="w-4 h-4 text-yellow-500" />}
+          </span>
+          <span className="text-white font-medium">{getUserName(player.userId)}</span>
+        </div>
 
-          <PlayerDeckSelector
-            player={player}
-            onShowDeckSelect={() => setShowDeckSelect(true)}
-            onRemoveDeck={() => handleDeckSelect(null)}
+        {gameIsActive && (
+          <PlayerLifeControls
+            playerId={playerId}
+            displayLife={displayLife}
+            pendingLifeChanges={pendingLifeChanges}
+            onLifeChange={handleLifeChange}
           />
+        )}
 
-          <UserSelectionModal
-            isOpen={showUserSelect}
-            onClose={() => setShowUserSelect(false)}
-            game={game}
-            onSelect={handleUserSelect}
-            onCreateUser={() => setShowUserForm(true)}
-          />
-
-          <DeckSelectionModal
-            isOpen={showDeckSelect}
-            onClose={() => setShowDeckSelect(false)}
-            sortedDecks={sortedDecks}
-            onSelect={handleDeckSelect}
-            onCreateDeck={() => setShowDeckForm(true)}
-          />
-
-          {/* Deck Form Modal */}
-          {showDeckForm && (
-            <DeckForm
-              userId={playerId}
-              onSave={(deckId: string) => {
-                handleDeckSelect(deckId)
-                setShowDeckForm(false)
-              }}
-              onCancel={() => setShowDeckForm(false)}
+        {!gameIsActive && (
+          <>
+            <PlayerUserSelector
+              player={player}
+              getUserName={getUserName}
+              onShowUserSelect={() => setShowUserSelect(true)}
+              onRemoveUser={() => handleUserSelect(null)}
             />
-          )}
 
-          {/* User Form Modal */}
-          {showUserForm && <UserForm onSave={handleUserSelect} onCancel={() => setShowUserForm(false)} />}
-        </>
-      )}
+            <PlayerDeckSelector
+              player={player}
+              onShowDeckSelect={() => setShowDeckSelect(true)}
+              onRemoveDeck={() => handleDeckSelect(null)}
+            />
+
+            <UserSelectionModal
+              isOpen={showUserSelect}
+              onClose={() => setShowUserSelect(false)}
+              game={game}
+              onSelect={handleUserSelect}
+              onCreateUser={() => setShowUserForm(true)}
+            />
+
+            <DeckSelectionModal
+              isOpen={showDeckSelect}
+              onClose={() => setShowDeckSelect(false)}
+              sortedDecks={sortedDecks}
+              onSelect={handleDeckSelect}
+              onCreateDeck={() => setShowDeckForm(true)}
+            />
+
+            {/* Deck Form Modal */}
+            {showDeckForm && (
+              <DeckForm
+                userId={playerId}
+                onSave={(deckId: string) => {
+                  handleDeckSelect(deckId)
+                  setShowDeckForm(false)
+                }}
+                onCancel={() => setShowDeckForm(false)}
+              />
+            )}
+
+            {/* User Form Modal */}
+            {showUserForm && <UserForm onSave={handleUserSelect} onCancel={() => setShowUserForm(false)} />}
+          </>
+        )}
+      </div>
     </div>
   )
 }

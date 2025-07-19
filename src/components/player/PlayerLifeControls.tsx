@@ -9,12 +9,18 @@ const PlayerLifeControls: React.FC<{
   onLifeChange: (v: number) => void
 }> = ({ playerId, displayLife, pendingLifeChanges, onLifeChange }) => (
   <div className="flex items-center gap-2">
-    <Button data-testid={`${playerId}-remove-life`} variant="danger" onClick={() => onLifeChange(-1)}>
+    <Button
+      data-testid={`${playerId}-remove-life`}
+      className="text-4xl font-bold text-white"
+      onClick={() => onLifeChange(-1)}
+    >
       -
     </Button>
 
-    <div className={`text-xl font-bold ${pendingLifeChanges !== 0 ? 'text-blue-600' : ''}`}>
-      <span data-testid={`${playerId}-life`}>{displayLife}</span>
+    <div className={`text-4xl font-bold ${pendingLifeChanges !== 0 ? 'text-blue-600' : ''}`}>
+      <span data-testid={`${playerId}-life`} className="text-white">
+        {displayLife}
+      </span>
 
       {pendingLifeChanges !== 0 && (
         <span className="text-sm text-gray-500 ml-1">
@@ -24,7 +30,11 @@ const PlayerLifeControls: React.FC<{
       )}
     </div>
 
-    <Button data-testid={`${playerId}-add-life`} variant="primary" onClick={() => onLifeChange(1)}>
+    <Button
+      data-testid={`${playerId}-add-life`}
+      className="text-4xl font-bold text-white"
+      onClick={() => onLifeChange(1)}
+    >
       +
     </Button>
   </div>
