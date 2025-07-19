@@ -5,6 +5,7 @@ import { Board } from './components/Board'
 import { Decks } from './components/Decks'
 import { DevToolsPanel } from './components/DevToolsPanel'
 // import { ImportanceSlider } from './components/ImportanceSlider'
+import { InstallPrompt } from './components/InstallPrompt'
 import { IntroScreen } from './components/IntroScreen'
 import { Users } from './components/Users'
 import { DecksProvider } from './contexts/DecksContext'
@@ -31,6 +32,7 @@ const AppContent: React.FC = () => {
             <AppMain />
             <DevToolsPanel />
             {/* <ImportanceSlider /> */}
+            <InstallPrompt />
           </DecksProvider>
         </GamesProvider>
       </UsersProvider>
