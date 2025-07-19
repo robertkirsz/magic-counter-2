@@ -234,7 +234,7 @@ export const LifeChart: React.FC<LifeChartProps> = ({ gameId }) => {
     <div className="flex-1 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Life Chart</h3>
       <div className="h-80 relative">
-        <Line data={data} options={options} />
+        <Line key={`life-chart-${gameId}`} data={data} options={options} />
       </div>
     </div>
   )

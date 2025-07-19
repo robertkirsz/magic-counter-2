@@ -7,6 +7,7 @@ import { ActionsList } from './ActionsList'
 import { DamageChart } from './DamageChart'
 import { Deck } from './Deck'
 import { LifeChart } from './LifeChart'
+import { RoundDurationChart } from './RoundDurationChart'
 import { ThreeDotMenu } from './ThreeDotMenu'
 
 export const Games: React.FC = () => {
@@ -219,6 +220,7 @@ export const Games: React.FC = () => {
 
                       {game.actions.length > 0 && <LifeChart gameId={game.id} />}
                       {game.actions.length > 0 && <DamageChart gameId={game.id} />}
+                      {game.actions.length > 0 && <RoundDurationChart gameId={game.id} />}
                     </div>
                   </div>
                 </div>

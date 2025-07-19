@@ -237,9 +237,9 @@ export const DamageChart: React.FC<DamageChartProps> = ({ gameId }) => {
 
   return (
     <div className="flex-1 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4">
-      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Damage Chart</h3>
+      <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Total Damage Chart</h3>
       <div className="h-80 relative">
-        <Line data={data} options={options} />
+        <Line key={`damage-chart-${gameId}`} data={data} options={options} />
       </div>
     </div>
   )
