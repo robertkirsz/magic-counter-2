@@ -2,7 +2,7 @@ import { DndContext, closestCenter } from '@dnd-kit/core'
 import type { DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { ArrowBigRightDash, Clock, GripVertical, List, Play, Settings } from 'lucide-react'
+import { ArrowBigRightDash, Clock, GripVertical, List, Move, Play, Settings } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
@@ -92,10 +92,17 @@ const GameTimer: React.FC<{ gameId: string }> = ({ gameId }) => {
   )
 }
 
+interface SortablePlayerSectionProps extends React.HTMLAttributes<HTMLDivElement> {
+  id: string
+  gameId: string
+  dragEnabled: boolean
+}
+
 // Sortable wrapper for PlayerSection
-function SortablePlayerSection({ id, gameId }: { id: string; gameId: string }) {
+function SortablePlayerSection({ id, gameId, dragEnabled, className, ...props }: SortablePlayerSectionProps) {
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({
-    id
+    id,
+    disabled: !dragEnabled
   })
 
   const style: React.CSSProperties = {
@@ -106,21 +113,28 @@ function SortablePlayerSection({ id, gameId }: { id: string; gameId: string }) {
   }
 
   return (
-    <div ref={setNodeRef} style={style} className="SortablePlayerSection flex flex-col relative">
-      <Button
-        ref={setActivatorNodeRef}
-        {...listeners}
-        {...attributes}
-        className="absolute top-2 left-1/2 -translate-x-1/2 cursor-grab active:cursor-grabbing z-10"
-        round
-        small
-        variant="secondary"
-        tabIndex={-1}
-        aria-label="Drag to reorder player"
-        type="button"
-      >
-        <GripVertical />
-      </Button>
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`SortablePlayerSection flex flex-col relative ${className}`}
+      {...props}
+    >
+      {dragEnabled && (
+        <Button
+          ref={setActivatorNodeRef}
+          {...listeners}
+          {...attributes}
+          className="absolute top-2 left-1/2 -translate-x-1/2 cursor-grab active:cursor-grabbing z-10"
+          round
+          small
+          variant="secondary"
+          tabIndex={-1}
+          aria-label="Drag to reorder player"
+          type="button"
+        >
+          <GripVertical />
+        </Button>
+      )}
 
       <PlayerSection gameId={gameId} playerId={id} />
     </div>
@@ -135,6 +149,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const [showSettings, setShowSettings] = useState(false)
   const [showActions, setShowActions] = useState(false)
   const [previewPlayerCount, setPreviewPlayerCount] = useState<number>(game?.players.length || 4)
+  const [dragEnabled, setDragEnabled] = useState(false)
 
   if (!game) return <div>Game not found</div>
 
@@ -143,6 +158,11 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   }
 
   const handleFinish = () => {
+    // Add confirmation dialog
+    const confirmed = window.confirm('Are you sure you want to finish this game? This action cannot be undone.')
+
+    if (!confirmed) return
+
     // Add a TurnChangeAction with to=null to mark game end
     const endAction: TurnChangeAction = {
       id: uuidv4(),
@@ -207,13 +227,22 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   }
 
   return (
-    <div className="Board flex h-svh bg-black relative overflow-clip">
+    <div className="Board flex flex-col h-svh bg-black relative overflow-clip">
       {/* Player Sections */}
       <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={displayPlayers.map(p => p.id)}>
-          <div className="PlayersSortingWrapper" data-player-count={displayPlayerCount}>
-            {displayPlayers.map(player => (
-              <SortablePlayerSection key={player.id} id={player.id} gameId={gameId} />
+          <div
+            className={`PlayersSortingWrapper flex-1 grid grid-rows-${displayPlayerCount > 1 ? 2 : 1}`}
+            data-player-count={displayPlayerCount}
+          >
+            {displayPlayers.map((player, index) => (
+              <SortablePlayerSection
+                key={player.id}
+                id={player.id}
+                gameId={gameId}
+                dragEnabled={dragEnabled}
+                style={{ gridArea: `player-${index + 1}` }}
+              />
             ))}
           </div>
         </SortableContext>
@@ -229,6 +258,18 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         </Button>
 
         <ThemeToggle />
+
+        <Button
+          onClick={() => setDragEnabled(!dragEnabled)}
+          className={`rounded-full p-3 shadow-lg transition-all duration-200 border ${
+            dragEnabled
+              ? 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500'
+              : 'bg-gray-800/90 hover:bg-gray-700 text-white border-gray-700 dark:bg-gray-900 dark:border-gray-700'
+          }`}
+          title={dragEnabled ? 'Disable player dragging' : 'Enable player dragging'}
+        >
+          <Move size={24} className="text-white" />
+        </Button>
 
         <Button
           onClick={() => setShowActions(true)}
@@ -296,7 +337,12 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         </Modal>
       )}
 
-      <StartGameModal isOpen={showStartModal} validPlayers={validPlayers} onChoosePlayer={handlePassTurn} />
+      {showStartModal && (
+        <Modal isOpen={showStartModal} title="Who starts?" hideCloseButton onClose={() => {}}>
+          <StartGameModal gameId={gameId} onChoosePlayer={handlePassTurn} />
+        </Modal>
+      )}
+
       <GameTimer gameId={gameId} />
     </div>
   )

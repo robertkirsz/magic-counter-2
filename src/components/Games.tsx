@@ -1,72 +1,198 @@
 import { DateTime } from 'luxon'
-import React from 'react'
+import React, { useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
+import { useUsers } from '../hooks/useUsers'
+import { ActionsList } from './ActionsList'
+import { Deck } from './Deck'
 import { ThreeDotMenu } from './ThreeDotMenu'
 
 export const Games: React.FC = () => {
-  const { games, removeGame, groupActionsByRound } = useGames()
+  const { games, removeGame } = useGames()
+  const { users } = useUsers()
+  const [expandedGame, setExpandedGame] = useState<string | null>(null)
+
+  // Calculate game duration
+  const getGameDuration = (game: Game) => {
+    const turnActions = game.actions.filter(action => action.type === 'turn-change') as TurnChangeAction[]
+
+    if (turnActions.length === 0) return null
+
+    const gameStartTime = DateTime.fromJSDate(turnActions[0].createdAt)
+    let gameEndTime: DateTime | null = null
+
+    // Find the last TurnChangeAction with to=null (game end)
+    for (let i = turnActions.length - 1; i >= 0; i--) {
+      if (turnActions[i].to === null) {
+        gameEndTime = DateTime.fromJSDate(turnActions[i].createdAt)
+        break
+      }
+    }
+
+    const endTime = gameEndTime || DateTime.now()
+    const duration = endTime.diff(gameStartTime)
+
+    const hours = Math.floor(duration.as('hours'))
+    const minutes = Math.floor(duration.as('minutes')) % 60
+    const seconds = Math.floor(duration.as('seconds')) % 60
+
+    if (hours > 0) {
+      return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+    } else {
+      return `${minutes}:${seconds.toString().padStart(2, '0')}`
+    }
+  }
+
+  // Get player name
+  const getPlayerName = (playerId: string | null) => {
+    if (!playerId) return 'Unknown'
+    const user = users.find(u => u.id === playerId)
+    return user?.name || 'Unknown'
+  }
+
+  // Get game state display
+  const getGameStateDisplay = (game: Game) => {
+    const duration = getGameDuration(game)
+
+    switch (game.state) {
+      case 'setup':
+        return {
+          label: 'SETUP',
+          color:
+            'bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-700',
+          icon: '⚙️',
+          duration: null
+        }
+      case 'active':
+        return {
+          label: 'ACTIVE',
+          color:
+            'bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-300 dark:border-green-700 animate-pulse',
+          icon: '▶️',
+          duration: duration
+        }
+      case 'finished':
+        return {
+          label: 'FINISHED',
+          color:
+            'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/20 dark:text-gray-300 dark:border-gray-700',
+          icon: '🏁',
+          duration: duration
+        }
+      default:
+        return {
+          label: 'UNKNOWN',
+          color: 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-300 dark:border-red-700',
+          icon: '❓',
+          duration: null
+        }
+    }
+  }
 
   return (
-    <div className="flex flex-col gap-4 items-start">
+    <div className="flex flex-col gap-6">
       {/* Games List */}
       {games.length === 0 ? (
-        <p className="text-gray-500 italic">No games yet. Add your first game!</p>
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-6">
+            <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">No games yet</h3>
+          <p className="text-gray-500 dark:text-gray-400">Create your first game to get started!</p>
+        </div>
       ) : (
-        <div className="flex flex-col gap-2">
-          {games.map(game => (
-            <div
-              key={game.id}
-              className="flex flex-col gap-2 border border-gray-200 dark:border-gray-700 rounded-lg p-4 bg-gray-50 dark:bg-gray-900"
-            >
-              <h3 className="flex gap-1">
-                <span className="font-semibold">{game.id.slice(0, 8)}...</span>
-                <span className="text-gray-500">({DateTime.fromJSDate(game.createdAt).toFormat('yyyy-MM-dd')})</span>
-                <ThreeDotMenu onRemove={() => removeGame(game.id)} asMenu={false} className="ml-auto" />
-              </h3>
+        <div className="grid gap-6">
+          {games.map(game => {
+            const stateDisplay = getGameStateDisplay(game)
+            const isExpanded = expandedGame === game.id
 
-              <div className="flex gap-1 flex-wrap">
-                {game.players.map(player => (
-                  <div key={player.id} className="flex flex-col gap-1 border border-gray-200 rounded-lg p-2">
-                    <span>User: {player.userId}</span>
-                    <span>Life: {player.life}</span>
-                    <span>Deck: {player.deckId}</span>
-                  </div>
-                ))}
-              </div>
+            return (
+              <div
+                key={game.id}
+                className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden"
+              >
+                {/* Game Header */}
+                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="text-2xl">{stateDisplay.icon}</span>
+                        <div className="flex items-center gap-2">
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${stateDisplay.color}`}>
+                            {stateDisplay.label}
+                          </span>
+                          {stateDisplay.duration && (
+                            <span className="text-sm text-gray-500 dark:text-gray-400 font-mono">
+                              {stateDisplay.duration}
+                            </span>
+                          )}
+                        </div>
+                      </div>
 
-              <p className="text-sm text-gray-600">Turn tracking: {game.turnTracking ? 'Yes' : 'No'}</p>
+                      <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
+                        <span>Created {DateTime.fromJSDate(game.createdAt).toFormat('MMM dd, yyyy HH:mm')}</span>
+                        <span>•</span>
+                        <span>{game.players.length} players</span>
+                        {game.turnTracking && (
+                          <>
+                            <span>•</span>
+                            <span>Turn tracking enabled</span>
+                          </>
+                        )}
+                      </div>
 
-              {/* Game Actions by Round */}
-              {game.actions.length > 0 && (
-                <details className="mt-2">
-                  <summary className="cursor-pointer font-semibold text-sm text-blue-600 hover:text-blue-700">
-                    Game Actions ({game.actions.length})
-                  </summary>
-                  <div className="mt-2 text-xs max-h-40 overflow-y-auto">
-                    {groupActionsByRound(game.id).map((roundGroup, roundIndex) => (
-                      <div key={roundIndex} className="mb-3">
-                        <div className="font-semibold text-blue-600 mb-1">Round {roundGroup.round}</div>
-                        {roundGroup.actions.map((action, actionIndex) => (
-                          <div key={actionIndex} className="ml-2 mb-1 text-gray-600">
-                            {action.type === 'life-change' ? (
-                              <span>
-                                Life change: {action.value} from {action.from} to {action.to?.join(', ')}
-                              </span>
-                            ) : (
-                              <span>
-                                Turn change: {action.from} → {action.to}
-                              </span>
-                            )}
+                      {/* Players and Decks */}
+                      <div className="grid gap-4">
+                        {game.players.map(player => (
+                          <div
+                            key={player.id}
+                            className="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+                          >
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                <span className="font-medium text-gray-900 dark:text-gray-100">
+                                  {getPlayerName(player.userId)}
+                                </span>
+                                <span className="text-sm text-gray-500 dark:text-gray-400">(Life: {player.life})</span>
+                              </div>
+
+                              {player.deckId && <Deck id={player.deckId} showCreator={false} className="text-sm" />}
+                            </div>
                           </div>
                         ))}
                       </div>
-                    ))}
+                    </div>
+
+                    <div className="flex items-start gap-2">
+                      <button
+                        onClick={() => setExpandedGame(isExpanded ? null : game.id)}
+                        className="px-3 py-1 text-sm bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded border border-blue-200 dark:border-blue-700 transition-colors"
+                      >
+                        {isExpanded ? 'Hide Actions' : 'Show Actions'}
+                      </button>
+
+                      <ThreeDotMenu onRemove={() => removeGame(game.id)} asMenu={false} />
+                    </div>
                   </div>
-                </details>
-              )}
-            </div>
-          ))}
+                </div>
+
+                {/* Actions Section */}
+                {isExpanded && (
+                  <div className="p-6 bg-gray-50 dark:bg-gray-900/50">
+                    <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Game Actions</h4>
+                    <ActionsList gameId={game.id} />
+                  </div>
+                )}
+              </div>
+            )
+          })}
         </div>
       )}
     </div>

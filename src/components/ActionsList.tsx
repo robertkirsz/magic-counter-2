@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import React, { Fragment } from 'react'
+import React from 'react'
 
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
@@ -49,14 +49,17 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
   }
 
   const canDeleteAction = (actionId: string): boolean => {
+    // Don't allow deleting actions in finished games
+    if (game.state === 'finished') return false
+
     const action = game.actions.find(a => a.id === actionId)
 
     if (!action) return false
 
-    // LifeChangeAction can always be deleted
+    // LifeChangeAction can always be deleted (in active games)
     if (action.type === 'life-change') return true
 
-    // For TurnChangeAction, only the last one can be deleted
+    // For TurnChangeAction, only the last one can be deleted (in active games)
     if (action.type === 'turn-change') {
       const turnChangeActions = game.actions.filter(a => a.type === 'turn-change')
       const lastTurnChangeAction = turnChangeActions[turnChangeActions.length - 1]

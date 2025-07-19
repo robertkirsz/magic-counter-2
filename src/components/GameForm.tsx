@@ -88,7 +88,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
   }
 
   const isValidGameSetup = () => {
-    if (numberOfPlayers < 2 || numberOfPlayers > 5) return false
+    if (numberOfPlayers < 1 || numberOfPlayers > 6) return false
     if (startingLife < 1 || startingLife > 999) return false
     return true
   }
@@ -100,7 +100,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
       <div className="flex flex-col items-center gap-6">
         {/* Section 1: Number of Players */}
         <div className="grid grid-cols-4 gap-2">
-          {[2, 3, 4, 5].map(count => (
+          {[1, 2, 3, 4, 5, 6].map(count => (
             <Button
               key={count}
               variant={numberOfPlayers === count ? 'primary' : 'secondary'}

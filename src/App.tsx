@@ -38,16 +38,17 @@ const AppContent: React.FC = () => {
 
 const AppMain: React.FC = () => {
   const { games } = useGames()
-  const activeGames = games.filter(game => game.state === 'active')
   const lastNotFinishedGame = games.filter(game => game.state !== 'finished').pop()
 
   return (
     <div className="flex flex-col lg:flex-row">
-      <div className="flex-1">{lastNotFinishedGame && <Board gameId={lastNotFinishedGame.id} />}</div>
+      <div className="flex-1 empty:hidden">{lastNotFinishedGame && <Board gameId={lastNotFinishedGame.id} />}</div>
 
-      <div className="flex-1">{activeGames.length > 0 && <ActionsList gameId={activeGames[0].id} />}</div>
+      <div className="flex-1 empty:hidden">
+        {lastNotFinishedGame && <ActionsList gameId={lastNotFinishedGame.id} />}
+      </div>
 
-      <div className="flex-1">
+      <div className="flex-1 empty:hidden">
         <IntroScreen />
       </div>
     </div>

@@ -51,6 +51,9 @@ dialog:not([open]) {
 
 dialog::backdrop {
   background: rgba(0, 0, 0, 0.5);
+}
+
+dialog.cickable::backdrop {
   cursor: pointer;
 }
 
@@ -92,35 +95,9 @@ dialog::backdrop {
 }
 
 .PlayersSortingWrapper {
-  flex: 1;
-  display: grid;
-
-  > div {
-    &:nth-child(1) {
-      grid-area: player-1;
-    }
-
-    &:nth-child(2) {
-      grid-area: player-2;
-    }
-
-    &:nth-child(3) {
-      grid-area: player-3;
-    }
-
-    &:nth-child(4) {
-      grid-area: player-4;
-    }
-
-    &:nth-child(5) {
-      grid-area: player-5;
-    }
-  }
-
   /* TODO: Add support for single player mode  */
   &[data-player-count='1'] {
     grid-template-areas: 'player-1';
-    grid-template-rows: 1fr;
     grid-template-columns: 1fr;
   }
 
@@ -128,7 +105,6 @@ dialog::backdrop {
     grid-template-areas:
       'player-2'
       'player-1';
-    grid-template-rows: 1fr 1fr;
     grid-template-columns: 1fr;
 
     > div:nth-child(2) .PlayerSection {
@@ -140,7 +116,6 @@ dialog::backdrop {
     grid-template-areas:
       'player-2 player-3'
       'player-1 player-3';
-    grid-template-rows: 1fr 1fr;
     grid-template-columns: 1fr 1fr;
 
     > div:nth-child(2) .PlayerSection {
@@ -156,8 +131,7 @@ dialog::backdrop {
     grid-template-areas:
       'player-2 player-3'
       'player-1 player-4';
-    grid-template-rows: 1fr 1fr;
-    grid-template-columns: repeat(2, calc(100vw / 2));
+    grid-template-columns: 1fr 1fr;
 
     > div:nth-child(2) .PlayerSection,
     > div:nth-child(3) .PlayerSection {
@@ -169,8 +143,7 @@ dialog::backdrop {
     grid-template-areas:
       'player-2 player-3 player-4'
       'player-1 player-5 player-4';
-    grid-template-rows: 1fr 1fr;
-    grid-template-columns: repeat(3, calc(100vw / 3));
+    grid-template-columns: 1fr 1fr 1fr;
 
     > div:nth-child(2) .PlayerSection,
     > div:nth-child(3) .PlayerSection {
@@ -180,6 +153,13 @@ dialog::backdrop {
     > div:nth-child(4) .PlayerSectionContent {
       transform: rotate(-90deg);
     }
+  }
+
+  &[data-player-count='6'] {
+    grid-template-areas:
+      'player-2 player-3 player-4'
+      'player-1 player-6 player-5';
+    grid-template-columns: 1fr 1fr 1fr;
   }
 }
 

@@ -17,8 +17,8 @@ export const IntroScreen: React.FC = () => {
 
   const { games } = useGames()
 
+  const hasGames = games.length > 0
   const hasGamesInProgress = games.some(game => game.state === 'active' || game.state === 'setup')
-  const hasFinishedGames = games.some(game => game.state === 'finished')
 
   return (
     <div className="h-svh flex flex-col items-center justify-center p-4">
@@ -32,7 +32,7 @@ export const IntroScreen: React.FC = () => {
           </Button>
         )}
 
-        {hasFinishedGames && (
+        {hasGames && (
           <Button variant="secondary" onClick={() => setShowGames(true)}>
             <History size={20} />
             Past Games
