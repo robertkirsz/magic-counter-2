@@ -5,6 +5,7 @@ import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
 import { ActionsList } from './ActionsList'
 import { Deck } from './Deck'
+import { LifeChart } from './LifeChart'
 import { ThreeDotMenu } from './ThreeDotMenu'
 
 export const Games: React.FC = () => {
@@ -120,26 +121,25 @@ export const Games: React.FC = () => {
               >
                 {/* Game Header */}
                 <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-3">
-                        <span className="text-2xl">{stateDisplay.icon}</span>
-                        <div className="flex items-center gap-2">
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${stateDisplay.color}`}>
-                            {stateDisplay.label}
+                  <div className="flex flex-col gap-4">
+                    <div className="flex items-center gap-3">
+                      <span className="text-2xl">{stateDisplay.icon}</span>
+                      <div className="flex items-center gap-2">
+                        <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${stateDisplay.color}`}>
+                          {stateDisplay.label}
+                        </span>
+                        {stateDisplay.duration && (
+                          <span className="text-sm text-gray-500 dark:text-gray-400 font-mono">
+                            {stateDisplay.duration}
                           </span>
-                          {stateDisplay.duration && (
-                            <span className="text-sm text-gray-500 dark:text-gray-400 font-mono">
-                              {stateDisplay.duration}
-                            </span>
-                          )}
-                        </div>
+                        )}
                       </div>
 
-                      <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mb-4">
+                      <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
                         <span>Created {DateTime.fromJSDate(game.createdAt).toFormat('MMM dd, yyyy HH:mm')}</span>
                         <span>•</span>
                         <span>{game.players.length} players</span>
+
                         {game.turnTracking && (
                           <>
                             <span>•</span>
@@ -148,8 +148,21 @@ export const Games: React.FC = () => {
                         )}
                       </div>
 
+                      <div className="flex items-start gap-2">
+                        <button
+                          onClick={() => setExpandedGame(isExpanded ? null : game.id)}
+                          className="px-3 py-1 text-sm bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded border border-blue-200 dark:border-blue-700 transition-colors"
+                        >
+                          {isExpanded ? 'Hide Actions' : 'Show Actions'}
+                        </button>
+
+                        <ThreeDotMenu onRemove={() => removeGame(game.id)} asMenu={false} />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-wrap gap-4">
                       {/* Players and Decks */}
-                      <div className="grid gap-4">
+                      <div className="flex flex-wrap gap-4">
                         {game.players.map(player => (
                           <div
                             key={player.id}
@@ -160,6 +173,7 @@ export const Games: React.FC = () => {
                                 <span className="font-medium text-gray-900 dark:text-gray-100">
                                   {getPlayerName(player.userId)}
                                 </span>
+
                                 <span className="text-sm text-gray-500 dark:text-gray-400">(Life: {player.life})</span>
                               </div>
 
@@ -170,17 +184,8 @@ export const Games: React.FC = () => {
                           </div>
                         ))}
                       </div>
-                    </div>
 
-                    <div className="flex items-start gap-2">
-                      <button
-                        onClick={() => setExpandedGame(isExpanded ? null : game.id)}
-                        className="px-3 py-1 text-sm bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded border border-blue-200 dark:border-blue-700 transition-colors"
-                      >
-                        {isExpanded ? 'Hide Actions' : 'Show Actions'}
-                      </button>
-
-                      <ThreeDotMenu onRemove={() => removeGame(game.id)} asMenu={false} />
+                      {game.actions.length > 0 && <LifeChart gameId={game.id} />}
                     </div>
                   </div>
                 </div>

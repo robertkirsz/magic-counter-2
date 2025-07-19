@@ -36,12 +36,13 @@ dialog {
 
   &.w-full {
     width: calc(100% - 40px);
-    max-width: 640px;
+    /* max-width: 640px; */
+    /* width: fit-content; */
   }
 
   &.h-full {
     height: calc(100% - 40px);
-    max-height: 800px;
+    /* max-height: 800px; */
   }
 }
 

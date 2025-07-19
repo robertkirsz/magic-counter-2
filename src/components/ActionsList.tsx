@@ -38,6 +38,8 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
 
       return 'Unknown message'
     } else if (action.type === 'turn-change') {
+      if (action.to === null) return 'Game ended'
+
       const to = getPlayerName(action.to)
 
       if (to) return `${to}'s turn`
