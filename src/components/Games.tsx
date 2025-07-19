@@ -51,6 +51,29 @@ export const Games: React.FC = () => {
     return user?.name || 'Unknown'
   }
 
+  // Calculate final life values for each player
+  const getFinalLifeValues = (game: Game) => {
+    const finalLifeValues: { [playerId: string]: number } = {}
+
+    // Initialize with starting life values (typically 40 for Commander)
+    game.players.forEach((player: Player) => {
+      finalLifeValues[player.id] = 40 // Default starting life
+    })
+
+    // Process all life change actions to calculate final values
+    game.actions.forEach((action: LifeChangeAction | TurnChangeAction) => {
+      if (action.type === 'life-change' && action.to) {
+        action.to.forEach((playerId: string) => {
+          if (finalLifeValues[playerId] !== undefined) {
+            finalLifeValues[playerId] += action.value
+          }
+        })
+      }
+    })
+
+    return finalLifeValues
+  }
+
   // Get game state display
   const getGameStateDisplay = (game: Game) => {
     const duration = getGameDuration(game)
@@ -105,6 +128,7 @@ export const Games: React.FC = () => {
               />
             </svg>
           </div>
+
           <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">No games yet</h3>
           <p className="text-gray-500 dark:text-gray-400">Create your first game to get started!</p>
         </div>
@@ -124,10 +148,12 @@ export const Games: React.FC = () => {
                   <div className="flex flex-col gap-4">
                     <div className="flex items-center gap-3">
                       <span className="text-2xl">{stateDisplay.icon}</span>
+
                       <div className="flex items-center gap-2">
                         <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${stateDisplay.color}`}>
                           {stateDisplay.label}
                         </span>
+
                         {stateDisplay.duration && (
                           <span className="text-sm text-gray-500 dark:text-gray-400 font-mono">
                             {stateDisplay.duration}
@@ -163,26 +189,31 @@ export const Games: React.FC = () => {
                     <div className="flex flex-wrap gap-4">
                       {/* Players and Decks */}
                       <div className="flex flex-wrap gap-4">
-                        {game.players.map(player => (
-                          <div
-                            key={player.id}
-                            className="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
-                          >
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-2">
-                                <span className="font-medium text-gray-900 dark:text-gray-100">
-                                  {getPlayerName(player.userId)}
-                                </span>
+                        {game.players.map(player => {
+                          const finalLifeValues = getFinalLifeValues(game)
+                          const finalLife = finalLifeValues[player.id]
 
-                                <span className="text-sm text-gray-500 dark:text-gray-400">(Life: {player.life})</span>
+                          return (
+                            <div
+                              key={player.id}
+                              className="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+                            >
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <span className="font-medium text-gray-900 dark:text-gray-100">
+                                    {getPlayerName(player.userId)}
+                                  </span>
+
+                                  <span className="text-sm text-gray-500 dark:text-gray-400">(Life: {finalLife})</span>
+                                </div>
+
+                                {player.deckId && (
+                                  <Deck id={player.deckId} showCreator={false} className="text-sm" showStats={false} />
+                                )}
                               </div>
-
-                              {player.deckId && (
-                                <Deck id={player.deckId} showCreator={false} className="text-sm" showStats={false} />
-                              )}
                             </div>
-                          </div>
-                        ))}
+                          )
+                        })}
                       </div>
 
                       {game.actions.length > 0 && <LifeChart gameId={game.id} />}
