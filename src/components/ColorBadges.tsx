@@ -11,7 +11,7 @@ export const ColorBadges: React.FC<ColorBadgesProps> = ({ colors, className = ''
   if (colors.length === 0) return null
 
   return (
-    <div className={`flex gap-0.5 ${className}`}>
+    <div className={`flex flex-none gap-0.5 ${className}`}>
       {colors.map(color => {
         const colorInfo = MANA_COLORS.find(c => c.value === color)
 

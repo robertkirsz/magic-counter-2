@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
 import { Button } from './Button'
+import { DeckForm } from './DeckForm'
 import { Decks } from './Decks'
 import { GameForm } from './GameForm'
 import { Games } from './Games'
@@ -14,6 +15,7 @@ export const IntroScreen: React.FC = () => {
   const [showUsers, setShowUsers] = useState(false)
   const [showDecks, setShowDecks] = useState(false)
   const [showGameForm, setShowGameForm] = useState(false)
+  const [deckFormVisible, setDeckFormVisible] = useState(false)
 
   const { games } = useGames()
 
@@ -75,6 +77,28 @@ export const IntroScreen: React.FC = () => {
       {showDecks && (
         <Modal testId="decks" fullSize isOpen={showDecks} onClose={() => setShowDecks(false)} title="Decks">
           <Decks />
+
+          {/* Floating Add Deck Button */}
+          <Button
+            variant="primary"
+            round
+            onClick={() => setDeckFormVisible(true)}
+            className="absolute bottom-3 right-3 shadow-lg z-10"
+          >
+            <Plus size={36} />
+          </Button>
+
+          {/* Deck Form Modal */}
+          {deckFormVisible && (
+            <DeckForm
+              onSave={() => {
+                setDeckFormVisible(false)
+              }}
+              onCancel={() => {
+                setDeckFormVisible(false)
+              }}
+            />
+          )}
         </Modal>
       )}
     </div>

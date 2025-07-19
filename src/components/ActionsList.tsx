@@ -186,7 +186,7 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
   return (
     <div className="flex flex-col gap-4">
       {game.actions.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-8 text-center">
+        <div className="flex flex-col items-center justify-center text-center m-auto">
           <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
             <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path

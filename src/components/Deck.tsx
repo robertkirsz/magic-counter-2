@@ -77,7 +77,7 @@ export const Deck: React.FC<DeckProps> = ({
             )}
 
             {showStats && playCount > 0 && (
-              <span className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-1 rounded-full font-medium border border-blue-200 dark:border-blue-700">
+              <span className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-1 rounded font-medium border border-blue-200 dark:border-blue-700 whitespace-nowrap">
                 {playCount} play{playCount !== 1 ? 's' : ''}
               </span>
             )}

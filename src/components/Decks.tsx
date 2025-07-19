@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, Plus, Search } from 'lucide-react'
+import { ArrowDown, ArrowUp, Search } from 'lucide-react'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
@@ -170,7 +170,8 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
       {/* Decks List */}
       {hasDecks && (
         <FadeMask fadeHeight={24} showMask={sortedDecks.length > 3}>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+          {/* TODO: make number of columns depend on container's width */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
             {sortedDecks.map(deck => (
               <Deck key={deck.id} id={deck.id} useContextControls />
             ))}
@@ -178,33 +179,16 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
         </FadeMask>
       )}
 
+      {/* No Decks Message */}
       {!hasDecks && (
         <p className="flex-1 flex justify-center items-center text-gray-500 italic">
           {searchQuery.trim() ? 'No decks match your search.' : 'No decks yet. Add your first deck!'}
         </p>
       )}
 
-      {/* Floating Add Deck Button */}
-      <Button
-        variant="primary"
-        round
-        onClick={() => setDeckFormVisible(true)}
-        className="absolute bottom-3 right-3 shadow-lg z-10"
-      >
-        <Plus size={36} />
-      </Button>
-
       {/* Deck Form Modal */}
       {deckFormVisible && (
-        <DeckForm
-          userId={userId}
-          onSave={() => {
-            setDeckFormVisible(false)
-          }}
-          onCancel={() => {
-            setDeckFormVisible(false)
-          }}
-        />
+        <DeckForm userId={userId} onSave={() => setDeckFormVisible(false)} onCancel={() => setDeckFormVisible(false)} />
       )}
     </div>
   )
