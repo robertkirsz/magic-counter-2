@@ -6,6 +6,7 @@ import { Decks } from './components/Decks'
 import { DevToolsPanel } from './components/DevToolsPanel'
 // import { ImportanceSlider } from './components/ImportanceSlider'
 import { IntroScreen } from './components/IntroScreen'
+import { Users } from './components/Users'
 import { DecksProvider } from './contexts/DecksContext'
 import { GamesProvider } from './contexts/GamesContext'
 import { ImportanceProvider } from './contexts/ImportanceContext'
@@ -47,6 +48,7 @@ const AppMain: React.FC = () => {
       {lastNotFinishedGame && <ActionsList gameId={lastNotFinishedGame.id} />}
       <IntroScreen />
       <Decks />
+      <Users />
     </div>
   )
 }

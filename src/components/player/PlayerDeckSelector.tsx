@@ -13,7 +13,7 @@ const PlayerDeckSelector: React.FC<{
     {player.deckId && (
       <div className="flex items-center gap-1">
         <Button variant="secondary" onClick={onShowDeckSelect}>
-          <Deck id={player.deckId} />
+          <Deck id={player.deckId} showCreator={false} showStats={false} />
         </Button>
 
         <ThreeDotMenu onClose={onRemoveDeck} asMenu={false} />

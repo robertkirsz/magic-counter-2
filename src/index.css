@@ -238,8 +238,11 @@ dialog.cickable::backdrop {
 
 @container (max-width: 200px) {
   .commander-inner {
-    flex-direction: column;
-    align-items: stretch;
+    @apply flex-col items-stretch;
+
+    .TypeLine {
+      @apply hidden;
+    }
   }
 }
 

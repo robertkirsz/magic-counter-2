@@ -1,11 +1,12 @@
 import { DateTime } from 'luxon'
-import React, { useCallback, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
 import { DeckForm } from './DeckForm'
+import { Modal } from './Modal'
 import { UserForm } from './UserForm'
 import DeckSelectionModal from './player/DeckSelectionModal'
 import PlayerDeckSelector from './player/PlayerDeckSelector'
@@ -27,6 +28,14 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   const [showDeckForm, setShowDeckForm] = useState<boolean>(false)
   const [showUserForm, setShowUserForm] = useState<boolean>(false)
   const [pendingLifeChanges, setPendingLifeChanges] = useState<number>(0)
+
+  useEffect(() => {
+    console.log('mount')
+
+    return () => {
+      console.log('unmount')
+    }
+  }, [])
 
   // Debouncing for life changes
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -96,6 +105,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   }
 
   const handleUserSelect = (userId: string | null) => {
+    console.log('handleUserSelect', userId)
     updateGame(game.id, {
       players: game.players.map(p => (p.id === playerId ? { ...p, userId } : p))
     })
@@ -217,7 +227,11 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
             )}
 
             {/* User Form Modal */}
-            {showUserForm && <UserForm onSave={handleUserSelect} onCancel={() => setShowUserForm(false)} />}
+            {showUserForm && (
+              <Modal isOpen={showUserForm} title="Add User" onClose={() => setShowUserForm(false)}>
+                <UserForm onSave={handleUserSelect} onCancel={() => setShowUserForm(false)} />
+              </Modal>
+            )}
           </>
         )}
       </div>

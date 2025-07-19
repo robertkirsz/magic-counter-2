@@ -8,6 +8,7 @@ import { Decks } from './Decks'
 import { GameForm } from './GameForm'
 import { Games } from './Games'
 import { Modal } from './Modal'
+import { UserForm } from './UserForm'
 import { Users } from './Users'
 
 export const IntroScreen: React.FC = () => {
@@ -16,6 +17,7 @@ export const IntroScreen: React.FC = () => {
   const [showDecks, setShowDecks] = useState(false)
   const [showGameForm, setShowGameForm] = useState(false)
   const [deckFormVisible, setDeckFormVisible] = useState(false)
+  const [userFormVisible, setUserFormVisible] = useState(false)
 
   const { games } = useGames()
 
@@ -70,6 +72,24 @@ export const IntroScreen: React.FC = () => {
       {showUsers && (
         <Modal testId="users" fullSize isOpen={showUsers} onClose={() => setShowUsers(false)} title="Users">
           <Users />
+
+          {/* Floating Add User Button */}
+          <Button
+            data-testid="users-add"
+            variant="primary"
+            round
+            className="absolute bottom-3 right-3 shadow-lg z-10"
+            onClick={() => setUserFormVisible(true)}
+          >
+            <Plus size={36} />
+          </Button>
+
+          {/* User Form Modal */}
+          {userFormVisible && (
+            <Modal isOpen={userFormVisible} title="Add User" onClose={() => setUserFormVisible(false)}>
+              <UserForm onSave={() => setUserFormVisible(false)} onCancel={() => setUserFormVisible(false)} />
+            </Modal>
+          )}
         </Modal>
       )}
 
@@ -82,22 +102,15 @@ export const IntroScreen: React.FC = () => {
           <Button
             variant="primary"
             round
-            onClick={() => setDeckFormVisible(true)}
             className="absolute bottom-3 right-3 shadow-lg z-10"
+            onClick={() => setDeckFormVisible(true)}
           >
             <Plus size={36} />
           </Button>
 
           {/* Deck Form Modal */}
           {deckFormVisible && (
-            <DeckForm
-              onSave={() => {
-                setDeckFormVisible(false)
-              }}
-              onCancel={() => {
-                setDeckFormVisible(false)
-              }}
-            />
+            <DeckForm onSave={() => setDeckFormVisible(false)} onCancel={() => setDeckFormVisible(false)} />
           )}
         </Modal>
       )}

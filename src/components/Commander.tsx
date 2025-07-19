@@ -46,7 +46,7 @@ export const Commander: React.FC<CommanderProps> = ({ testIdIndex = 0, commander
             {name}
           </div>
 
-          {typeLine && <div className="text-xs line-clamp-1">{typeLine.split('—')[1]}</div>}
+          {typeLine && <div className="TypeLine text-xs line-clamp-1">{typeLine.split('—')[1]}</div>}
         </div>
       </div>
     </div>

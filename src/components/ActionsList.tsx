@@ -1,3 +1,4 @@
+import { CircleSlash } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React from 'react'
 
@@ -188,14 +189,7 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
       {game.actions.length === 0 ? (
         <div className="flex flex-col items-center justify-center text-center m-auto">
           <div className="w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-4">
-            <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+            <CircleSlash className="w-8 h-8 text-gray-400" />
           </div>
           <p className="text-gray-500 dark:text-gray-400 text-lg font-medium">No actions recorded yet</p>
           <p className="text-gray-400 dark:text-gray-500 text-sm mt-1">Start playing to see game history here</p>

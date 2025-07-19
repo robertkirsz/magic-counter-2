@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 
 import { useUsers } from '../hooks/useUsers'
 import { Button } from './Button'
-import { Modal } from './Modal'
 
 interface UserFormProps {
   testId?: string
@@ -34,30 +33,28 @@ export const UserForm: React.FC<UserFormProps> = ({ testId = '', userId, onSave,
   const testIdPrefix = testId ? `${testId}-${baseId}` : baseId
 
   return (
-    <Modal isOpen testId={testIdPrefix} title={mode === 'create' ? 'Add User' : 'Edit User'} onClose={onCancel}>
-      <div className="flex flex-col gap-4">
-        {/* Name Input */}
-        <input
-          data-testid={`${testIdPrefix}-name`}
-          type="text"
-          value={name}
-          onChange={e => setName(e.target.value)}
-          placeholder="Name"
-          className="form-input"
-          autoFocus
-        />
+    <div className="flex flex-col gap-4">
+      {/* Name Input */}
+      <input
+        data-testid={`${testIdPrefix}-name`}
+        type="text"
+        value={name}
+        onChange={e => setName(e.target.value)}
+        placeholder="Name"
+        className="form-input"
+        autoFocus
+      />
 
-        {/* Action Buttons */}
-        <div className="flex gap-2 justify-end">
-          <Button data-testid={`${testIdPrefix}-save`} variant="primary" disabled={!name.trim()} onClick={handleSave}>
-            {mode === 'create' ? 'Save User' : 'Save Changes'}
-          </Button>
+      {/* Action Buttons */}
+      <div className="flex gap-2 justify-end">
+        <Button data-testid={`${testIdPrefix}-save`} variant="primary" disabled={!name.trim()} onClick={handleSave}>
+          {mode === 'create' ? 'Save User' : 'Save Changes'}
+        </Button>
 
-          <Button data-testid={`${testIdPrefix}-cancel`} variant="danger" onClick={onCancel}>
-            Cancel
-          </Button>
-        </div>
+        <Button data-testid={`${testIdPrefix}-cancel`} variant="danger" onClick={onCancel}>
+          Cancel
+        </Button>
       </div>
-    </Modal>
+    </div>
   )
 }
