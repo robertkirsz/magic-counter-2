@@ -252,7 +252,7 @@ export const DevToolsPanel: React.FC = () => {
             <summary className="font-bold mb-1 cursor-pointer select-none">Users</summary>
 
             <textarea
-              className={`bg-gray-100 dark:bg-gray-900 p-2 rounded mb-1 w-full h-28 resize-vertical border ${usersError ? 'border-red-500' : 'border-gray-200 dark:border-gray-700'} focus:outline-none dark:text-gray-100`}
+              className={`textarea mb-1 h-28 ${usersError ? 'border-red-500 dark:border-red-500' : ''}`}
               value={usersText}
               onChange={e => setUsersText(e.target.value)}
               spellCheck={false}
@@ -269,7 +269,7 @@ export const DevToolsPanel: React.FC = () => {
             <summary className="font-bold mb-1 cursor-pointer select-none">Decks</summary>
 
             <textarea
-              className={`bg-gray-100 dark:bg-gray-900 p-2 rounded mb-1 w-full h-28 resize-vertical border ${decksError ? 'border-red-500' : 'border-gray-200 dark:border-gray-700'} focus:outline-none dark:text-gray-100`}
+              className={`textarea mb-1 h-28 ${decksError ? 'border-red-500 dark:border-red-500' : ''}`}
               value={decksText}
               onChange={e => setDecksText(e.target.value)}
               spellCheck={false}
@@ -286,7 +286,7 @@ export const DevToolsPanel: React.FC = () => {
             <summary className="font-bold mb-1 cursor-pointer select-none">Games</summary>
 
             <textarea
-              className={`bg-gray-100 dark:bg-gray-900 p-2 rounded mb-1 w-full h-28 resize-vertical border ${gamesError ? 'border-red-500' : 'border-gray-200 dark:border-gray-700'} focus:outline-none dark:text-gray-100`}
+              className={`textarea mb-1 h-28 ${gamesError ? 'border-red-500 dark:border-red-500' : ''}`}
               value={gamesText}
               onChange={e => setGamesText(e.target.value)}
               spellCheck={false}

@@ -14,7 +14,7 @@ export const ImportanceSlider: React.FC = () => {
         max={5}
         value={importance}
         onChange={e => setImportance(Number(e.target.value))}
-        className="w-32 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+        className="input-range w-32"
       />
     </div>
   )

@@ -92,7 +92,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
           value={name}
           onChange={e => setName(e.target.value)}
           placeholder="Deck name"
-          className="w-full p-2 border border-gray-300 rounded"
+          className="input"
           autoFocus
         />
 
