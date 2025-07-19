@@ -2,9 +2,9 @@ import { DndContext, closestCenter } from '@dnd-kit/core'
 import type { DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { ArrowBigRightDash, GripVertical, List, Play, Settings } from 'lucide-react'
+import { ArrowBigRightDash, Clock, GripVertical, List, Play, Settings } from 'lucide-react'
 import { DateTime } from 'luxon'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import { useGames } from '../hooks/useGames'
@@ -18,6 +18,78 @@ import StartGameModal from './board/StartGameModal'
 
 interface BoardProps {
   gameId: string
+}
+
+// Game Timer Component
+const GameTimer: React.FC<{ gameId: string }> = ({ gameId }) => {
+  const { games } = useGames()
+  const [elapsedTime, setElapsedTime] = useState<string>('')
+  const [isFinished, setIsFinished] = useState(false)
+
+  const game = games.find(g => g.id === gameId)
+
+  useEffect(() => {
+    if (!game) return
+
+    const updateTimer = () => {
+      const turnActions = game.actions.filter(action => action.type === 'turn-change') as TurnChangeAction[]
+
+      if (turnActions.length === 0) {
+        setElapsedTime('')
+        setIsFinished(false)
+        return
+      }
+
+      const gameStartTime = DateTime.fromJSDate(turnActions[0].createdAt)
+      let gameEndTime: DateTime | null = null
+      let finished = false
+
+      // Find the last TurnChangeAction with to=null (game end)
+      for (let i = turnActions.length - 1; i >= 0; i--) {
+        if (turnActions[i].to === null) {
+          gameEndTime = DateTime.fromJSDate(turnActions[i].createdAt)
+          finished = true
+          break
+        }
+      }
+
+      const endTime = gameEndTime || DateTime.now()
+      const duration = endTime.diff(gameStartTime)
+
+      const hours = Math.floor(duration.as('hours'))
+      const minutes = Math.floor(duration.as('minutes')) % 60
+      const seconds = Math.floor(duration.as('seconds')) % 60
+
+      if (hours > 0) {
+        setElapsedTime(`${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`)
+      } else {
+        setElapsedTime(`${minutes}:${seconds.toString().padStart(2, '0')}`)
+      }
+
+      setIsFinished(finished)
+    }
+
+    updateTimer()
+    const interval = setInterval(updateTimer, 1000)
+
+    return () => clearInterval(interval)
+  }, [game])
+
+  if (!elapsedTime) return null
+
+  return (
+    <div className="absolute top-4 left-4 z-20">
+      <div
+        className={`px-3 py-2 rounded-lg shadow-lg border flex items-center gap-2 ${
+          isFinished ? 'bg-green-800/90 text-white border-green-600' : 'bg-gray-800/90 text-white border-gray-700'
+        }`}
+      >
+        <Clock size={16} className={isFinished ? 'text-green-400' : 'text-blue-400'} />
+        <span className="font-mono text-sm font-medium">{elapsedTime}</span>
+        {isFinished && <span className="text-xs bg-green-600 px-2 py-0.5 rounded-full">FINISHED</span>}
+      </div>
+    </div>
+  )
 }
 
 // Sortable wrapper for PlayerSection
@@ -71,7 +143,19 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   }
 
   const handleFinish = () => {
-    updateGame(game.id, { state: 'finished' })
+    // Add a TurnChangeAction with to=null to mark game end
+    const endAction: TurnChangeAction = {
+      id: uuidv4(),
+      createdAt: DateTime.now().toJSDate(),
+      type: 'turn-change',
+      from: getCurrentActivePlayer(),
+      to: null
+    }
+
+    updateGame(game.id, prevGame => ({
+      state: 'finished',
+      actions: [...prevGame.actions, endAction]
+    }))
   }
 
   // Drag end handler for reordering players
@@ -213,6 +297,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       )}
 
       <StartGameModal isOpen={showStartModal} validPlayers={validPlayers} onChoosePlayer={handlePassTurn} />
+      <GameTimer gameId={gameId} />
     </div>
   )
 }
