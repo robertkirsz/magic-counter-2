@@ -83,7 +83,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
   const testIdPrefix = testId ? `${testId}-${baseId}` : baseId
 
   return (
-    <Modal isOpen hideCloseButton testId={testIdPrefix} onClose={() => onCancel?.()}>
+    <Modal isOpen hideCloseButton testId={testIdPrefix} onClose={onCancel}>
       <div className="flex flex-col gap-4 p-2">
         {/* Name Input */}
         <input

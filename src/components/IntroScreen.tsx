@@ -55,65 +55,55 @@ export const IntroScreen: React.FC = () => {
       </div>
 
       {/* GameForm Modal */}
-      {showGameForm && (
-        <Modal isOpen={showGameForm} onClose={() => setShowGameForm(false)}>
-          <GameForm onSave={() => setShowGameForm(false)} onCancel={() => setShowGameForm(false)} />
-        </Modal>
-      )}
+      <Modal isOpen={showGameForm} onClose={() => setShowGameForm(false)}>
+        <GameForm onSave={() => setShowGameForm(false)} onCancel={() => setShowGameForm(false)} />
+      </Modal>
 
       {/* Games Modal */}
-      {showGames && (
-        <Modal testId="games" fullSize isOpen={showGames} onClose={() => setShowGames(false)} title="Games">
-          <Games />
-        </Modal>
-      )}
+      <Modal testId="games" fullSize isOpen={showGames} onClose={() => setShowGames(false)} title="Games">
+        <Games />
+      </Modal>
 
       {/* Users Modal */}
-      {showUsers && (
-        <Modal testId="users" fullSize isOpen={showUsers} onClose={() => setShowUsers(false)} title="Users">
-          <Users />
+      <Modal testId="users" fullSize isOpen={showUsers} onClose={() => setShowUsers(false)} title="Users">
+        <Users />
 
-          {/* Floating Add User Button */}
-          <Button
-            data-testid="users-add"
-            variant="primary"
-            round
-            className="absolute bottom-3 right-3 shadow-lg z-10"
-            onClick={() => setUserFormVisible(true)}
-          >
-            <Plus size={36} />
-          </Button>
+        {/* Floating Add User Button */}
+        <Button
+          data-testid="users-add"
+          variant="primary"
+          round
+          className="absolute bottom-3 right-3 shadow-lg z-10"
+          onClick={() => setUserFormVisible(true)}
+        >
+          <Plus size={36} />
+        </Button>
 
-          {/* User Form Modal */}
-          {userFormVisible && (
-            <Modal isOpen={userFormVisible} title="Add User" onClose={() => setUserFormVisible(false)}>
-              <UserForm onSave={() => setUserFormVisible(false)} onCancel={() => setUserFormVisible(false)} />
-            </Modal>
-          )}
+        {/* User Form Modal */}
+        <Modal isOpen={userFormVisible} title="Add User" onClose={() => setUserFormVisible(false)}>
+          <UserForm onSave={() => setUserFormVisible(false)} onCancel={() => setUserFormVisible(false)} />
         </Modal>
-      )}
+      </Modal>
 
       {/* Decks Modal */}
-      {showDecks && (
-        <Modal testId="decks" fullSize isOpen={showDecks} onClose={() => setShowDecks(false)} title="Decks">
-          <Decks />
+      <Modal testId="decks" fullSize isOpen={showDecks} onClose={() => setShowDecks(false)} title="Decks">
+        <Decks />
 
-          {/* Floating Add Deck Button */}
-          <Button
-            variant="primary"
-            round
-            className="absolute bottom-3 right-3 shadow-lg z-10"
-            onClick={() => setDeckFormVisible(true)}
-          >
-            <Plus size={36} />
-          </Button>
+        {/* Floating Add Deck Button */}
+        <Button
+          variant="primary"
+          round
+          className="absolute bottom-3 right-3 shadow-lg z-10"
+          onClick={() => setDeckFormVisible(true)}
+        >
+          <Plus size={36} />
+        </Button>
 
-          {/* Deck Form Modal */}
-          {deckFormVisible && (
-            <DeckForm onSave={() => setDeckFormVisible(false)} onCancel={() => setDeckFormVisible(false)} />
-          )}
-        </Modal>
-      )}
+        {/* Deck Form Modal */}
+        {deckFormVisible && (
+          <DeckForm onSave={() => setDeckFormVisible(false)} onCancel={() => setDeckFormVisible(false)} />
+        )}
+      </Modal>
     </div>
   )
 }

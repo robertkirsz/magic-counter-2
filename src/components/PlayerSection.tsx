@@ -216,17 +216,15 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
             )}
 
             {/* User Form Modal */}
-            {showUserForm && (
-              <Modal isOpen={showUserForm} title="Add User" onClose={() => setShowUserForm(false)}>
-                <UserForm
-                  onSave={userId => {
-                    handleUserSelect(userId)
-                    setShowUserForm(false)
-                  }}
-                  onCancel={() => setShowUserForm(false)}
-                />
-              </Modal>
-            )}
+            <Modal isOpen={showUserForm} title="Add User" onClose={() => setShowUserForm(false)}>
+              <UserForm
+                onSave={userId => {
+                  handleUserSelect(userId)
+                  setShowUserForm(false)
+                }}
+                onCancel={() => setShowUserForm(false)}
+              />
+            </Modal>
           </>
         )}
       </div>

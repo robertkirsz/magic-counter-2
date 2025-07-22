@@ -42,15 +42,9 @@ export const Users: React.FC = () => {
       )}
 
       {/* Create User Modal */}
-      {editingId && (
-        <Modal isOpen={!!editingId} title="Edit User" onClose={() => setEditingId(undefined)}>
-          <UserForm
-            userId={editingId}
-            onSave={() => setEditingId(undefined)}
-            onCancel={() => setEditingId(undefined)}
-          />
-        </Modal>
-      )}
+      <Modal isOpen={!!editingId} title="Edit User" onClose={() => setEditingId(undefined)}>
+        <UserForm userId={editingId} onSave={() => setEditingId(undefined)} onCancel={() => setEditingId(undefined)} />
+      </Modal>
 
       {/* Add Deck Modal */}
       {selectedUser && (

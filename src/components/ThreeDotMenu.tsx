@@ -81,34 +81,32 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
 
         {/* TODO: duplicated below */}
         {/* Confirmation Dialog */}
-        {showConfirm && (
-          <Modal isOpen={showConfirm} onClose={() => setShowConfirm(false)} title="Confirm Delete">
-            <div className="flex flex-col gap-4">
-              <p className="text-gray-600">Are you sure you want to delete this item? This action cannot be undone.</p>
+        <Modal isOpen={showConfirm} onClose={() => setShowConfirm(false)} title="Confirm Delete">
+          <div className="flex flex-col gap-4">
+            <p className="text-gray-600">Are you sure you want to delete this item? This action cannot be undone.</p>
 
-              <div className="flex gap-2 justify-end">
-                <Button
-                  data-testid={`${testIdPrefix}-confirm-cancel`}
-                  variant="secondary"
-                  onClick={() => setShowConfirm(false)}
-                >
-                  Cancel
-                </Button>
+            <div className="flex gap-2 justify-end">
+              <Button
+                data-testid={`${testIdPrefix}-confirm-cancel`}
+                variant="secondary"
+                onClick={() => setShowConfirm(false)}
+              >
+                Cancel
+              </Button>
 
-                <Button
-                  data-testid={`${testIdPrefix}-confirm-delete`}
-                  variant="danger"
-                  onClick={() => {
-                    onRemove?.()
-                    setShowConfirm(false)
-                  }}
-                >
-                  Delete
-                </Button>
-              </div>
+              <Button
+                data-testid={`${testIdPrefix}-confirm-delete`}
+                variant="danger"
+                onClick={() => {
+                  onRemove?.()
+                  setShowConfirm(false)
+                }}
+              >
+                Delete
+              </Button>
             </div>
-          </Modal>
-        )}
+          </div>
+        </Modal>
       </div>
     )
   }
@@ -179,34 +177,32 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
       )}
 
       {/* Confirmation Dialog */}
-      {showConfirm && (
-        <Modal isOpen={showConfirm} onClose={() => setShowConfirm(false)} title="Confirm Delete">
-          <div className="flex flex-col gap-4">
-            <p>Are you sure you want to delete this item? This action cannot be undone.</p>
+      <Modal isOpen={showConfirm} onClose={() => setShowConfirm(false)} title="Confirm Delete">
+        <div className="flex flex-col gap-4">
+          <p>Are you sure you want to delete this item? This action cannot be undone.</p>
 
-            <div className="flex gap-2 justify-end">
-              <Button
-                data-testid={`${testIdPrefix}-confirm-cancel-button`}
-                variant="secondary"
-                onClick={() => setShowConfirm(false)}
-              >
-                Cancel
-              </Button>
+          <div className="flex gap-2 justify-end">
+            <Button
+              data-testid={`${testIdPrefix}-confirm-cancel-button`}
+              variant="secondary"
+              onClick={() => setShowConfirm(false)}
+            >
+              Cancel
+            </Button>
 
-              <Button
-                data-testid={`${testIdPrefix}-confirm-delete-button`}
-                variant="danger"
-                onClick={() => {
-                  onRemove?.()
-                  setShowConfirm(false)
-                }}
-              >
-                Delete
-              </Button>
-            </div>
+            <Button
+              data-testid={`${testIdPrefix}-confirm-delete-button`}
+              variant="danger"
+              onClick={() => {
+                onRemove?.()
+                setShowConfirm(false)
+              }}
+            >
+              Delete
+            </Button>
           </div>
-        </Modal>
-      )}
+        </div>
+      </Modal>
     </div>
   )
 }

@@ -94,7 +94,7 @@ export const Modal: React.FC<ModalProps> = ({
           )}
         </div>
 
-        {children}
+        {isOpen && children}
       </div>
     </dialog>
   )

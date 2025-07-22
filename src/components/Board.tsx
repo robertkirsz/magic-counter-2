@@ -320,28 +320,22 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         )}
       </div>
 
-      {showSettings && (
-        <Modal isOpen={showSettings} onClose={() => setShowSettings(false)} title="Game Settings">
-          <GameForm
-            gameId={gameId}
-            onSave={() => setShowSettings(false)}
-            onCancel={() => setShowSettings(false)}
-            onPlayerCountChange={handlePlayerCountChange}
-          />
-        </Modal>
-      )}
+      <Modal title="Game Settings" isOpen={showSettings} onClose={() => setShowSettings(false)}>
+        <GameForm
+          gameId={gameId}
+          onSave={() => setShowSettings(false)}
+          onCancel={() => setShowSettings(false)}
+          onPlayerCountChange={handlePlayerCountChange}
+        />
+      </Modal>
 
-      {showActions && (
-        <Modal fullSize isOpen={showActions} onClose={() => setShowActions(false)} title="Game Actions">
-          <ActionsList gameId={gameId} />
-        </Modal>
-      )}
+      <Modal fullSize title="Game Actions" isOpen={showActions} onClose={() => setShowActions(false)}>
+        <ActionsList gameId={gameId} />
+      </Modal>
 
-      {showStartModal && (
-        <Modal isOpen={showStartModal} title="Who starts?" hideCloseButton onClose={() => {}}>
-          <StartGameModal gameId={gameId} onChoosePlayer={handlePassTurn} />
-        </Modal>
-      )}
+      <Modal title="Who starts?" isOpen={showStartModal} hideCloseButton onClose={() => {}}>
+        <StartGameModal gameId={gameId} onChoosePlayer={handlePassTurn} />
+      </Modal>
 
       <GameTimer gameId={gameId} />
     </div>
