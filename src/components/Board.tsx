@@ -144,7 +144,7 @@ function SortablePlayerSection({ id, gameId, dragEnabled, className, ...props }:
 }
 
 export const Board: React.FC<BoardProps> = ({ gameId }) => {
-  const { games, updateGame, getCurrentActivePlayer, getCurrentRound } = useGames()
+  const { games, updateGame, getCurrentActivePlayer, getCurrentRound, dispatchAction } = useGames()
 
   const game = games.find(g => g.id === gameId)
 
@@ -174,10 +174,8 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       to: null
     }
 
-    updateGame(game.id, prevGame => ({
-      state: 'finished',
-      actions: [...prevGame.actions, endAction]
-    }))
+    dispatchAction(game.id, endAction)
+    updateGame(game.id, { state: 'finished' })
   }
 
   // Drag end handler for reordering players
@@ -212,7 +210,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       to: playerId || nextPlayer.id
     }
 
-    updateGame(game.id, prevGame => ({ actions: [...prevGame.actions, newAction] }))
+    dispatchAction(game.id, newAction)
   }
 
   const validPlayers = game.players.filter(player => player.userId && player.deckId)

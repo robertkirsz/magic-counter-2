@@ -75,6 +75,15 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
     )
   }
 
+  const dispatchAction = (gameId: string, action: LifeChangeAction | TurnChangeAction) => {
+    setGames(prev =>
+      prev.map(game => {
+        if (game.id !== gameId) return game
+        return { ...game, actions: [...game.actions, action] }
+      })
+    )
+  }
+
   const latestActiveGame = games.filter(g => g.state === 'active').pop()
 
   const getCurrentActivePlayer = (gameId?: string): string | null => {
@@ -156,7 +165,8 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
     setGames,
     getCurrentActivePlayer,
     getCurrentRound,
-    groupActionsByRound
+    groupActionsByRound,
+    dispatchAction
   }
 
   return <GamesContext.Provider value={value}>{children}</GamesContext.Provider>

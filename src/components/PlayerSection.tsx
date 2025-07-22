@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import { useDecks } from '../hooks/useDecks'
@@ -22,20 +22,12 @@ interface PlayerSectionProps {
 export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }) => {
   const { users } = useUsers()
   const { decks } = useDecks()
-  const { games, updateGame, getCurrentActivePlayer } = useGames()
+  const { games, updateGame, getCurrentActivePlayer, dispatchAction } = useGames()
   const [showUserSelect, setShowUserSelect] = useState<boolean>(false)
   const [showDeckSelect, setShowDeckSelect] = useState<boolean>(false)
   const [showDeckForm, setShowDeckForm] = useState<boolean>(false)
   const [showUserForm, setShowUserForm] = useState<boolean>(false)
   const [pendingLifeChanges, setPendingLifeChanges] = useState<number>(0)
-
-  useEffect(() => {
-    console.log('mount')
-
-    return () => {
-      console.log('unmount')
-    }
-  }, [])
 
   // Debouncing for life changes
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -57,13 +49,10 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
       to: [playerId]
     }
 
-    updateGame(game.id, prevGame => ({
-      actions: [...prevGame.actions, newAction]
-    }))
-
+    dispatchAction(game.id, newAction)
     pendingLifeChangesRef.current = 0
     setPendingLifeChanges(0)
-  }, [game, playerId, updateGame, getCurrentActivePlayer])
+  }, [game, playerId, dispatchAction, getCurrentActivePlayer])
 
   if (!game) return <div>Game not found</div>
 
