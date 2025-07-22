@@ -292,7 +292,7 @@ dialog.cickable::backdrop {
   @apply flex flex-col gap-2 lg:flex-row;
 
   > * {
-    @apply flex-1 empty:hidden;
+    @apply empty:hidden;
     border: 1px dashed rgb(173, 87, 87);
   }
 }
