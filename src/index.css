@@ -300,3 +300,35 @@ dialog.cickable::backdrop {
     border: 1px dashed rgb(173, 87, 87);
   }
 }
+
+/* Drag overlay for SortablePlayerSection */
+.drag-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(24, 24, 27, 0.7); /* dark semi-transparent */
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+}
+
+.drag-overlay--active {
+  background: rgba(24, 24, 27, 0.85);
+  border: 2px solid #3b82f6;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.drag-overlay-handle {
+  pointer-events: auto;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.drag-overlay-handle--large {
+  width: 56px;
+  height: 56px;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

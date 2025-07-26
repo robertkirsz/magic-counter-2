@@ -1,6 +1,6 @@
 import { DndContext, closestCenter } from '@dnd-kit/core'
 import type { DragEndEvent } from '@dnd-kit/core'
-import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable'
+import { SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { ArrowBigRightDash, Clock, GripVertical, List, Move, Play, Settings, Undo } from 'lucide-react'
 import { DateTime } from 'luxon'
@@ -122,22 +122,22 @@ function SortablePlayerSection({ id, gameId, dragEnabled, className, ...props }:
       {...props}
     >
       {dragEnabled && (
-        <Button
-          ref={setActivatorNodeRef}
-          {...listeners}
-          {...attributes}
-          className="absolute top-2 left-1/2 -translate-x-1/2 cursor-grab active:cursor-grabbing z-10"
-          round
-          small
-          variant="secondary"
-          tabIndex={-1}
-          aria-label="Drag to reorder player"
-          type="button"
-        >
-          <GripVertical />
-        </Button>
+        <div className={`drag-overlay${isDragging ? ' drag-overlay--active' : ''}`}>
+          <Button
+            ref={setActivatorNodeRef}
+            {...listeners}
+            {...attributes}
+            className="drag-overlay-handle drag-overlay-handle--large"
+            round
+            variant="secondary"
+            tabIndex={-1}
+            aria-label="Drag to reorder player"
+            type="button"
+          >
+            <GripVertical />
+          </Button>
+        </div>
       )}
-
       <PlayerSection gameId={gameId} playerId={id} />
     </div>
   )
@@ -189,7 +189,11 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
     if (oldIndex === -1 || newIndex === -1) return
 
-    const newPlayers = arrayMove(game.players, oldIndex, newIndex)
+    // Switch places instead of moving
+    const newPlayers = [...game.players]
+    const temp = newPlayers[oldIndex]
+    newPlayers[oldIndex] = newPlayers[newIndex]
+    newPlayers[newIndex] = temp
 
     updateGame(game.id, { players: newPlayers })
   }
