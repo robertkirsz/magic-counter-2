@@ -1,6 +1,4 @@
-import { DateTime } from 'luxon'
-import React, { useCallback, useRef, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid'
+import React, { useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
@@ -22,37 +20,14 @@ interface PlayerSectionProps {
 export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }) => {
   const { users } = useUsers()
   const { decks } = useDecks()
-  const { games, updateGame, getCurrentActivePlayer, dispatchAction } = useGames()
+  const { games, updateGame, getCurrentActivePlayer } = useGames()
   const [showUserSelect, setShowUserSelect] = useState<boolean>(false)
   const [showDeckSelect, setShowDeckSelect] = useState<boolean>(false)
   const [showDeckForm, setShowDeckForm] = useState<boolean>(false)
   const [showUserForm, setShowUserForm] = useState<boolean>(false)
-  const [pendingLifeChanges, setPendingLifeChanges] = useState<number>(0)
-
-  // Debouncing for life changes
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
-  const pendingLifeChangesRef = useRef<number>(0)
 
   const game = games.find(g => g.id === gameId)
-
-  const commitLifeChanges = useCallback(() => {
-    if (!game || pendingLifeChangesRef.current === 0) return
-
-    const fromId = getCurrentActivePlayer() || playerId
-
-    const newAction: LifeChangeAction = {
-      id: uuidv4(),
-      createdAt: DateTime.now().toJSDate(),
-      type: 'life-change',
-      value: pendingLifeChangesRef.current,
-      from: fromId,
-      to: [playerId]
-    }
-
-    dispatchAction(game.id, newAction)
-    pendingLifeChangesRef.current = 0
-    setPendingLifeChanges(0)
-  }, [game, playerId, dispatchAction, getCurrentActivePlayer])
+  const currentActivePlayer = getCurrentActivePlayer()
 
   if (!game) return <div>Game not found</div>
 
@@ -79,19 +54,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   }
 
   const currentLife = calculateLifeFromActions(playerId)
-  const displayLife = currentLife + pendingLifeChanges
-
-  const handleLifeChange = (value: number) => {
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current)
-    }
-
-    pendingLifeChangesRef.current += value
-    setPendingLifeChanges(prev => prev + value)
-    debounceTimeoutRef.current = setTimeout(() => {
-      commitLifeChanges()
-    }, 1500)
-  }
 
   const handleUserSelect = (userId: string | null) => {
     console.log('handleUserSelect', userId)
@@ -133,7 +95,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   })
 
   const gameIsActive = game.state === 'active'
-  const currentActivePlayer = getCurrentActivePlayer()
 
   // Get player's deck and commander image
   const playerDeck = player.deckId ? decks.find(d => d.id === player.deckId) : null
@@ -163,14 +124,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
       >
         <p className="text-white font-medium text-center">{getUserName(player.userId)}</p>
 
-        {gameIsActive && (
-          <PlayerLifeControls
-            playerId={playerId}
-            displayLife={displayLife}
-            pendingLifeChanges={pendingLifeChanges}
-            onLifeChange={handleLifeChange}
-          />
-        )}
+        {gameIsActive && <PlayerLifeControls playerId={playerId} gameId={gameId} currentLife={currentLife} />}
 
         {!gameIsActive && (
           <>

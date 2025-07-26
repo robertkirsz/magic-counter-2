@@ -33,7 +33,7 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
       const from = getPlayerName(action.from)
       const to = action.to?.map(getPlayerName).join(', ')
 
-      if (lifeGained) return `${from} gains ${value} life 💚`
+      if (lifeGained) return `${to} gains ${value} life 💚`
       if (fromSelf && !lifeGained) return `${from} loses ${value} life 💔`
       if (!lifeGained) return `${from} deals ${value} damage to ${to} 💔`
 
