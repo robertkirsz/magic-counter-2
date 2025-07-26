@@ -12,6 +12,7 @@ export interface GamesContextType {
   dispatchAction: (gameId: string, action: LifeChangeAction | TurnChangeAction) => void
   registerTurnChangeCallback: (gameId: string, callback: () => void) => void
   unregisterTurnChangeCallback: (gameId: string, callback: () => void) => void
+  undoLastAction: (gameId: string) => void
 }
 
 export const GamesContext = createContext<GamesContextType | undefined>(undefined)

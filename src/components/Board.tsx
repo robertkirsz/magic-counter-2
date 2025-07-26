@@ -2,7 +2,7 @@ import { DndContext, closestCenter } from '@dnd-kit/core'
 import type { DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { ArrowBigRightDash, Clock, GripVertical, List, Move, Play, Settings } from 'lucide-react'
+import { ArrowBigRightDash, Clock, GripVertical, List, Move, Play, Settings, Undo } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
@@ -144,7 +144,7 @@ function SortablePlayerSection({ id, gameId, dragEnabled, className, ...props }:
 }
 
 export const Board: React.FC<BoardProps> = ({ gameId }) => {
-  const { games, updateGame, getCurrentActivePlayer, getCurrentRound, dispatchAction } = useGames()
+  const { games, updateGame, getCurrentActivePlayer, getCurrentRound, dispatchAction, undoLastAction } = useGames()
 
   const game = games.find(g => g.id === gameId)
 
@@ -218,6 +218,12 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const currentActivePlayer = getCurrentActivePlayer()
   const showStartModal = game.state === 'active' && !currentActivePlayer && game.turnTracking
 
+  const handleUndoLastAction = () => {
+    undoLastAction(game.id)
+  }
+
+  const canUndo = game.actions.length > 0
+
   // Use previewPlayerCount for layout, but actual game.players for data
   const displayPlayerCount = showSettings ? previewPlayerCount : game.players.length
   const displayPlayers = game.players.slice(0, displayPlayerCount)
@@ -288,13 +294,27 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         </div>
       )}
 
+      {/* Undo Last Action Button */}
+      {game.state === 'active' && canUndo && (
+        <Button
+          round
+          variant="secondary"
+          className="absolute top-1/2 left-1/2 -translate-y-1/2 z-20 -translate-x-20"
+          onClick={handleUndoLastAction}
+          title="Undo last action"
+        >
+          <Undo size={24} />
+        </Button>
+      )}
+
       {/* Pass Turn Button */}
       {game.state === 'active' && game.turnTracking && currentActivePlayer && (
         <Button
           round
           variant="primary"
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20"
+          className="absolute top-1/2 left-1/2 -translate-y-1/2 z-20 translate-x-20"
           onClick={() => handlePassTurn()}
+          title="Pass turn"
         >
           <ArrowBigRightDash size={32} />
         </Button>

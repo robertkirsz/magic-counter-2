@@ -112,6 +112,16 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
     )
   }
 
+  const undoLastAction = useCallback((gameId: string) => {
+    setGames(prev =>
+      prev.map(game => {
+        if (game.id !== gameId) return game
+        const newActions = game.actions.slice(0, -1) // Remove the last action
+        return { ...game, actions: newActions }
+      })
+    )
+  }, [])
+
   const latestActiveGame = games.filter(g => g.state === 'active').pop()
 
   const getCurrentActivePlayer = (gameId?: string): string | null => {
@@ -196,7 +206,8 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
     groupActionsByRound,
     dispatchAction,
     registerTurnChangeCallback,
-    unregisterTurnChangeCallback
+    unregisterTurnChangeCallback,
+    undoLastAction
   }
 
   return <GamesContext.Provider value={value}>{children}</GamesContext.Provider>
