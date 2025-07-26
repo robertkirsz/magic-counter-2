@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import { GamesContext, type GamesContextType } from './GamesContextDef'
@@ -43,6 +43,7 @@ const readGames = (): Game[] => {
 
 export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
   const [games, setGames] = useState<Game[]>(readGames())
+  const [turnChangeCallbacks, setTurnChangeCallbacks] = useState<Map<string, (() => void)[]>>(new Map())
 
   useEffect(() => localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(games)), [games])
 
@@ -75,7 +76,34 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
     )
   }
 
+  const registerTurnChangeCallback = useCallback((gameId: string, callback: () => void) => {
+    setTurnChangeCallbacks(prev => {
+      const newCallbacks = new Map(prev)
+      const existingCallbacks = newCallbacks.get(gameId) || []
+      newCallbacks.set(gameId, [...existingCallbacks, callback])
+      return newCallbacks
+    })
+  }, [])
+
+  const unregisterTurnChangeCallback = useCallback((gameId: string, callback: () => void) => {
+    setTurnChangeCallbacks(prev => {
+      const newCallbacks = new Map(prev)
+      const existingCallbacks = newCallbacks.get(gameId) || []
+      newCallbacks.set(
+        gameId,
+        existingCallbacks.filter(cb => cb !== callback)
+      )
+      return newCallbacks
+    })
+  }, [])
+
   const dispatchAction = (gameId: string, action: LifeChangeAction | TurnChangeAction) => {
+    // Call turn change callbacks before adding the action
+    if (action.type === 'turn-change') {
+      const callbacks = turnChangeCallbacks.get(gameId) || []
+      callbacks.forEach(callback => callback())
+    }
+
     setGames(prev =>
       prev.map(game => {
         if (game.id !== gameId) return game
@@ -166,7 +194,9 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
     getCurrentActivePlayer,
     getCurrentRound,
     groupActionsByRound,
-    dispatchAction
+    dispatchAction,
+    registerTurnChangeCallback,
+    unregisterTurnChangeCallback
   }
 
   return <GamesContext.Provider value={value}>{children}</GamesContext.Provider>

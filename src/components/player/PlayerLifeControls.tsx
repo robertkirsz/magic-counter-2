@@ -4,6 +4,7 @@ import React, { useCallback, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import { useGames } from '../../hooks/useGames'
+import { useTurnChange } from '../../hooks/useGames'
 import { Button } from '../Button'
 
 const PlayerLifeControls: React.FC<{
@@ -40,6 +41,17 @@ const PlayerLifeControls: React.FC<{
     setPendingLifeChanges(0)
   }, [playerId, gameId, dispatchAction, getCurrentActivePlayer, onLifeCommitted])
 
+  // Clear timeout and commit life changes when a turn is passed
+  useTurnChange(gameId, () => {
+    if (pendingLifeChangesRef.current !== 0) {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current)
+      }
+      console.log('[PlayerLifeControls] Turn passed, committing pending life changes')
+      commitLifeChanges()
+    }
+  })
+
   const handleLifeChange = (value: number) => {
     if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current)
 
@@ -54,16 +66,11 @@ const PlayerLifeControls: React.FC<{
 
   return (
     <div className="grid grid-cols-3">
-      <Button
-        data-testid={`${playerId}-remove-life`}
-        variant="ghost"
-        className="text-4xl"
-        onClick={() => handleLifeChange(-1)}
-      >
+      <Button data-testid={`${playerId}-remove-life`} className="text-4xl" onClick={() => handleLifeChange(-1)}>
         <MinusIcon className="w-6 h-6" />
       </Button>
 
-      <div className={`relative text-center text-white`}>
+      <div className={`relative text-center ${pendingLifeChanges !== 0 ? 'text-blue-600' : 'text-white'}`}>
         <span data-testid={`${playerId}-life`} className="text-4xl font-bold">
           {displayLife}
         </span>
@@ -78,12 +85,7 @@ const PlayerLifeControls: React.FC<{
         )}
       </div>
 
-      <Button
-        variant="ghost"
-        data-testid={`${playerId}-add-life`}
-        className="text-4xl"
-        onClick={() => handleLifeChange(1)}
-      >
+      <Button data-testid={`${playerId}-add-life`} className="text-4xl" onClick={() => handleLifeChange(1)}>
         <PlusIcon className="w-6 h-6" />
       </Button>
     </div>
