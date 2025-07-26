@@ -1,3 +1,4 @@
+import { MinusIcon, PlusIcon } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useCallback, useRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
@@ -52,34 +53,38 @@ const PlayerLifeControls: React.FC<{
   const displayLife = currentLife + pendingLifeChanges
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="grid grid-cols-3">
       <Button
         data-testid={`${playerId}-remove-life`}
-        className="text-4xl font-bold text-white"
+        variant="ghost"
+        className="text-4xl"
         onClick={() => handleLifeChange(-1)}
       >
-        -
+        <MinusIcon className="w-6 h-6" />
       </Button>
 
-      <div className={`text-4xl font-bold ${pendingLifeChanges !== 0 ? 'text-blue-600' : ''}`}>
-        <span data-testid={`${playerId}-life`} className="text-white">
+      <div className={`relative text-center text-white`}>
+        <span data-testid={`${playerId}-life`} className="text-4xl font-bold">
           {displayLife}
         </span>
 
         {pendingLifeChanges !== 0 && (
-          <span className="text-sm text-gray-500 ml-1">
-            ({pendingLifeChanges > 0 ? '+' : ''}
-            {pendingLifeChanges})
+          <span
+            className={`absolute text-sm ${pendingLifeChanges > 0 ? 'text-green-600' : 'text-red-600'} left-1/2 top-full -translate-x-1/2`}
+          >
+            {pendingLifeChanges > 0 ? '+' : ''}
+            {pendingLifeChanges}
           </span>
         )}
       </div>
 
       <Button
+        variant="ghost"
         data-testid={`${playerId}-add-life`}
-        className="text-4xl font-bold text-white"
+        className="text-4xl"
         onClick={() => handleLifeChange(1)}
       >
-        +
+        <PlusIcon className="w-6 h-6" />
       </Button>
     </div>
   )

@@ -1,7 +1,7 @@
 import React from 'react'
 import useRipple from 'useripple'
 
-export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'default'
+export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'default' | 'ghost'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant
@@ -14,7 +14,8 @@ const variantToClass: Record<ButtonVariant, string> = {
   primary: 'btn primary',
   secondary: 'btn secondary',
   danger: 'btn danger',
-  default: 'btn default'
+  default: 'btn default',
+  ghost: 'btn ghost'
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
