@@ -6,6 +6,7 @@ import { Decks } from './components/Decks'
 import { DevToolsPanel } from './components/DevToolsPanel'
 // import { ImportanceSlider } from './components/ImportanceSlider'
 import { IntroScreen } from './components/IntroScreen'
+import PWAInstallPrompt from './components/PWAInstallPrompt'
 import { Users } from './components/Users'
 import { DecksProvider } from './contexts/DecksContext'
 import { GamesProvider } from './contexts/GamesContext'
@@ -70,6 +71,7 @@ export default function App() {
   return (
     <ImportanceProvider>
       <AppContent />
+      <PWAInstallPrompt />
     </ImportanceProvider>
   )
 }
