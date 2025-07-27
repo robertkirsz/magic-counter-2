@@ -1,0 +1,26 @@
+{
+  "name": "Magic Counter 2",
+  "short_name": "Magic Counter 2",
+  "description": "A Magic: The Gathering life counter and game tracker",
+  "scope": "/",
+  "start_url": "/",
+  "lang": "en",
+  "categories": ["games", "utilities"],
+  "display": "fullscreen",
+  "theme_color": "#1f2937",
+  "background_color": "#111827",
+  "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
