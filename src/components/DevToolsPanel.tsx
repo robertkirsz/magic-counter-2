@@ -1,10 +1,11 @@
-import { UserPlus, Wrench } from 'lucide-react'
+import { BookOpen, UserPlus, Wrench } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useEffect, useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
+import { AVAILABLE_COMMANDERS } from '../utils/scryfall'
 import { Button } from './Button'
 
 function tryParseJSON<T>(value: string): [T | null, string | null] {
@@ -114,9 +115,31 @@ const generateRandomUser = (): Omit<User, 'id' | 'createdAt'> => {
   }
 }
 
+const generateRandomDeck = (): Omit<Deck, 'id' | 'createdAt'> => {
+  const randomNumber = Math.floor(Math.random() * 1000)
+  const deckNames = ['Aggro', 'Control', 'Combo', 'Midrange', 'Tempo', 'Ramp', 'Burn', 'Tribal']
+  const randomDeckName = deckNames[Math.floor(Math.random() * deckNames.length)]
+
+  // Pick 1-2 random commanders
+  const commanderCount = Math.random() > 0.05 ? 1 : 2
+  const shuffledCommanders = [...AVAILABLE_COMMANDERS].sort(() => Math.random() - 0.5)
+  const selectedCommanders = shuffledCommanders.slice(0, commanderCount)
+
+  // Get all colors from commanders
+  const allColors = selectedCommanders.map(commander => commander.colors).flat()
+  const uniqueColors = [...new Set(allColors)]
+
+  return {
+    name: `${randomDeckName} Deck ${randomNumber}`,
+    colors: uniqueColors.length > 0 ? uniqueColors : ['C'],
+    commanders: selectedCommanders,
+    createdBy: null
+  }
+}
+
 export const DevToolsPanel: React.FC = () => {
   const { users, addUser, setUsers } = useUsers()
-  const { decks, setDecks } = useDecks()
+  const { decks, addDeck, setDecks } = useDecks()
   const { games, setGames } = useGames()
   const [open, setOpen] = useState(false)
 
@@ -303,6 +326,15 @@ export const DevToolsPanel: React.FC = () => {
               >
                 <UserPlus size={14} />
                 Add Random User
+              </Button>
+
+              <Button
+                variant="secondary"
+                onClick={() => addDeck(generateRandomDeck())}
+                className="flex items-center gap-1"
+              >
+                <BookOpen size={14} />
+                Add Random Deck
               </Button>
             </div>
           </details>
