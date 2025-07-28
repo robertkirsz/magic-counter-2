@@ -1,3 +1,4 @@
+import { UsersIcon } from 'lucide-react'
 import React, { useState } from 'react'
 
 import { useUsers } from '../hooks/useUsers'
@@ -16,8 +17,7 @@ export const Users: React.FC = () => {
   const hasUsers = users.length > 0
 
   return (
-    <div className="flex-1 flex flex-col gap-4 overflow-hidden">
-      {/* Users List */}
+    <div className="flex flex-col gap-4 overflow-hidden">
       {hasUsers && (
         <FadeMask showMask={users.length > 3}>
           <div className="flex flex-col gap-2">
@@ -36,9 +36,11 @@ export const Users: React.FC = () => {
       )}
 
       {!hasUsers && (
-        <p className="flex-1 flex justify-center items-center text-gray-500 italic">
-          No users yet. Add your first user!
-        </p>
+        <div className="flex flex-col items-center justify-center text-center">
+          <UsersIcon size={48} className="text-gray-400" />
+          <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">No users yet</h3>
+          <p className="text-gray-500 dark:text-gray-400">Add someone to play with!</p>
+        </div>
       )}
 
       {/* Create User Modal */}

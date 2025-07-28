@@ -1,4 +1,4 @@
-import { ArrowDown, ArrowUp, Search } from 'lucide-react'
+import { ArrowDown, ArrowUp, BookImageIcon, Search } from 'lucide-react'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
@@ -179,11 +179,18 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
         </FadeMask>
       )}
 
-      {/* No Decks Message */}
       {!hasDecks && (
-        <p className="flex-1 flex justify-center items-center text-gray-500 italic">
-          {searchQuery.trim() ? 'No decks match your search.' : 'No decks yet. Add your first deck!'}
-        </p>
+        <div className="flex flex-col items-center justify-center text-center">
+          <BookImageIcon size={48} className="text-gray-400" />
+
+          <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
+            {searchQuery.trim() ? 'No decks match your search' : 'No decks yet'}
+          </h3>
+
+          <p className="text-gray-500 dark:text-gray-400">
+            {searchQuery.trim() ? 'Try a different search' : 'Add a deck to get started!'}
+          </p>
+        </div>
       )}
 
       {/* Deck Form Modal */}

@@ -4,6 +4,7 @@ import { ActionsList } from './components/ActionsList'
 import { Board } from './components/Board'
 import { Decks } from './components/Decks'
 import { DevToolsPanel } from './components/DevToolsPanel'
+import { Games } from './components/Games'
 // import { ImportanceSlider } from './components/ImportanceSlider'
 import { IntroScreen } from './components/IntroScreen'
 import PWAInstallPrompt from './components/PWAInstallPrompt'
@@ -53,6 +54,7 @@ const AppMain: React.FC = () => {
         {lastNotFinishedGame && <Board gameId={lastNotFinishedGame.id} />}
         {lastNotFinishedGame && <ActionsList gameId={lastNotFinishedGame.id} />}
         <IntroScreen />
+        <Games />
         <Decks />
         <Users />
       </div>

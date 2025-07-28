@@ -1,3 +1,4 @@
+import { SwordsIcon } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useState } from 'react'
 
@@ -115,26 +116,11 @@ export const Games: React.FC = () => {
     }
   }
 
+  const hasGames = games.length > 0
+
   return (
     <div className="flex flex-col gap-6">
-      {/* Games List */}
-      {games.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12 text-center">
-          <div className="w-20 h-20 bg-gray-100 dark:bg-gray-800 rounded-full flex items-center justify-center mb-6">
-            <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
-              />
-            </svg>
-          </div>
-
-          <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-2">No games yet</h3>
-          <p className="text-gray-500 dark:text-gray-400">Create your first game to get started!</p>
-        </div>
-      ) : (
+      {hasGames && (
         <div className="grid gap-6">
           {games.map(game => {
             const stateDisplay = getGameStateDisplay(game)
@@ -235,6 +221,14 @@ export const Games: React.FC = () => {
               </div>
             )
           })}
+        </div>
+      )}
+
+      {!hasGames && (
+        <div className="flex flex-col items-center justify-center text-center">
+          <SwordsIcon size={48} className="text-gray-400" />
+          <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">No games yet</h3>
+          <p className="text-gray-500 dark:text-gray-400">Create your first game to get started</p>
         </div>
       )}
     </div>
