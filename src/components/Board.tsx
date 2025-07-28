@@ -2,15 +2,16 @@ import { DndContext, closestCenter } from '@dnd-kit/core'
 import type { DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { ArrowBigRightDash, Clock, GripVertical, List, Move, Play, Settings, Undo } from 'lucide-react'
+import { ArrowBigRightDash, GripVertical, List, Move, Play, Settings, Undo } from 'lucide-react'
 import { DateTime } from 'luxon'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import { useGames } from '../hooks/useGames'
 import { ActionsList } from './ActionsList'
 import { Button } from './Button'
 import { GameForm } from './GameForm'
+import GameStatus from './GameStatus'
 import { Modal } from './Modal'
 import { PlayerSection } from './PlayerSection'
 import ThemeToggle from './ThemeToggle'
@@ -18,80 +19,6 @@ import StartGameModal from './board/StartGameModal'
 
 interface BoardProps {
   gameId: string
-}
-
-// TODO: If a Player has no life, omit them when passing turn. Don't count them when counting rounds.
-
-// Game Timer Component
-const GameTimer: React.FC<{ gameId: string }> = ({ gameId }) => {
-  const { games } = useGames()
-  const [elapsedTime, setElapsedTime] = useState<string>('')
-  const [isFinished, setIsFinished] = useState(false)
-
-  const game = games.find(g => g.id === gameId)
-
-  useEffect(() => {
-    if (!game) return
-
-    const updateTimer = () => {
-      const turnActions = game.actions.filter(action => action.type === 'turn-change') as TurnChangeAction[]
-
-      if (turnActions.length === 0) {
-        setElapsedTime('')
-        setIsFinished(false)
-        return
-      }
-
-      const gameStartTime = DateTime.fromJSDate(turnActions[0].createdAt)
-      let gameEndTime: DateTime | null = null
-      let finished = false
-
-      // Find the last TurnChangeAction with to=null (game end)
-      for (let i = turnActions.length - 1; i >= 0; i--) {
-        if (turnActions[i].to === null) {
-          gameEndTime = DateTime.fromJSDate(turnActions[i].createdAt)
-          finished = true
-          break
-        }
-      }
-
-      const endTime = gameEndTime || DateTime.now()
-      const duration = endTime.diff(gameStartTime)
-
-      const hours = Math.floor(duration.as('hours'))
-      const minutes = Math.floor(duration.as('minutes')) % 60
-      const seconds = Math.floor(duration.as('seconds')) % 60
-
-      if (hours > 0) {
-        setElapsedTime(`${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`)
-      } else {
-        setElapsedTime(`${minutes}:${seconds.toString().padStart(2, '0')}`)
-      }
-
-      setIsFinished(finished)
-    }
-
-    updateTimer()
-    const interval = setInterval(updateTimer, 1000)
-
-    return () => clearInterval(interval)
-  }, [game])
-
-  if (!elapsedTime) return null
-
-  return (
-    <div className="absolute top-4 left-4 z-20">
-      <div
-        className={`px-3 py-2 rounded-lg shadow-lg border flex items-center gap-2 ${
-          isFinished ? 'bg-green-800/90 text-white border-green-600' : 'bg-gray-800/90 text-white border-gray-700'
-        }`}
-      >
-        <Clock size={16} className={isFinished ? 'text-green-400' : 'text-blue-400'} />
-        <span className="font-mono text-sm font-medium">{elapsedTime}</span>
-        {isFinished && <span className="text-xs bg-green-600 px-2 py-0.5 rounded-full">FINISHED</span>}
-      </div>
-    </div>
-  )
 }
 
 interface SortablePlayerSectionProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -144,7 +71,7 @@ function SortablePlayerSection({ id, gameId, dragEnabled, className, ...props }:
 }
 
 export const Board: React.FC<BoardProps> = ({ gameId }) => {
-  const { games, updateGame, getCurrentActivePlayer, getCurrentRound, dispatchAction, undoLastAction } = useGames()
+  const { games, updateGame, getCurrentActivePlayer, dispatchAction, undoLastAction } = useGames()
 
   const game = games.find(g => g.id === gameId)
 
@@ -289,15 +216,6 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         </Button>
       </div>
 
-      {/* Current Round Display */}
-      {game.state === 'active' && (
-        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20">
-          <div className="bg-gray-800/90 text-white px-4 py-2 rounded-lg shadow-lg border border-gray-700">
-            <span className="font-semibold">Round {getCurrentRound(game.id)}</span>
-          </div>
-        </div>
-      )}
-
       {/* Undo Last Action Button */}
       {game.state === 'active' && canUndo && (
         <Button
@@ -361,7 +279,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         <StartGameModal gameId={gameId} onChoosePlayer={handlePassTurn} />
       </Modal>
 
-      <GameTimer gameId={gameId} />
+      <GameStatus gameId={gameId} />
     </div>
   )
 }
