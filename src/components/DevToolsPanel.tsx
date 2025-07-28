@@ -1,4 +1,4 @@
-import { Wrench } from 'lucide-react'
+import { UserPlus, Wrench } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useEffect, useState } from 'react'
 
@@ -70,8 +70,52 @@ function reviveDates<T extends { createdAt: string | Date }>(arr: T[]): T[] {
   }))
 }
 
+// Random user names for quick testing
+const RANDOM_NAMES = [
+  'Alice',
+  'Bob',
+  'Charlie',
+  'Diana',
+  'Eve',
+  'Frank',
+  'Grace',
+  'Henry',
+  'Iris',
+  'Jack',
+  'Kate',
+  'Liam',
+  'Maya',
+  'Noah',
+  'Olivia',
+  'Paul',
+  'Quinn',
+  'Ruby',
+  'Sam',
+  'Tara',
+  'Uma',
+  'Victor',
+  'Wendy',
+  'Xander',
+  'Yara',
+  'Zoe',
+  'Alex',
+  'Jordan',
+  'Taylor',
+  'Morgan',
+  'Casey',
+  'Riley'
+]
+
+const generateRandomUser = (): Omit<User, 'id' | 'createdAt'> => {
+  const randomName = RANDOM_NAMES[Math.floor(Math.random() * RANDOM_NAMES.length)]
+  const randomNumber = Math.floor(Math.random() * 1000)
+  return {
+    name: `${randomName}${randomNumber}`
+  }
+}
+
 export const DevToolsPanel: React.FC = () => {
-  const { users, setUsers } = useUsers()
+  const { users, addUser, setUsers } = useUsers()
   const { decks, setDecks } = useDecks()
   const { games, setGames } = useGames()
   const [open, setOpen] = useState(false)
@@ -246,6 +290,21 @@ export const DevToolsPanel: React.FC = () => {
             </div>
 
             {importError && <div className="text-red-600 text-xs mb-2">{importError}</div>}
+          </details>
+
+          <details open>
+            <summary className="font-bold mb-2 cursor-pointer select-none">Quick Actions</summary>
+
+            <div className="flex gap-2 mb-3">
+              <Button
+                variant="secondary"
+                onClick={() => addUser(generateRandomUser())}
+                className="flex items-center gap-1"
+              >
+                <UserPlus size={14} />
+                Add Random User
+              </Button>
+            </div>
           </details>
 
           <details open>
