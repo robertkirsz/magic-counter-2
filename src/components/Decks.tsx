@@ -172,8 +172,8 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
         <FadeMask fadeHeight={24} showMask={sortedDecks.length > 3}>
           {/* TODO: make number of columns depend on container's width */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-2">
-            {sortedDecks.map(deck => (
-              <Deck key={deck.id} id={deck.id} useContextControls />
+            {sortedDecks.map((deck, index) => (
+              <Deck key={deck.id} id={deck.id} testIndex={index} useContextControls />
             ))}
           </div>
         </FadeMask>

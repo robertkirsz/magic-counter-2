@@ -14,3 +14,10 @@
 // ***********************************************************
 // Import commands.js using ES2015 syntax:
 import './commands'
+// Import and set up global interceptors
+import { setupAllInterceptors } from './interceptors'
+
+// Set up all interceptors globally before each test
+beforeEach(() => {
+  setupAllInterceptors()
+})

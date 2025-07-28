@@ -52,16 +52,14 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ onChange }) =>
   return (
     <div className="flex flex-col gap-2">
       {/* Search Commander Input */}
-      <div>
-        <input
-          type="text"
-          value={newCommander}
-          onChange={e => setNewCommander(e.target.value)}
-          onFocus={() => setShowSuggestions(true)}
-          placeholder="Search for commanders..."
-          className="form-input"
-        />
-      </div>
+      <input
+        data-testid="commander-search-input"
+        value={newCommander}
+        onChange={e => setNewCommander(e.target.value)}
+        onFocus={() => setShowSuggestions(true)}
+        placeholder="Search for commanders..."
+        className="form-input"
+      />
 
       {/* Suggestions Dropdown */}
       {showSuggestions && (suggestions.length > 0 || isLoading) && (
@@ -82,6 +80,7 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ onChange }) =>
               suggestions.map((card, index) => (
                 <Commander
                   key={index}
+                  testIdIndex={index}
                   commander={card}
                   onClick={() => handleSuggestionClick(card)}
                   className="cursor-pointer"

@@ -11,50 +11,53 @@ interface UserFormProps {
 }
 
 export const UserForm: React.FC<UserFormProps> = ({ testId = '', userId, onSave, onCancel }) => {
-  const { addUser, updateUser, users } = useUsers()
-  const user = users.find(u => u.id === userId)
-
-  const [name, setName] = useState(user?.name || '')
-
-  const handleSave = () => {
-    if (name.trim()) {
-      if (userId) {
-        updateUser(userId, { name: name.trim() })
-        onSave(userId)
-      } else {
-        const newUser = addUser({ name: name.trim() })
-        onSave(newUser.id)
-      }
-    }
-  }
-
   const mode = userId ? 'edit' : 'create'
   const baseId = `user-form-${mode}`
   const testIdPrefix = testId ? `${testId}-${baseId}` : baseId
 
+  const { addUser, updateUser, users } = useUsers()
+
+  const user = users.find(u => u.id === userId)
+
+  const [name, setName] = useState(user?.name || '')
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    const trimmedName = name.trim()
+
+    if (trimmedName) {
+      if (userId) {
+        updateUser(userId, { name: trimmedName })
+        onSave(userId)
+      } else {
+        onSave(addUser({ name: trimmedName }).id)
+      }
+    }
+  }
+
   return (
-    <div className="flex flex-col gap-4">
+    <form data-testid={baseId} className="flex flex-col gap-4" onSubmit={handleSubmit}>
       {/* Name Input */}
       <input
         data-testid={`${testIdPrefix}-name`}
-        type="text"
-        value={name}
-        onChange={e => setName(e.target.value)}
-        placeholder="Name"
-        className="form-input"
         autoFocus
+        value={name}
+        placeholder="Name"
+        onChange={e => setName(e.target.value)}
+        className="form-input"
       />
 
       {/* Action Buttons */}
       <div className="flex gap-2 justify-end">
-        <Button data-testid={`${testIdPrefix}-save`} variant="primary" disabled={!name.trim()} onClick={handleSave}>
+        <Button data-testid={`${testIdPrefix}-save`} variant="primary" disabled={!name.trim()}>
           {mode === 'create' ? 'Save User' : 'Save Changes'}
         </Button>
 
-        <Button data-testid={`${testIdPrefix}-cancel`} variant="danger" onClick={onCancel}>
+        <Button type="button" data-testid={`${testIdPrefix}-cancel`} variant="danger" onClick={onCancel}>
           Cancel
         </Button>
       </div>
-    </div>
+    </form>
   )
 }

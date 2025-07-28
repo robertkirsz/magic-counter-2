@@ -48,7 +48,7 @@ export const IntroScreen: React.FC = () => {
           Users
         </Button>
 
-        <Button variant="secondary" onClick={() => setShowDecks(true)}>
+        <Button variant="secondary" data-testid="intro-screen-decks-button" onClick={() => setShowDecks(true)}>
           <BookOpen size={20} />
           Decks
         </Button>
@@ -91,6 +91,7 @@ export const IntroScreen: React.FC = () => {
 
         {/* Floating Add Deck Button */}
         <Button
+          data-testid="decks-add"
           variant="primary"
           round
           className="absolute bottom-3 right-3 shadow-lg z-10"
@@ -100,9 +101,9 @@ export const IntroScreen: React.FC = () => {
         </Button>
 
         {/* Deck Form Modal */}
-        {deckFormVisible && (
+        <Modal isOpen={deckFormVisible} title="Add Deck" onClose={() => setDeckFormVisible(false)}>
           <DeckForm onSave={() => setDeckFormVisible(false)} onCancel={() => setDeckFormVisible(false)} />
-        )}
+        </Modal>
       </Modal>
     </div>
   )

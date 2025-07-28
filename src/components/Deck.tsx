@@ -11,7 +11,7 @@ import { ThreeDotMenu } from './ThreeDotMenu'
 interface DeckProps extends React.HTMLAttributes<HTMLDivElement> {
   id: Deck['id']
   testId?: string
-  testIndex?: number
+  testIndex?: number | string
   useContextControls?: boolean
   showCreator?: boolean
   showStats?: boolean
@@ -95,8 +95,8 @@ export const Deck: React.FC<DeckProps> = ({
         )}
       </div>
 
-      {deck.commanders.map(commander => (
-        <Commander key={commander.id} commander={commander} />
+      {deck.commanders.map((commander, index) => (
+        <Commander key={commander.id} commander={commander} testIdIndex={testIndex + '-' + index} />
       ))}
 
       {useContextControls && deckFormVisible && (

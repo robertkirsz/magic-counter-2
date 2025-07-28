@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 describe('Active Game', () => {
   beforeEach(() => {
     cy.clearLocalStorage()

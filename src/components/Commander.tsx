@@ -4,11 +4,11 @@ import { getGradientFromColors } from '../utils/gradients'
 import { ColorBadges } from './ColorBadges'
 
 interface CommanderProps extends React.HTMLAttributes<HTMLDivElement> {
-  testIdIndex?: number
+  testIdIndex?: number | string
   commander: ScryfallCard
 }
 
-export const Commander: React.FC<CommanderProps> = ({ testIdIndex = 0, commander, className, ...props }) => {
+export const Commander: React.FC<CommanderProps> = ({ testIdIndex = 0, commander, className = '', ...props }) => {
   const isScryfallCard = typeof commander === 'object'
   const name = isScryfallCard ? commander.name : commander
   const typeLine = isScryfallCard ? commander.type : ''
