@@ -74,6 +74,11 @@ body {
   appearance: textfield;
 }
 
+.PlayerSection,
+.PlayerSectionContent {
+  transition: transform 0.3s ease-in-out;
+}
+
 .PlayersSortingWrapper {
   /* TODO: Add support for single player mode  */
   &[data-player-count='1'] {
@@ -87,7 +92,7 @@ body {
       'player-1';
     grid-template-columns: 1fr;
 
-    > div:nth-child(2) .PlayerSection {
+    .tableMode & > div:nth-child(2) .PlayerSection {
       transform: rotate(180deg);
     }
   }
@@ -98,17 +103,13 @@ body {
       'player-1 player-3';
     grid-template-columns: 1fr 1fr;
 
-    > div:nth-child(2) .PlayerSection {
+    .tableMode & > div:nth-child(2) .PlayerSection {
       transform: rotate(180deg);
     }
 
-    > div:nth-child(3) .PlayerSectionContent {
+    .tableMode & > div:nth-child(3) .PlayerSectionContent {
       transform: rotate(-90deg);
     }
-  }
-
-  .PlayerSection {
-    transition: transform 0.3s ease-in-out;
   }
 
   &[data-player-count='4'] {
@@ -129,12 +130,12 @@ body {
       'player-1 player-5 player-4';
     grid-template-columns: 1fr 1fr 1fr;
 
-    > div:nth-child(2) .PlayerSection,
-    > div:nth-child(3) .PlayerSection {
+    .tableMode & > div:nth-child(2) .PlayerSection,
+    .tableMode & > div:nth-child(3) .PlayerSection {
       transform: rotate(180deg);
     }
 
-    > div:nth-child(4) .PlayerSectionContent {
+    .tableMode & > div:nth-child(4) .PlayerSectionContent {
       transform: rotate(-90deg);
     }
   }
@@ -144,6 +145,12 @@ body {
       'player-2 player-3 player-4'
       'player-1 player-6 player-5';
     grid-template-columns: 1fr 1fr 1fr;
+
+    .tableMode & > div:nth-child(2) .PlayerSection,
+    .tableMode & > div:nth-child(3) .PlayerSection,
+    .tableMode & > div:nth-child(4) .PlayerSection {
+      transform: rotate(180deg);
+    }
   }
 }
 
@@ -267,6 +274,14 @@ body {
 
 .dragEnabled .hiddenWhenDragEnabled {
   display: none;
+}
+
+.BoardOverlay {
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
 }
 
 /* Test IDs */

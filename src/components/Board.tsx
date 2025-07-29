@@ -182,6 +182,44 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         </SortableContext>
       </DndContext>
 
+      <div className="BoardOverlay hiddenWhenDragEnabled absolute top-0 left-0 w-full h-full z-20 flex flex-col items-center justify-between gap-2 p-4">
+        <GameStatus gameId={gameId} />
+
+        <div className="flex items-center gap-4">
+          {/* Undo Last Action Button */}
+          {game.state === 'active' && canUndo && (
+            <Button round variant="secondary" onClick={handleUndoLastAction} title="Undo last action">
+              <Undo size={32} />
+            </Button>
+          )}
+
+          {/* Pass Turn Button */}
+          {game.state === 'active' && game.turnTracking && currentActivePlayer && (
+            <Button round variant="primary" onClick={() => handlePassTurn()} title="Pass turn">
+              <ArrowBigRightDash size={32} />
+            </Button>
+          )}
+        </div>
+
+        {/* Play/Finish Button */}
+        {game.state !== 'finished' && (
+          <Button
+            variant="primary"
+            disabled={!canPlay && game.state !== 'active'}
+            onClick={game.state === 'active' ? handleFinish : handlePlay}
+          >
+            {game.state === 'active' ? (
+              <span>FINISH</span>
+            ) : (
+              <>
+                <Play size={32} />
+                <span>PLAY</span>
+              </>
+            )}
+          </Button>
+        )}
+      </div>
+
       {/* Settings Overlay */}
       <div className="absolute top-4 right-4 flex flex-col gap-3 z-20">
         <Button
@@ -225,52 +263,6 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         </Button>
       </div>
 
-      {/* Undo Last Action Button */}
-      {game.state === 'active' && canUndo && (
-        <Button
-          round
-          variant="secondary"
-          className="hiddenWhenDragEnabled absolute top-1/2 left-1/2 -translate-y-1/2 z-20 -translate-x-20"
-          onClick={handleUndoLastAction}
-          title="Undo last action"
-        >
-          <Undo size={24} />
-        </Button>
-      )}
-
-      {/* Pass Turn Button */}
-      {game.state === 'active' && game.turnTracking && currentActivePlayer && (
-        <Button
-          round
-          variant="primary"
-          className="hiddenWhenDragEnabled absolute top-1/2 left-1/2 -translate-y-1/2 z-20 translate-x-20"
-          onClick={() => handlePassTurn()}
-          title="Pass turn"
-        >
-          <ArrowBigRightDash size={32} />
-        </Button>
-      )}
-
-      {/* Play/Finish Button */}
-      <div className="hiddenWhenDragEnabled absolute bottom-4 left-1/2 -translate-x-1/2 flex justify-center w-full z-20">
-        {game.state !== 'finished' && (
-          <Button
-            variant="primary"
-            disabled={!canPlay && game.state !== 'active'}
-            onClick={game.state === 'active' ? handleFinish : handlePlay}
-          >
-            {game.state === 'active' ? (
-              <span>FINISH</span>
-            ) : (
-              <>
-                <Play size={32} />
-                <span>PLAY</span>
-              </>
-            )}
-          </Button>
-        )}
-      </div>
-
       <Modal title="Game Settings" isOpen={showSettings} onClose={() => setShowSettings(false)}>
         <GameForm
           gameId={gameId}
@@ -287,8 +279,6 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       <Modal title="Who starts?" isOpen={showStartModal} hideCloseButton onClose={() => {}}>
         <StartGameModal gameId={gameId} onChoosePlayer={handlePassTurn} />
       </Modal>
-
-      <GameStatus gameId={gameId} />
     </div>
   )
 }
