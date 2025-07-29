@@ -1,6 +1,8 @@
-import React from 'react'
+import { ChevronDown, ChevronRight, Gamepad2, User as UserIcon } from 'lucide-react'
+import React, { useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
+import { useGames } from '../hooks/useGames'
 import { Button } from './Button'
 import { Deck } from './Deck'
 import { ThreeDotMenu } from './ThreeDotMenu'
@@ -15,29 +17,74 @@ interface UserProps {
 
 export const User: React.FC<UserProps> = ({ user, testIndex, onEdit, onRemove, onCreateDeck }) => {
   const { decks } = useDecks()
+  const { games } = useGames()
+  const [decksExpanded, setDecksExpanded] = useState(false)
   const testId = `user-${testIndex}`
 
   const filteredDecks = decks.filter(deck => deck.createdBy === user.id)
 
+  // Calculate user statistics
+  const gamesPlayed = games.filter(game => game.players.some(player => player.userId === user.id)).length
+
   return (
     <div
-      className="flex flex-col gap-1 bg-white dark:bg-gray-900 rounded-lg p-2 border border-gray-200 dark:border-gray-700"
+      className="bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-700"
       data-testid={testId}
     >
-      <div className="flex gap-1 items-center">
-        <h3 className="text-gray-900 dark:text-white  line-clamp-1" data-testid={`${testId}-name`}>
-          {user.name}
-        </h3>
+      {/* User Header */}
+      <div className="flex items-center gap-3 mb-4">
+        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
+          <UserIcon size={20} />
+        </div>
+
+        <div className="flex-1">
+          <h3 className="text-gray-900 dark:text-white font-semibold line-clamp-1" data-testid={`${testId}-name`}>
+            {user.name}
+          </h3>
+        </div>
 
         <ThreeDotMenu testId={testId} onEdit={onEdit} onRemove={onRemove} />
       </div>
 
-      {/* User's Decks */}
-      <div className="flex flex-col gap-2 empty:hidden">
-        {filteredDecks.map((deck, index) => (
-          <Deck key={deck.id} id={deck.id} testIndex={index} useContextControls />
-        ))}
+      {/* Statistics Section */}
+      <div className="flex items-center gap-4 mb-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+        <div className="flex items-center gap-2">
+          <Gamepad2 size={16} className="text-blue-600 dark:text-blue-400" />
+          <span className="text-sm text-gray-600 dark:text-gray-300">
+            {gamesPlayed} game{gamesPlayed !== 1 ? 's' : ''} played
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+          <span className="text-sm text-gray-600 dark:text-gray-300">
+            {filteredDecks.length} deck{filteredDecks.length !== 1 ? 's' : ''}
+          </span>
+        </div>
       </div>
+
+      {/* User's Decks */}
+      {filteredDecks.length > 0 && (
+        <div className="mb-4">
+          <button
+            onClick={() => setDecksExpanded(!decksExpanded)}
+            className="flex items-center gap-2 w-full p-3 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+          >
+            {decksExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+            <span className="font-medium text-gray-900 dark:text-gray-100">Decks ({filteredDecks.length})</span>
+          </button>
+
+          {decksExpanded && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {filteredDecks.map((deck, index) => (
+                <div key={deck.id} className="flex-shrink-0">
+                  <Deck id={deck.id} testIndex={index} useContextControls />
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       <Button data-testid={`${testId}-create-deck`} variant="primary" onClick={onCreateDeck}>
         Create New Deck
