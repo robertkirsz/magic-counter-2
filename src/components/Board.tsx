@@ -3,7 +3,7 @@ import type { DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, rectSwappingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { ArrowBigRightDash, List, Move, Play, Settings, Table, Undo } from 'lucide-react'
 import { DateTime } from 'luxon'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 import { useGames } from '../hooks/useGames'
@@ -15,6 +15,14 @@ import { Modal } from './Modal'
 import { SortablePlayerSection } from './SortablePlayerSection'
 import ThemeToggle from './ThemeToggle'
 import StartGameModal from './board/StartGameModal'
+
+const TABLE_MODE_KEY = 'tableMode'
+
+function getInitialTableMode(): boolean {
+  if (typeof window === 'undefined') return false
+  const stored = localStorage.getItem(TABLE_MODE_KEY)
+  return stored === 'true'
+}
 
 interface BoardProps {
   gameId: string
@@ -29,7 +37,12 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const [showActions, setShowActions] = useState(false)
   const [previewPlayerCount, setPreviewPlayerCount] = useState<number>(game?.players.length || 4)
   const [dragEnabled, setDragEnabled] = useState(false)
-  const [tableMode, setTableMode] = useState(false)
+  const [tableMode, setTableMode] = useState(getInitialTableMode())
+
+  // Save table mode to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem(TABLE_MODE_KEY, tableMode.toString())
+  }, [tableMode])
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -142,7 +155,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         </SortableContext>
       </DndContext>
 
-      <div className="BoardOverlay hiddenWhenDragEnabled absolute top-0 left-0 w-full h-full z-20 flex flex-col items-center justify-between gap-2 p-4">
+      <div className="BoardOverlay hiddenWhenDragEnabled absolute top-0 left-0 w-full h-full z-20 flex flex-col items-center justify-between gap-2 p-2">
         <GameStatus gameId={gameId} />
 
         <div className="flex items-center gap-4">
@@ -181,45 +194,31 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       </div>
 
       {/* Settings Overlay */}
-      <div className="absolute top-4 right-4 flex flex-col gap-3 z-20">
-        <Button
-          onClick={() => setShowSettings(true)}
-          className="bg-gray-800/90 hover:bg-gray-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 border border-gray-700 dark:bg-gray-900 dark:border-gray-700"
-        >
-          <Settings size={24} className="text-white" />
+      <div className="absolute top-0 right-0 flex flex-col gap-3 p-2 z-20">
+        <Button round onClick={() => setShowSettings(true)}>
+          <Settings size={24} />
         </Button>
 
         <ThemeToggle />
 
         <Button
+          round
+          className={dragEnabled ? 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500' : ''}
           onClick={() => setDragEnabled(!dragEnabled)}
-          className={`rounded-full p-3 shadow-lg transition-all duration-200 border ${
-            dragEnabled
-              ? 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500'
-              : 'bg-gray-800/90 hover:bg-gray-700 text-white border-gray-700 dark:bg-gray-900 dark:border-gray-700'
-          }`}
-          title={dragEnabled ? 'Disable player dragging' : 'Enable player dragging'}
         >
-          <Move size={24} className="text-white" />
+          <Move size={24} />
+        </Button>
+
+        <Button round onClick={() => setShowActions(true)}>
+          <List size={24} />
         </Button>
 
         <Button
-          onClick={() => setShowActions(true)}
-          className="bg-gray-800/90 hover:bg-gray-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 border border-gray-700 dark:bg-gray-900 dark:border-gray-700"
-        >
-          <List size={24} className="text-white" />
-        </Button>
-
-        <Button
+          round
+          className={tableMode ? 'bg-green-600/90 hover:bg-green-500 text-white border-green-500' : ''}
           onClick={() => setTableMode(!tableMode)}
-          className={`rounded-full p-3 shadow-lg transition-all duration-200 border ${
-            tableMode
-              ? 'bg-green-600/90 hover:bg-green-500 text-white border-green-500'
-              : 'bg-gray-800/90 hover:bg-gray-700 text-white border-gray-700 dark:bg-gray-900 dark:border-gray-700'
-          }`}
-          title={tableMode ? 'Disable table mode' : 'Enable table mode'}
         >
-          <Table size={24} className="text-white" />
+          <Table size={24} />
         </Button>
       </div>
 
