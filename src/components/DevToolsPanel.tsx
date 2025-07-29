@@ -297,24 +297,7 @@ export const DevToolsPanel: React.FC = () => {
     <div className="fixed z-20 gap-2 bottom-2 right-2 flex flex-col items-end">
       {open && (
         <div className="flex flex-col gap-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 font-mono rounded-lg mt-2 p-4 shadow-lg max-h-[400px] w-full overflow-y-auto text-xs">
-          {/* Import/Export Section */}
-          <details open>
-            <summary className="font-bold mb-2 cursor-pointer select-none">Import/Export</summary>
-
-            <div className="flex gap-2 mb-3">
-              <Button variant="secondary" onClick={handleExport}>
-                Export All Data
-              </Button>
-
-              <label className="btn primary">
-                Import Data
-                <input type="file" accept=".json" onChange={handleImport} className="hidden" />
-              </label>
-            </div>
-
-            {importError && <div className="text-red-600 text-xs mb-2">{importError}</div>}
-          </details>
-
+          {/* Quick Actions Section */}
           <details open>
             <summary className="font-bold mb-2 cursor-pointer select-none">Quick Actions</summary>
 
@@ -324,8 +307,7 @@ export const DevToolsPanel: React.FC = () => {
                 onClick={() => addUser(generateRandomUser())}
                 className="flex items-center gap-1"
               >
-                <UserPlus size={14} />
-                Add Random User
+                <UserPlus size={14} />+ User
               </Button>
 
               <Button
@@ -333,10 +315,43 @@ export const DevToolsPanel: React.FC = () => {
                 onClick={() => addDeck(generateRandomDeck())}
                 className="flex items-center gap-1"
               >
-                <BookOpen size={14} />
-                Add Random Deck
+                <BookOpen size={14} />+ Deck
               </Button>
             </div>
+          </details>
+
+          {/* Import/Export Section */}
+          <details open>
+            <summary className="font-bold mb-2 cursor-pointer select-none">Import/Export</summary>
+
+            <div className="flex gap-2 mb-3">
+              <Button variant="secondary" onClick={handleExport}>
+                Export
+              </Button>
+
+              <label className="btn primary">
+                Import
+                <input type="file" accept=".json" onChange={handleImport} className="hidden" />
+              </label>
+
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  const confirmed = window.confirm(
+                    'Are you sure you want to delete all data? This action cannot be undone.'
+                  )
+                  if (confirmed) {
+                    localStorage.clear()
+                    window.location.reload()
+                  }
+                }}
+                className="bg-red-600 hover:bg-red-700 text-white"
+              >
+                Delete
+              </Button>
+            </div>
+
+            {importError && <div className="text-red-600 text-xs mb-2">{importError}</div>}
           </details>
 
           <details open>
