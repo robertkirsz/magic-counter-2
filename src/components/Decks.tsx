@@ -1,13 +1,12 @@
-import { ArrowDown, ArrowUp, BookImageIcon, Search } from 'lucide-react'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { BookImageIcon } from 'lucide-react'
+import React, { useMemo, useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
-import { Button } from './Button'
+import { ControlsSection } from './ControlsSection'
+import type { SortOption } from './ControlsSection'
 import { Deck } from './Deck'
 import { DeckForm } from './DeckForm'
 import { FadeMask } from './FadeMask'
-
-type SortOption = 'name' | 'date' | 'colors' | 'creator'
 
 interface DecksProps {
   userId?: string
@@ -18,26 +17,7 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
   const [deckFormVisible, setDeckFormVisible] = useState(false)
   const [sortBy, setSortBy] = useState<SortOption>('name')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const dropdownRef = useRef<HTMLDivElement>(null)
-
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false)
-      }
-    }
-
-    if (isDropdownOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isDropdownOpen])
 
   const handleSortChange = (newSortBy: SortOption) => {
     if (sortBy === newSortBy) {
@@ -107,6 +87,8 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
           comparison = aCreator.localeCompare(bCreator)
           break
         }
+        default:
+          comparison = a.name.localeCompare(b.name)
       }
 
       return sortDirection === 'asc' ? comparison : -comparison
@@ -121,51 +103,16 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
   return (
     <div className="flex-1 flex flex-col gap-4 overflow-hidden">
       {/* Controls Section */}
-      <div className="flex gap-2 items-center empty:hidden">
-        {/* Search Bar */}
-        {hasMultipleDecks && (
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
-
-            <input
-              type="text"
-              placeholder="Search decks by name, colors, or commanders..."
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              className="form-input pl-10"
-            />
-          </div>
-        )}
-
-        {/* Sort Dropdown */}
-        {hasMultipleDecks && (
-          <div className="relative" ref={dropdownRef}>
-            <Button variant="secondary" onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
-              {sortBy.charAt(0).toUpperCase() + sortBy.slice(1)}
-              {sortDirection === 'asc' ? <ArrowUp size={16} /> : <ArrowDown size={16} />}
-            </Button>
-
-            {isDropdownOpen && (
-              <div className="flex flex-col absolute top-full left-0 mt-1 rounded-lg shadow-lg z-10 min-w-[150px] overflow-clip">
-                {(['name', 'date', 'colors', 'creator'] as SortOption[]).map(option => (
-                  <Button
-                    key={option}
-                    variant={sortBy === option ? 'primary' : 'secondary'}
-                    className="rounded-none"
-                    onClick={() => {
-                      handleSortChange(option)
-                      setIsDropdownOpen(false)
-                    }}
-                  >
-                    {option.charAt(0).toUpperCase() + option.slice(1)}
-                    {sortBy === option && (sortDirection === 'asc' ? <ArrowUp size={16} /> : <ArrowDown size={16} />)}
-                  </Button>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+      <ControlsSection
+        hasMultipleItems={hasMultipleDecks}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="Search decks by name, colors, or commanders..."
+        sortBy={sortBy}
+        sortDirection={sortDirection}
+        onSortChange={handleSortChange}
+        sortOptions={['name', 'date', 'colors', 'creator']}
+      />
 
       {/* Decks List */}
       {hasDecks && (
