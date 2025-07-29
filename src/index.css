@@ -256,15 +256,6 @@ body {
   }
 }
 
-.DevelopmentLayoutWrapper {
-  @apply flex flex-col gap-2 lg:flex-row;
-
-  > * {
-    @apply empty:hidden;
-    border: 1px dashed rgb(173, 87, 87);
-  }
-}
-
 .DragHandle {
   position: absolute;
   top: 0;

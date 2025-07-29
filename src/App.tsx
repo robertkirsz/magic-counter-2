@@ -1,14 +1,10 @@
 // import { useImportanceVisibility } from './hooks/useImportanceVisibility'
 import pkg from '../package.json'
-// import { ActionsList } from './components/ActionsList'
 import { Board } from './components/Board'
-// import { Decks } from './components/Decks'
 import { DevToolsPanel } from './components/DevToolsPanel'
-// import { Games } from './components/Games'
 // import { ImportanceSlider } from './components/ImportanceSlider'
 import { IntroScreen } from './components/IntroScreen'
 import PWAInstallPrompt from './components/PWAInstallPrompt'
-// import { Users } from './components/Users'
 import { DecksProvider } from './contexts/DecksContext'
 import { GamesProvider } from './contexts/GamesContext'
 import { ImportanceProvider } from './contexts/ImportanceContext'
@@ -23,9 +19,7 @@ const AppContent: React.FC = () => {
 
   return (
     <>
-      <div className="fixed top-1 left-1 text-xs text-gray-400 bg-white/80 px-2 py-1 rounded-md z-50 pointer-events-none">
-        v{APP_VERSION}
-      </div>
+      <div className="fixed top-1 left-1 text-xs text-gray-400 z-50 pointer-events-none">v{APP_VERSION}</div>
 
       <UsersProvider>
         <GamesProvider>
@@ -43,23 +37,6 @@ const AppContent: React.FC = () => {
 const AppMain: React.FC = () => {
   const { games } = useGames()
   const lastNotFinishedGame = games.filter(game => game.state !== 'finished').pop()
-
-  const isDevEnv = import.meta.env.DEV
-  // @ts-expect-error: Cypress is injected by the test runner in E2E tests
-  const isCypressEnv = window.Cypress
-
-  if (isDevEnv && !isCypressEnv) {
-    return (
-      <div className="DevelopmentLayoutWrapper">
-        {lastNotFinishedGame && <Board gameId={lastNotFinishedGame.id} />}
-        {/* {lastNotFinishedGame && <ActionsList gameId={lastNotFinishedGame.id} />} */}
-        {!lastNotFinishedGame && <IntroScreen />}
-        {/* <Games /> */}
-        {/* <Decks /> */}
-        {/* <Users /> */}
-      </div>
-    )
-  }
 
   return (
     <>
