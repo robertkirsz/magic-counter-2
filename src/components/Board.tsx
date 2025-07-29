@@ -1,7 +1,15 @@
-import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core'
-import type { DragEndEvent } from '@dnd-kit/core'
+import {
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors
+} from '@dnd-kit/core'
+import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import { SortableContext, rectSwappingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
-import { ArrowBigRightDash, List, Move, Play, Settings, Undo } from 'lucide-react'
+import { ArrowBigRightDash, List, Move, Play, Settings, Table, Undo } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
@@ -29,6 +37,8 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const [showActions, setShowActions] = useState(false)
   const [previewPlayerCount, setPreviewPlayerCount] = useState<number>(game?.players.length || 4)
   const [dragEnabled, setDragEnabled] = useState(false)
+  const [tableMode, setTableMode] = useState(false)
+  const [activeId, setActiveId] = useState<number | string | null>(null)
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -60,6 +70,10 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
     dispatchAction(game.id, endAction)
     updateGame(game.id, { state: 'finished' })
+  }
+
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id)
   }
 
   // Drag end handler for reordering players
@@ -121,9 +135,16 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   }
 
   return (
-    <div className={`Board flex flex-col h-svh bg-black relative overflow-clip ${dragEnabled ? 'dragEnabled' : ''}`}>
+    <div
+      className={`Board flex flex-col h-svh bg-black relative overflow-clip ${dragEnabled ? 'dragEnabled' : ''} ${tableMode ? 'tableMode' : ''}`}
+    >
       {/* Player Sections */}
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
         <SortableContext items={displayPlayers.map(p => p.id)} strategy={rectSwappingStrategy}>
           <div
             className={`PlayersSortingWrapper flex-1 grid grid-rows-${displayPlayerCount > 1 ? 2 : 1}`}
@@ -138,6 +159,25 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
                 dragEnabled={dragEnabled}
               />
             ))}
+
+            {/* <DragOverlay
+              dropAnimation={{
+                duration: 500,
+                easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)'
+              }}
+            >
+              {activeId ? (
+                <SortablePlayerSection
+                  id={activeId as string}
+                  index={displayPlayers.findIndex(p => p.id === activeId)}
+                  gameId={gameId}
+                  dragEnabled={dragEnabled}
+                  style={{
+                    height: '50vh'
+                  }}
+                />
+              ) : null}
+            </DragOverlay> */}
           </div>
         </SortableContext>
       </DndContext>
@@ -170,6 +210,18 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
           className="bg-gray-800/90 hover:bg-gray-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 border border-gray-700 dark:bg-gray-900 dark:border-gray-700"
         >
           <List size={24} className="text-white" />
+        </Button>
+
+        <Button
+          onClick={() => setTableMode(!tableMode)}
+          className={`rounded-full p-3 shadow-lg transition-all duration-200 border ${
+            tableMode
+              ? 'bg-green-600/90 hover:bg-green-500 text-white border-green-500'
+              : 'bg-gray-800/90 hover:bg-gray-700 text-white border-gray-700 dark:bg-gray-900 dark:border-gray-700'
+          }`}
+          title={tableMode ? 'Disable table mode' : 'Enable table mode'}
+        >
+          <Table size={24} className="text-white" />
         </Button>
       </div>
 

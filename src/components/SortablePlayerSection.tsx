@@ -19,6 +19,7 @@ export function SortablePlayerSection({
   index,
   gameId,
   dragEnabled,
+  style,
   className,
   ...props
 }: SortablePlayerSectionProps) {
@@ -27,9 +28,11 @@ export function SortablePlayerSection({
     disabled: !dragEnabled
   })
 
-  const style: React.CSSProperties = {
+  const _style: React.CSSProperties = {
+    ...style,
     transform: CSS.Transform.toString(transform),
     transition,
+    // transition: isDragging ? 'none' : transition,
     gridArea: `player-${index + 1}`,
     zIndex: isDragging ? 21 : 20
   }
@@ -38,7 +41,7 @@ export function SortablePlayerSection({
     <div
       ref={setNodeRef}
       className={`SortablePlayerSection flex flex-col relative ${className}`}
-      style={style}
+      style={_style}
       {...props}
     >
       {dragEnabled && (
@@ -50,7 +53,7 @@ export function SortablePlayerSection({
           className="DragHandle"
           round
           variant="secondary"
-          tabIndex={-1}
+          // tabIndex={-1}
         >
           <GripVertical />
         </Button>

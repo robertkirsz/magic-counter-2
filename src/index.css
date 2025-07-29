@@ -60,29 +60,6 @@ body {
   display: none;
 }
 
-/* Test IDs */
-/* *[data-testid] {
-  position: relative;
-
-  &:hover {
-    &::before {
-      background-color: green;
-    }
-  }
-
-  &::before {
-    content: attr(data-testid);
-    position: absolute;
-    background-color: red;
-    color: white;
-    font-size: 7px;
-    pointer-events: none;
-    white-space: nowrap;
-    padding: 2px 4px;
-    border-radius: 4px;
-  }
-} */
-
 /* Hide number input arrows for Chrome, Safari, Edge, Opera */
 .hide-number-arrows::-webkit-outer-spin-button,
 .hide-number-arrows::-webkit-inner-spin-button {
@@ -130,14 +107,18 @@ body {
     }
   }
 
+  .PlayerSection {
+    transition: transform 0.3s ease-in-out;
+  }
+
   &[data-player-count='4'] {
     grid-template-areas:
       'player-2 player-3'
       'player-1 player-4';
     grid-template-columns: 1fr 1fr;
 
-    > div:nth-child(2) .PlayerSection,
-    > div:nth-child(3) .PlayerSection {
+    .tableMode & > div:nth-child(2) .PlayerSection,
+    .tableMode & > div:nth-child(3) .PlayerSection {
       transform: rotate(180deg);
     }
   }
@@ -287,3 +268,26 @@ body {
 .dragEnabled .hiddenWhenDragEnabled {
   display: none;
 }
+
+/* Test IDs */
+/* *[data-testid] {
+  position: relative;
+
+  &:hover {
+    &::before {
+      background-color: green;
+    }
+  }
+
+  &::before {
+    content: attr(data-testid);
+    position: absolute;
+    background-color: red;
+    color: white;
+    font-size: 7px;
+    pointer-events: none;
+    white-space: nowrap;
+    padding: 2px 4px;
+    border-radius: 4px;
+  }
+} */
