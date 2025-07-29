@@ -1,10 +1,11 @@
-import { BookOpen, Swords, UserPlus, Wrench } from 'lucide-react'
+import { BookOpen, Swords, Trophy, UserPlus, Wrench } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useEffect, useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
+import { createFinishedGame } from '../utils/gameGenerator'
 import { AVAILABLE_COMMANDERS } from '../utils/scryfall'
 import { Button } from './Button'
 
@@ -365,6 +366,21 @@ export const DevToolsPanel: React.FC = () => {
                 className="flex items-center gap-1"
               >
                 <Swords size={14} />+ Game
+              </Button>
+
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  if (users.length === 0 || decks.length === 0) {
+                    alert('You need at least one user and one deck to generate a finished game.')
+                    return
+                  }
+                  const finishedGame = createFinishedGame(users, decks)
+                  setGames(prev => [...prev, finishedGame])
+                }}
+                className="flex items-center gap-1"
+              >
+                <Trophy size={14} />+ Finished
               </Button>
             </div>
           </details>
