@@ -7,18 +7,18 @@ import { ActionsList } from './ActionsList'
 import { DamageChart } from './DamageChart'
 import { Deck } from './Deck'
 import { LifeChart } from './LifeChart'
+import { Modal } from './Modal'
 import { RoundDurationChart } from './RoundDurationChart'
 import { ThreeDotMenu } from './ThreeDotMenu'
 
 interface GameProps {
   game: Game
-  isExpanded: boolean
-  onToggleExpanded: () => void
   onRemove: () => void
 }
 
-export const Game: React.FC<GameProps> = ({ game, isExpanded, onToggleExpanded, onRemove }) => {
+export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
   const { users } = useUsers()
+  const [actionsListVisible, setActionsListVisible] = useState(false)
   const [chartsExpanded, setChartsExpanded] = useState(false)
 
   // Calculate game duration
@@ -166,10 +166,10 @@ export const Game: React.FC<GameProps> = ({ game, isExpanded, onToggleExpanded, 
 
             <div className="flex items-center gap-2">
               <button
-                onClick={onToggleExpanded}
+                onClick={() => setActionsListVisible(true)}
                 className="px-3 py-1 text-sm bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded border border-blue-200 dark:border-blue-700 transition-colors"
               >
-                {isExpanded ? 'Hide Actions' : 'Show Actions'}
+                View Actions
               </button>
 
               <ThreeDotMenu onRemove={onRemove} asMenu={false} />
@@ -226,13 +226,10 @@ export const Game: React.FC<GameProps> = ({ game, isExpanded, onToggleExpanded, 
         </div>
       </div>
 
-      {/* Actions Section */}
-      {isExpanded && (
-        <div className="p-6 bg-gray-50 dark:bg-gray-900/50">
-          <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Game Actions</h4>
-          <ActionsList gameId={game.id} />
-        </div>
-      )}
+      {/* Actions Modal */}
+      <Modal isOpen={actionsListVisible} title="Game Actions" onClose={() => setActionsListVisible(false)} fullSize>
+        <ActionsList gameId={game.id} />
+      </Modal>
     </div>
   )
 }

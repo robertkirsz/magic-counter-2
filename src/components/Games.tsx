@@ -9,7 +9,6 @@ import { Game } from './Game'
 
 export const Games: React.FC = () => {
   const { games, removeGame } = useGames()
-  const [expandedGame, setExpandedGame] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<SortOption>('date')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
   const [searchQuery, setSearchQuery] = useState('')
@@ -92,13 +91,7 @@ export const Games: React.FC = () => {
         <FadeMask fadeHeight={24} showMask={sortedGames.length > 3}>
           <div className="grid gap-6">
             {sortedGames.map(game => (
-              <Game
-                key={game.id}
-                game={game}
-                isExpanded={expandedGame === game.id}
-                onToggleExpanded={() => setExpandedGame(expandedGame === game.id ? null : game.id)}
-                onRemove={() => removeGame(game.id)}
-              />
+              <Game key={game.id} game={game} onRemove={() => removeGame(game.id)} />
             ))}
           </div>
         </FadeMask>
