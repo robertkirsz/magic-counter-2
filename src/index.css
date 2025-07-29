@@ -32,15 +32,6 @@ body {
   /* overflow: hidden; */
 }
 
-/* Ensure modals work properly in fullscreen */
-dialog {
-  /* Use viewport units for mobile */
-  max-height: 100vh;
-  max-height: 100dvh;
-  /* Account for safe areas */
-  margin: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-}
-
 /* Hide elements with importance lower than current setting */
 .importance-1.hidden-importance {
   display: none;
@@ -60,33 +51,6 @@ dialog {
 
 .importance-5.hidden-importance {
   display: none;
-}
-
-/* Modal */
-dialog {
-  display: flex;
-  margin: 20px;
-
-  &.w-full {
-    width: calc(100% - 40px);
-  }
-
-  &.h-full {
-    height: calc(100% - 40px);
-  }
-}
-
-dialog:not([open]) {
-  display: none;
-}
-
-dialog::backdrop {
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(10px);
-}
-
-dialog.cickable::backdrop {
-  cursor: pointer;
 }
 
 /* Test IDs */

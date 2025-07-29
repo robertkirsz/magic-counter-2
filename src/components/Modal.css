@@ -1,0 +1,25 @@
+.Modal {
+  /* Ensure modals work properly in fullscreen */
+
+  /* Use viewport units for mobile */
+  max-height: 100vh;
+  max-height: 100dvh;
+  /* Account for safe areas */
+  /* margin: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); */
+
+  margin: auto;
+
+  &:not([open]) {
+    display: none;
+  }
+
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+  }
+
+  &.fullSize {
+    width: calc(100% - 40px);
+    height: calc(100% - 40px);
+  }
+}

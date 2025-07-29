@@ -2,6 +2,7 @@ import { X } from 'lucide-react'
 import React, { useEffect, useRef } from 'react'
 
 import { Button } from './Button'
+import './Modal.css'
 
 interface ModalProps extends React.HTMLAttributes<HTMLDialogElement> {
   testId?: string
@@ -15,11 +16,11 @@ interface ModalProps extends React.HTMLAttributes<HTMLDialogElement> {
 export const Modal: React.FC<ModalProps> = ({
   testId = '',
   isOpen,
-  title,
+  title = '',
   fullSize = false,
   hideCloseButton = false,
   children,
-  className,
+  className = '',
   onClose
 }) => {
   const dialogRef = useRef<HTMLDialogElement>(null)
@@ -72,10 +73,10 @@ export const Modal: React.FC<ModalProps> = ({
     <dialog
       ref={dialogRef}
       data-testid={testIdPrefix}
-      className={`overflow-hidden flex flex-col rounded-lg shadow-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 ${fullSize ? 'w-full h-full' : ''} ${onClose ? 'clickable' : ''} ${className}`}
+      className={`Modal flex flex-col gap-2 p-3 rounded-lg shadow-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 ${fullSize ? 'fullSize' : ''} ${className}`}
     >
-      <div ref={childrenRef} className="flex-1 flex flex-col gap-2 p-3 overflow-y-auto">
-        <div className="flex-none flex justify-between items-center empty:hidden">
+      <div ref={childrenRef} className="contents">
+        <div className="flex-none flex justify-between items-center empty:hidden text-gray-900 dark:text-gray-100">
           {title && <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{title}</h3>}
 
           {onClose && !hideCloseButton && (
