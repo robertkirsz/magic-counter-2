@@ -1,13 +1,5 @@
-import {
-  DndContext,
-  DragOverlay,
-  KeyboardSensor,
-  PointerSensor,
-  closestCenter,
-  useSensor,
-  useSensors
-} from '@dnd-kit/core'
-import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
+import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core'
+import type { DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, rectSwappingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { ArrowBigRightDash, List, Move, Play, Settings, Table, Undo } from 'lucide-react'
 import { DateTime } from 'luxon'
@@ -38,7 +30,6 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const [previewPlayerCount, setPreviewPlayerCount] = useState<number>(game?.players.length || 4)
   const [dragEnabled, setDragEnabled] = useState(false)
   const [tableMode, setTableMode] = useState(false)
-  const [activeId, setActiveId] = useState<number | string | null>(null)
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -70,10 +61,6 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
     dispatchAction(game.id, endAction)
     updateGame(game.id, { state: 'finished' })
-  }
-
-  const handleDragStart = (event: DragStartEvent) => {
-    setActiveId(event.active.id)
   }
 
   // Drag end handler for reordering players
@@ -139,17 +126,9 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       className={`Board flex flex-col h-svh bg-black relative overflow-clip ${dragEnabled ? 'dragEnabled' : ''} ${tableMode ? 'tableMode' : ''}`}
     >
       {/* Player Sections */}
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragStart={handleDragStart}
-        onDragEnd={handleDragEnd}
-      >
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={displayPlayers.map(p => p.id)} strategy={rectSwappingStrategy}>
-          <div
-            className={`PlayersSortingWrapper flex-1 grid grid-rows-${displayPlayerCount > 1 ? 2 : 1}`}
-            data-player-count={displayPlayerCount}
-          >
+          <div className="PlayersSortingWrapper flex-1" data-player-count={displayPlayerCount}>
             {displayPlayers.map((player, index) => (
               <SortablePlayerSection
                 key={player.id}
@@ -159,25 +138,6 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
                 dragEnabled={dragEnabled}
               />
             ))}
-
-            {/* <DragOverlay
-              dropAnimation={{
-                duration: 500,
-                easing: 'cubic-bezier(0.18, 0.67, 0.6, 1.22)'
-              }}
-            >
-              {activeId ? (
-                <SortablePlayerSection
-                  id={activeId as string}
-                  index={displayPlayers.findIndex(p => p.id === activeId)}
-                  gameId={gameId}
-                  dragEnabled={dragEnabled}
-                  style={{
-                    height: '50vh'
-                  }}
-                />
-              ) : null}
-            </DragOverlay> */}
           </div>
         </SortableContext>
       </DndContext>

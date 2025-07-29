@@ -32,7 +32,7 @@ export function SortablePlayerSection({
     ...style,
     transform: CSS.Transform.toString(transform),
     transition,
-    // transition: isDragging ? 'none' : transition,
+    // transition: isDragging ? transition : 'none',
     gridArea: `player-${index + 1}`,
     zIndex: isDragging ? 21 : 20
   }

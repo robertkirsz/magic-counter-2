@@ -76,14 +76,18 @@ body {
 
 .PlayerSection,
 .PlayerSectionContent {
-  transition: transform 0.3s ease-in-out;
+  /* transition: transform 0.3s ease-in-out; */
+  transition: none;
 }
 
 .PlayersSortingWrapper {
+  display: grid;
+
   /* TODO: Add support for single player mode  */
   &[data-player-count='1'] {
     grid-template-areas: 'player-1';
     grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
   }
 
   &[data-player-count='2'] {
@@ -91,6 +95,7 @@ body {
       'player-2'
       'player-1';
     grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
 
     .tableMode & > div:nth-child(2) .PlayerSection {
       transform: rotate(180deg);
@@ -117,6 +122,7 @@ body {
       'player-2 player-3'
       'player-1 player-4';
     grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
 
     .tableMode & > div:nth-child(2) .PlayerSection,
     .tableMode & > div:nth-child(3) .PlayerSection {
@@ -129,6 +135,7 @@ body {
       'player-2 player-3 player-4'
       'player-1 player-5 player-4';
     grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
 
     .tableMode & > div:nth-child(2) .PlayerSection,
     .tableMode & > div:nth-child(3) .PlayerSection {
@@ -145,6 +152,7 @@ body {
       'player-2 player-3 player-4'
       'player-1 player-6 player-5';
     grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
 
     .tableMode & > div:nth-child(2) .PlayerSection,
     .tableMode & > div:nth-child(3) .PlayerSection,
