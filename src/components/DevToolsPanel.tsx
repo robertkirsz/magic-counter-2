@@ -1,4 +1,4 @@
-import { BookOpen, UserPlus, Wrench } from 'lucide-react'
+import { BookOpen, Swords, UserPlus, Wrench } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useEffect, useState } from 'react'
 
@@ -137,10 +137,44 @@ const generateRandomDeck = (): Omit<Deck, 'id' | 'createdAt'> => {
   }
 }
 
+const generateRandomGame = (users: User[], decks: Deck[]): Pick<Game, 'players' | 'turnTracking'> => {
+  // Random number of players (2-4)
+  const playerCount = Math.floor(Math.random() * 3) + 2
+
+  // Random starting life (20 or 40)
+  const startingLife = Math.random() > 0.5 ? 40 : 20
+
+  // Random turn tracking
+  const turnTracking = Math.random() > 0.3
+
+  // Shuffle users and decks
+  const shuffledUsers = [...users].sort(() => Math.random() - 0.5)
+  const shuffledDecks = [...decks].sort(() => Math.random() - 0.5)
+
+  const players: Player[] = []
+
+  for (let i = 0; i < playerCount; i++) {
+    const user = shuffledUsers[i] || null
+    const deck = shuffledDecks[i] || null
+
+    players.push({
+      id: `player-${i + 1}`,
+      userId: user?.id || null,
+      deckId: deck?.id || null,
+      life: startingLife
+    })
+  }
+
+  return {
+    players,
+    turnTracking
+  }
+}
+
 export const DevToolsPanel: React.FC = () => {
   const { users, addUser, setUsers } = useUsers()
   const { decks, addDeck, setDecks } = useDecks()
-  const { games, setGames } = useGames()
+  const { games, setGames, addGame } = useGames()
   const [open, setOpen] = useState(false)
 
   // Local state for editing
@@ -316,6 +350,21 @@ export const DevToolsPanel: React.FC = () => {
                 className="flex items-center gap-1"
               >
                 <BookOpen size={14} />+ Deck
+              </Button>
+
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  if (users.length === 0 || decks.length === 0) {
+                    alert('You need at least one user and one deck to generate a random game.')
+                    return
+                  }
+                  const gameData = generateRandomGame(users, decks)
+                  addGame(gameData)
+                }}
+                className="flex items-center gap-1"
+              >
+                <Swords size={14} />+ Game
               </Button>
             </div>
           </details>
