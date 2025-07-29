@@ -1,8 +1,7 @@
 import { DndContext, closestCenter } from '@dnd-kit/core'
 import type { DragEndEvent } from '@dnd-kit/core'
-import { SortableContext, useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
-import { ArrowBigRightDash, GripVertical, List, Move, Play, Settings, Undo } from 'lucide-react'
+import { SortableContext } from '@dnd-kit/sortable'
+import { ArrowBigRightDash, List, Move, Play, Settings, Undo } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
@@ -13,61 +12,12 @@ import { Button } from './Button'
 import { GameForm } from './GameForm'
 import GameStatus from './GameStatus'
 import { Modal } from './Modal'
-import { PlayerSection } from './PlayerSection'
+import { SortablePlayerSection } from './SortablePlayerSection'
 import ThemeToggle from './ThemeToggle'
 import StartGameModal from './board/StartGameModal'
 
 interface BoardProps {
   gameId: string
-}
-
-interface SortablePlayerSectionProps extends React.HTMLAttributes<HTMLDivElement> {
-  id: string
-  gameId: string
-  dragEnabled: boolean
-}
-
-// Sortable wrapper for PlayerSection
-function SortablePlayerSection({ id, gameId, dragEnabled, className, ...props }: SortablePlayerSectionProps) {
-  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({
-    id,
-    disabled: !dragEnabled
-  })
-
-  const style: React.CSSProperties = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 10 : 'auto'
-  }
-
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      className={`SortablePlayerSection flex flex-col relative ${className}`}
-      {...props}
-    >
-      {dragEnabled && (
-        <div className={`drag-overlay${isDragging ? ' drag-overlay--active' : ''}`}>
-          <Button
-            ref={setActivatorNodeRef}
-            {...listeners}
-            {...attributes}
-            className="drag-overlay-handle drag-overlay-handle--large"
-            round
-            variant="secondary"
-            tabIndex={-1}
-            aria-label="Drag to reorder player"
-            type="button"
-          >
-            <GripVertical />
-          </Button>
-        </div>
-      )}
-      <PlayerSection gameId={gameId} playerId={id} />
-    </div>
-  )
 }
 
 export const Board: React.FC<BoardProps> = ({ gameId }) => {
