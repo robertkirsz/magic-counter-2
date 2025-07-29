@@ -121,8 +121,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
           currentActivePlayer === playerId ? 'outline-4 outline-blue-800' : ''
         }`}
       >
-        <p className="text-white font-medium text-center">{getUserName(player.userId)}</p>
-
         {gameIsActive && <PlayerLifeControls playerId={playerId} gameId={gameId} currentLife={currentLife} />}
 
         {!gameIsActive && (
