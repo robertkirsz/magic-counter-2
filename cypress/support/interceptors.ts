@@ -1,3 +1,5 @@
+/// <reference types="cypress" />
+
 // ***********************************************************
 // Global interceptors for Cypress tests
 // This file contains all the network interceptors that are
