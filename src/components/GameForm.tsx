@@ -31,7 +31,9 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
     onPlayerCountChange?.(numberOfPlayers)
   }, [numberOfPlayers, onPlayerCountChange])
 
-  const handleSave = () => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
     if (numberOfPlayers === 0) return
 
     // If editing existing game, preserve existing players and their assignments
@@ -96,70 +98,67 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
   const isEditMode = !!game
 
   return (
-    <>
-      <div className="flex flex-col items-center gap-6">
-        {/* Section 1: Number of Players */}
-        <div className="grid grid-cols-3 gap-2">
-          {[1, 2, 3, 4, 5, 6].map(count => (
-            <Button
-              key={count}
-              variant={numberOfPlayers === count ? 'primary' : 'secondary'}
-              onClick={() => setNumberOfPlayers(count)}
-            >
-              {count} <UserIcon className="w-4 h-4" />
-            </Button>
-          ))}
-        </div>
-
-        {/* Section 2: Starting Life */}
-        <div className="flex gap-2 items-center">
-          <Button variant="secondary" onClick={() => handleLifeChange(startingLife - 5)}>
-            -
+    <form className="flex flex-col items-center gap-6" onSubmit={handleSubmit}>
+      {/* Section 1: Number of Players */}
+      <div className="grid grid-cols-3 gap-2">
+        {[1, 2, 3, 4, 5, 6].map(count => (
+          <Button
+            key={count}
+            type="button"
+            variant={numberOfPlayers === count ? 'primary' : 'secondary'}
+            onClick={() => setNumberOfPlayers(count)}
+          >
+            {count} <UserIcon className="w-4 h-4" />
           </Button>
-
-          <div className="relative">
-            <input
-              type="number"
-              min="1"
-              max="999"
-              value={startingLife}
-              onChange={e => handleLifeChange(parseInt(e.target.value))}
-              className="form-input-number hide-number-arrows pr-5"
-            />
-            <span className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
-              <HeartIcon className="w-4 h-4 text-gray-500" />
-            </span>
-          </div>
-
-          <Button variant="secondary" onClick={() => handleLifeChange(startingLife + 5)}>
-            +
-          </Button>
-        </div>
-
-        {/* Section 3: Tracking Type */}
-        <div>
-          <label className="flex gap-2 items-center cursor-pointer">
-            <input
-              type="checkbox"
-              checked={turnTracking}
-              onChange={() => setTurnTracking(!turnTracking)}
-              className="form-checkbox"
-            />
-            <span>Track turns</span>
-          </label>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex gap-2">
-          <Button variant="primary" disabled={!isValidGameSetup()} onClick={handleSave}>
-            {isEditMode ? 'Save' : 'Create'}
-          </Button>
-
-          <Button variant="secondary" onClick={onCancel}>
-            Cancel
-          </Button>
-        </div>
+        ))}
       </div>
-    </>
+
+      {/* Section 2: Starting Life */}
+      <div className="flex gap-2 items-center">
+        <Button type="button" variant="secondary" onClick={() => handleLifeChange(startingLife - 5)}>
+          -
+        </Button>
+
+        <div className="relative">
+          <input
+            type="number"
+            min="1"
+            max="999"
+            value={startingLife}
+            onChange={e => handleLifeChange(parseInt(e.target.value))}
+            className="form-input-number hide-number-arrows pr-5"
+          />
+          <span className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
+            <HeartIcon className="w-4 h-4 text-gray-500" />
+          </span>
+        </div>
+
+        <Button type="button" variant="secondary" onClick={() => handleLifeChange(startingLife + 5)}>
+          +
+        </Button>
+      </div>
+
+      {/* Section 3: Tracking Type */}
+      <label className="flex gap-2 items-center cursor-pointer">
+        <input
+          type="checkbox"
+          checked={turnTracking}
+          onChange={() => setTurnTracking(!turnTracking)}
+          className="form-checkbox"
+        />
+        <span>Track turns</span>
+      </label>
+
+      {/* Action Buttons */}
+      <div className="flex gap-2">
+        <Button variant="primary" disabled={!isValidGameSetup()}>
+          {isEditMode ? 'Save' : 'Create'}
+        </Button>
+
+        <Button type="button" variant="secondary" onClick={onCancel}>
+          Cancel
+        </Button>
+      </div>
+    </form>
   )
 }

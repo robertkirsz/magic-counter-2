@@ -55,7 +55,7 @@ export const IntroScreen: React.FC = () => {
       </div>
 
       {/* GameForm Modal */}
-      <Modal isOpen={showGameForm} onClose={() => setShowGameForm(false)}>
+      <Modal testId="game-form" isOpen={showGameForm} onClose={() => setShowGameForm(false)} title="Game Form">
         <GameForm onSave={() => setShowGameForm(false)} onCancel={() => setShowGameForm(false)} />
       </Modal>
 
