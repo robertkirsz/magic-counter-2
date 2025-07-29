@@ -56,7 +56,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   const currentLife = calculateLifeFromActions(playerId)
 
   const handleUserSelect = (userId: string | null) => {
-    console.log('handleUserSelect', userId)
     updateGame(game.id, {
       players: game.players.map(p => (p.id === playerId ? { ...p, userId } : p))
     })
@@ -101,7 +100,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   const commanderImage = playerDeck?.commanders?.[0]?.image
 
   return (
-    <div data-testid={playerId} className="PlayerSection flex-1 flex flex-col p-6 relative overflow-clip">
+    <div data-testid={playerId} className="PlayerSection flex-1 flex flex-col p-2 relative overflow-clip">
       {/* Background image with effects */}
       {commanderImage && (
         <div
@@ -118,8 +117,8 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
       )}
 
       <div
-        className={`PlayerSectionContent flex-1 relative flex flex-col items-center justify-center gap-1 rounded-3xl ${
-          currentActivePlayer === playerId ? 'outline-8 outline-blue-800' : ''
+        className={`PlayerSectionContent hiddenWhenDragEnabled flex-1 relative flex flex-col items-center justify-center ${
+          currentActivePlayer === playerId ? 'outline-4 outline-blue-800' : ''
         }`}
       >
         <p className="text-white font-medium text-center">{getUserName(player.userId)}</p>

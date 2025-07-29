@@ -68,7 +68,7 @@ export default function GameStatus({ gameId }: GameStatusProps) {
 
   return (
     <div
-      className={`absolute top-2 left-1/2 -translate-x-1/2 z-20 px-2 py-1 rounded-lg shadow-lg border flex items-center gap-2 pointer-events-none ${
+      className={`hiddenWhenDragEnabled absolute top-2 left-1/2 -translate-x-1/2 z-20 px-2 py-1 rounded-lg shadow-lg border flex items-center gap-2 pointer-events-none ${
         isFinished ? 'bg-green-800/90 text-white border-green-600' : 'bg-gray-800/90 text-white border-gray-700'
       }`}
     >

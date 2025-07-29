@@ -1,6 +1,6 @@
-import { DndContext, closestCenter } from '@dnd-kit/core'
+import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core'
 import type { DragEndEvent } from '@dnd-kit/core'
-import { SortableContext } from '@dnd-kit/sortable'
+import { SortableContext, rectSwappingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { ArrowBigRightDash, List, Move, Play, Settings, Undo } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useState } from 'react'
@@ -29,6 +29,13 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const [showActions, setShowActions] = useState(false)
   const [previewPlayerCount, setPreviewPlayerCount] = useState<number>(game?.players.length || 4)
   const [dragEnabled, setDragEnabled] = useState(false)
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates
+    })
+  )
 
   if (!game) return <div>Game not found</div>
 
@@ -114,10 +121,10 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   }
 
   return (
-    <div className="Board flex flex-col h-svh bg-black relative overflow-clip">
+    <div className={`Board flex flex-col h-svh bg-black relative overflow-clip ${dragEnabled ? 'dragEnabled' : ''}`}>
       {/* Player Sections */}
-      <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={displayPlayers.map(p => p.id)}>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={displayPlayers.map(p => p.id)} strategy={rectSwappingStrategy}>
           <div
             className={`PlayersSortingWrapper flex-1 grid grid-rows-${displayPlayerCount > 1 ? 2 : 1}`}
             data-player-count={displayPlayerCount}
@@ -125,10 +132,10 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
             {displayPlayers.map((player, index) => (
               <SortablePlayerSection
                 key={player.id}
+                index={index}
                 id={player.id}
                 gameId={gameId}
                 dragEnabled={dragEnabled}
-                style={{ gridArea: `player-${index + 1}` }}
               />
             ))}
           </div>
@@ -171,7 +178,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         <Button
           round
           variant="secondary"
-          className="absolute top-1/2 left-1/2 -translate-y-1/2 z-20 -translate-x-20"
+          className="hiddenWhenDragEnabled absolute top-1/2 left-1/2 -translate-y-1/2 z-20 -translate-x-20"
           onClick={handleUndoLastAction}
           title="Undo last action"
         >
@@ -184,7 +191,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         <Button
           round
           variant="primary"
-          className="absolute top-1/2 left-1/2 -translate-y-1/2 z-20 translate-x-20"
+          className="hiddenWhenDragEnabled absolute top-1/2 left-1/2 -translate-y-1/2 z-20 translate-x-20"
           onClick={() => handlePassTurn()}
           title="Pass turn"
         >
@@ -193,7 +200,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       )}
 
       {/* Play/Finish Button */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex justify-center w-full z-20">
+      <div className="hiddenWhenDragEnabled absolute bottom-4 left-1/2 -translate-x-1/2 flex justify-center w-full z-20">
         {game.state !== 'finished' && (
           <Button
             variant="primary"

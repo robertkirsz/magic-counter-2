@@ -1,14 +1,14 @@
 // import { useImportanceVisibility } from './hooks/useImportanceVisibility'
 import pkg from '../package.json'
-import { ActionsList } from './components/ActionsList'
+// import { ActionsList } from './components/ActionsList'
 import { Board } from './components/Board'
-import { Decks } from './components/Decks'
+// import { Decks } from './components/Decks'
 import { DevToolsPanel } from './components/DevToolsPanel'
-import { Games } from './components/Games'
+// import { Games } from './components/Games'
 // import { ImportanceSlider } from './components/ImportanceSlider'
 import { IntroScreen } from './components/IntroScreen'
 import PWAInstallPrompt from './components/PWAInstallPrompt'
-import { Users } from './components/Users'
+// import { Users } from './components/Users'
 import { DecksProvider } from './contexts/DecksContext'
 import { GamesProvider } from './contexts/GamesContext'
 import { ImportanceProvider } from './contexts/ImportanceContext'
@@ -52,11 +52,11 @@ const AppMain: React.FC = () => {
     return (
       <div className="DevelopmentLayoutWrapper">
         {lastNotFinishedGame && <Board gameId={lastNotFinishedGame.id} />}
-        {lastNotFinishedGame && <ActionsList gameId={lastNotFinishedGame.id} />}
-        <IntroScreen />
-        <Games />
-        <Decks />
-        <Users />
+        {/* {lastNotFinishedGame && <ActionsList gameId={lastNotFinishedGame.id} />} */}
+        {!lastNotFinishedGame && <IntroScreen />}
+        {/* <Games /> */}
+        {/* <Decks /> */}
+        {/* <Users /> */}
       </div>
     )
   }

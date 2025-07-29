@@ -8,12 +8,20 @@ import { PlayerSection } from './PlayerSection'
 
 interface SortablePlayerSectionProps extends React.HTMLAttributes<HTMLDivElement> {
   id: string
+  index: number
   gameId: string
   dragEnabled: boolean
 }
 
 // Sortable wrapper for PlayerSection
-export function SortablePlayerSection({ id, gameId, dragEnabled, className, ...props }: SortablePlayerSectionProps) {
+export function SortablePlayerSection({
+  id,
+  index,
+  gameId,
+  dragEnabled,
+  className,
+  ...props
+}: SortablePlayerSectionProps) {
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({
     id,
     disabled: !dragEnabled
@@ -22,35 +30,44 @@ export function SortablePlayerSection({ id, gameId, dragEnabled, className, ...p
   const style: React.CSSProperties = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
-    zIndex: isDragging ? 10 : 'auto'
+    gridArea: `player-${index + 1}`,
+    zIndex: isDragging ? 21 : 20
   }
 
   return (
     <div
       ref={setNodeRef}
-      style={style}
       className={`SortablePlayerSection flex flex-col relative ${className}`}
+      style={style}
       {...props}
     >
       {dragEnabled && (
-        <div className={`drag-overlay${isDragging ? ' drag-overlay--active' : ''}`}>
-          <Button
-            ref={setActivatorNodeRef}
-            {...listeners}
-            {...attributes}
-            className="drag-overlay-handle drag-overlay-handle--large"
-            round
-            variant="secondary"
-            tabIndex={-1}
-            aria-label="Drag to reorder player"
-            type="button"
-          >
-            <GripVertical />
-          </Button>
-        </div>
+        <Button
+          ref={setActivatorNodeRef}
+          {...listeners}
+          {...attributes}
+          type="button"
+          className="DragHandle"
+          round
+          variant="secondary"
+          tabIndex={-1}
+        >
+          <GripVertical />
+        </Button>
       )}
+
       <PlayerSection gameId={gameId} playerId={id} />
     </div>
   )
+}
+
+{
+  /* <Sortable
+  {...props}
+  strategy={rectSwappingStrategy}
+  reorderItems={arraySwap}
+  getNewIndex={({id, items, activeIndex, overIndex}) =>
+    arraySwap(items, activeIndex, overIndex).indexOf(id)
+  }
+/> */
 }
