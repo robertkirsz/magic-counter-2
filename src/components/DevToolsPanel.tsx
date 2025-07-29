@@ -9,6 +9,17 @@ import { createFinishedGame } from '../utils/gameGenerator'
 import { AVAILABLE_COMMANDERS } from '../utils/scryfall'
 import { Button } from './Button'
 
+// Types for data validation
+type DataType = 'users' | 'decks' | 'games'
+
+interface DataSection {
+  type: DataType
+  title: string
+  validator: (obj: unknown) => boolean
+  errorMessage: string
+}
+
+// Utility functions
 function tryParseJSON<T>(value: string): [T | null, string | null] {
   try {
     return [JSON.parse(value), null]
@@ -72,7 +83,7 @@ function reviveDates<T extends { createdAt: string | Date }>(arr: T[]): T[] {
   }))
 }
 
-// Random user names for quick testing
+// Random data generators
 const RANDOM_NAMES = [
   'Alice',
   'Bob',
@@ -111,9 +122,7 @@ const RANDOM_NAMES = [
 const generateRandomUser = (): Omit<User, 'id' | 'createdAt'> => {
   const randomName = RANDOM_NAMES[Math.floor(Math.random() * RANDOM_NAMES.length)]
   const randomNumber = Math.floor(Math.random() * 1000)
-  return {
-    name: `${randomName}${randomNumber}`
-  }
+  return { name: `${randomName}${randomNumber}` }
 }
 
 const generateRandomDeck = (): Omit<Deck, 'id' | 'createdAt'> => {
@@ -121,12 +130,10 @@ const generateRandomDeck = (): Omit<Deck, 'id' | 'createdAt'> => {
   const deckNames = ['Aggro', 'Control', 'Combo', 'Midrange', 'Tempo', 'Ramp', 'Burn', 'Tribal']
   const randomDeckName = deckNames[Math.floor(Math.random() * deckNames.length)]
 
-  // Pick 1-2 random commanders
   const commanderCount = Math.random() > 0.05 ? 1 : 2
   const shuffledCommanders = [...AVAILABLE_COMMANDERS].sort(() => Math.random() - 0.5)
   const selectedCommanders = shuffledCommanders.slice(0, commanderCount)
 
-  // Get all colors from commanders
   const allColors = selectedCommanders.map(commander => commander.colors).flat()
   const uniqueColors = [...new Set(allColors)]
 
@@ -139,16 +146,10 @@ const generateRandomDeck = (): Omit<Deck, 'id' | 'createdAt'> => {
 }
 
 const generateRandomGame = (users: User[], decks: Deck[]): Pick<Game, 'players' | 'turnTracking'> => {
-  // Random number of players (2-4)
   const playerCount = Math.floor(Math.random() * 3) + 2
-
-  // Random starting life (20 or 40)
   const startingLife = Math.random() > 0.5 ? 40 : 20
-
-  // Random turn tracking
   const turnTracking = Math.random() > 0.3
 
-  // Shuffle users and decks
   const shuffledUsers = [...users].sort(() => Math.random() - 0.5)
   const shuffledDecks = [...decks].sort(() => Math.random() - 0.5)
 
@@ -166,11 +167,52 @@ const generateRandomGame = (users: User[], decks: Deck[]): Pick<Game, 'players' 
     })
   }
 
-  return {
-    players,
-    turnTracking
-  }
+  return { players, turnTracking }
 }
+
+// Data section component
+interface DataSectionProps {
+  section: DataSection
+  text: string
+  setText: (text: string) => void
+  error: string | null
+  onSave: () => void
+}
+
+const DataSectionComponent: React.FC<DataSectionProps> = ({ section, text, setText, error, onSave }) => (
+  <details open>
+    <summary className="font-bold mb-2 cursor-pointer select-none text-gray-900 dark:text-gray-100">
+      {section.title}
+    </summary>
+
+    <textarea
+      className={`form-textarea resize-y mb-1 h-28 ${error ? 'border-red-500 dark:border-red-500' : ''}`}
+      value={text}
+      onChange={e => setText(e.target.value)}
+      spellCheck={false}
+    />
+
+    {error && <div className="text-red-600 text-xs mb-1">{error}</div>}
+
+    <Button variant="secondary" onClick={onSave}>
+      Save
+    </Button>
+  </details>
+)
+
+// Quick action button component
+interface QuickActionButtonProps {
+  icon: React.ReactNode
+  onClick: () => void
+  disabled?: boolean
+  title?: string
+}
+
+const QuickActionButton: React.FC<QuickActionButtonProps> = ({ icon, onClick, disabled, title }) => (
+  <Button variant="secondary" onClick={onClick} disabled={disabled} className="flex items-center gap-1" title={title}>
+    {icon}
+  </Button>
+)
 
 export const DevToolsPanel: React.FC = () => {
   const { users, addUser, setUsers } = useUsers()
@@ -179,73 +221,79 @@ export const DevToolsPanel: React.FC = () => {
   const [open, setOpen] = useState(false)
 
   // Local state for editing
-  const [usersText, setUsersText] = useState(() => JSON.stringify(users, null, 2))
-  const [decksText, setDecksText] = useState(() => JSON.stringify(decks, null, 2))
-  const [gamesText, setGamesText] = useState(() => JSON.stringify(games, null, 2))
-  const [usersError, setUsersError] = useState<string | null>(null)
-  const [decksError, setDecksError] = useState<string | null>(null)
-  const [gamesError, setGamesError] = useState<string | null>(null)
+  const [texts, setTexts] = useState({
+    users: JSON.stringify(users, null, 2),
+    decks: JSON.stringify(decks, null, 2),
+    games: JSON.stringify(games, null, 2)
+  })
+  const [errors, setErrors] = useState<Record<DataType, string | null>>({
+    users: null,
+    decks: null,
+    games: null
+  })
   const [importError, setImportError] = useState<string | null>(null)
 
   // Keep textareas in sync with context changes
   useEffect(() => {
-    setUsersText(JSON.stringify(users, null, 2))
+    setTexts(prev => ({ ...prev, users: JSON.stringify(users, null, 2) }))
   }, [users])
 
   useEffect(() => {
-    setDecksText(JSON.stringify(decks, null, 2))
+    setTexts(prev => ({ ...prev, decks: JSON.stringify(decks, null, 2) }))
   }, [decks])
 
   useEffect(() => {
-    setGamesText(JSON.stringify(games, null, 2))
+    setTexts(prev => ({ ...prev, games: JSON.stringify(games, null, 2) }))
   }, [games])
 
-  const handleSave = (type: 'users' | 'decks' | 'games') => {
+  // Data sections configuration
+  const dataSections: DataSection[] = [
+    {
+      type: 'users',
+      title: 'Users',
+      validator: isValidUser,
+      errorMessage: 'Invalid user data. Each user must have id, createdAt, and name.'
+    },
+    {
+      type: 'decks',
+      title: 'Decks',
+      validator: isValidDeck,
+      errorMessage: 'Invalid deck data. Each deck must have id, createdAt, name, and colors.'
+    },
+    {
+      type: 'games',
+      title: 'Games',
+      validator: isValidGame,
+      errorMessage: 'Invalid game data. Each game must have id, createdAt, state, players, and tracking.'
+    }
+  ]
+
+  const handleSave = (type: DataType) => {
+    const section = dataSections.find(s => s.type === type)
+    if (!section) return
+
+    const text = texts[type]
+    const [parsed, err] = tryParseJSON(text)
+
+    if (err) {
+      setErrors(prev => ({ ...prev, [type]: err }))
+      return
+    }
+
+    if (!Array.isArray(parsed) || !parsed.every(section.validator)) {
+      setErrors(prev => ({ ...prev, [type]: section.errorMessage }))
+      return
+    }
+
+    setErrors(prev => ({ ...prev, [type]: null }))
+
+    // Apply the data based on type
     if (type === 'users') {
-      const [parsed, err] = tryParseJSON(usersText)
-
-      if (err) {
-        setUsersError(err)
-        return
-      }
-
-      if (!Array.isArray(parsed) || !parsed.every(isValidUser)) {
-        setUsersError('Invalid user data. Each user must have id, createdAt, and name.')
-        return
-      }
-
-      setUsersError(null)
-      setUsers(reviveDates(parsed))
+      setUsers(reviveDates(parsed as User[]))
     } else if (type === 'decks') {
-      const [parsed, err] = tryParseJSON(decksText)
-
-      if (err) {
-        setDecksError(err)
-        return
-      }
-
-      if (!Array.isArray(parsed) || !parsed.every(isValidDeck)) {
-        setDecksError('Invalid deck data. Each deck must have id, createdAt, name, and colors.')
-        return
-      }
-
-      setDecksError(null)
-      setDecks(reviveDates(parsed))
+      setDecks(reviveDates(parsed as Deck[]))
     } else if (type === 'games') {
-      const [parsed, err] = tryParseJSON(gamesText)
-
-      if (err) {
-        setGamesError(err)
-        return
-      }
-
-      if (!Array.isArray(parsed) || !parsed.every(isValidGame)) {
-        setGamesError('Invalid game data. Each game must have id, createdAt, state, players, and tracking.')
-        return
-      }
-
-      setGamesError(null)
-      setGames(reviveDates(parsed))
+      setGames(reviveDates(parsed as Game[]))
     }
   }
 
@@ -264,20 +312,16 @@ export const DevToolsPanel: React.FC = () => {
     a.href = url
     a.download = `magic-counter-data-${DateTime.now().toFormat('yyyy-MM-dd')}.json`
     document.body.appendChild(a)
-
     a.click()
-
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
   }
 
   const handleImport = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
-
     if (!file) return
 
     const reader = new FileReader()
-
     reader.onload = e => {
       const content = e.target?.result as string
       const [parsed, err] = tryParseJSON(content)
@@ -328,66 +372,66 @@ export const DevToolsPanel: React.FC = () => {
     reader.readAsText(file)
   }
 
+  const handleClearData = () => {
+    const confirmed = window.confirm('Are you sure you want to delete all data? This action cannot be undone.')
+    if (confirmed) {
+      localStorage.clear()
+      window.location.reload()
+    }
+  }
+
+  const handleAddRandomUser = () => addUser(generateRandomUser())
+  const handleAddRandomDeck = () => addDeck(generateRandomDeck())
+  const handleAddRandomGame = () => {
+    if (users.length === 0 || decks.length === 0) {
+      alert('You need at least one user and one deck to generate a random game.')
+      return
+    }
+    const gameData = generateRandomGame(users, decks)
+    addGame(gameData)
+  }
+  const handleAddFinishedGame = () => {
+    if (users.length === 0 || decks.length === 0) {
+      alert('You need at least one user and one deck to generate a finished game.')
+      return
+    }
+    const finishedGame = createFinishedGame(users, decks)
+    setGames(prev => [...prev, finishedGame])
+  }
+
   return (
-    <div className="fixed z-20 gap-2 bottom-2 right-2 flex flex-col items-end">
+    <div className="fixed z-100 gap-2 bottom-2 right-2 flex flex-col items-end">
       {open && (
-        <div className="flex flex-col gap-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 font-mono rounded-lg mt-2 p-4 shadow-lg max-h-[400px] w-full overflow-y-auto text-xs">
+        <div className="flex flex-col gap-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 font-mono rounded-lg p-4 shadow-lg max-h-[400px] max-w-[100%] overflow-y-auto text-xs">
           {/* Quick Actions Section */}
           <details open>
-            <summary className="font-bold mb-2 cursor-pointer select-none">Quick Actions</summary>
+            <summary className="font-bold mb-2 cursor-pointer select-none text-gray-900 dark:text-gray-100">
+              Quick Actions
+            </summary>
 
-            <div className="flex gap-2 mb-3">
-              <Button
-                variant="secondary"
-                onClick={() => addUser(generateRandomUser())}
-                className="flex items-center gap-1"
-              >
-                <UserPlus size={14} />+ User
-              </Button>
-
-              <Button
-                variant="secondary"
-                onClick={() => addDeck(generateRandomDeck())}
-                className="flex items-center gap-1"
-              >
-                <BookOpen size={14} />+ Deck
-              </Button>
-
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  if (users.length === 0 || decks.length === 0) {
-                    alert('You need at least one user and one deck to generate a random game.')
-                    return
-                  }
-                  const gameData = generateRandomGame(users, decks)
-                  addGame(gameData)
-                }}
-                className="flex items-center gap-1"
-              >
-                <Swords size={14} />+ Game
-              </Button>
-
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  if (users.length === 0 || decks.length === 0) {
-                    alert('You need at least one user and one deck to generate a finished game.')
-                    return
-                  }
-                  const finishedGame = createFinishedGame(users, decks)
-                  setGames(prev => [...prev, finishedGame])
-                }}
-                className="flex items-center gap-1"
-              >
-                <Trophy size={14} />+ Finished
-              </Button>
+            <div className="flex flex-wrap gap-2 mb-3">
+              <QuickActionButton icon={<UserPlus size={14} />} onClick={handleAddRandomUser} title="Add Random User" />
+              <QuickActionButton icon={<BookOpen size={14} />} onClick={handleAddRandomDeck} title="Add Random Deck" />
+              <QuickActionButton
+                icon={<Swords size={14} />}
+                onClick={handleAddRandomGame}
+                disabled={users.length === 0 || decks.length === 0}
+                title="Add Random Game"
+              />
+              <QuickActionButton
+                icon={<Trophy size={14} />}
+                onClick={handleAddFinishedGame}
+                disabled={users.length === 0 || decks.length === 0}
+                title="Add Finished Game"
+              />
             </div>
           </details>
 
           {/* Import/Export Section */}
           <details open>
-            <summary className="font-bold mb-2 cursor-pointer select-none">Import/Export</summary>
+            <summary className="font-bold mb-2 cursor-pointer select-none text-gray-900 dark:text-gray-100">
+              Import/Export
+            </summary>
 
             <div className="flex gap-2 mb-3">
               <Button variant="secondary" onClick={handleExport}>
@@ -399,19 +443,7 @@ export const DevToolsPanel: React.FC = () => {
                 <input type="file" accept=".json" onChange={handleImport} className="hidden" />
               </label>
 
-              <Button
-                variant="secondary"
-                onClick={() => {
-                  const confirmed = window.confirm(
-                    'Are you sure you want to delete all data? This action cannot be undone.'
-                  )
-                  if (confirmed) {
-                    localStorage.clear()
-                    window.location.reload()
-                  }
-                }}
-                className="bg-red-600 hover:bg-red-700 text-white"
-              >
+              <Button variant="danger" onClick={handleClearData}>
                 Delete
               </Button>
             </div>
@@ -419,56 +451,17 @@ export const DevToolsPanel: React.FC = () => {
             {importError && <div className="text-red-600 text-xs mb-2">{importError}</div>}
           </details>
 
-          <details open>
-            <summary className="font-bold mb-1 cursor-pointer select-none">Users</summary>
-
-            <textarea
-              className={`form-textarea resize-y mb-1 h-28 ${usersError ? 'border-red-500 dark:border-red-500' : ''}`}
-              value={usersText}
-              onChange={e => setUsersText(e.target.value)}
-              spellCheck={false}
+          {/* Data Sections */}
+          {dataSections.map(section => (
+            <DataSectionComponent
+              key={section.type}
+              section={section}
+              text={texts[section.type]}
+              setText={text => setTexts(prev => ({ ...prev, [section.type]: text }))}
+              error={errors[section.type]}
+              onSave={() => handleSave(section.type)}
             />
-
-            {usersError && <div className="text-red-600 text-xs mb-1">{usersError}</div>}
-
-            <Button variant="secondary" onClick={() => handleSave('users')}>
-              Save
-            </Button>
-          </details>
-
-          <details open className="mt-3">
-            <summary className="font-bold mb-1 cursor-pointer select-none">Decks</summary>
-
-            <textarea
-              className={`form-textarea resize-y mb-1 h-28 ${decksError ? 'border-red-500 dark:border-red-500' : ''}`}
-              value={decksText}
-              onChange={e => setDecksText(e.target.value)}
-              spellCheck={false}
-            />
-
-            {decksError && <div className="text-red-600 text-xs mb-1">{decksError}</div>}
-
-            <Button variant="secondary" onClick={() => handleSave('decks')}>
-              Save
-            </Button>
-          </details>
-
-          <details open className="mt-3">
-            <summary className="font-bold mb-1 cursor-pointer select-none">Games</summary>
-
-            <textarea
-              className={`form-textarea resize-y mb-1 h-28 ${gamesError ? 'border-red-500 dark:border-red-500' : ''}`}
-              value={gamesText}
-              onChange={e => setGamesText(e.target.value)}
-              spellCheck={false}
-            />
-
-            {gamesError && <div className="text-red-600 text-xs mb-1">{gamesError}</div>}
-
-            <Button variant="secondary" onClick={() => handleSave('games')}>
-              Save
-            </Button>
-          </details>
+          ))}
         </div>
       )}
 
