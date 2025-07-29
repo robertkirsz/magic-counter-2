@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
-import { v4 as uuidv4 } from 'uuid'
+
+import { generateId } from './idGenerator'
 
 export const createFinishedGame = (users: User[], decks: Deck[]): Game => {
   // Random number of players (2-4)
@@ -35,7 +36,7 @@ export const createFinishedGame = (users: User[], decks: Deck[]): Game => {
 
   // Start the game with first player
   const startAction: TurnChangeAction = {
-    id: uuidv4(),
+    id: generateId(),
     createdAt: gameStartTime.toJSDate(),
     type: 'turn-change',
     from: null,
@@ -98,7 +99,7 @@ export const createFinishedGame = (users: User[], decks: Deck[]): Game => {
         }
 
         const lifeChangeAction: LifeChangeAction = {
-          id: uuidv4(),
+          id: generateId(),
           createdAt: currentTime.toJSDate(),
           type: 'life-change',
           value: isDamage ? -lifeChangeValue : lifeChangeValue,
@@ -113,7 +114,7 @@ export const createFinishedGame = (users: User[], decks: Deck[]): Game => {
       const nextPlayerIndex = (currentPlayerIndex + 1) % players.length
 
       const turnChangeAction: TurnChangeAction = {
-        id: uuidv4(),
+        id: generateId(),
         createdAt: currentTime.toJSDate(),
         type: 'turn-change',
         from: players[currentPlayerIndex].id,
@@ -128,7 +129,7 @@ export const createFinishedGame = (users: User[], decks: Deck[]): Game => {
   // End the game with a final turn change to null
   currentTime = currentTime.plus({ minutes: Math.floor(Math.random() * 5) + 1 })
   const endAction: TurnChangeAction = {
-    id: uuidv4(),
+    id: generateId(),
     createdAt: currentTime.toJSDate(),
     type: 'turn-change',
     from: players[currentPlayerIndex].id,
@@ -138,7 +139,7 @@ export const createFinishedGame = (users: User[], decks: Deck[]): Game => {
 
   // Create the finished game
   const game: Game = {
-    id: uuidv4(),
+    id: generateId(),
     createdAt: gameStartTime.toJSDate(),
     state: 'finished',
     players,

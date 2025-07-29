@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import React, { useCallback, useEffect, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 
+import { generateId } from '../utils/idGenerator'
 import { GamesContext, type GamesContextType } from './GamesContextDef'
 
 interface GamesProviderProps {
@@ -50,7 +50,7 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
   const addGame: GamesContextType['addGame'] = gameData => {
     const newGame: Game = {
       ...gameData,
-      id: uuidv4(),
+      id: generateId(),
       createdAt: DateTime.now().toJSDate(),
       state: 'setup',
       activePlayerId: null,

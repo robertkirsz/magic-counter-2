@@ -4,9 +4,9 @@ import { SortableContext, rectSwappingStrategy, sortableKeyboardCoordinates } fr
 import { ArrowBigRightDash, List, Move, Play, Settings, Table, Undo } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useEffect, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 
 import { useGames } from '../hooks/useGames'
+import { generateId } from '../utils/idGenerator'
 import { ActionsList } from './ActionsList'
 import { Button } from './Button'
 import { GameForm } from './GameForm'
@@ -65,7 +65,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
     // Add a TurnChangeAction with to=null to mark game end
     const endAction: TurnChangeAction = {
-      id: uuidv4(),
+      id: generateId(),
       createdAt: DateTime.now().toJSDate(),
       type: 'turn-change',
       from: getCurrentActivePlayer(),
@@ -105,7 +105,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
     const nextPlayer = game.players[nextIndex] || game.players[0]
 
     const newAction: TurnChangeAction = {
-      id: uuidv4(),
+      id: generateId(),
       createdAt: DateTime.now().toJSDate(),
       type: 'turn-change',
       from: getCurrentActivePlayer(),

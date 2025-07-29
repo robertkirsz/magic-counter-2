@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import React, { useEffect, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 
+import { generateId } from '../utils/idGenerator'
 import { UsersContext, type UsersContextType } from './UsersContextDef'
 
 interface UsersProviderProps {
@@ -39,7 +39,7 @@ export const UsersProvider: React.FC<UsersProviderProps> = ({ children }) => {
   const addUser = (userData: Omit<User, 'id' | 'createdAt'>) => {
     const newUser: User = {
       ...userData,
-      id: uuidv4(),
+      id: generateId(),
       createdAt: DateTime.now().toJSDate()
     }
 
