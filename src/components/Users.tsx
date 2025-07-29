@@ -49,9 +49,9 @@ export const Users: React.FC = () => {
       </Modal>
 
       {/* Add Deck Modal */}
-      {selectedUser && (
+      <Modal isOpen={!!selectedUser} title="Add Deck" onClose={() => setSelectedUser(null)}>
         <DeckForm userId={selectedUser} onSave={() => setSelectedUser(null)} onCancel={() => setSelectedUser(null)} />
-      )}
+      </Modal>
     </div>
   )
 }
