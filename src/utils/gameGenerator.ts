@@ -59,18 +59,51 @@ export const createFinishedGame = (users: User[], decks: Deck[]): Game => {
       for (let lc = 0; lc < lifeChangesInTurn; lc++) {
         currentTime = currentTime.plus({ minutes: Math.floor(Math.random() * 10) + 1 })
 
-        // Random life change (damage or healing)
+        // Random life change value
         const lifeChangeValue = Math.floor(Math.random() * 10) + 1
-        const isDamage = Math.random() > 0.3 // 70% chance of damage
 
-        const currentPlayerId = players[currentPlayerIndex].id
+        // Determine the type of life change based on probabilities
+        const random = Math.random()
+        let fromPlayerId: string | undefined
+        let toPlayerIds: string[] = []
+        let isDamage: boolean
+
+        if (random < 0.1) {
+          // 10% chance: current player heals himself
+          const currentPlayerId = players[currentPlayerIndex].id
+          fromPlayerId = currentPlayerId || undefined
+          toPlayerIds = currentPlayerId ? [currentPlayerId] : []
+          isDamage = false
+        } else if (random < 0.2) {
+          // 10% chance: current player deals damage to himself
+          const currentPlayerId = players[currentPlayerIndex].id
+          fromPlayerId = currentPlayerId || undefined
+          toPlayerIds = currentPlayerId ? [currentPlayerId] : []
+          isDamage = true
+        } else if (random < 0.6) {
+          // 40% chance: current player deals damage to other player
+          const otherPlayers = players.filter((_, index) => index !== currentPlayerIndex)
+          const randomOtherPlayer = otherPlayers[Math.floor(Math.random() * otherPlayers.length)]
+          fromPlayerId = players[currentPlayerIndex].id || undefined
+          toPlayerIds = randomOtherPlayer.id ? [randomOtherPlayer.id] : []
+          isDamage = true
+        } else {
+          // 20% chance: random player deals damage to other player
+          const randomFromPlayer = players[Math.floor(Math.random() * players.length)]
+          const otherPlayers = players.filter(player => player.id !== randomFromPlayer.id)
+          const randomToPlayer = otherPlayers[Math.floor(Math.random() * otherPlayers.length)]
+          fromPlayerId = randomFromPlayer.id || undefined
+          toPlayerIds = randomToPlayer.id ? [randomToPlayer.id] : []
+          isDamage = true
+        }
+
         const lifeChangeAction: LifeChangeAction = {
           id: uuidv4(),
           createdAt: currentTime.toJSDate(),
           type: 'life-change',
           value: isDamage ? -lifeChangeValue : lifeChangeValue,
-          from: currentPlayerId || undefined,
-          to: currentPlayerId ? [currentPlayerId] : []
+          from: fromPlayerId,
+          to: toPlayerIds
         }
         actions.push(lifeChangeAction)
       }
