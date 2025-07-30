@@ -8,16 +8,30 @@ describe('CRUD Operations', () => {
 
   const createUser = (name: string) => {
     cy.get('[data-testid="user-form-create"]').should('be.visible')
-    cy.get('[data-testid="user-form-create-name"]').type(name)
+    cy.get('[data-testid="user-form-create-name"]').should('be.visible').type(name)
     cy.get('[data-testid="user-form-create-save"]').click()
   }
 
   const createDeck = (name: string, commanderIndex = 0) => {
     cy.get('[data-testid="deck-form-create"]').should('be.visible')
-    cy.get('[data-testid="deck-form-create-name"]').type(name)
-    cy.get('[data-testid="commander-search-input"]').type('Test')
+    cy.get('[data-testid="deck-form-create-name"]').should('be.visible').type(name)
+
+    // Debug: Log the element state before typing
+    cy.get('[data-testid="commander-search-input"]').then($el => {
+      cy.log(`Element visible: ${$el.is(':visible')}`)
+      cy.log(`Element disabled: ${$el.is(':disabled')}`)
+      cy.log(`Element position: ${$el.offset()?.top}, ${$el.offset()?.left}`)
+    })
+
+    // Use standard Cypress commands with force option for CI compatibility
+    cy.get('[data-testid="commander-search-input"]')
+      .should('be.visible')
+      .should('not.be.disabled')
+      .scrollIntoView()
+      .type('Test', { force: true })
+
     cy.wait('@Scryfall')
-    cy.get(`[data-testid="commander-${commanderIndex}"]`).click()
+    cy.get(`[data-testid="commander-${commanderIndex}"]`).should('be.visible').click()
     cy.get('[data-testid="deck-form-create-save"]').click()
   }
 
