@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import React, { useEffect, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 
+import { generateId } from '../utils/idGenerator'
 import { DecksContext, type DecksContextType } from './DecksContextDef'
 
 interface DecksProviderProps {
@@ -39,7 +39,7 @@ export const DecksProvider: React.FC<DecksProviderProps> = ({ children }) => {
   const addDeck = (deckData: Omit<Deck, 'id' | 'createdAt'> & { createdBy: User['id'] | null }) => {
     const newDeck: Deck = {
       ...deckData,
-      id: uuidv4(),
+      id: generateId(),
       createdAt: DateTime.now().toJSDate()
     }
 

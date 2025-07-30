@@ -1,10 +1,10 @@
 import { MinusIcon, PlusIcon } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useCallback, useRef, useState } from 'react'
-import { v4 as uuidv4 } from 'uuid'
 
 import { useGames } from '../../hooks/useGames'
 import { useTurnChange } from '../../hooks/useGames'
+import { generateId } from '../../utils/idGenerator'
 import { Button } from '../Button'
 
 const PlayerLifeControls: React.FC<{
@@ -26,7 +26,7 @@ const PlayerLifeControls: React.FC<{
     const fromId = getCurrentActivePlayer() || playerId
 
     const newAction: LifeChangeAction = {
-      id: uuidv4(),
+      id: generateId(),
       createdAt: DateTime.now().toJSDate(),
       type: 'life-change',
       value: pendingLifeChangesRef.current,
