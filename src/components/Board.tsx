@@ -1,7 +1,15 @@
-import { DndContext, KeyboardSensor, PointerSensor, closestCenter, useSensor, useSensors } from '@dnd-kit/core'
+import {
+  DndContext,
+  DragOverlay,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors
+} from '@dnd-kit/core'
 import type { DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, rectSwappingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
-import { ArrowBigRightDash, List, Move, Play, Settings, Table, Undo } from 'lucide-react'
+import { ArrowBigRightDash, List, Move, Play, Settings, Sword, Table, Undo } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useEffect, useState } from 'react'
 
@@ -170,6 +178,12 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
             ))}
           </div>
         </SortableContext>
+
+        <DragOverlay>
+          <div className="rounded-full p-2 bg-red-600 hover:bg-red-500 text-white border-red-500">
+            <Sword size={24} />
+          </div>
+        </DragOverlay>
       </DndContext>
 
       <div className="BoardOverlay hiddenWhenDragEnabled absolute top-0 left-0 w-full h-full z-20 flex flex-col items-center justify-between gap-2 p-2">
