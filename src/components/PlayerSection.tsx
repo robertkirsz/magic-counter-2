@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
+import { useDroppable } from '@dnd-kit/core'
+import React, { useEffect, useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
+import { AttackModal } from './AttackModal'
 import { DeckForm } from './DeckForm'
+import { DraggableSword } from './DraggableSword'
 import { Modal } from './Modal'
 import { UserForm } from './UserForm'
 import DeckSelectionModal from './player/DeckSelectionModal'
@@ -25,9 +28,33 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   const [showDeckSelect, setShowDeckSelect] = useState<boolean>(false)
   const [showDeckForm, setShowDeckForm] = useState<boolean>(false)
   const [showUserForm, setShowUserForm] = useState<boolean>(false)
+  const [showAttackModal, setShowAttackModal] = useState<boolean>(false)
+  const [attackData, setAttackData] = useState<{ attackerId: string; targetId: string } | null>(null)
+
+  const { setNodeRef, isOver } = useDroppable({
+    id: `player-drop-${playerId}`,
+    data: {
+      type: 'player',
+      playerId
+    }
+  })
+
+  useEffect(() => {
+    const handleSwordAttack = (event: CustomEvent) => {
+      const { attackerId, targetId } = event.detail
+
+      if (targetId === playerId) {
+        setAttackData({ attackerId, targetId })
+        setShowAttackModal(true)
+      }
+    }
+
+    window.addEventListener('sword-attack', handleSwordAttack as EventListener)
+
+    return () => window.removeEventListener('sword-attack', handleSwordAttack as EventListener)
+  }, [playerId])
 
   const game = games.find(g => g.id === gameId)
-  const currentActivePlayer = getCurrentActivePlayer()
 
   if (!game) return <div>Game not found</div>
 
@@ -100,7 +127,13 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   const commanderImage = playerDeck?.commanders?.[0]?.image
 
   return (
-    <div data-testid={playerId} className="PlayerSection flex-1 flex flex-col p-2 relative overflow-clip">
+    <div
+      ref={setNodeRef}
+      data-testid={playerId}
+      className={`PlayerSection flex-1 flex flex-col p-2 relative overflow-clip ${
+        isOver ? 'ring-2 ring-red-500 ring-opacity-50' : ''
+      }`}
+    >
       {/* Background image with effects */}
       {commanderImage && (
         <div
@@ -118,10 +151,13 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
 
       <div
         className={`PlayerSectionContent hiddenWhenDragEnabled flex-1 relative flex flex-col items-center justify-center ${
-          currentActivePlayer === playerId ? 'outline-4 outline-blue-800' : ''
+          getCurrentActivePlayer() === playerId ? 'outline-4 outline-blue-800' : ''
         }`}
       >
         {gameIsActive && <PlayerLifeControls playerId={playerId} gameId={gameId} currentLife={currentLife} />}
+
+        {/* Attack Sword Icon - only show when game is active */}
+        {gameIsActive && <DraggableSword playerId={playerId} />}
 
         {!gameIsActive && (
           <>
@@ -179,6 +215,21 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
           </>
         )}
       </div>
+
+      {/* Attack Modal */}
+      {showAttackModal && attackData && (
+        <AttackModal
+          isOpen={showAttackModal}
+          onClose={() => {
+            setShowAttackModal(false)
+            setAttackData(null)
+          }}
+          attackerId={attackData.attackerId}
+          targetId={attackData.targetId}
+          gameId={gameId}
+          currentLife={currentLife}
+        />
+      )}
     </div>
   )
 }

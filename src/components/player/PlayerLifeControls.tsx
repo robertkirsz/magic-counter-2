@@ -12,7 +12,9 @@ const PlayerLifeControls: React.FC<{
   gameId: string
   currentLife: number
   onLifeCommitted?: (action: LifeChangeAction) => void
-}> = ({ playerId, gameId, currentLife, onLifeCommitted }) => {
+  attackMode?: boolean
+  attackerId?: string
+}> = ({ playerId, gameId, currentLife, onLifeCommitted, attackMode = false, attackerId }) => {
   const { getCurrentActivePlayer, dispatchAction } = useGames()
   const [pendingLifeChanges, setPendingLifeChanges] = useState<number>(0)
 
@@ -23,7 +25,7 @@ const PlayerLifeControls: React.FC<{
   const commitLifeChanges = useCallback(() => {
     if (pendingLifeChangesRef.current === 0) return
 
-    const fromId = getCurrentActivePlayer() || playerId
+    const fromId = attackMode ? attackerId : getCurrentActivePlayer() || playerId
 
     const newAction: LifeChangeAction = {
       id: generateId(),
@@ -39,7 +41,7 @@ const PlayerLifeControls: React.FC<{
 
     pendingLifeChangesRef.current = 0
     setPendingLifeChanges(0)
-  }, [playerId, gameId, dispatchAction, getCurrentActivePlayer, onLifeCommitted])
+  }, [playerId, gameId, dispatchAction, getCurrentActivePlayer, onLifeCommitted, attackMode, attackerId])
 
   // Clear timeout and commit life changes when a turn is passed
   useTurnChange(gameId, () => {
@@ -85,9 +87,11 @@ const PlayerLifeControls: React.FC<{
         )}
       </div>
 
-      <Button data-testid={`${playerId}-add-life`} className="text-4xl" onClick={() => handleLifeChange(1)}>
-        <PlusIcon className="w-6 h-6" />
-      </Button>
+      {!attackMode && (
+        <Button data-testid={`${playerId}-add-life`} className="text-4xl" onClick={() => handleLifeChange(1)}>
+          <PlusIcon className="w-6 h-6" />
+        </Button>
+      )}
     </div>
   )
 }

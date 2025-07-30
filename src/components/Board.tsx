@@ -76,14 +76,28 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
     updateGame(game.id, { state: 'finished' })
   }
 
-  // Drag end handler for reordering players
+  // Drag end handler for reordering players and sword attacks
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
 
     if (!over || active.id === over.id) return
 
+    // Handle sword attacks
+    if (active.data.current?.type === 'sword' && over.data.current?.type === 'player') {
+      const attackerId = active.data.current.playerId
+      const targetId = over.data.current.playerId
+
+      if (attackerId !== targetId) {
+        // Trigger attack modal - we'll need to communicate this to the PlayerSection
+        // For now, we'll use a custom event
+        window.dispatchEvent(new CustomEvent('sword-attack', { detail: { attackerId, targetId } }))
+        return
+      }
+    }
+
+    // Handle player reordering (existing logic)
     const oldIndex = game.players.findIndex(p => p.id === active.id)
-    const newIndex = game.players.findIndex(p => p.id === over.id)
+    const newIndex = game.players.findIndex(p => p.id === over.data.current?.playerId)
 
     if (oldIndex === -1 || newIndex === -1) return
 
@@ -140,7 +154,21 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
     >
       {/* Player Sections */}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        <SortableContext items={displayPlayers.map(p => p.id)} strategy={rectSwappingStrategy}>
+        {dragEnabled ? (
+          <SortableContext items={displayPlayers.map(p => p.id)} strategy={rectSwappingStrategy}>
+            <div className="PlayersSortingWrapper flex-1" data-player-count={displayPlayerCount}>
+              {displayPlayers.map((player, index) => (
+                <SortablePlayerSection
+                  key={player.id}
+                  index={index}
+                  id={player.id}
+                  gameId={gameId}
+                  dragEnabled={dragEnabled}
+                />
+              ))}
+            </div>
+          </SortableContext>
+        ) : (
           <div className="PlayersSortingWrapper flex-1" data-player-count={displayPlayerCount}>
             {displayPlayers.map((player, index) => (
               <SortablePlayerSection
@@ -152,7 +180,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
               />
             ))}
           </div>
-        </SortableContext>
+        )}
       </DndContext>
 
       <div className="BoardOverlay hiddenWhenDragEnabled absolute top-0 left-0 w-full h-full z-20 flex flex-col items-center justify-between gap-2 p-2">
