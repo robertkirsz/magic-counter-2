@@ -53,7 +53,6 @@ export function SortablePlayerSection({
           className="DragHandle"
           round
           variant="secondary"
-          // tabIndex={-1}
         >
           <GripVertical />
         </Button>

@@ -150,10 +150,12 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
       )}
 
       <div
-        className={`PlayerSectionContent hiddenWhenDragEnabled flex-1 relative flex flex-col items-center justify-center ${
+        className={`PlayerSectionContent hiddenWhenDragEnabled flex-1 relative flex flex-col gap-6 items-center justify-center ${
           getCurrentActivePlayer() === playerId ? 'outline-4 outline-blue-800' : ''
         }`}
       >
+        <p className="text-2xl font-bold text-white">{getUserName(player.userId)}</p>
+
         {gameIsActive && (
           <PlayerLifeControls
             from={getCurrentActivePlayer()}

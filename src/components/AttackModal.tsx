@@ -1,5 +1,7 @@
 import React from 'react'
 
+import { useGames } from '../hooks/useGames'
+import { useUsers } from '../hooks/useUsers'
 import { Modal } from './Modal'
 import PlayerLifeControls from './player/PlayerLifeControls'
 
@@ -20,23 +22,36 @@ export const AttackModal: React.FC<AttackModalProps> = ({
   gameId,
   currentLife
 }) => {
+  const { games } = useGames()
+  const { users } = useUsers()
+
+  const game = games.find(g => g.id === gameId)
+  if (!game) return null
+
+  const attacker = game.players.find(p => p.id === attackerId)
+  const target = game.players.find(p => p.id === targetId)
+
+  const getUserName = (userId: string | null) => {
+    if (!userId) return 'Unknown User'
+    const user = users.find(u => u.id === userId)
+    return user?.name || 'Unknown User'
+  }
+
+  const attackerName = attacker ? getUserName(attacker.userId) : 'Unknown Attacker'
+  const targetName = target ? getUserName(target.userId) : 'Unknown Target'
+
   return (
-    <Modal isOpen={isOpen} title="Attack Player" onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onClose}>
       <div className="flex flex-col items-center gap-4">
         <div className="text-center">
-          <p className="text-lg font-semibold">Attack with sword</p>
-          <p className="text-sm text-gray-600">Remove life from the target player</p>
+          <p className="text-sm text-gray-600">
+            <span className="font-medium text-red-500">{attackerName}</span> is attacking{' '}
+            <span className="font-medium text-blue-500">{targetName}</span>
+          </p>
         </div>
 
         <div className="w-full">
-          <PlayerLifeControls
-            from={attackerId}
-            to={[targetId]}
-            gameId={gameId}
-            currentLife={currentLife}
-            onLifeCommitted={onClose}
-            attackMode
-          />
+          <PlayerLifeControls from={attackerId} to={[targetId]} gameId={gameId} currentLife={currentLife} attackMode />
         </div>
       </div>
     </Modal>

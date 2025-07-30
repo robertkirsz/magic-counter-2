@@ -153,21 +153,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
     >
       {/* Player Sections */}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-        {dragEnabled ? (
-          <SortableContext items={displayPlayers.map(p => p.id)} strategy={rectSwappingStrategy}>
-            <div className="PlayersSortingWrapper flex-1" data-player-count={displayPlayerCount}>
-              {displayPlayers.map((player, index) => (
-                <SortablePlayerSection
-                  key={player.id}
-                  index={index}
-                  id={player.id}
-                  gameId={gameId}
-                  dragEnabled={dragEnabled}
-                />
-              ))}
-            </div>
-          </SortableContext>
-        ) : (
+        <SortableContext items={displayPlayers.map(p => p.id)} strategy={rectSwappingStrategy}>
           <div className="PlayersSortingWrapper flex-1" data-player-count={displayPlayerCount}>
             {displayPlayers.map((player, index) => (
               <SortablePlayerSection
@@ -179,7 +165,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
               />
             ))}
           </div>
-        )}
+        </SortableContext>
       </DndContext>
 
       <div className="BoardOverlay hiddenWhenDragEnabled absolute top-0 left-0 w-full h-full z-20 flex flex-col items-center justify-between gap-2 p-2">

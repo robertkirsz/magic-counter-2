@@ -19,7 +19,7 @@ describe('Sword Attack', () => {
 
       // Check that sword icons are visible for each player
       game.players.forEach(player => {
-        cy.get(`[data-testid="${player.id}"]`).find('.AttackButton').should('be.visible')
+        cy.get(`[data-testid="${player.id}"]`).find('.DraggableSword').should('be.visible')
       })
     })
   })
@@ -35,7 +35,7 @@ describe('Sword Attack', () => {
       cy.get(`[data-testid="${secondPlayer.id}-life"]`).should('have.text', '40')
 
       // Click sword on first player to attack second player
-      cy.get(`[data-testid="${firstPlayer.id}"]`).find('.AttackButton').click()
+      cy.get(`[data-testid="${firstPlayer.id}"]`).find('.DraggableSword').click()
 
       // Should show attack modal
       cy.get('.Modal').should('be.visible')
@@ -60,7 +60,7 @@ describe('Sword Attack', () => {
       const secondPlayer = game.players[1]
 
       // Click sword on first player to attack second player
-      cy.get(`[data-testid="${firstPlayer.id}"]`).find('.AttackButton').click()
+      cy.get(`[data-testid="${firstPlayer.id}"]`).find('.DraggableSword').click()
 
       // Should show attack modal
       cy.get('.Modal').should('be.visible')
@@ -74,6 +74,24 @@ describe('Sword Attack', () => {
         .within(() => {
           cy.get(`[data-testid="${secondPlayer.id}-add-life"]`).should('not.exist')
         })
+    })
+  })
+
+  it('Attack modal shows attacker and target names', () => {
+    cy.fixture('game-started.json').then(data => {
+      const game = data.games[0]
+      const firstPlayer = game.players[0]
+      const secondPlayer = game.players[1]
+
+      // Click sword on first player to attack second player
+      cy.get(`[data-testid="${firstPlayer.id}"]`).find('.DraggableSword').click()
+
+      // Should show attack modal
+      cy.get('.Modal').should('be.visible')
+
+      // Should show attack text with player names
+      cy.get('.Modal').should('contain.text', '⚔️ Attack')
+      cy.get('.Modal').should('contain.text', 'is attacking')
     })
   })
 })
