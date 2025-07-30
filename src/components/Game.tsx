@@ -108,7 +108,7 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
         return {
           label: 'FINISHED',
           color:
-            'bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-900/20 dark:text-gray-300 dark:border-gray-700',
+            'bg-slate-800 text-slate-200 border-slate-700',
           icon: '🏁',
           duration: duration
         }
@@ -125,9 +125,9 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
   const stateDisplay = getGameStateDisplay(game)
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+          <div className="bg-slate-800 rounded-lg border border-slate-700 shadow-sm overflow-hidden">
       {/* Game Header */}
-      <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+              <div className="p-6 border-b border-slate-700">
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -139,14 +139,14 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
                 </span>
 
                 {stateDisplay.duration && (
-                  <div className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+                  <div className="flex items-center gap-1 text-sm text-slate-400">
                     <Clock size={14} />
                     <span className="font-mono">{stateDisplay.duration}</span>
                   </div>
                 )}
               </div>
 
-              <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
+              <div className="flex items-center gap-3 text-sm text-slate-400">
                 <div className="flex items-center gap-1">
                   <Calendar size={14} />
                   <span>{DateTime.fromJSDate(game.createdAt).toFormat('MMM dd, HH:mm')}</span>
@@ -185,14 +185,14 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
                 const finalLife = finalLifeValues[player.id]
 
                 return (
-                  <div key={player.id} className="flex items-start gap-4 p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                  <div key={player.id} className="flex items-start gap-4 p-4 bg-slate-700/50 rounded-lg">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="font-medium text-gray-900 dark:text-gray-100">
+                        <span className="font-medium text-slate-100">
                           {getPlayerName(player.userId)}
                         </span>
 
-                        <span className="text-sm text-gray-500 dark:text-gray-400">(Life: {finalLife})</span>
+                        <span className="text-sm text-slate-400">(Life: {finalLife})</span>
                       </div>
 
                       {player.deckId && (
@@ -208,10 +208,10 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
               <div className="w-full">
                 <button
                   onClick={() => setChartsExpanded(!chartsExpanded)}
-                  className="flex items-center gap-2 w-full p-3 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                  className="flex items-center gap-2 w-full p-3 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors"
                 >
                   {chartsExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-                  <span className="font-medium text-gray-900 dark:text-gray-100">Charts & Analytics</span>
+                  <span className="font-medium text-slate-100">Charts & Analytics</span>
                 </button>
 
                 {chartsExpanded && (

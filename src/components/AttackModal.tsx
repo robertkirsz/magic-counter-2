@@ -44,7 +44,7 @@ export const AttackModal: React.FC<AttackModalProps> = ({
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="flex flex-col items-center gap-4">
         <div className="text-center">
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-slate-400">
             <span className="font-medium text-red-500">{attackerName}</span> is attacking{' '}
             <span className="font-medium text-blue-500">{targetName}</span>
           </p>

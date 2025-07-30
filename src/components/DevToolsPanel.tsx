@@ -185,7 +185,7 @@ interface DataSectionProps {
 
 const DataSectionComponent: React.FC<DataSectionProps> = ({ section, text, setText, error, onSave }) => (
   <details open>
-    <summary className="font-bold mb-2 cursor-pointer select-none text-gray-900 dark:text-gray-100">
+    <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">
       {section.title}
     </summary>
 
@@ -406,10 +406,10 @@ export const DevToolsPanel: React.FC = () => {
   return (
     <div className="fixed z-100 gap-2 bottom-2 right-2 flex flex-col items-end">
       {open && (
-        <div className="flex flex-col gap-2 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 font-mono rounded-lg p-4 shadow-lg max-h-[400px] max-w-[100%] overflow-y-auto text-xs">
+        <div className="flex flex-col gap-2 bg-slate-900 border border-slate-700 font-mono rounded-lg p-4 shadow-lg max-h-[400px] max-w-[100%] overflow-y-auto text-xs">
           {/* Quick Actions Section */}
           <details open>
-            <summary className="font-bold mb-2 cursor-pointer select-none text-gray-900 dark:text-gray-100">
+            <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">
               Quick Actions
             </summary>
 
@@ -433,7 +433,7 @@ export const DevToolsPanel: React.FC = () => {
 
           {/* Import/Export Section */}
           <details open>
-            <summary className="font-bold mb-2 cursor-pointer select-none text-gray-900 dark:text-gray-100">
+            <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">
               Import/Export
             </summary>
 

@@ -75,14 +75,14 @@ export const Modal: React.FC<ModalProps> = ({
       ref={dialogRef}
       data-testid={testIdPrefix}
       className={cn(
-        'Modal flex flex-col gap-2 p-3 rounded-lg shadow-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700',
+        'Modal flex flex-col gap-2 p-3 rounded-lg shadow-lg bg-slate-900 border border-slate-700',
         fullSize && 'fullSize',
         className
       )}
     >
       <div ref={childrenRef} className="contents">
-        <div className="flex-none flex justify-between items-center empty:hidden text-gray-900 dark:text-gray-100">
-          {title && <h3 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{title}</h3>}
+        <div className="flex-none flex justify-between items-center empty:hidden text-slate-100">
+          {title && <h3 className="text-xl font-semibold text-slate-100">{title}</h3>}
 
           {onClose && !hideCloseButton && (
             <Button

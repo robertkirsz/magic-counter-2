@@ -29,34 +29,34 @@ export const Default: Story = {
 export const ResponsiveWidths: Story = {
   render: () => (
     <div className="space-y-6 p-6">
-      <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+              <h2 className="text-lg font-semibold text-white mb-4">
         Commander Component at Different Container Widths
       </h2>
 
       <div className="flex gap-4">
         <div>
-          <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">80px</h3>
+          <h3 className="text-sm font-medium text-slate-400 mb-2">80px</h3>
           <div className="w-[80px]">
             <Commander commander={commander} />
           </div>
         </div>
 
         <div>
-          <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">120px</h3>
+          <h3 className="text-sm font-medium text-slate-400 mb-2">120px</h3>
           <div className="w-[120px]">
             <Commander commander={commander} />
           </div>
         </div>
 
         <div>
-          <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">200px</h3>
+          <h3 className="text-sm font-medium text-slate-400 mb-2">200px</h3>
           <div className="w-[200px]">
             <Commander commander={commander} />
           </div>
         </div>
 
         <div>
-          <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">300px</h3>
+          <h3 className="text-sm font-medium text-slate-400 mb-2">300px</h3>
           <div className="w-[300px]">
             <Commander commander={commander} />
           </div>
@@ -64,7 +64,7 @@ export const ResponsiveWidths: Story = {
       </div>
 
       <div>
-        <h3 className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">Full Width</h3>
+                  <h3 className="text-sm font-medium text-slate-400 mb-2">Full Width</h3>
         <div className="w-full">
           <Commander commander={commander} />
         </div>

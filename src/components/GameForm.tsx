@@ -125,7 +125,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
             className="form-input-number hide-number-arrows pr-5"
           />
           <span className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
-            <HeartIcon className="w-4 h-4 text-gray-500" />
+            <HeartIcon className="w-4 h-4 text-slate-400" />
           </span>
         </div>
 
