@@ -14,7 +14,6 @@ import { GameForm } from './GameForm'
 import GameStatus from './GameStatus'
 import { Modal } from './Modal'
 import { SortablePlayerSection } from './SortablePlayerSection'
-
 import StartGameModal from './board/StartGameModal'
 
 const TABLE_MODE_KEY = 'tableMode'

@@ -185,9 +185,7 @@ interface DataSectionProps {
 
 const DataSectionComponent: React.FC<DataSectionProps> = ({ section, text, setText, error, onSave }) => (
   <details open>
-    <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">
-      {section.title}
-    </summary>
+    <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">{section.title}</summary>
 
     <textarea
       className={cn('form-textarea resize-y mb-1 h-28', error && 'border-red-500 dark:border-red-500')}
@@ -409,9 +407,7 @@ export const DevToolsPanel: React.FC = () => {
         <div className="flex flex-col gap-2 bg-slate-900 border border-slate-700 font-mono rounded-lg p-4 shadow-lg max-h-[400px] max-w-[100%] overflow-y-auto text-xs">
           {/* Quick Actions Section */}
           <details open>
-            <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">
-              Quick Actions
-            </summary>
+            <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">Quick Actions</summary>
 
             <div className="flex flex-wrap gap-2 mb-3">
               <QuickActionButton icon={<UserPlus size={14} />} onClick={handleAddRandomUser} title="Add Random User" />
@@ -433,9 +429,7 @@ export const DevToolsPanel: React.FC = () => {
 
           {/* Import/Export Section */}
           <details open>
-            <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">
-              Import/Export
-            </summary>
+            <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">Import/Export</summary>
 
             <div className="flex gap-2 mb-3">
               <Button variant="secondary" onClick={handleExport}>

@@ -107,8 +107,7 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
       case 'finished':
         return {
           label: 'FINISHED',
-          color:
-            'bg-slate-800 text-slate-200 border-slate-700',
+          color: 'bg-slate-800 text-slate-200 border-slate-700',
           icon: '🏁',
           duration: duration
         }
@@ -125,9 +124,9 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
   const stateDisplay = getGameStateDisplay(game)
 
   return (
-          <div className="bg-slate-800 rounded-lg border border-slate-700 shadow-sm overflow-hidden">
+    <div className="bg-slate-800 rounded-lg border border-slate-700 shadow-sm overflow-hidden">
       {/* Game Header */}
-              <div className="p-6 border-b border-slate-700">
+      <div className="p-6 border-b border-slate-700">
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -188,9 +187,7 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
                   <div key={player.id} className="flex items-start gap-4 p-4 bg-slate-700/50 rounded-lg">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-2">
-                        <span className="font-medium text-slate-100">
-                          {getPlayerName(player.userId)}
-                        </span>
+                        <span className="font-medium text-slate-100">{getPlayerName(player.userId)}</span>
 
                         <span className="text-sm text-slate-400">(Life: {finalLife})</span>
                       </div>

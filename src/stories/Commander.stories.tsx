@@ -29,9 +29,7 @@ export const Default: Story = {
 export const ResponsiveWidths: Story = {
   render: () => (
     <div className="space-y-6 p-6">
-              <h2 className="text-lg font-semibold text-white mb-4">
-        Commander Component at Different Container Widths
-      </h2>
+      <h2 className="text-lg font-semibold text-white mb-4">Commander Component at Different Container Widths</h2>
 
       <div className="flex gap-4">
         <div>
@@ -64,7 +62,7 @@ export const ResponsiveWidths: Story = {
       </div>
 
       <div>
-                  <h3 className="text-sm font-medium text-slate-400 mb-2">Full Width</h3>
+        <h3 className="text-sm font-medium text-slate-400 mb-2">Full Width</h3>
         <div className="w-full">
           <Commander commander={commander} />
         </div>

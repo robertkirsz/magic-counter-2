@@ -27,10 +27,7 @@ export const User: React.FC<UserProps> = ({ user, testIndex, onEdit, onRemove, o
   const gamesPlayed = games.filter(game => game.players.some(player => player.userId === user.id)).length
 
   return (
-    <div
-      className="bg-slate-900 rounded-lg p-4 border border-slate-700"
-      data-testid={testId}
-    >
+    <div className="bg-slate-900 rounded-lg p-4 border border-slate-700" data-testid={testId}>
       {/* User Header */}
       <div className="flex items-center gap-3 mb-4">
         <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
