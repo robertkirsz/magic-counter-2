@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { cn } from '../utils/cn'
 import { getGradientFromColors } from '../utils/gradients'
 import { ColorBadges } from './ColorBadges'
 import './Commander.css'
@@ -21,7 +22,7 @@ export const Commander: React.FC<CommanderProps> = ({ testIdIndex = 0, commander
   const testId = `commander-${testIdIndex}`
 
   return (
-    <div className={`CommanderContainer ${className}`} style={gradientStyle} data-testid={testId} {...props}>
+    <div className={cn('CommanderContainer', className)} style={gradientStyle} data-testid={testId} {...props}>
       <div className="Commander">
         {imageUrl && <img className="CommanderImage" src={imageUrl} data-testid={`${testId}-image`} />}
 

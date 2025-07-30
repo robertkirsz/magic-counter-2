@@ -1,6 +1,8 @@
 import React from 'react'
 import useRipple from 'useripple'
 
+import { cn } from '../utils/cn'
+
 export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'default' | 'ghost'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -44,7 +46,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
-        className={`${variantToClass[variant]} ${small ? 'small' : ''} ${round ? 'round' : ''} ${className}`.trim()}
+        className={cn(variantToClass[variant], small && 'small', round && 'round', className)}
         disabled={isDisabled}
         onClick={handleClick}
         {...props}

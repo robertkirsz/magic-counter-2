@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { MANA_COLORS } from '../constants/mana'
+import { cn } from '../utils/cn'
 
 interface ColorBadgesProps extends React.HTMLAttributes<HTMLDivElement> {
   colors: string[]
@@ -11,7 +12,7 @@ export const ColorBadges: React.FC<ColorBadgesProps> = ({ colors, className = ''
   if (colors.length === 0) return null
 
   return (
-    <div className={`flex gap-0.5 ${className}`} {...props}>
+    <div className={cn('flex gap-0.5', className)} {...props}>
       {colors.map(color => {
         const colorInfo = MANA_COLORS.find(c => c.value === color)
 

@@ -2,6 +2,7 @@ import React from 'react'
 
 import { MANA_COLORS } from '../constants/mana'
 import type { ManaColor } from '../constants/mana'
+import { cn } from '../utils/cn'
 
 interface ManaPickerProps extends React.HTMLAttributes<HTMLDivElement> {
   selectedColors: ManaColor[]
@@ -43,7 +44,7 @@ export const ManaPicker: React.FC<ManaPickerProps> = ({ selectedColors, onColorT
             <img
               src={`/icons/${filename}`}
               alt=""
-              className={`w-8 h-8 transition-opacity hover:opacity-100 ${isSelected ? 'opacity-100' : 'opacity-20'}`}
+              className={cn('w-8 h-8 transition-opacity hover:opacity-100', isSelected ? 'opacity-100' : 'opacity-20')}
             />
           </label>
         )
