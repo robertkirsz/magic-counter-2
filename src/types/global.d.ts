@@ -42,18 +42,18 @@ type Game = {
 }
 
 type LifeChangeAction = {
+  type: 'life-change'
   id: string
   createdAt: Date
-  type: 'life-change'
-  value: number
   from?: User['id']
-  to?: User['id'][]
+  to: User['id'][]
+  value: number
 }
 
 type TurnChangeAction = {
+  type: 'turn-change'
   id: string
   createdAt: Date
-  type: 'turn-change'
-  from: User['id'] | null
-  to: User['id'] | null
+  from?: User['id']
+  to?: User['id']
 }

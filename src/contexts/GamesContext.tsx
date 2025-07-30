@@ -124,16 +124,16 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
 
   const latestActiveGame = games.filter(g => g.state === 'active').pop()
 
-  const getCurrentActivePlayer = (gameId?: string): string | null => {
+  const getCurrentActivePlayer = (gameId?: string): string | undefined => {
     const game = games.find(g => g.id === gameId) || latestActiveGame
 
-    if (!game) return null
+    if (!game) return undefined
 
-    if (game.state !== 'active') return null
+    if (game.state !== 'active') return undefined
 
     const lastTurn = [...game.actions].reverse().find(a => a.type === 'turn-change') as TurnChangeAction | undefined
 
-    if (!lastTurn) return null
+    if (!lastTurn) return undefined
 
     return lastTurn.to
   }

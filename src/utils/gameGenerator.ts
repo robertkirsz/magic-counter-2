@@ -39,7 +39,6 @@ export const createFinishedGame = (users: User[], decks: Deck[]): Game => {
     id: generateId(),
     createdAt: gameStartTime.toJSDate(),
     type: 'turn-change',
-    from: null,
     to: players[0].id
   }
   actions.push(startAction)
@@ -132,8 +131,7 @@ export const createFinishedGame = (users: User[], decks: Deck[]): Game => {
     id: generateId(),
     createdAt: currentTime.toJSDate(),
     type: 'turn-change',
-    from: players[currentPlayerIndex].id,
-    to: null
+    from: players[currentPlayerIndex].id
   }
   actions.push(endAction)
 

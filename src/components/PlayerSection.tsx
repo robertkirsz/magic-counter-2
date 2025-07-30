@@ -154,7 +154,14 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
           getCurrentActivePlayer() === playerId ? 'outline-4 outline-blue-800' : ''
         }`}
       >
-        {gameIsActive && <PlayerLifeControls playerId={playerId} gameId={gameId} currentLife={currentLife} />}
+        {gameIsActive && (
+          <PlayerLifeControls
+            from={getCurrentActivePlayer()}
+            to={[playerId]}
+            gameId={gameId}
+            currentLife={currentLife}
+          />
+        )}
 
         {/* Attack Sword Icon - only show when game is active */}
         {gameIsActive && <DraggableSword playerId={playerId} />}

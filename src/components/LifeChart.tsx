@@ -55,7 +55,7 @@ export const LifeChart: React.FC<LifeChartProps> = ({ gameId }) => {
     const currentLifeValues: { [playerName: string]: number } = {}
 
     // Initialize with starting life values (typically 40 for Commander)
-    game.players.forEach((player: Player, index: number) => {
+    game.players.forEach((_: Player, index: number) => {
       // TODO: Get starting life from Game options
       currentLifeValues[playerNames[index]] = 40 // Default starting life
     })

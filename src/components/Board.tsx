@@ -68,8 +68,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       id: generateId(),
       createdAt: DateTime.now().toJSDate(),
       type: 'turn-change',
-      from: getCurrentActivePlayer(),
-      to: null
+      from: getCurrentActivePlayer()
     }
 
     dispatchAction(game.id, endAction)

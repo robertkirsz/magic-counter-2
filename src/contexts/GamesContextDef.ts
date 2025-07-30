@@ -6,7 +6,7 @@ export interface GamesContextType {
   removeGame: (gameId: string) => void
   updateGame: (gameId: string, updates: Partial<Game> | ((game: Game) => Partial<Game>)) => void
   setGames: React.Dispatch<React.SetStateAction<Game[]>>
-  getCurrentActivePlayer: (gameId?: Game['id']) => string | null
+  getCurrentActivePlayer: (gameId?: Game['id']) => string | undefined
   getCurrentRound: (gameId: string) => number
   groupActionsByRound: (gameId: string) => Array<{ round: number; actions: (LifeChangeAction | TurnChangeAction)[] }>
   dispatchAction: (gameId: string, action: LifeChangeAction | TurnChangeAction) => void

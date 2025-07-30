@@ -8,14 +8,14 @@ import { generateId } from '../../utils/idGenerator'
 import { Button } from '../Button'
 
 const PlayerLifeControls: React.FC<{
-  playerId: string
+  from?: string
+  to: string[]
   gameId: string
   currentLife: number
-  onLifeCommitted?: (action: LifeChangeAction) => void
   attackMode?: boolean
-  attackerId?: string
-}> = ({ playerId, gameId, currentLife, onLifeCommitted, attackMode = false, attackerId }) => {
-  const { getCurrentActivePlayer, dispatchAction } = useGames()
+  onLifeCommitted?: (action: LifeChangeAction) => void
+}> = ({ from, to, gameId, currentLife, attackMode = false, onLifeCommitted }) => {
+  const { dispatchAction } = useGames()
   const [pendingLifeChanges, setPendingLifeChanges] = useState<number>(0)
 
   // Debouncing for life changes
@@ -25,15 +25,13 @@ const PlayerLifeControls: React.FC<{
   const commitLifeChanges = useCallback(() => {
     if (pendingLifeChangesRef.current === 0) return
 
-    const fromId = attackMode ? attackerId : getCurrentActivePlayer() || playerId
-
     const newAction: LifeChangeAction = {
       id: generateId(),
       createdAt: DateTime.now().toJSDate(),
       type: 'life-change',
       value: pendingLifeChangesRef.current,
-      from: fromId,
-      to: [playerId]
+      from,
+      to
     }
 
     dispatchAction(gameId, newAction)
@@ -41,15 +39,12 @@ const PlayerLifeControls: React.FC<{
 
     pendingLifeChangesRef.current = 0
     setPendingLifeChanges(0)
-  }, [playerId, gameId, dispatchAction, getCurrentActivePlayer, onLifeCommitted, attackMode, attackerId])
+  }, [dispatchAction, from, gameId, onLifeCommitted, to])
 
   // Clear timeout and commit life changes when a turn is passed
   useTurnChange(gameId, () => {
     if (pendingLifeChangesRef.current !== 0) {
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current)
-      }
-      console.log('[PlayerLifeControls] Turn passed, committing pending life changes')
+      if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current)
       commitLifeChanges()
     }
   })
@@ -65,15 +60,16 @@ const PlayerLifeControls: React.FC<{
   }
 
   const displayLife = currentLife + pendingLifeChanges
+  const testId = to.join(',')
 
   return (
     <div className="grid grid-cols-3">
-      <Button data-testid={`${playerId}-remove-life`} className="text-4xl" onClick={() => handleLifeChange(-1)}>
+      <Button data-testid={`${testId}-remove-life`} className="text-4xl" onClick={() => handleLifeChange(-1)}>
         <MinusIcon className="w-6 h-6" />
       </Button>
 
       <div className={`relative text-center ${pendingLifeChanges !== 0 ? 'text-blue-600' : 'text-white'}`}>
-        <span data-testid={`${playerId}-life`} className="text-4xl font-bold">
+        <span data-testid={`${testId}-life`} className="text-4xl font-bold">
           {displayLife}
         </span>
 
@@ -88,7 +84,7 @@ const PlayerLifeControls: React.FC<{
       </div>
 
       {!attackMode && (
-        <Button data-testid={`${playerId}-add-life`} className="text-4xl" onClick={() => handleLifeChange(1)}>
+        <Button data-testid={`${testId}-add-life`} className="text-4xl" onClick={() => handleLifeChange(1)}>
           <PlusIcon className="w-6 h-6" />
         </Button>
       )}

@@ -30,12 +30,12 @@ export const AttackModal: React.FC<AttackModalProps> = ({
 
         <div className="w-full">
           <PlayerLifeControls
-            playerId={targetId}
+            from={attackerId}
+            to={[targetId]}
             gameId={gameId}
             currentLife={currentLife}
             onLifeCommitted={onClose}
             attackMode
-            attackerId={attackerId}
           />
         </div>
       </div>
