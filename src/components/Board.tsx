@@ -6,8 +6,8 @@ import { DateTime } from 'luxon'
 import React, { useEffect, useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
-import { generateId } from '../utils/idGenerator'
 import { cn } from '../utils/cn'
+import { generateId } from '../utils/idGenerator'
 import { ActionsList } from './ActionsList'
 import { Button } from './Button'
 import { GameForm } from './GameForm'
@@ -150,7 +150,11 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
   return (
     <div
-      className={cn('Board flex flex-col h-svh bg-black relative overflow-clip', dragEnabled && 'dragEnabled', tableMode && 'tableMode')}
+      className={cn(
+        'Board flex flex-col h-svh bg-black relative overflow-clip',
+        dragEnabled && 'dragEnabled',
+        tableMode && 'tableMode'
+      )}
     >
       {/* Player Sections */}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -217,7 +221,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
         <Button
           round
-                      className={cn(dragEnabled && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500')}
+          className={cn(dragEnabled && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500')}
           onClick={() => setDragEnabled(!dragEnabled)}
         >
           <Move size={24} />
@@ -229,7 +233,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
         <Button
           round
-                      className={cn(tableMode && 'bg-green-600/90 hover:bg-green-500 text-white border-green-500')}
+          className={cn(tableMode && 'bg-green-600/90 hover:bg-green-500 text-white border-green-500')}
           onClick={() => setTableMode(!tableMode)}
         >
           <Table size={24} />

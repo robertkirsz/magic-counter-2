@@ -76,7 +76,10 @@ const PlayerLifeControls: React.FC<{
 
         {pendingLifeChanges !== 0 && (
           <span
-            className={cn('absolute text-sm left-1/2 top-full -translate-x-1/2', pendingLifeChanges > 0 ? 'text-green-600' : 'text-red-600')}
+            className={cn(
+              'absolute text-sm left-1/2 top-full -translate-x-1/2',
+              pendingLifeChanges > 0 ? 'text-green-600' : 'text-red-600'
+            )}
           >
             {pendingLifeChanges > 0 ? '+' : ''}
             {pendingLifeChanges}

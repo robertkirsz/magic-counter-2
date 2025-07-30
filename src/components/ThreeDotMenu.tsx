@@ -128,9 +128,11 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
       {isOpen && (
         <div
           ref={menuRef}
-          className={cn('flex flex-col absolute rounded-lg shadow-lg z-20 min-w-[120px] overflow-clip empty:hidden',
+          className={cn(
+            'flex flex-col absolute rounded-lg shadow-lg z-20 min-w-[120px] overflow-clip empty:hidden',
             menuPosition === 'bottom' ? 'top-full mt-1' : 'bottom-full mb-1',
-            menuAlignment === 'right' ? 'right-0' : 'left-0')}
+            menuAlignment === 'right' ? 'right-0' : 'left-0'
+          )}
         >
           {onEdit && (
             <Button

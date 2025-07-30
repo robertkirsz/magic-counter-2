@@ -1,8 +1,7 @@
 import React from 'react'
 
-import { cn } from '../utils/cn'
-
 import { MANA_COLORS } from '../constants/mana'
+import { cn } from '../utils/cn'
 
 interface ColorBadgesProps extends React.HTMLAttributes<HTMLDivElement> {
   colors: string[]

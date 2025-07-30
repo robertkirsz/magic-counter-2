@@ -46,12 +46,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
-        className={cn(
-          variantToClass[variant],
-          small && 'small',
-          round && 'round',
-          className
-        )}
+        className={cn(variantToClass[variant], small && 'small', round && 'round', className)}
         disabled={isDisabled}
         onClick={handleClick}
         {...props}

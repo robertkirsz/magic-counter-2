@@ -1,9 +1,8 @@
 import React from 'react'
-
-import { cn } from '../utils/cn'
 import type { ReactNode } from 'react'
 
 import { useImportanceVisibility } from '../hooks/useImportanceVisibility'
+import { cn } from '../utils/cn'
 
 interface ImportanceWrapperProps {
   children: ReactNode

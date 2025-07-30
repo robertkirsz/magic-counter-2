@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { cn } from '../utils/cn'
-
 import { getGradientFromColors } from '../utils/gradients'
 import { ColorBadges } from './ColorBadges'
 import './Commander.css'

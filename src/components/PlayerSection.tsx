@@ -3,8 +3,8 @@ import React, { useEffect, useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
-import { cn } from '../utils/cn'
 import { useUsers } from '../hooks/useUsers'
+import { cn } from '../utils/cn'
 import { AttackModal } from './AttackModal'
 import { DeckForm } from './DeckForm'
 import { DraggableSword } from './DraggableSword'
@@ -131,7 +131,10 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
     <div
       ref={setNodeRef}
       data-testid={playerId}
-      className={cn('PlayerSection flex-1 flex flex-col p-2 relative overflow-clip', isOver && 'ring-2 ring-red-500 ring-opacity-50')}
+      className={cn(
+        'PlayerSection flex-1 flex flex-col p-2 relative overflow-clip',
+        isOver && 'ring-2 ring-red-500 ring-opacity-50'
+      )}
     >
       {/* Background image with effects */}
       {commanderImage && (
@@ -149,7 +152,10 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
       )}
 
       <div
-        className={cn('PlayerSectionContent hiddenWhenDragEnabled flex-1 relative flex flex-col gap-6 items-center justify-center', getCurrentActivePlayer() === playerId && 'outline-4 outline-blue-800')}
+        className={cn(
+          'PlayerSectionContent hiddenWhenDragEnabled flex-1 relative flex flex-col gap-6 items-center justify-center',
+          getCurrentActivePlayer() === playerId && 'outline-4 outline-blue-800'
+        )}
       >
         <p className="text-2xl font-bold text-white">{getUserName(player.userId)}</p>
 

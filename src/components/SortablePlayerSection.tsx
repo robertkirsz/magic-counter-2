@@ -4,7 +4,6 @@ import { GripVertical } from 'lucide-react'
 import React from 'react'
 
 import { cn } from '../utils/cn'
-
 import { Button } from './Button'
 import { PlayerSection } from './PlayerSection'
 

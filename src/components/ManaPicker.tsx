@@ -1,9 +1,8 @@
 import React from 'react'
 
-import { cn } from '../utils/cn'
-
 import { MANA_COLORS } from '../constants/mana'
 import type { ManaColor } from '../constants/mana'
+import { cn } from '../utils/cn'
 
 interface ManaPickerProps extends React.HTMLAttributes<HTMLDivElement> {
   selectedColors: ManaColor[]
