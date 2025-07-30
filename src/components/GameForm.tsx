@@ -19,6 +19,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
   const [turnTracking, setTurnTracking] = useState<boolean>(game?.turnTracking || false)
   const [startingLife, setStartingLife] = useState<number>(game?.startingLife || 40)
   const [hasUserChangedLife, setHasUserChangedLife] = useState<boolean>(false)
+  const [commanders, setCommanders] = useState<boolean>(game?.commanders || false)
 
   // Auto-adjust starting life based on player count (only if user hasn't manually changed it)
   useEffect(() => {
@@ -60,7 +61,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
         players: updatedPlayers,
         turnTracking,
         startingLife,
-        commanders: false
+        commanders
       })
 
       onSave(game.id)
@@ -73,7 +74,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
         })),
         turnTracking,
         startingLife,
-        commanders: false
+        commanders
       })
 
       onSave(newGameId)
@@ -134,16 +135,29 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
         </Button>
       </div>
 
-      {/* Section 3: Tracking Type */}
-      <label className="flex gap-2 items-center cursor-pointer">
-        <input
-          type="checkbox"
-          checked={turnTracking}
-          onChange={() => setTurnTracking(!turnTracking)}
-          className="form-checkbox"
-        />
-        <span>Track turns</span>
-      </label>
+      <div className="flex flex-col gap-2">
+        {/* Section 3: Commander Game */}
+        <label className="flex gap-2 items-center cursor-pointer">
+          <input
+            type="checkbox"
+            checked={commanders}
+            onChange={() => setCommanders(!commanders)}
+            className="form-checkbox"
+          />
+          <span className="text-slate-200">Commander</span>
+        </label>
+
+        {/* Section 4: Tracking Type */}
+        <label className="flex gap-2 items-center cursor-pointer">
+          <input
+            type="checkbox"
+            checked={turnTracking}
+            onChange={() => setTurnTracking(!turnTracking)}
+            className="form-checkbox"
+          />
+          <span className="text-slate-200">Turn tracking</span>
+        </label>
+      </div>
 
       {/* Action Buttons */}
       <div className="flex gap-2">
