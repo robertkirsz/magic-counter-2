@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
 import { Modal } from './Modal'
@@ -24,12 +25,17 @@ export const AttackModal: React.FC<AttackModalProps> = ({
 }) => {
   const { games } = useGames()
   const { users } = useUsers()
+  const { decks } = useDecks()
 
   const game = games.find(g => g.id === gameId)
   if (!game) return null
 
   const attacker = game.players.find(p => p.id === attackerId)
   const target = game.players.find(p => p.id === targetId)
+
+  // Get attacker's deck and commander information
+  const attackerDeck = attacker?.deckId ? decks.find(d => d.id === attacker.deckId) : null
+  const attackerCommanderId = attackerDeck?.commanders?.[0]?.id
 
   const getUserName = (userId: string | null) => {
     if (!userId) return 'Unknown User'
@@ -51,7 +57,14 @@ export const AttackModal: React.FC<AttackModalProps> = ({
         </div>
 
         <div className="w-full">
-          <PlayerLifeControls from={attackerId} to={[targetId]} gameId={gameId} currentLife={currentLife} attackMode />
+          <PlayerLifeControls
+            from={attackerId}
+            to={[targetId]}
+            gameId={gameId}
+            currentLife={currentLife}
+            attackMode
+            commanderId={attackerCommanderId}
+          />
         </div>
       </div>
     </Modal>

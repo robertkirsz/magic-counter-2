@@ -188,6 +188,7 @@ body {
       @apply aspect-square rounded-full p-2;
       line-height: 0;
 
+      /* TODO: Fix roundedness of a small button */
       &.small {
         @apply p-1;
       }

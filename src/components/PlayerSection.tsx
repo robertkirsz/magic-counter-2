@@ -32,6 +32,8 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   const [showAttackModal, setShowAttackModal] = useState<boolean>(false)
   const [attackData, setAttackData] = useState<{ attackerId: string; targetId: string } | null>(null)
 
+  const activePlayerId = getCurrentActivePlayer(gameId)
+
   const { setNodeRef, isOver } = useDroppable({
     id: `player-drop-${playerId}`,
     data: {
@@ -127,6 +129,12 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   const playerDeck = player.deckId ? decks.find(d => d.id === player.deckId) : null
   const commanderImage = playerDeck?.commanders?.[0]?.image
 
+  const activePlayerDeck = game.players.find(p => p.id === activePlayerId)?.deckId
+    ? decks.find(d => d.id === game.players.find(p => p.id === activePlayerId)?.deckId)
+    : null
+
+  const activePlayerCommanderId = activePlayerDeck?.commanders?.[0]?.id
+
   return (
     <div
       ref={setNodeRef}
@@ -154,17 +162,18 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
       <div
         className={cn(
           'PlayerSectionContent hiddenWhenDragEnabled flex-1 relative flex flex-col gap-6 items-center justify-center',
-          getCurrentActivePlayer() === playerId && 'outline-4 outline-blue-800'
+          activePlayerId === playerId && 'outline-4 outline-blue-800'
         )}
       >
         <p className="text-2xl font-bold text-white">{getUserName(player.userId)}</p>
 
         {gameIsActive && (
           <PlayerLifeControls
-            from={getCurrentActivePlayer()}
+            from={activePlayerId}
             to={[playerId]}
             gameId={gameId}
             currentLife={currentLife}
+            commanderId={activePlayerCommanderId}
           />
         )}
 
