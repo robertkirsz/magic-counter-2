@@ -1,0 +1,50 @@
+@import 'tailwindcss';
+
+.CommanderContainer {
+  container: CommanderContainer / inline-size;
+  @apply overflow-clip rounded-md  p-1;
+}
+
+.Commander {
+  @apply flex flex-wrap overflow-clip rounded-sm bg-black;
+}
+
+.CommanderImage {
+  @apply object-cover object-top;
+  max-height: 100px;
+  width: 100%;
+}
+
+.CommanderDetails {
+  @apply flex flex-1 flex-col p-2 text-white;
+}
+
+@container CommanderContainer (width < 80px) {
+  [data-importance='high'],
+  [data-importance='medium'],
+  [data-importance='low'] {
+    @apply hidden;
+  }
+}
+
+@container CommanderContainer (width < 120px) {
+  [data-importance='medium'],
+  [data-importance='low'] {
+    @apply hidden;
+  }
+}
+
+@container CommanderContainer (width < 200px) {
+  [data-importance='low'] {
+    @apply hidden;
+  }
+}
+
+@container CommanderContainer (width >= 200px) {
+  .Commander {
+    .CommanderImage {
+      width: auto;
+      max-width: 50%;
+    }
+  }
+}

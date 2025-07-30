@@ -2,6 +2,7 @@ import React from 'react'
 
 import { getGradientFromColors } from '../utils/gradients'
 import { ColorBadges } from './ColorBadges'
+import './Commander.css'
 
 interface CommanderProps extends React.HTMLAttributes<HTMLDivElement> {
   testIdIndex?: number | string
@@ -18,35 +19,24 @@ export const Commander: React.FC<CommanderProps> = ({ testIdIndex = 0, commander
   const gradientStyle = getGradientFromColors(colors)
 
   const testId = `commander-${testIdIndex}`
-  const testIdPrefix = testId ? `${testId}-...` : '...'
 
   return (
-    <div
-      className={`commander-container rounded-md p-1 ${className}`}
-      style={gradientStyle}
-      data-testid={testId}
-      {...props}
-    >
-      <div className="commander-inner flex rounded-sm overflow-clip relative bg-black">
-        {/* Card Image */}
-        {imageUrl && (
-          <img
-            title={name}
-            className="commander-image flex-none object-cover object-center"
-            src={imageUrl}
-            data-testid={`${testIdPrefix}-image`}
-          />
-        )}
+    <div className={`CommanderContainer ${className}`} style={gradientStyle} data-testid={testId} {...props}>
+      <div className="Commander">
+        {imageUrl && <img className="CommanderImage" src={imageUrl} data-testid={`${testId}-image`} />}
 
-        {/* Card Details Overlay */}
-        <div className="flex-1 p-2 text-white">
-          {colors.length > 0 && <ColorBadges colors={colors} className="flex-none mb-1" />}
+        <div className="CommanderDetails" data-importance="high">
+          {colors.length > 0 && <ColorBadges colors={colors} className="flex-none mb-1" data-importance="medium" />}
 
-          <div data-testid={`${testIdPrefix}-name`} className="font-medium text-sm/tight line-clamp-2">
+          <span data-testid={`${testId}-name`} className="text-sm/tight line-clamp-2" data-importance="high">
             {name}
-          </div>
+          </span>
 
-          {typeLine && <div className="TypeLine text-xs line-clamp-1">{typeLine.split('—')[1]}</div>}
+          {typeLine && (
+            <span className="text-xs font-light line-clamp-1" data-importance="low">
+              {typeLine.split('—')[1]}
+            </span>
+          )}
         </div>
       </div>
     </div>

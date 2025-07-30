@@ -233,29 +233,6 @@ body {
   }
 }
 
-/* Commander container queries */
-.commander-container {
-  container-type: inline-size;
-}
-
-@container (max-width: 200px) {
-  .commander-inner {
-    @apply flex-col items-stretch;
-
-    .TypeLine {
-      @apply hidden;
-    }
-  }
-}
-
-@container (min-width: 201px) {
-  .commander-inner {
-    .commander-image {
-      @apply max-w-25;
-    }
-  }
-}
-
 .DragHandle {
   position: absolute;
   top: 0;
