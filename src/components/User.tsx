@@ -28,7 +28,7 @@ export const User: React.FC<UserProps> = ({ user, testIndex, onEdit, onRemove, o
 
   return (
     <div
-      className="bg-white dark:bg-gray-900 rounded-lg p-4 border border-gray-200 dark:border-gray-700"
+      className="bg-slate-900 rounded-lg p-4 border border-slate-700"
       data-testid={testId}
     >
       {/* User Header */}

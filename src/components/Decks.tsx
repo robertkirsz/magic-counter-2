@@ -128,13 +128,13 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
 
       {!hasDecks && (
         <div className="flex flex-col items-center justify-center text-center">
-          <BookImageIcon size={48} className="text-gray-400" />
+          <BookImageIcon size={48} className="text-slate-400" />
 
-          <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
+          <h3 className="text-xl font-semibold text-slate-300">
             {searchQuery.trim() ? 'No decks match your search' : 'No decks yet'}
           </h3>
 
-          <p className="text-gray-500 dark:text-gray-400">
+          <p className="text-slate-400">
             {searchQuery.trim() ? 'Try a different search' : 'Add a deck to get started!'}
           </p>
         </div>

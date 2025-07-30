@@ -58,13 +58,13 @@ export default function PWAInstallPrompt() {
   if (!showInstallPrompt) return null
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-50 bg-gray-800 text-white rounded-lg shadow-lg p-4 border border-gray-700">
+          <div className="fixed bottom-4 left-4 right-4 z-50 bg-slate-800 text-white rounded-lg shadow-lg p-4 border border-slate-700">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <Download className="w-5 h-5 text-blue-400" />
           <div>
             <p className="font-medium">Install Magic Counter 2</p>
-            <p className="text-sm text-gray-300">Add to your home screen for quick access</p>
+            <p className="text-sm text-slate-300">Add to your home screen for quick access</p>
           </div>
         </div>
         <div className="flex items-center space-x-2">
@@ -74,7 +74,7 @@ export default function PWAInstallPrompt() {
           >
             Install
           </button>
-          <button onClick={handleDismiss} className="text-gray-400 hover:text-white transition-colors">
+          <button onClick={handleDismiss} className="text-slate-400 hover:text-white transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>

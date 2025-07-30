@@ -71,7 +71,7 @@ export default function GameStatus({ gameId }: GameStatusProps) {
     <div
       className={cn(
         'px-2 py-1 rounded-lg shadow-lg border flex items-center gap-2 pointer-events-none',
-        isFinished ? 'bg-green-800/90 text-white border-green-600' : 'bg-gray-800/90 text-white border-gray-700'
+        isFinished ? 'bg-green-800/90 text-white border-green-600' : 'bg-slate-800/90 text-white border-slate-700'
       )}
     >
       <span className="font-mono text-sm font-medium">{currentRound}</span>

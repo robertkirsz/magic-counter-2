@@ -14,7 +14,7 @@ import { GameForm } from './GameForm'
 import GameStatus from './GameStatus'
 import { Modal } from './Modal'
 import { SortablePlayerSection } from './SortablePlayerSection'
-import ThemeToggle from './ThemeToggle'
+
 import StartGameModal from './board/StartGameModal'
 
 const TABLE_MODE_KEY = 'tableMode'
@@ -216,8 +216,6 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         <Button round onClick={() => setShowSettings(true)}>
           <Settings size={24} />
         </Button>
-
-        <ThemeToggle />
 
         <Button
           round

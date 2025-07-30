@@ -66,14 +66,14 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ onChange }) =>
         <FadeMask showMask={suggestions.length > 2}>
           <div className="flex flex-col gap-1 max-h-58">
             {isLoading && (
-              <div className="flex items-center justify-center gap-2 p-3 text-center text-gray-500">
-                <div className="animate-spin inline-block w-4 h-4 border-2 border-gray-300 border-t-blue-600 rounded-full"></div>
+                      <div className="flex items-center justify-center gap-2 p-3 text-center text-slate-400">
+          <div className="animate-spin inline-block w-4 h-4 border-2 border-slate-600 border-t-blue-600 rounded-full"></div>
                 Searching...
               </div>
             )}
 
             {!isLoading && suggestions.length === 0 && newCommander.trim().length >= 2 && (
-              <div className="p-3 text-center text-gray-500">No commanders found. Try a different search term.</div>
+              <div className="p-3 text-center text-slate-400">No commanders found. Try a different search term.</div>
             )}
 
             {!isLoading &&
