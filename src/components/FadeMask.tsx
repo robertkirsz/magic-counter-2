@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 
+import { cn } from '../utils/cn'
+
 interface FadeMaskProps {
   children: React.ReactNode
   className?: string
@@ -38,7 +40,7 @@ export const FadeMask: React.FC<FadeMaskProps> = ({ children, className = '', fa
   }, [children])
 
   return (
-    <div className={`relative overflow-hidden ${className}`}>
+    <div className={cn('relative overflow-hidden', className)}>
       {showMask && (
         <div
           className={`pointer-events-none absolute top-0 left-0 w-full z-10`}

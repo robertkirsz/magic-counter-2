@@ -3,6 +3,7 @@ import { DateTime } from 'luxon'
 import React, { useState } from 'react'
 
 import { useUsers } from '../hooks/useUsers'
+import { cn } from '../utils/cn'
 import { ActionsList } from './ActionsList'
 import { DamageChart } from './DamageChart'
 import { Deck } from './Deck'
@@ -133,7 +134,7 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
               <span className="text-2xl">{stateDisplay.icon}</span>
 
               <div className="flex items-center gap-2">
-                <span className={`px-3 py-1 rounded-full text-xs font-semibold border ${stateDisplay.color}`}>
+                <span className={cn('px-3 py-1 rounded-full text-xs font-semibold border', stateDisplay.color)}>
                   {stateDisplay.label}
                 </span>
 

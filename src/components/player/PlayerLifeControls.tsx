@@ -4,6 +4,7 @@ import React, { useCallback, useRef, useState } from 'react'
 
 import { useGames } from '../../hooks/useGames'
 import { useTurnChange } from '../../hooks/useGames'
+import { cn } from '../../utils/cn'
 import { generateId } from '../../utils/idGenerator'
 import { Button } from '../Button'
 
@@ -68,14 +69,14 @@ const PlayerLifeControls: React.FC<{
         <MinusIcon className="w-6 h-6" />
       </Button>
 
-      <div className={`relative text-center ${pendingLifeChanges !== 0 ? 'text-blue-600' : 'text-white'}`}>
+      <div className={cn('relative text-center', pendingLifeChanges !== 0 ? 'text-blue-600' : 'text-white')}>
         <span data-testid={`${testId}-life`} className="text-4xl font-bold">
           {displayLife}
         </span>
 
         {pendingLifeChanges !== 0 && (
           <span
-            className={`absolute text-sm ${pendingLifeChanges > 0 ? 'text-green-600' : 'text-red-600'} left-1/2 top-full -translate-x-1/2`}
+            className={cn('absolute text-sm left-1/2 top-full -translate-x-1/2', pendingLifeChanges > 0 ? 'text-green-600' : 'text-red-600')}
           >
             {pendingLifeChanges > 0 ? '+' : ''}
             {pendingLifeChanges}

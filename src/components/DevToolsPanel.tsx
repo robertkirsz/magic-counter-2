@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
+import { cn } from '../utils/cn'
 import { useUsers } from '../hooks/useUsers'
 import { createFinishedGame } from '../utils/gameGenerator'
 import { AVAILABLE_COMMANDERS } from '../utils/scryfall'
@@ -186,7 +187,7 @@ const DataSectionComponent: React.FC<DataSectionProps> = ({ section, text, setTe
     </summary>
 
     <textarea
-      className={`form-textarea resize-y mb-1 h-28 ${error ? 'border-red-500 dark:border-red-500' : ''}`}
+      className={cn('form-textarea resize-y mb-1 h-28', error && 'border-red-500 dark:border-red-500')}
       value={text}
       onChange={e => setText(e.target.value)}
       spellCheck={false}
@@ -468,7 +469,7 @@ export const DevToolsPanel: React.FC = () => {
       <Button
         variant="primary"
         round
-        className={`bg-green-500 transition-all duration-200 ${open ? 'rotate-12' : ''}`}
+        className={cn('bg-green-500 transition-all duration-200', open && 'rotate-12')}
         onClick={() => setOpen(o => !o)}
       >
         <Wrench size={20} />

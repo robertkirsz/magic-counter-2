@@ -3,6 +3,7 @@ import { DateTime } from 'luxon'
 import { useEffect, useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
+import { cn } from '../utils/cn'
 
 interface GameStatusProps {
   gameId: string
@@ -68,12 +69,11 @@ export default function GameStatus({ gameId }: GameStatusProps) {
 
   return (
     <div
-      className={`px-2 py-1 rounded-lg shadow-lg border flex items-center gap-2 pointer-events-none ${
-        isFinished ? 'bg-green-800/90 text-white border-green-600' : 'bg-gray-800/90 text-white border-gray-700'
-      }`}
+      className={cn('px-2 py-1 rounded-lg shadow-lg border flex items-center gap-2 pointer-events-none', 
+        isFinished ? 'bg-green-800/90 text-white border-green-600' : 'bg-gray-800/90 text-white border-gray-700')}
     >
       <span className="font-mono text-sm font-medium">{currentRound}</span>
-      <Clock size={14} className={isFinished ? 'text-green-400' : 'text-blue-400'} />
+      <Clock size={14} className={cn(isFinished ? 'text-green-400' : 'text-blue-400')} />
       <span className="font-mono text-sm font-medium">{elapsedTime}</span>
     </div>
   )

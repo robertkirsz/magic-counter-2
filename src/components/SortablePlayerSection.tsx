@@ -3,6 +3,8 @@ import { CSS } from '@dnd-kit/utilities'
 import { GripVertical } from 'lucide-react'
 import React from 'react'
 
+import { cn } from '../utils/cn'
+
 import { Button } from './Button'
 import { PlayerSection } from './PlayerSection'
 
@@ -40,7 +42,7 @@ export function SortablePlayerSection({
   return (
     <div
       ref={setNodeRef}
-      className={`SortablePlayerSection flex flex-col relative ${className}`}
+      className={cn('SortablePlayerSection flex flex-col relative', className)}
       style={_style}
       {...props}
     >

@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
+import { cn } from '../utils/cn'
 import { FadeMask } from './FadeMask'
 import { ThreeDotMenu } from './ThreeDotMenu'
 
@@ -250,7 +251,7 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
                                     >
                                       <div className="flex items-center gap-2">
                                         <Heart
-                                          className={`w-3 h-3 ${isLifeGain ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}
+                                          className={cn('w-3 h-3', isLifeGain ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400')}
                                         />
                                         <span className="text-sm text-gray-700 dark:text-gray-300">
                                           {formatAction(lifeChange)}

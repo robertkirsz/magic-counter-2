@@ -1,6 +1,7 @@
 import { Edit3, MoreVertical, Trash2, X } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 
+import { cn } from '../utils/cn'
 import { Button } from './Button'
 import { Modal } from './Modal'
 
@@ -53,7 +54,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
 
   if (!asMenu) {
     return (
-      <div className={`flex gap-1 empty:hidden ${className}`} {...props}>
+      <div className={cn('flex gap-1 empty:hidden', className)} {...props}>
         {onEdit && (
           <Button data-testid={`${testIdPrefix}-edit`} round small variant="secondary" title="Edit" onClick={onEdit}>
             <Edit3 size={16} />
@@ -112,7 +113,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
   }
 
   return (
-    <div ref={wrapperRef} className={`relative flex max-w-fit max-h-fit ${className}`} {...props}>
+    <div ref={wrapperRef} className={cn('relative flex max-w-fit max-h-fit', className)} {...props}>
       <Button
         data-testid={testIdPrefix}
         variant="secondary"
@@ -127,9 +128,9 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
       {isOpen && (
         <div
           ref={menuRef}
-          className={`flex flex-col absolute rounded-lg shadow-lg z-20 min-w-[120px] overflow-clip empty:hidden ${
-            menuPosition === 'bottom' ? 'top-full mt-1' : 'bottom-full mb-1'
-          } ${menuAlignment === 'right' ? 'right-0' : 'left-0'}`}
+          className={cn('flex flex-col absolute rounded-lg shadow-lg z-20 min-w-[120px] overflow-clip empty:hidden',
+            menuPosition === 'bottom' ? 'top-full mt-1' : 'bottom-full mb-1',
+            menuAlignment === 'right' ? 'right-0' : 'left-0')}
         >
           {onEdit && (
             <Button

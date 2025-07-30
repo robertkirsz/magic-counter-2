@@ -1,6 +1,7 @@
 import { X } from 'lucide-react'
 import React, { useEffect, useRef } from 'react'
 
+import { cn } from '../utils/cn'
 import { Button } from './Button'
 import './Modal.css'
 
@@ -73,7 +74,7 @@ export const Modal: React.FC<ModalProps> = ({
     <dialog
       ref={dialogRef}
       data-testid={testIdPrefix}
-      className={`Modal flex flex-col gap-2 p-3 rounded-lg shadow-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 ${fullSize ? 'fullSize' : ''} ${className}`}
+      className={cn('Modal flex flex-col gap-2 p-3 rounded-lg shadow-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700', fullSize && 'fullSize', className)}
     >
       <div ref={childrenRef} className="contents">
         <div className="flex-none flex justify-between items-center empty:hidden text-gray-900 dark:text-gray-100">
