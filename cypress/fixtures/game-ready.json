@@ -109,33 +109,31 @@
         {
           "id": "player-1",
           "userId": "bfe4aac5-25c0-4e5c-b449-9ed6bb7816a4",
-          "deckId": "11fcefec-68b6-46bf-8eba-0b3ea5d715c7",
-          "life": 40
+          "deckId": "11fcefec-68b6-46bf-8eba-0b3ea5d715c7"
         },
         {
           "id": "player-2",
           "userId": "8fd3e056-70c0-4a71-9a66-056947ccaad4",
-          "deckId": "3178b90a-12e8-4d2a-9363-603cde2f372a",
-          "life": 40
+          "deckId": "3178b90a-12e8-4d2a-9363-603cde2f372a"
         },
         {
           "id": "player-3",
           "userId": "a1199e6d-65b5-42a9-baf7-a081efe530a9",
-          "deckId": "616b71d3-40dc-4744-8689-96f87fe07da5",
-          "life": 40
+          "deckId": "616b71d3-40dc-4744-8689-96f87fe07da5"
         },
         {
           "id": "player-4",
           "userId": "b440b0f5-4e0b-466e-a165-fe26e66d8bc6",
-          "deckId": "ff0b5574-e09a-4d87-b393-08cbfaff7f8f",
-          "life": 40
+          "deckId": "ff0b5574-e09a-4d87-b393-08cbfaff7f8f"
         }
       ],
       "turnTracking": true,
       "id": "8194c9f8-3b26-4eec-928e-f05d6b009b63",
       "createdAt": "2025-07-15T11:17:16.137Z",
       "state": "setup",
-      "activePlayer": null,
+      "activePlayerId": null,
+      "startingLife": 40,
+      "commanders": true,
       "actions": []
     }
   ],
