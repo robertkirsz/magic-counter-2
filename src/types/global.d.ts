@@ -27,7 +27,6 @@ type User = {
 type Player = {
   id: string
   userId: User['id'] | null
-  life: number
   deckId: Deck['id'] | null
 }
 
@@ -38,6 +37,8 @@ type Game = {
   players: Player[]
   activePlayerId: User['id'] | null
   turnTracking: boolean
+  startingLife: number
+  commanders: boolean
   actions: (LifeChangeAction | TurnChangeAction)[]
 }
 
@@ -48,6 +49,7 @@ type LifeChangeAction = {
   from?: User['id']
   to: User['id'][]
   value: number
+  commanderId?: ScryfallCard['id']
 }
 
 type TurnChangeAction = {

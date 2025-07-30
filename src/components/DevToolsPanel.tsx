@@ -146,10 +146,14 @@ const generateRandomDeck = (): Omit<Deck, 'id' | 'createdAt'> => {
   }
 }
 
-const generateRandomGame = (users: User[], decks: Deck[]): Pick<Game, 'players' | 'turnTracking'> => {
+const generateRandomGame = (
+  users: User[],
+  decks: Deck[]
+): Pick<Game, 'players' | 'turnTracking' | 'startingLife' | 'commanders'> => {
   const playerCount = Math.floor(Math.random() * 3) + 2
-  const startingLife = Math.random() > 0.5 ? 40 : 20
-  const turnTracking = Math.random() > 0.3
+  const turnTracking = Math.random() > 0.5
+  const startingLife = playerCount >= 4 ? 40 : 20
+  const commanders = playerCount >= 3 && Math.random() > 0.75
 
   const shuffledUsers = [...users].sort(() => Math.random() - 0.5)
   const shuffledDecks = [...decks].sort(() => Math.random() - 0.5)
@@ -163,12 +167,11 @@ const generateRandomGame = (users: User[], decks: Deck[]): Pick<Game, 'players' 
     players.push({
       id: `player-${i + 1}`,
       userId: user?.id || null,
-      deckId: deck?.id || null,
-      life: startingLife
+      deckId: deck?.id || null
     })
   }
 
-  return { players, turnTracking }
+  return { players, turnTracking, startingLife, commanders }
 }
 
 // Data section component

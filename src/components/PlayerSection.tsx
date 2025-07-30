@@ -68,7 +68,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
 
     if (!player) return 0
 
-    let life = player.life
+    let life = game.startingLife
 
     game.actions.forEach(action => {
       if (action.type === 'life-change') {

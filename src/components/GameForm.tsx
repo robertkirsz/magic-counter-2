@@ -17,7 +17,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
 
   const [numberOfPlayers, setNumberOfPlayers] = useState<number>(game?.players.length || 4)
   const [turnTracking, setTurnTracking] = useState<boolean>(game?.turnTracking || false)
-  const [startingLife, setStartingLife] = useState<number>(game?.players[0]?.life || 40)
+  const [startingLife, setStartingLife] = useState<number>(game?.startingLife || 40)
   const [hasUserChangedLife, setHasUserChangedLife] = useState<boolean>(false)
 
   // Auto-adjust starting life based on player count (only if user hasn't manually changed it)
@@ -45,8 +45,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
         const newPlayers = Array.from({ length: numberOfPlayers - game.players.length }, (_, index) => ({
           id: `player-${game.players.length + index + 1}`,
           userId: null,
-          deckId: null,
-          life: startingLife
+          deckId: null
         }))
         updatedPlayers = [...game.players, ...newPlayers]
       } else if (numberOfPlayers < game.players.length) {
@@ -57,15 +56,11 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
         updatedPlayers = game.players
       }
 
-      // Update life for all players
-      updatedPlayers = updatedPlayers.map(player => ({
-        ...player,
-        life: startingLife
-      }))
-
       updateGame(game.id, {
         players: updatedPlayers,
-        turnTracking
+        turnTracking,
+        startingLife,
+        commanders: false
       })
 
       onSave(game.id)
@@ -74,10 +69,11 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
         players: Array.from({ length: numberOfPlayers }, (_, index) => ({
           id: `player-${index + 1}`,
           userId: null,
-          deckId: null,
-          life: startingLife
+          deckId: null
         })),
-        turnTracking
+        turnTracking,
+        startingLife,
+        commanders: false
       })
 
       onSave(newGameId)

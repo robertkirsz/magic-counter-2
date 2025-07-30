@@ -25,8 +25,7 @@ export const createFinishedGame = (users: User[], decks: Deck[]): Game => {
     players.push({
       id: `player-${i + 1}`,
       userId: user?.id || null,
-      deckId: deck?.id || null,
-      life: startingLife
+      deckId: deck?.id || null
     })
   }
 
@@ -143,6 +142,8 @@ export const createFinishedGame = (users: User[], decks: Deck[]): Game => {
     players,
     activePlayerId: null, // No active player since game is finished
     turnTracking,
+    startingLife,
+    commanders: false,
     actions
   }
 
