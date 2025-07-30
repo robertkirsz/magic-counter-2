@@ -2,6 +2,7 @@ import { ChevronDown, ChevronRight, CircleSlash, Heart, Zap } from 'lucide-react
 import { DateTime } from 'luxon'
 import React, { useState } from 'react'
 
+import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
@@ -15,6 +16,7 @@ interface ActionsListProps {
 export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
   const { games, updateGame } = useGames()
   const { users } = useUsers()
+  const { decks } = useDecks()
   const [collapsedRounds, setCollapsedRounds] = useState<Set<number>>(new Set())
 
   const game = games.find(g => g.id === gameId)
@@ -48,7 +50,13 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
 
       if (lifeGained) return `${to} gains ${value} life`
       if (fromSelf && !lifeGained) return `${from} loses ${value} life`
-      if (!lifeGained) return `${from} deals ${value} damage to ${to}`
+      if (!lifeGained) {
+        const commanderName = getCommanderName(action.commanderId)
+        if (commanderName) {
+          return `${from} deals ${value} commander damage to ${to} (${commanderName})`
+        }
+        return `${from} deals ${value} damage to ${to}`
+      }
 
       return 'Unknown action'
     } else if (action.type === 'turn-change') {
@@ -146,6 +154,17 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
 
     const user = users.find(u => u.id === player.userId)
     return user?.name || 'Unknown'
+  }
+
+  const getCommanderName = (commanderId?: string) => {
+    if (!commanderId) return null
+
+    // Find the deck that contains this commander
+    const deck = decks.find(d => d.commanders.some(c => c.id === commanderId))
+    if (!deck) return null
+
+    const commander = deck.commanders.find(c => c.id === commanderId)
+    return commander?.name || null
   }
 
   const formatTime = (date: DateTime) => {

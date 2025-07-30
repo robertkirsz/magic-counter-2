@@ -129,8 +129,8 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   const playerDeck = player.deckId ? decks.find(d => d.id === player.deckId) : null
   const commanderImage = playerDeck?.commanders?.[0]?.image
 
-  const activePlayerDeck = game.players.find(p => p.id === activePlayerId)?.deckId
-    ? decks.find(d => d.id === game.players.find(p => p.id === activePlayerId)?.deckId)
+  const activePlayerDeck = game.players.find(p => p.userId === activePlayerId)?.deckId
+    ? decks.find(d => d.id === game.players.find(p => p.userId === activePlayerId)?.deckId)
     : null
 
   const activePlayerCommanderId = activePlayerDeck?.commanders?.[0]?.id
