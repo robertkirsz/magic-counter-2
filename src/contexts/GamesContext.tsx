@@ -76,6 +76,7 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
     )
   }
 
+  // TODO: Instead of having this, dispacth custom event like window.dispatchEvent(new CustomEvent('sword-attack', { detail: { attackerId, targetId } }))
   const registerTurnChangeCallback = useCallback((gameId: string, callback: () => void) => {
     setTurnChangeCallbacks(prev => {
       const newCallbacks = new Map(prev)

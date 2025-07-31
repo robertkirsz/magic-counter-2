@@ -1,4 +1,5 @@
 import { useDroppable } from '@dnd-kit/core'
+import { Plus } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
@@ -6,12 +7,13 @@ import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
 import { AttackModal } from './AttackModal'
+import { Button } from './Button'
 import { CommanderDamage } from './CommanderDamage'
 import { DeckForm } from './DeckForm'
+import { Decks } from './Decks'
 import { DraggableSword } from './DraggableSword'
 import { Modal } from './Modal'
 import { UserForm } from './UserForm'
-import DeckSelectionModal from './player/DeckSelectionModal'
 import PlayerDeckSelector from './player/PlayerDeckSelector'
 import PlayerLifeControls from './player/PlayerLifeControls'
 import PlayerUserSelector from './player/PlayerUserSelector'
@@ -108,22 +110,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
     return user?.name || 'Unknown User'
   }
 
-  const sortedDecks = [...decks].sort((a, b) => {
-    if (
-      a.createdBy === game.players.find(p => p.id === playerId)?.userId &&
-      b.createdBy !== game.players.find(p => p.id === playerId)?.userId
-    )
-      return -1
-
-    if (
-      a.createdBy !== game.players.find(p => p.id === playerId)?.userId &&
-      b.createdBy === game.players.find(p => p.id === playerId)?.userId
-    )
-      return 1
-
-    return 0
-  })
-
   const gameIsActive = game.state === 'active'
 
   // Get player's deck and commander image
@@ -191,12 +177,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
               onRemoveUser={() => handleUserSelect(null)}
             />
 
-            <PlayerDeckSelector
-              player={player}
-              onShowDeckSelect={() => setShowDeckSelect(true)}
-              onRemoveDeck={() => handleDeckSelect(null)}
-            />
-
             <UserSelectionModal
               isOpen={showUserSelect}
               onClose={() => setShowUserSelect(false)}
@@ -204,26 +184,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
               onSelect={handleUserSelect}
               onCreateUser={() => setShowUserForm(true)}
             />
-
-            <DeckSelectionModal
-              isOpen={showDeckSelect}
-              onClose={() => setShowDeckSelect(false)}
-              sortedDecks={sortedDecks}
-              onSelect={handleDeckSelect}
-              onCreateDeck={() => setShowDeckForm(true)}
-            />
-
-            {/* Deck Form Modal */}
-            {showDeckForm && (
-              <DeckForm
-                userId={playerId}
-                onSave={(deckId: string) => {
-                  handleDeckSelect(deckId)
-                  setShowDeckForm(false)
-                }}
-                onCancel={() => setShowDeckForm(false)}
-              />
-            )}
 
             {/* User Form Modal */}
             <Modal isOpen={showUserForm} title="Add User" onClose={() => setShowUserForm(false)}>
@@ -234,6 +194,41 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
                 }}
                 onCancel={() => setShowUserForm(false)}
               />
+            </Modal>
+
+            <PlayerDeckSelector
+              player={player}
+              onShowDeckSelect={() => setShowDeckSelect(true)}
+              onRemoveDeck={() => handleDeckSelect(null)}
+            />
+
+            {/* TODO: do similar treatment to users section */}
+            {/* Deck Selection Modal */}
+            <Modal fullSize isOpen={showDeckSelect} onClose={() => setShowDeckSelect(false)} title="Choose Deck">
+              <Decks userId={player.userId || undefined} onDeckClick={handleDeckSelect} />
+
+              {/* Floating Add Deck Button */}
+              <Button
+                data-testid="decks-add"
+                variant="primary"
+                round
+                className="absolute bottom-3 right-3 shadow-lg z-10"
+                onClick={() => setShowDeckForm(true)}
+              >
+                <Plus size={36} />
+              </Button>
+
+              {/* Deck Form Modal */}
+              <Modal isOpen={showDeckForm} title="Add Deck" onClose={() => setShowDeckForm(false)}>
+                <DeckForm
+                  userId={player.userId}
+                  onSave={(deckId: string) => {
+                    handleDeckSelect(deckId)
+                    setShowDeckForm(false)
+                  }}
+                  onCancel={() => setShowDeckForm(false)}
+                />
+              </Modal>
             </Modal>
           </>
         )}

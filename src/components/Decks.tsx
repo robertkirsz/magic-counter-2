@@ -10,14 +10,16 @@ import { FadeMask } from './FadeMask'
 
 interface DecksProps {
   userId?: string
+  onDeckClick?: (deckId: string) => void
 }
 
-export const Decks: React.FC<DecksProps> = ({ userId }) => {
+export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick }) => {
   const { decks } = useDecks()
   const [deckFormVisible, setDeckFormVisible] = useState(false)
   const [sortBy, setSortBy] = useState<SortOption>('name')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const [searchQuery, setSearchQuery] = useState('')
+  const [showOnlyUserDecks, setShowOnlyUserDecks] = useState(false)
 
   const handleSortChange = (newSortBy: SortOption) => {
     if (sortBy === newSortBy) {
@@ -28,13 +30,20 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
     }
   }
 
-  // Filter decks based on search query
+  // Filter decks based on search query and user filter
   const filteredDecks = useMemo(() => {
-    if (!searchQuery.trim()) return decks
+    let filtered = decks
+
+    // Filter by user if checkbox is checked and userId is provided
+    if (showOnlyUserDecks && userId) {
+      filtered = filtered.filter(deck => deck.createdBy === userId)
+    }
+
+    if (!searchQuery.trim()) return filtered
 
     const query = searchQuery.toLowerCase().trim()
 
-    return decks.filter(deck => {
+    return filtered.filter(deck => {
       // Search by name
       if (deck.name.toLowerCase().includes(query)) return true
 
@@ -61,7 +70,7 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
 
       return false
     })
-  }, [decks, searchQuery])
+  }, [decks, searchQuery, showOnlyUserDecks, userId])
 
   const sortedDecks = useMemo(() => {
     const sorted = [...filteredDecks].sort((a, b) => {
@@ -114,13 +123,37 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
         sortOptions={['name', 'date', 'colors', 'creator']}
       />
 
+      {/* User Filter Checkbox */}
+      {userId && (
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="show-only-user-decks"
+            checked={showOnlyUserDecks}
+            onChange={e => setShowOnlyUserDecks(e.target.checked)}
+            className="form-checkbox"
+          />
+
+          <label htmlFor="show-only-user-decks" className="text-sm cursor-pointer">
+            Show only my decks
+          </label>
+        </div>
+      )}
+
       {/* Decks List */}
       {hasDecks && (
         <FadeMask fadeHeight={24} showMask={sortedDecks.length > 3}>
           {/* TODO: make number of columns depend on container's width */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
             {sortedDecks.map((deck, index) => (
-              <Deck key={deck.id} id={deck.id} testIndex={index} useContextControls />
+              <Deck
+                key={deck.id}
+                id={deck.id}
+                testIndex={index}
+                useContextControls={!onDeckClick}
+                onClick={onDeckClick ? () => onDeckClick(deck.id) : undefined}
+                className={onDeckClick ? 'cursor-pointer' : undefined}
+              />
             ))}
           </div>
         </FadeMask>
@@ -131,11 +164,13 @@ export const Decks: React.FC<DecksProps> = ({ userId }) => {
           <BookImageIcon size={48} className="text-slate-400" />
 
           <h3 className="text-xl font-semibold text-slate-300">
-            {searchQuery.trim() ? 'No decks match your search' : 'No decks yet'}
+            {searchQuery.trim() || showOnlyUserDecks ? 'No decks match your criteria' : 'No decks yet'}
           </h3>
 
           <p className="text-slate-400">
-            {searchQuery.trim() ? 'Try a different search' : 'Add a deck to get started!'}
+            {searchQuery.trim() || showOnlyUserDecks
+              ? 'Try adjusting your search or filters'
+              : 'Add a deck to get started!'}
           </p>
         </div>
       )}

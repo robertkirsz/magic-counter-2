@@ -29,6 +29,10 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
+dialog {
+  @apply bg-slate-900 text-white;
+}
+
 #root {
   height: 100%;
   /* TODO */

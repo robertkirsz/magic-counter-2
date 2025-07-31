@@ -42,9 +42,7 @@ export const Deck: React.FC<DeckProps> = ({
   const creatorName = creator?.name || 'Global'
 
   // Calculate play count
-  const playCount = games.reduce((count, game) => {
-    return count + game.players.filter(player => player.deckId === id).length
-  }, 0)
+  const playCount = games.reduce((count, game) => count + game.players.filter(player => player.deckId === id).length, 0)
 
   const menuVisible = useContextControls || onRemove
 
@@ -63,21 +61,21 @@ export const Deck: React.FC<DeckProps> = ({
     <div data-testid={testIdPrefix} className="flex flex-col gap-2" {...props}>
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
-        <div className="flex-1">
+        <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
             <h3>{deck.name}</h3>
             <ColorBadges colors={deck.colors} />
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             {showCreator && creatorName && (
-              <span className="text-xs text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 px-2 py-1 rounded border border-gray-200 dark:border-gray-600">
+              <span className="text-xs bg-slate-700 text-slate-400 px-2 py-1 rounded border border-slate-600">
                 {creatorName}
               </span>
             )}
 
             {showStats && playCount > 0 && (
-              <span className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 px-2 py-1 rounded font-medium border border-blue-200 dark:border-blue-700 whitespace-nowrap">
+              <span className="text-xs bg-blue-900/30 text-blue-300 px-2 py-1 rounded font-medium border border-blue-700 whitespace-nowrap">
                 {playCount} play{playCount !== 1 ? 's' : ''}
               </span>
             )}
