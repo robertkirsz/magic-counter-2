@@ -8,6 +8,13 @@ import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
 import { createFinishedGame } from '../utils/gameGenerator'
 import { AVAILABLE_COMMANDERS } from '../utils/scryfall'
+import {
+  useGameDeleteListener,
+  useGameStateChangeListener,
+  useLifeChangeListener,
+  useSwordAttackListener,
+  useTurnChangeListener
+} from '../utils/eventDispatcher'
 import { Button } from './Button'
 
 // Types for data validation
@@ -18,6 +25,14 @@ interface DataSection {
   title: string
   validator: (obj: unknown) => boolean
   errorMessage: string
+}
+
+// Types for event logging
+interface LogEntry {
+  id: string
+  timestamp: Date
+  type: string
+  data: unknown
 }
 
 // Utility functions
@@ -235,6 +250,60 @@ export const DevToolsPanel: React.FC = () => {
   })
   const [importError, setImportError] = useState<string | null>(null)
 
+  // Event logging state
+  const [logs, setLogs] = useState<LogEntry[]>([])
+
+  // Event listeners for logging
+  useSwordAttackListener(event => {
+    const logEntry: LogEntry = {
+      id: `sword-${Date.now()}`,
+      timestamp: new Date(),
+      type: 'Sword Attack',
+      data: event.detail
+    }
+    setLogs(prev => [logEntry, ...prev.slice(0, 19)]) // Keep last 20 entries
+  })
+
+  useGameStateChangeListener(event => {
+    const logEntry: LogEntry = {
+      id: `state-${Date.now()}`,
+      timestamp: new Date(),
+      type: 'Game State Change',
+      data: event.detail
+    }
+    setLogs(prev => [logEntry, ...prev.slice(0, 19)])
+  })
+
+  useTurnChangeListener(event => {
+    const logEntry: LogEntry = {
+      id: `turn-${Date.now()}`,
+      timestamp: new Date(),
+      type: 'Turn Change',
+      data: event.detail
+    }
+    setLogs(prev => [logEntry, ...prev.slice(0, 19)])
+  })
+
+  useLifeChangeListener(event => {
+    const logEntry: LogEntry = {
+      id: `life-${Date.now()}`,
+      timestamp: new Date(),
+      type: 'Life Change',
+      data: event.detail
+    }
+    setLogs(prev => [logEntry, ...prev.slice(0, 19)])
+  })
+
+  useGameDeleteListener(event => {
+    const logEntry: LogEntry = {
+      id: `delete-${Date.now()}`,
+      timestamp: new Date(),
+      type: 'Game Delete',
+      data: event.detail
+    }
+    setLogs(prev => [logEntry, ...prev.slice(0, 19)])
+  })
+
   // Keep textareas in sync with context changes
   useEffect(() => {
     setTexts(prev => ({ ...prev, users: JSON.stringify(users, null, 2) }))
@@ -401,6 +470,10 @@ export const DevToolsPanel: React.FC = () => {
     setGames(prev => [...prev, finishedGame])
   }
 
+  const handleClearLogs = () => {
+    setLogs([])
+  }
+
   return (
     <div className="fixed z-100 gap-2 bottom-2 right-2 flex flex-col items-end">
       {open && (
@@ -447,6 +520,38 @@ export const DevToolsPanel: React.FC = () => {
             </div>
 
             {importError && <div className="text-red-600 text-xs mb-2">{importError}</div>}
+          </details>
+
+          {/* Event Logger Section */}
+          <details open>
+            <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">Event Logger</summary>
+            
+            <div className="flex gap-2 mb-3">
+              <Button variant="secondary" onClick={handleClearLogs}>
+                Clear Logs
+              </Button>
+              <span className="text-xs text-slate-400 flex items-center">
+                {logs.length}/20 events
+              </span>
+            </div>
+
+            <div className="space-y-2 max-h-48 overflow-y-auto bg-slate-800 rounded p-2">
+              {logs.length === 0 ? (
+                <p className="text-slate-400 text-xs">No events logged yet...</p>
+              ) : (
+                logs.map(log => (
+                  <div key={log.id} className="text-xs border-l-2 border-blue-500 pl-2">
+                    <div className="flex justify-between">
+                      <span className="font-semibold text-slate-200">{log.type}</span>
+                      <span className="text-slate-400">{log.timestamp.toLocaleTimeString()}</span>
+                    </div>
+                    <pre className="text-slate-300 mt-1 text-xs overflow-x-auto whitespace-pre-wrap">
+                      {JSON.stringify(log.data, null, 2)}
+                    </pre>
+                  </div>
+                ))
+              )}
+            </div>
           </details>
 
           {/* Data Sections */}
