@@ -37,7 +37,7 @@ interface BoardProps {
 }
 
 export const Board: React.FC<BoardProps> = ({ gameId }) => {
-  const { games, updateGame, getCurrentActivePlayer, dispatchAction, undoLastAction } = useGames()
+  const { games, updateGame, getCurrentActivePlayer, dispatchAction, undoLastAction, removeGame } = useGames()
 
   const game = games.find(g => g.id === gameId)
 
@@ -81,6 +81,17 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
     dispatchAction(game.id, endAction)
     updateGame(game.id, { state: 'finished' })
+  }
+
+  const handleCancel = () => {
+    // Add confirmation dialog
+    const confirmed = window.confirm(
+      'Are you sure you want to cancel this game? This will permanently delete the game and cannot be undone.'
+    )
+
+    if (!confirmed) return
+
+    removeGame(game.id)
   }
 
   // Drag end handler for reordering players and sword attacks
@@ -205,22 +216,32 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
           )}
         </div>
 
-        {/* Play/Finish Button */}
+        {/* Play/Finish and Cancel Buttons */}
         {game.state !== 'finished' && (
-          <Button
-            variant="primary"
-            disabled={!canPlay && game.state !== 'active'}
-            onClick={game.state === 'active' ? handleFinish : handlePlay}
-          >
-            {game.state === 'active' ? (
-              <span>FINISH</span>
-            ) : (
-              <>
-                <Play size={32} />
-                <span>PLAY</span>
-              </>
-            )}
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              variant="primary"
+              disabled={!canPlay && game.state !== 'active'}
+              onClick={game.state === 'active' ? handleFinish : handlePlay}
+            >
+              {game.state === 'active' ? (
+                <span>FINISH</span>
+              ) : (
+                <>
+                  <Play size={32} />
+                  <span>PLAY</span>
+                </>
+              )}
+            </Button>
+
+            <Button
+              variant="secondary"
+              className="bg-red-600 hover:bg-red-500 text-white border-red-500"
+              onClick={handleCancel}
+            >
+              <span>CANCEL</span>
+            </Button>
+          </div>
         )}
       </div>
 
