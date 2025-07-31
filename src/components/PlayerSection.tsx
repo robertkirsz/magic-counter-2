@@ -1,11 +1,12 @@
 import { useDroppable } from '@dnd-kit/core'
 import { Plus } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
+import { useSwordAttackListener } from '../utils/eventDispatcher'
 import { AttackModal } from './AttackModal'
 import { Button } from './Button'
 import { CommanderDamage } from './CommanderDamage'
@@ -45,20 +46,17 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
     }
   })
 
-  useEffect(() => {
-    const handleSwordAttack = (event: CustomEvent) => {
+  useSwordAttackListener(
+    event => {
       const { attackerId, targetId } = event.detail
 
       if (targetId === playerId) {
         setAttackData({ attackerId, targetId })
         setShowAttackModal(true)
       }
-    }
-
-    window.addEventListener('sword-attack', handleSwordAttack as EventListener)
-
-    return () => window.removeEventListener('sword-attack', handleSwordAttack as EventListener)
-  }, [playerId])
+    },
+    [playerId]
+  )
 
   const game = games.find(g => g.id === gameId)
 

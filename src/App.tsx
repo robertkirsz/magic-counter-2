@@ -2,6 +2,7 @@
 import pkg from '../package.json'
 import { Board } from './components/Board'
 import { DevToolsPanel } from './components/DevToolsPanel'
+import { EventLogger } from './components/EventLogger'
 // import { ImportanceSlider } from './components/ImportanceSlider'
 import { IntroScreen } from './components/IntroScreen'
 import PWAInstallPrompt from './components/PWAInstallPrompt'
@@ -26,6 +27,7 @@ const AppContent: React.FC = () => {
           <DecksProvider>
             <AppMain />
             <DevToolsPanel />
+            <EventLogger />
             {/* <ImportanceSlider /> */}
           </DecksProvider>
         </GamesProvider>

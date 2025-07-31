@@ -3,8 +3,8 @@ import { DateTime } from 'luxon'
 import React, { useCallback, useRef, useState } from 'react'
 
 import { useGames } from '../../hooks/useGames'
-import { useTurnChange } from '../../hooks/useGames'
 import { cn } from '../../utils/cn'
+import { useTurnChangeListener } from '../../utils/eventDispatcher'
 import { generateId } from '../../utils/idGenerator'
 import { Button } from '../Button'
 
@@ -47,8 +47,8 @@ const PlayerLifeControls: React.FC<{
   }, [dispatchAction, from, gameId, onLifeCommitted, to, commanderDamage, commanderId])
 
   // Clear timeout and commit life changes when a turn is passed
-  useTurnChange(gameId, () => {
-    if (pendingLifeChangesRef.current !== 0) {
+  useTurnChangeListener(event => {
+    if (event.detail.gameId === gameId && pendingLifeChangesRef.current !== 0) {
       if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current)
       commitLifeChanges()
     }

@@ -10,8 +10,6 @@ export interface GamesContextType {
   getCurrentRound: (gameId: string) => number
   groupActionsByRound: (gameId: string) => Array<{ round: number; actions: (LifeChangeAction | TurnChangeAction)[] }>
   dispatchAction: (gameId: string, action: LifeChangeAction | TurnChangeAction) => void
-  registerTurnChangeCallback: (gameId: string, callback: () => void) => void
-  unregisterTurnChangeCallback: (gameId: string, callback: () => void) => void
   undoLastAction: (gameId: string) => void
 }
 

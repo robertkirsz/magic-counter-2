@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 import React, { useCallback, useEffect, useState } from 'react'
 
+import { EventDispatcher } from '../utils/eventDispatcher'
 import { generateId } from '../utils/idGenerator'
 import { GamesContext, type GamesContextType } from './GamesContextDef'
 
@@ -16,6 +17,7 @@ const readGames = (): Game[] => {
 
     if (stored) {
       const parsed = JSON.parse(stored)
+
       return parsed.map((g: Game) => ({
         ...g,
         createdAt: new Date(g.createdAt),
@@ -43,7 +45,6 @@ const readGames = (): Game[] => {
 
 export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
   const [games, setGames] = useState<Game[]>(readGames())
-  const [turnChangeCallbacks, setTurnChangeCallbacks] = useState<Map<string, (() => void)[]>>(new Map())
 
   useEffect(() => localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(games)), [games])
 
@@ -70,39 +71,43 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
     setGames(prev =>
       prev.map(game => {
         if (game.id !== gameId) return game
+
         const updateObj = typeof updates === 'function' ? updates(game) : updates
+
+        // Dispatch game state change event if state is being updated
+        if (updateObj.state && updateObj.state !== game.state) {
+          EventDispatcher.dispatchGameStateChange(gameId, game.state, updateObj.state)
+        }
+
         return { ...game, ...updateObj }
       })
     )
   }
 
-  // TODO: Instead of having this, dispacth custom event like window.dispatchEvent(new CustomEvent('sword-attack', { detail: { attackerId, targetId } }))
-  const registerTurnChangeCallback = useCallback((gameId: string, callback: () => void) => {
-    setTurnChangeCallbacks(prev => {
-      const newCallbacks = new Map(prev)
-      const existingCallbacks = newCallbacks.get(gameId) || []
-      newCallbacks.set(gameId, [...existingCallbacks, callback])
-      return newCallbacks
-    })
-  }, [])
-
-  const unregisterTurnChangeCallback = useCallback((gameId: string, callback: () => void) => {
-    setTurnChangeCallbacks(prev => {
-      const newCallbacks = new Map(prev)
-      const existingCallbacks = newCallbacks.get(gameId) || []
-      newCallbacks.set(
-        gameId,
-        existingCallbacks.filter(cb => cb !== callback)
-      )
-      return newCallbacks
-    })
-  }, [])
-
   const dispatchAction = (gameId: string, action: LifeChangeAction | TurnChangeAction) => {
-    // Call turn change callbacks before adding the action
+    // Dispatch typed events based on action type
     if (action.type === 'turn-change') {
-      const callbacks = turnChangeCallbacks.get(gameId) || []
-      callbacks.forEach(callback => callback())
+      EventDispatcher.dispatchTurnChange(gameId, action.from || null, action.to || null)
+    } else if (action.type === 'life-change') {
+      // Calculate previous and new life totals for the affected players
+      const game = games.find(g => g.id === gameId)
+
+      if (game) {
+        action.to.forEach(playerId => {
+          // Calculate current life for this player
+          let currentLife = game.startingLife
+          game.actions.forEach(prevAction => {
+            if (prevAction.type === 'life-change' && prevAction.to?.includes(playerId)) {
+              currentLife += prevAction.value
+            }
+          })
+
+          // Calculate new life after this action
+          const newLife = currentLife + action.value
+
+          EventDispatcher.dispatchLifeChange(gameId, playerId, currentLife, newLife, action.value)
+        })
+      }
     }
 
     setGames(prev =>
@@ -206,8 +211,6 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
     getCurrentRound,
     groupActionsByRound,
     dispatchAction,
-    registerTurnChangeCallback,
-    unregisterTurnChangeCallback,
     undoLastAction
   }
 

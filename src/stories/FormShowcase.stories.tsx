@@ -7,7 +7,6 @@ import { ImportanceSlider } from '../components/ImportanceSlider'
 import { ManaPicker } from '../components/ManaPicker'
 import type { ManaColor } from '../constants/mana'
 import { ImportanceProvider } from '../contexts/ImportanceContext'
-import type { ScryfallCard } from '../types/global'
 
 const meta: Meta = {
   title: 'Showcase/Form Showcase',

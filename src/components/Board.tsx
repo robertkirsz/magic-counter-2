@@ -15,6 +15,7 @@ import React, { useEffect, useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
 import { cn } from '../utils/cn'
+import { EventDispatcher } from '../utils/eventDispatcher'
 import { generateId } from '../utils/idGenerator'
 import { ActionsList } from './ActionsList'
 import { Button } from './Button'
@@ -91,6 +92,8 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
     if (!confirmed) return
 
+    // Dispatch game delete event before removing the game
+    EventDispatcher.dispatchGameDelete(game.id)
     removeGame(game.id)
   }
 
@@ -106,9 +109,8 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       const targetId = over.data.current.playerId
 
       if (attackerId !== targetId) {
-        // Trigger attack modal - we'll need to communicate this to the PlayerSection
-        // For now, we'll use a custom event
-        window.dispatchEvent(new CustomEvent('sword-attack', { detail: { attackerId, targetId } }))
+        // Trigger attack modal using typed event dispatcher
+        EventDispatcher.dispatchSwordAttack(attackerId, targetId)
         return
       }
     }

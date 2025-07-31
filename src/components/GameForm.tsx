@@ -16,10 +16,10 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
   const game = games.find(g => g.id === gameId)
 
   const [numberOfPlayers, setNumberOfPlayers] = useState<number>(game?.players.length || 4)
-  const [turnTracking, setTurnTracking] = useState<boolean>(game?.turnTracking || false)
+  const [turnTracking, setTurnTracking] = useState<boolean>(game?.turnTracking ?? true)
   const [startingLife, setStartingLife] = useState<number>(game?.startingLife || 40)
   const [hasUserChangedLife, setHasUserChangedLife] = useState<boolean>(false)
-  const [commanders, setCommanders] = useState<boolean>(game?.commanders || false)
+  const [commanders, setCommanders] = useState<boolean>(game?.commanders ?? true)
 
   // Auto-adjust starting life based on player count (only if user hasn't manually changed it)
   useEffect(() => {
