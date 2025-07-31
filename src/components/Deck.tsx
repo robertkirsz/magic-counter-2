@@ -60,12 +60,12 @@ export const Deck: React.FC<DeckProps> = ({
   const testIdPrefix = testId ? `${testId}-deck-${testIndex}` : `deck-${testIndex}`
 
   return (
-    <div data-testid={testIdPrefix} className="relative" {...props}>
+    <div data-testid={testIdPrefix} className="flex flex-col gap-2" {...props}>
       {/* Header */}
-      <div className="flex items-start justify-between gap-3 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-2">
-            <h3 className="font-medium text-gray-900 dark:text-gray-100 truncate">{deck.name}</h3>
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            <h3>{deck.name}</h3>
             <ColorBadges colors={deck.colors} />
           </div>
 
@@ -85,7 +85,7 @@ export const Deck: React.FC<DeckProps> = ({
         </div>
 
         {menuVisible && (
-          <div className="flex-shrink-0">
+          <div className="flex-none">
             <ThreeDotMenu
               testId={testIdPrefix}
               onEdit={useContextControls ? handleEdit : undefined}
@@ -95,9 +95,16 @@ export const Deck: React.FC<DeckProps> = ({
         )}
       </div>
 
-      {deck.commanders.map((commander, index) => (
-        <Commander key={commander.id} commander={commander} testIdIndex={testIndex + '-' + index} />
-      ))}
+      <div className="flex gap-2">
+        {deck.commanders.map((commander, index) => (
+          <Commander
+            key={commander.id}
+            commander={commander}
+            testIdIndex={testIndex + '-' + index}
+            className="flex-1"
+          />
+        ))}
+      </div>
 
       {useContextControls && deckFormVisible && (
         <DeckForm

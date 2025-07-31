@@ -8,24 +8,28 @@ const PlayerDeckSelector: React.FC<{
   player: Player
   onShowDeckSelect: () => void
   onRemoveDeck: () => void
-}> = ({ player, onShowDeckSelect, onRemoveDeck }) => (
-  <>
-    {player.deckId && (
-      <div className="flex items-center gap-1">
-        <Button variant="secondary" onClick={onShowDeckSelect}>
-          <Deck id={player.deckId} showCreator={false} showStats={false} />
-        </Button>
-
-        <ThreeDotMenu onClose={onRemoveDeck} asMenu={false} />
-      </div>
-    )}
-
-    {!player.deckId && (
+}> = ({ player, onShowDeckSelect, onRemoveDeck }) => {
+  if (!player.deckId)
+    return (
       <Button variant="primary" onClick={onShowDeckSelect}>
         Deck
       </Button>
-    )}
-  </>
-)
+    )
+
+  return (
+    <div className="flex items-center gap-1">
+      <Deck
+        id={player.deckId}
+        role="button"
+        className="cursor-pointer"
+        showCreator={false}
+        showStats={false}
+        onClick={onShowDeckSelect}
+      />
+
+      <ThreeDotMenu onClose={onRemoveDeck} asMenu={false} />
+    </div>
+  )
+}
 
 export default PlayerDeckSelector
