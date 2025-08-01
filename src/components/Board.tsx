@@ -132,8 +132,6 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
   // Pass turn to next player (append TurnChangeAction)
   const handlePassTurn = (playerId?: string) => {
-    if (!game || !game.turnTracking) return
-
     const currentIndex = game.players.findIndex(p => p.id === getCurrentActivePlayer())
     const nextIndex = (currentIndex + 1) % game.players.length
     const nextPlayer = game.players[nextIndex] || game.players[0]
@@ -219,32 +217,30 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         </div>
 
         {/* Play/Finish and Cancel Buttons */}
-        {game.state !== 'finished' && (
-          <div className="flex gap-2">
-            <Button
-              variant="primary"
-              disabled={!canPlay && game.state !== 'active'}
-              onClick={game.state === 'active' ? handleFinish : handlePlay}
-            >
-              {game.state === 'active' ? (
-                <span>FINISH</span>
-              ) : (
-                <>
-                  <Play size={32} />
-                  <span>PLAY</span>
-                </>
-              )}
-            </Button>
+        <div className="flex gap-2 empty:hidden">
+          {game.state === 'setup' && (
+            <>
+              <Button variant="primary" disabled={!canPlay} onClick={handlePlay}>
+                <Play size={32} />
+                <span>START</span>
+              </Button>
 
-            <Button
-              variant="secondary"
-              className="bg-red-600 hover:bg-red-500 text-white border-red-500"
-              onClick={handleCancel}
-            >
-              <span>CANCEL</span>
+              <Button
+                variant="secondary"
+                className="bg-red-600 hover:bg-red-500 text-white border-red-500"
+                onClick={handleCancel}
+              >
+                CANCEL
+              </Button>
+            </>
+          )}
+
+          {game.state === 'active' && (
+            <Button variant="primary" disabled={!canPlay} onClick={handleFinish}>
+              FINISH
             </Button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Settings Overlay */}

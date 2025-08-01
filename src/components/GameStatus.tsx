@@ -75,8 +75,13 @@ export default function GameStatus({ gameId }: GameStatusProps) {
       )}
     >
       <span className="font-mono text-sm font-medium">{currentRound}</span>
-      <Clock size={14} className={cn(isFinished ? 'text-green-400' : 'text-blue-400')} />
-      <span className="font-mono text-sm font-medium">{elapsedTime}</span>
+
+      {elapsedTime && (
+        <>
+          <Clock size={14} className={cn(isFinished ? 'text-green-400' : 'text-blue-400')} />
+          <span className="font-mono text-sm font-medium">{elapsedTime}</span>
+        </>
+      )}
     </div>
   )
 }

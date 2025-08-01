@@ -10,7 +10,7 @@ export const createFinishedGame = (users: User[], decks: Deck[]): Game => {
   const startingLife = Math.random() > 0.5 ? 40 : 20
 
   // Random turn tracking
-  const turnTracking = Math.random() > 0.3
+  const turnTracking = Math.random() > 0.2
 
   // Shuffle users and decks
   const shuffledUsers = [...users].sort(() => Math.random() - 0.5)
