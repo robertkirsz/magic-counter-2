@@ -6,6 +6,13 @@ import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
+import {
+  useGameDeleteListener,
+  useGameStateChangeListener,
+  useLifeChangeListener,
+  useSwordAttackListener,
+  useTurnChangeListener
+} from '../utils/eventDispatcher'
 import { createFinishedGame } from '../utils/gameGenerator'
 import { AVAILABLE_COMMANDERS } from '../utils/scryfall'
 import { Button } from './Button'
@@ -19,6 +26,17 @@ interface DataSection {
   validator: (obj: unknown) => boolean
   errorMessage: string
 }
+
+// Types for event logging
+interface LogEntry {
+  id: string
+  timestamp: Date
+  type: string
+  data: unknown
+}
+
+// Constants
+const MAX_LOG_ENTRIES = 20
 
 // Utility functions
 function tryParseJSON<T>(value: string): [T | null, string | null] {
@@ -235,6 +253,43 @@ export const DevToolsPanel: React.FC = () => {
   })
   const [importError, setImportError] = useState<string | null>(null)
 
+  // Event logging state
+  const [logs, setLogs] = useState<LogEntry[]>([])
+
+  // Helper function to create log entries
+  const createLogEntry = (type: string, event: CustomEvent<unknown>): LogEntry => ({
+    id: `${type.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
+    timestamp: new Date(),
+    type,
+    data: event.detail
+  })
+
+  // Event listeners for logging
+  useSwordAttackListener(event => {
+    const logEntry = createLogEntry('Sword Attack', event)
+    setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
+  })
+
+  useGameStateChangeListener(event => {
+    const logEntry = createLogEntry('Game State Change', event)
+    setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
+  })
+
+  useTurnChangeListener(event => {
+    const logEntry = createLogEntry('Turn Change', event)
+    setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
+  })
+
+  useLifeChangeListener(event => {
+    const logEntry = createLogEntry('Life Change', event)
+    setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
+  })
+
+  useGameDeleteListener(event => {
+    const logEntry = createLogEntry('Game Delete', event)
+    setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
+  })
+
   // Keep textareas in sync with context changes
   useEffect(() => {
     setTexts(prev => ({ ...prev, users: JSON.stringify(users, null, 2) }))
@@ -376,6 +431,7 @@ export const DevToolsPanel: React.FC = () => {
 
   const handleClearData = () => {
     const confirmed = window.confirm('Are you sure you want to delete all data? This action cannot be undone.')
+
     if (confirmed) {
       localStorage.clear()
       window.location.reload()
@@ -384,12 +440,15 @@ export const DevToolsPanel: React.FC = () => {
 
   const handleAddRandomUser = () => addUser(generateRandomUser())
   const handleAddRandomDeck = () => addDeck(generateRandomDeck())
+
   const handleAddRandomGame = () => {
     if (users.length === 0 || decks.length === 0) {
       alert('You need at least one user and one deck to generate a random game.')
       return
     }
+
     const gameData = generateRandomGame(users, decks)
+
     addGame(gameData)
   }
   const handleAddFinishedGame = () => {
@@ -397,8 +456,14 @@ export const DevToolsPanel: React.FC = () => {
       alert('You need at least one user and one deck to generate a finished game.')
       return
     }
+
     const finishedGame = createFinishedGame(users, decks)
+
     setGames(prev => [...prev, finishedGame])
+  }
+
+  const handleClearLogs = () => {
+    setLogs([])
   }
 
   return (
@@ -412,12 +477,14 @@ export const DevToolsPanel: React.FC = () => {
             <div className="flex flex-wrap gap-2 mb-3">
               <QuickActionButton icon={<UserPlus size={14} />} onClick={handleAddRandomUser} title="Add Random User" />
               <QuickActionButton icon={<BookOpen size={14} />} onClick={handleAddRandomDeck} title="Add Random Deck" />
+
               <QuickActionButton
                 icon={<Swords size={14} />}
                 onClick={handleAddRandomGame}
                 disabled={users.length === 0 || decks.length === 0}
                 title="Add Random Game"
               />
+
               <QuickActionButton
                 icon={<Trophy size={14} />}
                 onClick={handleAddFinishedGame}
@@ -447,6 +514,40 @@ export const DevToolsPanel: React.FC = () => {
             </div>
 
             {importError && <div className="text-red-600 text-xs mb-2">{importError}</div>}
+          </details>
+
+          {/* Event Logger Section */}
+          <details open>
+            <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">Event Logger</summary>
+
+            <div className="flex gap-2 mb-3">
+              <Button variant="secondary" onClick={handleClearLogs}>
+                Clear Logs
+              </Button>
+
+              <span className="text-xs text-slate-400 flex items-center">
+                {logs.length}/{MAX_LOG_ENTRIES} events
+              </span>
+            </div>
+
+            <div className="space-y-2 max-h-48 overflow-y-auto bg-slate-800 rounded p-2">
+              {logs.length === 0 ? (
+                <p className="text-slate-400 text-xs">No events logged yet...</p>
+              ) : (
+                logs.map(log => (
+                  <div key={log.id} className="text-xs border-l-2 border-blue-500 pl-2">
+                    <div className="flex justify-between">
+                      <span className="font-semibold text-slate-200">{log.type}</span>
+                      <span className="text-slate-400">{log.timestamp.toLocaleTimeString()}</span>
+                    </div>
+
+                    <pre className="text-slate-300 mt-1 text-xs overflow-x-auto whitespace-pre-wrap">
+                      {JSON.stringify(log.data, null, 2)}
+                    </pre>
+                  </div>
+                ))
+              )}
+            </div>
           </details>
 
           {/* Data Sections */}
