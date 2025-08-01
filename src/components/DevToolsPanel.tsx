@@ -257,7 +257,7 @@ export const DevToolsPanel: React.FC = () => {
   const [logs, setLogs] = useState<LogEntry[]>([])
 
   // Helper function to create log entries
-  const createLogEntry = (type: string, event: any): LogEntry => ({
+  const createLogEntry = (type: string, event: CustomEvent<unknown>): LogEntry => ({
     id: `${type.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
     timestamp: new Date(),
     type,
@@ -431,6 +431,7 @@ export const DevToolsPanel: React.FC = () => {
 
   const handleClearData = () => {
     const confirmed = window.confirm('Are you sure you want to delete all data? This action cannot be undone.')
+
     if (confirmed) {
       localStorage.clear()
       window.location.reload()
@@ -439,12 +440,15 @@ export const DevToolsPanel: React.FC = () => {
 
   const handleAddRandomUser = () => addUser(generateRandomUser())
   const handleAddRandomDeck = () => addDeck(generateRandomDeck())
+
   const handleAddRandomGame = () => {
     if (users.length === 0 || decks.length === 0) {
       alert('You need at least one user and one deck to generate a random game.')
       return
     }
+
     const gameData = generateRandomGame(users, decks)
+
     addGame(gameData)
   }
   const handleAddFinishedGame = () => {
@@ -452,7 +456,9 @@ export const DevToolsPanel: React.FC = () => {
       alert('You need at least one user and one deck to generate a finished game.')
       return
     }
+
     const finishedGame = createFinishedGame(users, decks)
+
     setGames(prev => [...prev, finishedGame])
   }
 
@@ -471,12 +477,14 @@ export const DevToolsPanel: React.FC = () => {
             <div className="flex flex-wrap gap-2 mb-3">
               <QuickActionButton icon={<UserPlus size={14} />} onClick={handleAddRandomUser} title="Add Random User" />
               <QuickActionButton icon={<BookOpen size={14} />} onClick={handleAddRandomDeck} title="Add Random Deck" />
+
               <QuickActionButton
                 icon={<Swords size={14} />}
                 onClick={handleAddRandomGame}
                 disabled={users.length === 0 || decks.length === 0}
                 title="Add Random Game"
               />
+
               <QuickActionButton
                 icon={<Trophy size={14} />}
                 onClick={handleAddFinishedGame}
@@ -516,7 +524,10 @@ export const DevToolsPanel: React.FC = () => {
               <Button variant="secondary" onClick={handleClearLogs}>
                 Clear Logs
               </Button>
-              <span className="text-xs text-slate-400 flex items-center">{logs.length}/20 events</span>
+
+              <span className="text-xs text-slate-400 flex items-center">
+                {logs.length}/{MAX_LOG_ENTRIES} events
+              </span>
             </div>
 
             <div className="space-y-2 max-h-48 overflow-y-auto bg-slate-800 rounded p-2">
@@ -529,6 +540,7 @@ export const DevToolsPanel: React.FC = () => {
                       <span className="font-semibold text-slate-200">{log.type}</span>
                       <span className="text-slate-400">{log.timestamp.toLocaleTimeString()}</span>
                     </div>
+
                     <pre className="text-slate-300 mt-1 text-xs overflow-x-auto whitespace-pre-wrap">
                       {JSON.stringify(log.data, null, 2)}
                     </pre>
