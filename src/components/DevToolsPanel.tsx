@@ -240,27 +240,37 @@ export const DevToolsPanel: React.FC = () => {
   // Event listeners for logging
   useSwordAttackListener(event => {
     const logEntry = createLogEntry('Sword Attack', event)
-    setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
+    queueMicrotask(() => {
+      setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
+    })
   })
 
   useGameStateChangeListener(event => {
     const logEntry = createLogEntry('Game State Change', event)
-    setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
+    queueMicrotask(() => {
+      setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
+    })
   })
 
   useTurnChangeListener(event => {
     const logEntry = createLogEntry('Turn Change', event)
-    setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
+    queueMicrotask(() => {
+      setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
+    })
   })
 
   useLifeChangeListener(event => {
     const logEntry = createLogEntry('Life Change', event)
-    setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
+    queueMicrotask(() => {
+      setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
+    })
   })
 
   useGameDeleteListener(event => {
     const logEntry = createLogEntry('Game Delete', event)
-    setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
+    queueMicrotask(() => {
+      setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
+    })
   })
 
   // Keep textareas in sync with context changes
