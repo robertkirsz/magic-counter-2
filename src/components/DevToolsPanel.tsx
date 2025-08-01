@@ -6,8 +6,6 @@ import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
-import { createFinishedGame } from '../utils/gameGenerator'
-import { AVAILABLE_COMMANDERS } from '../utils/scryfall'
 import {
   useGameDeleteListener,
   useGameStateChangeListener,
@@ -15,6 +13,8 @@ import {
   useSwordAttackListener,
   useTurnChangeListener
 } from '../utils/eventDispatcher'
+import { createFinishedGame } from '../utils/gameGenerator'
+import { AVAILABLE_COMMANDERS } from '../utils/scryfall'
 import { Button } from './Button'
 
 // Types for data validation
@@ -34,6 +34,9 @@ interface LogEntry {
   type: string
   data: unknown
 }
+
+// Constants
+const MAX_LOG_ENTRIES = 20
 
 // Utility functions
 function tryParseJSON<T>(value: string): [T | null, string | null] {
@@ -253,55 +256,38 @@ export const DevToolsPanel: React.FC = () => {
   // Event logging state
   const [logs, setLogs] = useState<LogEntry[]>([])
 
+  // Helper function to create log entries
+  const createLogEntry = (type: string, event: any): LogEntry => ({
+    id: `${type.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
+    timestamp: new Date(),
+    type,
+    data: event.detail
+  })
+
   // Event listeners for logging
   useSwordAttackListener(event => {
-    const logEntry: LogEntry = {
-      id: `sword-${Date.now()}`,
-      timestamp: new Date(),
-      type: 'Sword Attack',
-      data: event.detail
-    }
-    setLogs(prev => [logEntry, ...prev.slice(0, 19)]) // Keep last 20 entries
+    const logEntry = createLogEntry('Sword Attack', event)
+    setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
   })
 
   useGameStateChangeListener(event => {
-    const logEntry: LogEntry = {
-      id: `state-${Date.now()}`,
-      timestamp: new Date(),
-      type: 'Game State Change',
-      data: event.detail
-    }
-    setLogs(prev => [logEntry, ...prev.slice(0, 19)])
+    const logEntry = createLogEntry('Game State Change', event)
+    setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
   })
 
   useTurnChangeListener(event => {
-    const logEntry: LogEntry = {
-      id: `turn-${Date.now()}`,
-      timestamp: new Date(),
-      type: 'Turn Change',
-      data: event.detail
-    }
-    setLogs(prev => [logEntry, ...prev.slice(0, 19)])
+    const logEntry = createLogEntry('Turn Change', event)
+    setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
   })
 
   useLifeChangeListener(event => {
-    const logEntry: LogEntry = {
-      id: `life-${Date.now()}`,
-      timestamp: new Date(),
-      type: 'Life Change',
-      data: event.detail
-    }
-    setLogs(prev => [logEntry, ...prev.slice(0, 19)])
+    const logEntry = createLogEntry('Life Change', event)
+    setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
   })
 
   useGameDeleteListener(event => {
-    const logEntry: LogEntry = {
-      id: `delete-${Date.now()}`,
-      timestamp: new Date(),
-      type: 'Game Delete',
-      data: event.detail
-    }
-    setLogs(prev => [logEntry, ...prev.slice(0, 19)])
+    const logEntry = createLogEntry('Game Delete', event)
+    setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
   })
 
   // Keep textareas in sync with context changes
@@ -525,14 +511,12 @@ export const DevToolsPanel: React.FC = () => {
           {/* Event Logger Section */}
           <details open>
             <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">Event Logger</summary>
-            
+
             <div className="flex gap-2 mb-3">
               <Button variant="secondary" onClick={handleClearLogs}>
                 Clear Logs
               </Button>
-              <span className="text-xs text-slate-400 flex items-center">
-                {logs.length}/20 events
-              </span>
+              <span className="text-xs text-slate-400 flex items-center">{logs.length}/20 events</span>
             </div>
 
             <div className="space-y-2 max-h-48 overflow-y-auto bg-slate-800 rounded p-2">
