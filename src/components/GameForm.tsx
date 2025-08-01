@@ -77,6 +77,11 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
         commanders
       })
 
+      // If turn tracking is disabled, automatically start the game
+      if (!turnTracking) {
+        updateGame(newGameId, { state: 'active' })
+      }
+
       onSave(newGameId)
     }
   }

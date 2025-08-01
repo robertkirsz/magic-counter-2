@@ -148,7 +148,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   }
 
   const validPlayers = game.players.filter(player => player.userId && player.deckId)
-  const canPlay = validPlayers.length === game.players.length
+  const canPlay = game.turnTracking ? validPlayers.length === game.players.length : true
   const currentActivePlayer = getCurrentActivePlayer()
   const showStartModal = game.state === 'active' && !currentActivePlayer && game.turnTracking
 

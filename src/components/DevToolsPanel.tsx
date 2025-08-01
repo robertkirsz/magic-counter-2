@@ -14,6 +14,7 @@ import {
   useTurnChangeListener
 } from '../utils/eventDispatcher'
 import { createFinishedGame } from '../utils/gameGenerator'
+import { generateId } from '../utils/idGenerator'
 import { AVAILABLE_COMMANDERS } from '../utils/scryfall'
 import { Button } from './Button'
 
@@ -162,34 +163,6 @@ const generateRandomDeck = (): Omit<Deck, 'id' | 'createdAt'> => {
     commanders: selectedCommanders,
     createdBy: null
   }
-}
-
-const generateRandomGame = (
-  users: User[],
-  decks: Deck[]
-): Pick<Game, 'players' | 'turnTracking' | 'startingLife' | 'commanders'> => {
-  const playerCount = Math.floor(Math.random() * 3) + 2
-  const turnTracking = Math.random() > 0.5
-  const startingLife = playerCount >= 4 ? 40 : 20
-  const commanders = playerCount >= 3 && Math.random() > 0.75
-
-  const shuffledUsers = [...users].sort(() => Math.random() - 0.5)
-  const shuffledDecks = [...decks].sort(() => Math.random() - 0.5)
-
-  const players: Player[] = []
-
-  for (let i = 0; i < playerCount; i++) {
-    const user = shuffledUsers[i] || null
-    const deck = shuffledDecks[i] || null
-
-    players.push({
-      id: `player-${i + 1}`,
-      userId: user?.id || null,
-      deckId: deck?.id || null
-    })
-  }
-
-  return { players, turnTracking, startingLife, commanders }
 }
 
 // Data section component
@@ -439,25 +412,120 @@ export const DevToolsPanel: React.FC = () => {
   }
 
   const handleAddRandomUser = () => addUser(generateRandomUser())
+
   const handleAddRandomDeck = () => addDeck(generateRandomDeck())
 
   const handleAddRandomGame = () => {
-    if (users.length === 0 || decks.length === 0) {
-      alert('You need at least one user and one deck to generate a random game.')
+    // For untracked games, we don't need users and decks
+    const playerCount = Math.floor(Math.random() * 3) + 2
+    // Bias towards untracked games when no users/decks exist
+    const turnTracking = users.length === 0 ? false : Math.random() > 0.8
+    const startingLife = playerCount >= 4 ? 40 : 20
+    const commanders = playerCount >= 3 && Math.random() > 0.75
+
+    const players: Player[] = []
+
+    // Only check for users/decks if turn tracking is enabled AND we don't have them
+    if (turnTracking && (users.length === 0 || decks.length === 0)) {
+      alert('You need at least one user and one deck to generate a tracked game.')
       return
     }
 
-    const gameData = generateRandomGame(users, decks)
+    if (turnTracking) {
+      // For tracked games, assign users and decks
+      const shuffledUsers = [...users].sort(() => Math.random() - 0.5)
+      const shuffledDecks = [...decks].sort(() => Math.random() - 0.5)
 
+      for (let i = 0; i < playerCount; i++) {
+        const user = shuffledUsers[i] || null
+        const deck = shuffledDecks[i] || null
+
+        players.push({
+          id: `player-${i + 1}`,
+          userId: user?.id || null,
+          deckId: deck?.id || null
+        })
+      }
+    } else {
+      // For untracked games, create players without assignments
+      for (let i = 0; i < playerCount; i++) {
+        players.push({
+          id: `player-${i + 1}`,
+          userId: null,
+          deckId: null
+        })
+      }
+    }
+
+    const gameData = { players, turnTracking, startingLife, commanders }
     addGame(gameData)
   }
+
   const handleAddFinishedGame = () => {
-    if (users.length === 0 || decks.length === 0) {
-      alert('You need at least one user and one deck to generate a finished game.')
+    // For untracked games, we don't need users and decks
+    const playerCount = Math.floor(Math.random() * 3) + 2
+    // Bias towards untracked games when no users/decks exist
+    const turnTracking = users.length === 0 ? false : Math.random() > 0.9
+    const startingLife = Math.random() > 0.5 ? 40 : 20
+
+    if (turnTracking && (users.length === 0 || decks.length === 0)) {
+      alert('You need at least one user and one deck to generate a tracked finished game.')
       return
     }
 
-    const finishedGame = createFinishedGame(users, decks)
+    let finishedGame: Game
+
+    if (turnTracking) {
+      // For tracked games, use the existing function
+      finishedGame = createFinishedGame(users, decks)
+    } else {
+      // For untracked games, create a simple finished game without turn tracking
+      const players: Player[] = []
+      for (let i = 0; i < playerCount; i++) {
+        players.push({
+          id: `player-${i + 1}`,
+          userId: null,
+          deckId: null
+        })
+      }
+
+      // Generate simple life change actions for untracked games
+      const actions: LifeChangeAction[] = []
+      const gameStartTime = DateTime.now().minus({ hours: Math.floor(Math.random() * 3) + 1 })
+      let currentTime = gameStartTime
+
+      // Generate 5-15 random life changes
+      const actionCount = Math.floor(Math.random() * 10) + 5
+      for (let i = 0; i < actionCount; i++) {
+        currentTime = currentTime.plus({ minutes: Math.floor(Math.random() * 10) + 1 })
+
+        const randomPlayer = players[Math.floor(Math.random() * players.length)]
+        const lifeChangeValue = Math.floor(Math.random() * 10) + 1
+        const isDamage = Math.random() > 0.3 // 70% chance of damage
+
+        const lifeChangeAction: LifeChangeAction = {
+          id: generateId(),
+          createdAt: currentTime.toJSDate(),
+          type: 'life-change',
+          value: isDamage ? -lifeChangeValue : lifeChangeValue,
+          from: randomPlayer.id,
+          to: [randomPlayer.id]
+        }
+        actions.push(lifeChangeAction)
+      }
+
+      finishedGame = {
+        id: generateId(),
+        createdAt: gameStartTime.toJSDate(),
+        state: 'finished',
+        players,
+        activePlayerId: null,
+        turnTracking: false,
+        startingLife,
+        commanders: false,
+        actions
+      }
+    }
 
     setGames(prev => [...prev, finishedGame])
   }
@@ -477,18 +545,11 @@ export const DevToolsPanel: React.FC = () => {
             <div className="flex flex-wrap gap-2 mb-3">
               <QuickActionButton icon={<UserPlus size={14} />} onClick={handleAddRandomUser} title="Add Random User" />
               <QuickActionButton icon={<BookOpen size={14} />} onClick={handleAddRandomDeck} title="Add Random Deck" />
-
-              <QuickActionButton
-                icon={<Swords size={14} />}
-                onClick={handleAddRandomGame}
-                disabled={users.length === 0 || decks.length === 0}
-                title="Add Random Game"
-              />
+              <QuickActionButton icon={<Swords size={14} />} onClick={handleAddRandomGame} title="Add Random Game" />
 
               <QuickActionButton
                 icon={<Trophy size={14} />}
                 onClick={handleAddFinishedGame}
-                disabled={users.length === 0 || decks.length === 0}
                 title="Add Finished Game"
               />
             </div>

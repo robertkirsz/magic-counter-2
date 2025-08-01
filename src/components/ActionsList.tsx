@@ -109,6 +109,10 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
     return groups
   }
 
+  const getLifeChangeActions = () => {
+    return game.actions.filter(action => action.type === 'life-change') as LifeChangeAction[]
+  }
+
   const groupTurnsByRounds = () => {
     const turnGroups = groupActionsByTurns()
     const roundGroups: Array<{
@@ -188,11 +192,13 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
   }
 
   const roundGroups = groupTurnsByRounds()
+  const lifeChangeActions = getLifeChangeActions()
   const hasActions = game.actions.length > 0
+  const hasTurnTracking = game.turnTracking
 
   return (
     <div className="flex flex-col gap-4 overflow-hidden">
-      {hasActions && (
+      {hasActions && hasTurnTracking && (
         <FadeMask showMask={roundGroups.length > 3}>
           <div className="flex flex-col gap-2">
             {roundGroups.map(roundGroup => {
@@ -303,6 +309,53 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
                 </div>
               )
             })}
+          </div>
+        </FadeMask>
+      )}
+
+      {hasActions && !hasTurnTracking && (
+        <FadeMask showMask={lifeChangeActions.length > 10}>
+          <div className="flex flex-col gap-2">
+            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+              <div className="px-4 py-3 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-b border-gray-200 dark:border-gray-700">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
+                    <Heart className="w-4 h-4 text-green-700 dark:text-green-300" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">Life Changes</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">{lifeChangeActions.length} actions</p>
+                  </div>
+                </div>
+              </div>
+              <div className="p-4 space-y-2">
+                {lifeChangeActions.map(action => {
+                  const actionTime = formatTime(safeToDateTime(action.createdAt))
+                  const isLifeGain = action.value > 0
+
+                  return (
+                    <div
+                      key={action.id}
+                      className="flex items-center justify-between py-2 px-3 bg-gray-50 dark:bg-gray-700/50 rounded border border-gray-200 dark:border-gray-600"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Heart
+                          className={cn(
+                            'w-4 h-4',
+                            isLifeGain ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+                          )}
+                        />
+                        <span className="text-sm text-gray-700 dark:text-gray-300">{formatAction(action)}</span>
+                        <span className="text-xs text-gray-500 dark:text-gray-400">{actionTime}</span>
+                      </div>
+                      {canDeleteAction(action.id) && (
+                        <ThreeDotMenu onClose={() => handleActionRemove(action.id)} asMenu={false} />
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
           </div>
         </FadeMask>
       )}
