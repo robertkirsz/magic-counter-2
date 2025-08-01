@@ -13,9 +13,12 @@ import {
   useSwordAttackListener,
   useTurnChangeListener
 } from '../utils/eventDispatcher'
-import { createFinishedGame } from '../utils/gameGenerator'
-import { generateId } from '../utils/idGenerator'
-import { AVAILABLE_COMMANDERS } from '../utils/scryfall'
+import {
+  generateFinishedGame,
+  generateRandomDeck,
+  generateRandomGame,
+  generateRandomUser
+} from '../utils/generateRandom'
 import { Button } from './Button'
 
 // Types for data validation
@@ -101,68 +104,6 @@ function reviveDates<T extends { createdAt: string | Date }>(arr: T[]): T[] {
     ...obj,
     createdAt: typeof obj.createdAt === 'string' ? DateTime.fromISO(obj.createdAt).toJSDate() : obj.createdAt
   }))
-}
-
-// Random data generators
-const RANDOM_NAMES = [
-  'Alice',
-  'Bob',
-  'Charlie',
-  'Diana',
-  'Eve',
-  'Frank',
-  'Grace',
-  'Henry',
-  'Iris',
-  'Jack',
-  'Kate',
-  'Liam',
-  'Maya',
-  'Noah',
-  'Olivia',
-  'Paul',
-  'Quinn',
-  'Ruby',
-  'Sam',
-  'Tara',
-  'Uma',
-  'Victor',
-  'Wendy',
-  'Xander',
-  'Yara',
-  'Zoe',
-  'Alex',
-  'Jordan',
-  'Taylor',
-  'Morgan',
-  'Casey',
-  'Riley'
-]
-
-const generateRandomUser = (): Omit<User, 'id' | 'createdAt'> => {
-  const randomName = RANDOM_NAMES[Math.floor(Math.random() * RANDOM_NAMES.length)]
-  const randomNumber = Math.floor(Math.random() * 1000)
-  return { name: `${randomName}${randomNumber}` }
-}
-
-const generateRandomDeck = (): Omit<Deck, 'id' | 'createdAt'> => {
-  const randomNumber = Math.floor(Math.random() * 1000)
-  const deckNames = ['Aggro', 'Control', 'Combo', 'Midrange', 'Tempo', 'Ramp', 'Burn', 'Tribal']
-  const randomDeckName = deckNames[Math.floor(Math.random() * deckNames.length)]
-
-  const commanderCount = Math.random() > 0.05 ? 1 : 2
-  const shuffledCommanders = [...AVAILABLE_COMMANDERS].sort(() => Math.random() - 0.5)
-  const selectedCommanders = shuffledCommanders.slice(0, commanderCount)
-
-  const allColors = selectedCommanders.map(commander => commander.colors).flat()
-  const uniqueColors = [...new Set(allColors)]
-
-  return {
-    name: `${randomDeckName} Deck ${randomNumber}`,
-    colors: uniqueColors.length > 0 ? uniqueColors : ['C'],
-    commanders: selectedCommanders,
-    createdBy: null
-  }
 }
 
 // Data section component
@@ -426,118 +367,21 @@ export const DevToolsPanel: React.FC = () => {
   const handleAddRandomDeck = () => addDeck(generateRandomDeck())
 
   const handleAddRandomGame = () => {
-    // For untracked games, we don't need users and decks
-    const playerCount = Math.floor(Math.random() * 3) + 2
-    // Bias towards untracked games when no users/decks exist
-    const turnTracking = users.length === 0 ? false : Math.random() > 0.8
-    const startingLife = playerCount >= 4 ? 40 : 20
-    const commanders = playerCount >= 3 && Math.random() > 0.75
-
-    const players: Player[] = []
-
-    // Only check for users/decks if turn tracking is enabled AND we don't have them
-    if (turnTracking && (users.length === 0 || decks.length === 0)) {
-      alert('You need at least one user and one deck to generate a tracked game.')
-      return
+    try {
+      const gameData = generateRandomGame({ users, decks })
+      addGame(gameData)
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Failed to generate random game')
     }
-
-    if (turnTracking) {
-      // For tracked games, assign users and decks
-      const shuffledUsers = [...users].sort(() => Math.random() - 0.5)
-      const shuffledDecks = [...decks].sort(() => Math.random() - 0.5)
-
-      for (let i = 0; i < playerCount; i++) {
-        const user = shuffledUsers[i] || null
-        const deck = shuffledDecks[i] || null
-
-        players.push({
-          id: `player-${i + 1}`,
-          userId: user?.id || null,
-          deckId: deck?.id || null
-        })
-      }
-    } else {
-      // For untracked games, create players without assignments
-      for (let i = 0; i < playerCount; i++) {
-        players.push({
-          id: `player-${i + 1}`,
-          userId: null,
-          deckId: null
-        })
-      }
-    }
-
-    const gameData = { players, turnTracking, startingLife, commanders }
-    addGame(gameData)
   }
 
   const handleAddFinishedGame = () => {
-    // For untracked games, we don't need users and decks
-    const playerCount = Math.floor(Math.random() * 3) + 2
-    // Bias towards untracked games when no users/decks exist
-    const turnTracking = users.length === 0 ? false : Math.random() > 0.9
-    const startingLife = Math.random() > 0.5 ? 40 : 20
-
-    if (turnTracking && (users.length === 0 || decks.length === 0)) {
-      alert('You need at least one user and one deck to generate a tracked finished game.')
-      return
+    try {
+      const finishedGame = generateFinishedGame({ users, decks })
+      setGames(prev => [...prev, finishedGame])
+    } catch (error) {
+      alert(error instanceof Error ? error.message : 'Failed to generate finished game')
     }
-
-    let finishedGame: Game
-
-    if (turnTracking) {
-      // For tracked games, use the existing function
-      finishedGame = createFinishedGame(users, decks)
-    } else {
-      // For untracked games, create a simple finished game without turn tracking
-      const players: Player[] = []
-      for (let i = 0; i < playerCount; i++) {
-        players.push({
-          id: `player-${i + 1}`,
-          userId: null,
-          deckId: null
-        })
-      }
-
-      // Generate simple life change actions for untracked games
-      const actions: LifeChangeAction[] = []
-      const gameStartTime = DateTime.now().minus({ hours: Math.floor(Math.random() * 3) + 1 })
-      let currentTime = gameStartTime
-
-      // Generate 5-15 random life changes
-      const actionCount = Math.floor(Math.random() * 10) + 5
-      for (let i = 0; i < actionCount; i++) {
-        currentTime = currentTime.plus({ minutes: Math.floor(Math.random() * 10) + 1 })
-
-        const randomPlayer = players[Math.floor(Math.random() * players.length)]
-        const lifeChangeValue = Math.floor(Math.random() * 10) + 1
-        const isDamage = Math.random() > 0.3 // 70% chance of damage
-
-        const lifeChangeAction: LifeChangeAction = {
-          id: generateId(),
-          createdAt: currentTime.toJSDate(),
-          type: 'life-change',
-          value: isDamage ? -lifeChangeValue : lifeChangeValue,
-          from: randomPlayer.id,
-          to: [randomPlayer.id]
-        }
-        actions.push(lifeChangeAction)
-      }
-
-      finishedGame = {
-        id: generateId(),
-        createdAt: gameStartTime.toJSDate(),
-        state: 'finished',
-        players,
-        activePlayerId: null,
-        turnTracking: false,
-        startingLife,
-        commanders: false,
-        actions
-      }
-    }
-
-    setGames(prev => [...prev, finishedGame])
   }
 
   const handleClearLogs = () => {
