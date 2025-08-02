@@ -1,47 +1,12 @@
+import { faker } from '@faker-js/faker'
 import { DateTime } from 'luxon'
 
 import { createFinishedGame } from './gameGenerator'
 import { generateId } from './idGenerator'
 import { AVAILABLE_COMMANDERS } from './scryfall'
 
-// Random names for user generation
-const RANDOM_NAMES = [
-  'Alice',
-  'Bob',
-  'Charlie',
-  'Diana',
-  'Eve',
-  'Frank',
-  'Grace',
-  'Henry',
-  'Iris',
-  'Jack',
-  'Kate',
-  'Liam',
-  'Maya',
-  'Noah',
-  'Olivia',
-  'Paul',
-  'Quinn',
-  'Ruby',
-  'Sam',
-  'Tara',
-  'Uma',
-  'Victor',
-  'Wendy',
-  'Xander',
-  'Yara',
-  'Zoe',
-  'Alex',
-  'Jordan',
-  'Taylor',
-  'Morgan',
-  'Casey',
-  'Riley'
-]
-
-// Deck names for random deck generation
-const DECK_NAMES = ['Aggro', 'Control', 'Combo', 'Midrange', 'Tempo', 'Ramp', 'Burn', 'Tribal']
+// Deck archetypes for random deck generation
+const DECK_ARCHETYPES = ['Aggro', 'Control', 'Combo', 'Midrange', 'Tempo', 'Ramp', 'Burn', 'Tribal']
 
 export interface GenerateRandomUserOptions {
   name?: string
@@ -55,9 +20,10 @@ export const generateRandomUser = (options: GenerateRandomUserOptions = {}): Omi
     return { name }
   }
 
-  const randomName = RANDOM_NAMES[Math.floor(Math.random() * RANDOM_NAMES.length)]
+  const firstName = faker.person.firstName()
+  const lastName = faker.person.lastName()
   const number = randomNumber ?? Math.floor(Math.random() * 1000)
-  return { name: `${randomName}${number}` }
+  return { name: `${firstName} ${lastName}${number}` }
 }
 
 export interface GenerateRandomDeckOptions {
@@ -82,8 +48,9 @@ export const generateRandomDeck = (options: GenerateRandomDeckOptions = {}): Omi
   }
 
   const number = randomNumber ?? Math.floor(Math.random() * 1000)
-  const deckNames = DECK_NAMES
-  const randomDeckName = deckNames[Math.floor(Math.random() * deckNames.length)]
+  const deckArchetype = DECK_ARCHETYPES[Math.floor(Math.random() * DECK_ARCHETYPES.length)]
+  const deckTheme = faker.word.adjective()
+  const randomDeckName = `${deckArchetype} ${deckTheme}`
 
   const count = commanderCount ?? (Math.random() > 0.05 ? 1 : 2)
   const shuffledCommanders = [...AVAILABLE_COMMANDERS].sort(() => Math.random() - 0.5)
