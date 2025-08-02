@@ -76,10 +76,21 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
     if (commanders.length >= 2) return
 
     setCommanders(commanders => [...commanders, commander])
+
+    // Auto-set deck name to commander name if deck name is empty
+    if (!name.trim()) {
+      setName(commander.name)
+    }
   }
 
   const handleRemoveCommander = (index: number) => {
+    const removedCommander = commanders[index]
     setCommanders(commanders => commanders.filter((_, i) => i !== index))
+
+    // Clear deck name if it matches the removed commander's name
+    if (name.trim() === removedCommander.name) {
+      setName('')
+    }
   }
 
   const mode = deck ? 'edit' : 'create'
