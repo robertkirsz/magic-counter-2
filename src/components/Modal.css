@@ -1,3 +1,5 @@
+@import 'tailwindcss';
+
 .Modal {
   /* Ensure modals work properly in fullscreen */
 
@@ -19,7 +21,8 @@
   }
 
   &.fullSize {
-    width: calc(100% - 40px);
-    height: calc(100% - 40px);
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+    @apply max-w-[1024px];
   }
 }

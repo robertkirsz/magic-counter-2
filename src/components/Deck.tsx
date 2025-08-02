@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
+import { cn } from '../utils/cn'
 import { ColorBadges } from './ColorBadges'
 import { Commander } from './Commander'
 import { DeckForm } from './DeckForm'
@@ -25,6 +26,7 @@ export const Deck: React.FC<DeckProps> = ({
   useContextControls,
   showCreator = true,
   showStats = true,
+  className,
   onRemove,
   ...props
 }) => {
@@ -58,12 +60,12 @@ export const Deck: React.FC<DeckProps> = ({
   const testIdPrefix = testId ? `${testId}-deck-${testIndex}` : `deck-${testIndex}`
 
   return (
-    <div data-testid={testIdPrefix} className="flex flex-col gap-2" {...props}>
+    <div data-testid={testIdPrefix} className={cn('Deck flex flex-col gap-2', className)} {...props}>
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
-            <h3>{deck.name}</h3>
+            <h3 className="line-clamp-1">{deck.name}</h3>
             <ColorBadges colors={deck.colors} />
           </div>
 
@@ -99,7 +101,7 @@ export const Deck: React.FC<DeckProps> = ({
             key={commander.id}
             commander={commander}
             testIdIndex={testIndex + '-' + index}
-            className="flex-1"
+            className="flex-1 max-w-35"
           />
         ))}
       </div>

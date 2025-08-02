@@ -2,12 +2,13 @@ import { SwordsIcon } from 'lucide-react'
 import React, { useMemo, useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
+import { cn } from '../utils/cn'
 import { ControlsSection } from './ControlsSection'
 import type { SortOption } from './ControlsSection'
 import { FadeMask } from './FadeMask'
 import { Game } from './Game'
 
-export const Games: React.FC = () => {
+export const Games: React.FC<React.HTMLAttributes<HTMLDivElement>> = props => {
   const { games, removeGame } = useGames()
   const [sortBy, setSortBy] = useState<SortOption>('date')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
@@ -74,7 +75,7 @@ export const Games: React.FC = () => {
   const hasMultipleGames = games.length > 1
 
   return (
-    <div className="flex-1 flex flex-col gap-4 overflow-hidden">
+    <div className={cn('flex flex-col gap-4 overflow-hidden', props.className)}>
       {/* Controls Section */}
       <ControlsSection
         hasMultipleItems={hasMultipleGames}
@@ -88,8 +89,8 @@ export const Games: React.FC = () => {
       />
 
       {hasGames && (
-        <FadeMask fadeHeight={24} showMask={sortedGames.length > 3}>
-          <div className="grid gap-6">
+        <FadeMask>
+          <div className="grid gap-2">
             {sortedGames.map(game => (
               <Game key={game.id} game={game} onRemove={() => removeGame(game.id)} />
             ))}
@@ -98,12 +99,14 @@ export const Games: React.FC = () => {
       )}
 
       {!hasGames && (
-        <div className="flex flex-col items-center justify-center text-center">
+        <div className="m-auto flex flex-col items-center justify-center text-center">
           <SwordsIcon size={48} className="text-gray-400" />
-          <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">
+
+          <h3 className="text-xl font-semibold text-gray-300">
             {searchQuery.trim() ? 'No games match your search' : 'No games yet'}
           </h3>
-          <p className="text-gray-500 dark:text-gray-400">
+
+          <p className="text-gray-400">
             {searchQuery.trim() ? 'Try a different search' : 'Create your first game to get started'}
           </p>
         </div>

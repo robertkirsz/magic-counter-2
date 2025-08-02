@@ -2,18 +2,19 @@ import { BookImageIcon } from 'lucide-react'
 import React, { useMemo, useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
+import { cn } from '../utils/cn'
 import { ControlsSection } from './ControlsSection'
 import type { SortOption } from './ControlsSection'
 import { Deck } from './Deck'
 import { DeckForm } from './DeckForm'
 import { FadeMask } from './FadeMask'
 
-interface DecksProps {
+interface DecksProps extends React.HTMLAttributes<HTMLDivElement> {
   userId?: string
   onDeckClick?: (deckId: string) => void
 }
 
-export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick }) => {
+export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick, ...props }) => {
   const { decks } = useDecks()
   const [deckFormVisible, setDeckFormVisible] = useState(false)
   const [sortBy, setSortBy] = useState<SortOption>('name')
@@ -110,7 +111,7 @@ export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick }) => {
   const hasMultipleDecks = decks.length > 1
 
   return (
-    <div className="flex-1 flex flex-col gap-4 overflow-hidden">
+    <div className={cn('flex flex-col gap-4 overflow-hidden', props.className)}>
       {/* Controls Section */}
       <ControlsSection
         hasMultipleItems={hasMultipleDecks}
@@ -142,7 +143,7 @@ export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick }) => {
 
       {/* Decks List */}
       {hasDecks && (
-        <FadeMask fadeHeight={24} showMask={sortedDecks.length > 3}>
+        <FadeMask>
           {/* TODO: make number of columns depend on container's width */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
             {sortedDecks.map((deck, index) => (
@@ -160,7 +161,7 @@ export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick }) => {
       )}
 
       {!hasDecks && (
-        <div className="flex flex-col items-center justify-center text-center">
+        <div className="m-auto flex flex-col items-center justify-center text-center">
           <BookImageIcon size={48} className="text-slate-400" />
 
           <h3 className="text-xl font-semibold text-slate-300">

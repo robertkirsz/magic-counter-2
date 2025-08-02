@@ -206,107 +206,25 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
               const summary = getRoundSummary(roundGroup)
 
               return (
-                <div
+                <CollapsibleSection
                   key={roundGroup.round}
-                  className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden"
+                  isCollapsed={isCollapsed}
+                  onToggle={() => toggleRound(roundGroup.round)}
+                  header={<RoundHeader roundNumber={roundGroup.round} summary={summary} isCollapsed={isCollapsed} />}
                 >
-                  {/* Round Header */}
-                  <button
-                    onClick={() => toggleRound(roundGroup.round)}
-                    className="w-full px-4 py-3 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-900/30 dark:hover:to-indigo-900/30 transition-colors border-b border-gray-200 dark:border-gray-700"
-                  >
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
-                          <span className="text-blue-700 dark:text-blue-300 font-semibold text-sm">
-                            {roundGroup.round}
-                          </span>
-                        </div>
-                        <div className="text-left">
-                          <h3 className="font-semibold text-gray-900 dark:text-gray-100">Round {roundGroup.round}</h3>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{summary}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          {roundGroup.turns.length} turns
-                        </span>
-                        {isCollapsed ? <ChevronRight size={16} /> : <ChevronDown size={16} />}
-                      </div>
-                    </div>
-                  </button>
-
-                  {/* Round Content */}
-                  {!isCollapsed && (
-                    <div className="p-4 space-y-3">
-                      {roundGroup.turns.map(turnGroup => {
-                        const turnTime = formatTime(safeToDateTime(turnGroup.turn.createdAt))
-                        const hasLifeChanges = turnGroup.lifeChanges.length > 0
-
-                        return (
-                          <div
-                            key={turnGroup.turn.id}
-                            className="bg-gray-50 dark:bg-gray-700/50 rounded-lg p-3 border border-gray-200 dark:border-gray-600"
-                          >
-                            {/* Turn Header */}
-                            <div className="flex items-center justify-between mb-2">
-                              <div className="flex items-center gap-2">
-                                <Zap className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                                <span className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                  {formatAction(turnGroup.turn)}
-                                </span>
-                                <span className="text-xs text-gray-500 dark:text-gray-400">{turnTime}</span>
-                              </div>
-                              {canDeleteAction(turnGroup.turn.id) && (
-                                <ThreeDotMenu onClose={() => handleActionRemove(turnGroup.turn.id)} asMenu={false} />
-                              )}
-                            </div>
-
-                            {/* Life Changes */}
-                            {hasLifeChanges && (
-                              <div className="space-y-1 ml-6">
-                                {turnGroup.lifeChanges.map(lifeChange => {
-                                  const lifeChangeTime = formatTime(safeToDateTime(lifeChange.createdAt))
-                                  const isLifeGain = lifeChange.value > 0
-
-                                  return (
-                                    <div
-                                      key={lifeChange.id}
-                                      className="flex items-center justify-between py-1 px-2 bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-600"
-                                    >
-                                      <div className="flex items-center gap-2">
-                                        <Heart
-                                          className={cn(
-                                            'w-3 h-3',
-                                            isLifeGain
-                                              ? 'text-green-600 dark:text-green-400'
-                                              : 'text-red-600 dark:text-red-400'
-                                          )}
-                                        />
-                                        <span className="text-sm text-gray-700 dark:text-gray-300">
-                                          {formatAction(lifeChange)}
-                                        </span>
-                                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                                          {lifeChangeTime}
-                                        </span>
-                                      </div>
-                                      {canDeleteAction(lifeChange.id) && (
-                                        <ThreeDotMenu
-                                          onClose={() => handleActionRemove(lifeChange.id)}
-                                          asMenu={false}
-                                        />
-                                      )}
-                                    </div>
-                                  )
-                                })}
-                              </div>
-                            )}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  )}
-                </div>
+                  {roundGroup.turns.map(turnGroup => (
+                    <TurnItem
+                      key={turnGroup.turn.id}
+                      turn={turnGroup.turn}
+                      lifeChanges={turnGroup.lifeChanges}
+                      formatAction={formatAction}
+                      formatTime={formatTime}
+                      safeToDateTime={safeToDateTime}
+                      canDeleteAction={canDeleteAction}
+                      onActionRemove={handleActionRemove}
+                    />
+                  ))}
+                </CollapsibleSection>
               )
             })}
           </div>
@@ -316,58 +234,192 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
       {hasActions && !hasTurnTracking && (
         <FadeMask showMask={lifeChangeActions.length > 10}>
           <div className="flex flex-col gap-2">
-            <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
-              <div className="px-4 py-3 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-b border-gray-200 dark:border-gray-700">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center">
-                    <Heart className="w-4 h-4 text-green-700 dark:text-green-300" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900 dark:text-gray-100">Life Changes</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{lifeChangeActions.length} actions</p>
-                  </div>
-                </div>
-              </div>
+            <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+              <SectionHeader
+                icon={<Heart className="w-4 h-4 text-green-300" />}
+                title="Life Changes"
+                subtitle={`${lifeChangeActions.length} actions`}
+                gradient="from-green-900/20 to-emerald-900/20"
+                iconBg="bg-green-900/30"
+              />
 
               <div className="p-4 space-y-2">
-                {lifeChangeActions.map(action => {
-                  const actionTime = formatTime(safeToDateTime(action.createdAt))
-                  const isLifeGain = action.value > 0
-
-                  return (
-                    <div
-                      key={action.id}
-                      className="flex items-center justify-between py-2 px-3 bg-gray-50 dark:bg-gray-700/50 rounded border border-gray-200 dark:border-gray-600"
-                    >
-                      <div className="flex items-center gap-2">
-                        <Heart
-                          className={cn(
-                            'w-4 h-4',
-                            isLifeGain ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
-                          )}
-                        />
-                        <span className="text-sm text-gray-700 dark:text-gray-300">{formatAction(action)}</span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">{actionTime}</span>
-                      </div>
-                      {canDeleteAction(action.id) && (
-                        <ThreeDotMenu onClose={() => handleActionRemove(action.id)} asMenu={false} />
-                      )}
-                    </div>
-                  )
-                })}
+                {lifeChangeActions.map(action => (
+                  <LifeChangeItem
+                    key={action.id}
+                    action={action}
+                    formatAction={formatAction}
+                    formatTime={formatTime}
+                    safeToDateTime={safeToDateTime}
+                    canDeleteAction={canDeleteAction}
+                    onActionRemove={handleActionRemove}
+                  />
+                ))}
               </div>
             </div>
           </div>
         </FadeMask>
       )}
 
-      {!hasActions && (
-        <div className="flex flex-col items-center justify-center text-center">
-          <CircleSlash size={48} className="text-gray-400" />
-          <h3 className="text-xl font-semibold text-gray-700 dark:text-gray-300">No actions recorded yet</h3>
-          <p className="text-gray-500 dark:text-gray-400">Start playing to see game history</p>
+      {!hasActions && <EmptyState />}
+    </div>
+  )
+}
+
+// ============================================================================
+// Reusable Components
+// ============================================================================
+
+interface SectionHeaderProps {
+  icon: React.ReactNode
+  title: string
+  subtitle?: string
+  gradient?: string
+  iconBg: string
+}
+
+const SectionHeader: React.FC<SectionHeaderProps> = ({ icon, title, subtitle, gradient, iconBg }) => (
+  <div className={`px-4 py-3 bg-gradient-to-r ${gradient} border-b border-gray-700`}>
+    <div className="flex items-center gap-3">
+      <div className={`w-8 h-8 ${iconBg} rounded-full flex items-center justify-center`}>{icon}</div>
+      <div>
+        <h3 className="font-semibold text-gray-100">{title}</h3>
+        {subtitle && <p className="text-xs text-gray-400">{subtitle}</p>}
+      </div>
+    </div>
+  </div>
+)
+
+interface CollapsibleSectionProps {
+  isCollapsed: boolean
+  onToggle: () => void
+  header: React.ReactNode
+  children: React.ReactNode
+}
+
+const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({ isCollapsed, onToggle, header, children }) => (
+  <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+    <button
+      onClick={onToggle}
+      className="w-full px-4 py-3 bg-gradient-to-r from-blue-900/20 to-indigo-900/20 hover:from-blue-900/30 hover:to-indigo-900/30 transition-colors border-b border-gray-700"
+    >
+      {header}
+    </button>
+    {!isCollapsed && <div className="p-4 space-y-3">{children}</div>}
+  </div>
+)
+
+interface RoundHeaderProps {
+  roundNumber: number
+  summary: string
+  isCollapsed: boolean
+}
+
+const RoundHeader: React.FC<RoundHeaderProps> = ({ roundNumber, summary, isCollapsed }) => (
+  <div className="flex items-center justify-between">
+    <div className="flex items-center gap-3">
+      <div className="w-8 h-8 bg-blue-900/30 rounded-full flex items-center justify-center">
+        <span className="text-blue-300 font-semibold text-sm">{roundNumber}</span>
+      </div>
+      <div className="text-left">
+        <h3 className="font-semiboldtext-gray-100">Round {roundNumber}</h3>
+        <p className="text-xstext-gray-400 mt-0.5">{summary}</p>
+      </div>
+    </div>
+    {isCollapsed ? <ChevronRight size={16} /> : <ChevronDown size={16} />}
+  </div>
+)
+
+interface TurnItemProps {
+  turn: TurnChangeAction
+  lifeChanges: LifeChangeAction[]
+  formatAction: (action: LifeChangeAction | TurnChangeAction) => string
+  formatTime: (date: DateTime) => string
+  safeToDateTime: (date: Date | string) => DateTime
+  canDeleteAction: (actionId: string) => boolean
+  onActionRemove: (actionId: string) => void
+}
+
+const TurnItem: React.FC<TurnItemProps> = ({
+  turn,
+  lifeChanges,
+  formatAction,
+  formatTime,
+  safeToDateTime,
+  canDeleteAction,
+  onActionRemove
+}) => {
+  const turnTime = formatTime(safeToDateTime(turn.createdAt))
+  const hasLifeChanges = lifeChanges.length > 0
+
+  return (
+    <div className="bg-gray-700/50 rounded-lg p-3 border border-gray-600">
+      {/* Turn Header */}
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <Zap className="w-4 h-4 text-blue-400" />
+          <span className="text-sm font-medium text-gray-100">{formatAction(turn)}</span>
+          <span className="text-xs text-gray-400">{turnTime}</span>
+        </div>
+        {canDeleteAction(turn.id) && <ThreeDotMenu onClose={() => onActionRemove(turn.id)} asMenu={false} />}
+      </div>
+
+      {/* Life Changes */}
+      {hasLifeChanges && (
+        <div className="space-y-1 ml-6">
+          {lifeChanges.map(lifeChange => (
+            <LifeChangeItem
+              key={lifeChange.id}
+              action={lifeChange}
+              formatAction={formatAction}
+              formatTime={formatTime}
+              safeToDateTime={safeToDateTime}
+              canDeleteAction={canDeleteAction}
+              onActionRemove={onActionRemove}
+            />
+          ))}
         </div>
       )}
     </div>
   )
 }
+
+interface LifeChangeItemProps {
+  action: LifeChangeAction
+  formatAction: (action: LifeChangeAction | TurnChangeAction) => string
+  formatTime: (date: DateTime) => string
+  safeToDateTime: (date: Date | string) => DateTime
+  canDeleteAction: (actionId: string) => boolean
+  onActionRemove: (actionId: string) => void
+}
+
+const LifeChangeItem: React.FC<LifeChangeItemProps> = ({
+  action,
+  formatAction,
+  formatTime,
+  safeToDateTime,
+  canDeleteAction,
+  onActionRemove
+}) => {
+  const actionTime = formatTime(safeToDateTime(action.createdAt))
+  const isLifeGain = action.value > 0
+
+  return (
+    <div className="flex items-center justify-between py-1 px-2 bg-gray-800 rounded border border-gray-600">
+      <div className="flex items-center gap-2">
+        <Heart className={cn('flex-none w-3 h-3', isLifeGain ? 'text-green-400' : 'text-red-400')} />
+        <span className="text-sm text-gray-300">{formatAction(action)}</span>
+        <span className="text-xs text-gray-400">{actionTime}</span>
+      </div>
+      {canDeleteAction(action.id) && <ThreeDotMenu onClose={() => onActionRemove(action.id)} asMenu={false} />}
+    </div>
+  )
+}
+
+const EmptyState: React.FC = () => (
+  <div className="flex flex-col items-center justify-center text-center">
+    <CircleSlash size={48} className="text-gray-400" />
+    <h3 className="text-xl font-semibold text-gray-300">No actions recorded yet</h3>
+    <p className="text-gray-400">Start playing to see game history</p>
+  </div>
+)

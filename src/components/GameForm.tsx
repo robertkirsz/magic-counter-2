@@ -2,16 +2,17 @@ import { HeartIcon, UserIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
+import { cn } from '../utils/cn'
 import { Button } from './Button'
 
-interface GameFormProps {
+interface GameFormProps extends React.HTMLAttributes<HTMLFormElement> {
   gameId?: Game['id']
   onSave: (gameId: string) => void
   onCancel: () => void
   onPlayerCountChange?: (count: number) => void
 }
 
-export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, onPlayerCountChange }) => {
+export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, onPlayerCountChange, ...props }) => {
   const { games, updateGame, addGame } = useGames()
   const game = games.find(g => g.id === gameId)
 
@@ -100,7 +101,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
   const isEditMode = !!game
 
   return (
-    <form className="flex flex-col items-center gap-6" onSubmit={handleSubmit}>
+    <form className={cn('flex flex-col items-center gap-6', props.className)} onSubmit={handleSubmit}>
       {/* Section 1: Number of Players */}
       <div className="grid grid-cols-3 gap-2">
         {[1, 2, 3, 4, 5, 6].map(count => (

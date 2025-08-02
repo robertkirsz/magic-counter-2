@@ -26,7 +26,7 @@ export const IntroScreen: React.FC = () => {
 
   return (
     <div className="h-svh flex flex-col items-center justify-center p-4">
-      <h1 className="mb-40 text-2xl text-white text-center">Magic Counter</h1>
+      <h1 className="mb-40 text-2xl text-center">Magic Counter</h1>
 
       <div className="flex flex-col items-center gap-2">
         {!hasGamesInProgress && (
@@ -61,12 +61,12 @@ export const IntroScreen: React.FC = () => {
 
       {/* Games Modal */}
       <Modal testId="games" fullSize isOpen={showGames} onClose={() => setShowGames(false)} title="Games">
-        <Games />
+        <Games className="flex-1" />
       </Modal>
 
       {/* Users Modal */}
       <Modal testId="users" fullSize isOpen={showUsers} onClose={() => setShowUsers(false)} title="Users">
-        <Users />
+        <Users className="flex-1" />
 
         {/* Floating Add User Button */}
         <Button
@@ -87,7 +87,7 @@ export const IntroScreen: React.FC = () => {
 
       {/* Decks Modal */}
       <Modal testId="decks" fullSize isOpen={showDecks} onClose={() => setShowDecks(false)} title="Decks">
-        <Decks />
+        <Decks className="flex-1" />
 
         {/* Floating Add Deck Button */}
         <Button

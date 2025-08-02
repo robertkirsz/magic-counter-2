@@ -3,18 +3,12 @@
 /* Mobile PWA Fullscreen Styles */
 html {
   height: 100%;
-  /* TODO */
-  /* overflow: hidden; */
-  /* Disable overscroll behavior */
-  overscroll-behavior: none;
 }
 
 body {
   @apply bg-slate-900 text-white;
   height: 100vh;
   height: 100dvh; /* Dynamic viewport height for mobile */
-  /* TODO */
-  /* overflow: hidden; */
   /* Handle safe areas for notched devices */
   /* padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left); */
   /* Prevent zoom on double tap */
@@ -24,9 +18,6 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  /* Disable overscroll behavior */
-  overscroll-behavior: none;
-  -webkit-overflow-scrolling: touch;
 }
 
 dialog {
@@ -35,10 +26,6 @@ dialog {
 
 #root {
   height: 100%;
-  /* TODO */
-  /* overflow: hidden; */
-  /* Disable overscroll behavior */
-  overscroll-behavior: none;
 }
 
 /* Hide elements with importance lower than current setting */

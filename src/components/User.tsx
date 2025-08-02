@@ -35,7 +35,7 @@ export const User: React.FC<UserProps> = ({ user, testIndex, onEdit, onRemove, o
         </div>
 
         <div className="flex-1">
-          <h3 className="text-gray-900 dark:text-white font-semibold line-clamp-1" data-testid={`${testId}-name`}>
+          <h3 className="text-white font-semibold line-clamp-1" data-testid={`${testId}-name`}>
             {user.name}
           </h3>
         </div>
@@ -44,17 +44,17 @@ export const User: React.FC<UserProps> = ({ user, testIndex, onEdit, onRemove, o
       </div>
 
       {/* Statistics Section */}
-      <div className="flex items-center gap-4 mb-4 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+      <div className="flex items-center gap-4 mb-4 p-3 bg-gray-800 rounded-lg">
         <div className="flex items-center gap-2">
-          <Gamepad2 size={16} className="text-blue-600 dark:text-blue-400" />
-          <span className="text-sm text-gray-600 dark:text-gray-300">
+          <Gamepad2 size={16} className="text-blue-400" />
+          <span className="text-sm text-gray-300">
             {gamesPlayed} game{gamesPlayed !== 1 ? 's' : ''} played
           </span>
         </div>
 
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-          <span className="text-sm text-gray-600 dark:text-gray-300">
+          <span className="text-sm text-gray-300">
             {filteredDecks.length} deck{filteredDecks.length !== 1 ? 's' : ''}
           </span>
         </div>
@@ -65,10 +65,10 @@ export const User: React.FC<UserProps> = ({ user, testIndex, onEdit, onRemove, o
         <div className="mb-4">
           <button
             onClick={() => setDecksExpanded(!decksExpanded)}
-            className="flex items-center gap-2 w-full p-3 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            className="flex items-center gap-2 w-full p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
           >
             {decksExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-            <span className="font-medium text-gray-900 dark:text-gray-100">Decks ({filteredDecks.length})</span>
+            <span className="font-medium text-gray-100">Decks ({filteredDecks.length})</span>
           </button>
 
           {decksExpanded && (

@@ -2,6 +2,7 @@ import { UsersIcon } from 'lucide-react'
 import React, { useMemo, useState } from 'react'
 
 import { useUsers } from '../hooks/useUsers'
+import { cn } from '../utils/cn'
 import { ControlsSection } from './ControlsSection'
 import type { SortOption } from './ControlsSection'
 import { DeckForm } from './DeckForm'
@@ -10,7 +11,7 @@ import { Modal } from './Modal'
 import { User } from './User'
 import { UserForm } from './UserForm'
 
-export const Users: React.FC = () => {
+export const Users: React.FC<React.HTMLAttributes<HTMLDivElement>> = props => {
   const { users, removeUser } = useUsers()
 
   const [editingId, setEditingId] = useState<string>()
@@ -74,7 +75,7 @@ export const Users: React.FC = () => {
   const hasMultipleUsers = users.length > 1
 
   return (
-    <div className="flex flex-col gap-4 overflow-hidden">
+    <div className={cn('flex flex-col gap-4 overflow-hidden', props.className)}>
       {/* Controls Section */}
       <ControlsSection
         hasMultipleItems={hasMultipleUsers}
@@ -89,7 +90,7 @@ export const Users: React.FC = () => {
 
       {/* Users List */}
       {hasUsers && (
-        <FadeMask showMask={sortedUsers.length > 3}>
+        <FadeMask>
           <div className="flex flex-col gap-2">
             {sortedUsers.map((user, index) => (
               <User
@@ -106,11 +107,13 @@ export const Users: React.FC = () => {
       )}
 
       {!hasUsers && (
-        <div className="flex flex-col items-center justify-center text-center">
+        <div className="m-auto flex flex-col items-center justify-center text-center">
           <UsersIcon size={48} className="text-slate-400" />
+
           <h3 className="text-xl font-semibold text-slate-300">
             {searchQuery.trim() ? 'No users match your search' : 'No users yet'}
           </h3>
+
           <p className="text-slate-400">
             {searchQuery.trim() ? 'Try a different search' : 'Add someone to play with!'}
           </p>

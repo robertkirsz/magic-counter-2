@@ -125,7 +125,7 @@ const DataSectionComponent: React.FC<DataSectionProps> = ({ section, text, setTe
     <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">{section.title}</summary>
 
     <textarea
-      className={cn('form-textarea resize-y mb-1 h-28', error && 'border-red-500 dark:border-red-500')}
+      className={cn('form-textarea resize-y mb-1 h-28', error && 'border-red-500')}
       value={text}
       onChange={e => setText(e.target.value)}
       spellCheck={false}
