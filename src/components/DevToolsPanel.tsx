@@ -1,4 +1,4 @@
-import { BookOpen, Swords, Trophy, UserPlus, Wrench } from 'lucide-react'
+import { BookOpen, Swords, UserPlus, Wrench } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useEffect, useState } from 'react'
 
@@ -19,10 +19,15 @@ import {
   generateRandomGame,
   generateRandomUser
 } from '../utils/generateRandom'
+import { generateId } from '../utils/idGenerator'
 import { Button } from './Button'
 
 // Types for data validation
 type DataType = 'users' | 'decks' | 'games'
+
+// Game creation types
+type GameType = 'untracked' | 'tracked' | 'random'
+type GameState = 'setup' | 'active' | 'finished'
 
 interface DataSection {
   type: DataType
@@ -151,8 +156,12 @@ const QuickActionButton: React.FC<QuickActionButtonProps> = ({ icon, onClick, di
 export const DevToolsPanel: React.FC = () => {
   const { users, addUser, setUsers } = useUsers()
   const { decks, addDeck, setDecks } = useDecks()
-  const { games, setGames, addGame } = useGames()
+  const { games, setGames } = useGames()
   const [open, setOpen] = useState(false)
+
+  // Game creation state
+  const [gameType, setGameType] = useState<GameType>('random')
+  const [gameState, setGameState] = useState<GameState>('active')
 
   // Local state for editing
   const [texts, setTexts] = useState({
@@ -366,21 +375,56 @@ export const DevToolsPanel: React.FC = () => {
 
   const handleAddRandomDeck = () => addDeck(generateRandomDeck())
 
-  const handleAddRandomGame = () => {
+  const handleAddGame = () => {
     try {
-      const gameData = generateRandomGame({ users, decks })
-      addGame(gameData)
-    } catch (error) {
-      alert(error instanceof Error ? error.message : 'Failed to generate random game')
-    }
-  }
+      let gameData: Omit<Game, 'id' | 'createdAt'> | Game
 
-  const handleAddFinishedGame = () => {
-    try {
-      const finishedGame = generateFinishedGame({ users, decks })
-      setGames(prev => [...prev, finishedGame])
+      if (gameState === 'finished') {
+        // For finished games, use generateFinishedGame which creates proper actions
+        if (gameType === 'untracked') {
+          gameData = generateFinishedGame({ users, decks, turnTracking: false })
+        } else if (gameType === 'tracked') {
+          gameData = generateFinishedGame({ users, decks, turnTracking: true })
+        } else {
+          // For 'random' type, let the generator decide randomly
+          gameData = generateFinishedGame({ users, decks })
+        }
+      } else {
+        // For setup and active games, use generateRandomGame
+        if (gameType === 'untracked') {
+          // Force untracked game
+          gameData = generateRandomGame({ users, decks, turnTracking: false })
+        } else if (gameType === 'tracked') {
+          // Force tracked game
+          gameData = generateRandomGame({ users, decks, turnTracking: true })
+        } else {
+          // For 'random' type, let the generator decide randomly
+          gameData = generateRandomGame({ users, decks })
+        }
+
+        // Set the game state
+        gameData.state = gameState
+      }
+
+      // Use setGames directly to preserve the state we want to set
+      if ('id' in gameData) {
+        // gameData is already a complete Game (from generateFinishedGame)
+        setGames(prev => [...prev, gameData as Game])
+      } else {
+        // gameData is Omit<Game, 'id' | 'createdAt'> (from generateRandomGame)
+        setGames(prev => [
+          ...prev,
+          {
+            ...gameData,
+            id: generateId(),
+            createdAt: DateTime.now().toJSDate(),
+            activePlayerId: null,
+            actions: []
+          }
+        ])
+      }
     } catch (error) {
-      alert(error instanceof Error ? error.message : 'Failed to generate finished game')
+      alert(error instanceof Error ? error.message : 'Failed to generate game')
     }
   }
 
@@ -391,7 +435,10 @@ export const DevToolsPanel: React.FC = () => {
   return (
     <div className="fixed z-100 gap-2 bottom-2 right-2 flex flex-col items-end">
       {open && (
-        <div className="flex flex-col gap-2 bg-slate-900 border border-slate-700 font-mono rounded-lg p-4 shadow-lg max-h-[400px] max-w-[100%] overflow-y-auto text-xs">
+        <div
+          className="flex flex-col gap-2 bg-slate-900 border border-slate-700 font-mono rounded-lg p-4 shadow-lg max-h-[400px] max-w-[100%] overflow-y-auto text-xs"
+          data-testid="dev-tools-panel"
+        >
           {/* Quick Actions Section */}
           <details open>
             <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">Quick Actions</summary>
@@ -399,13 +446,89 @@ export const DevToolsPanel: React.FC = () => {
             <div className="flex flex-wrap gap-2 mb-3">
               <QuickActionButton icon={<UserPlus size={14} />} onClick={handleAddRandomUser} title="Add Random User" />
               <QuickActionButton icon={<BookOpen size={14} />} onClick={handleAddRandomDeck} title="Add Random Deck" />
-              <QuickActionButton icon={<Swords size={14} />} onClick={handleAddRandomGame} title="Add Random Game" />
+            </div>
 
-              <QuickActionButton
-                icon={<Trophy size={14} />}
-                onClick={handleAddFinishedGame}
-                title="Add Finished Game"
-              />
+            {/* Game Creation Controls */}
+            <div className="mb-3">
+              <div className="mb-2">
+                <label className="text-xs text-slate-300 mb-1 block">Game Type:</label>
+                <div className="flex gap-2">
+                  <label className="flex items-center gap-1 text-xs">
+                    <input
+                      type="radio"
+                      name="gameType"
+                      value="untracked"
+                      checked={gameType === 'untracked'}
+                      onChange={e => setGameType(e.target.value as GameType)}
+                      className="mr-1"
+                    />
+                    Untracked
+                  </label>
+                  <label className="flex items-center gap-1 text-xs">
+                    <input
+                      type="radio"
+                      name="gameType"
+                      value="tracked"
+                      checked={gameType === 'tracked'}
+                      onChange={e => setGameType(e.target.value as GameType)}
+                      className="mr-1"
+                    />
+                    Tracked
+                  </label>
+                  <label className="flex items-center gap-1 text-xs">
+                    <input
+                      type="radio"
+                      name="gameType"
+                      value="random"
+                      checked={gameType === 'random'}
+                      onChange={e => setGameType(e.target.value as GameType)}
+                      className="mr-1"
+                    />
+                    Random
+                  </label>
+                </div>
+              </div>
+
+              <div className="mb-2">
+                <label className="text-xs text-slate-300 mb-1 block">Game State:</label>
+                <div className="flex gap-2">
+                  <label className="flex items-center gap-1 text-xs">
+                    <input
+                      type="radio"
+                      name="gameState"
+                      value="setup"
+                      checked={gameState === 'setup'}
+                      onChange={e => setGameState(e.target.value as GameState)}
+                      className="mr-1"
+                    />
+                    Setup
+                  </label>
+                  <label className="flex items-center gap-1 text-xs">
+                    <input
+                      type="radio"
+                      name="gameState"
+                      value="active"
+                      checked={gameState === 'active'}
+                      onChange={e => setGameState(e.target.value as GameState)}
+                      className="mr-1"
+                    />
+                    Active
+                  </label>
+                  <label className="flex items-center gap-1 text-xs">
+                    <input
+                      type="radio"
+                      name="gameState"
+                      value="finished"
+                      checked={gameState === 'finished'}
+                      onChange={e => setGameState(e.target.value as GameState)}
+                      className="mr-1"
+                    />
+                    Finished
+                  </label>
+                </div>
+              </div>
+
+              <QuickActionButton icon={<Swords size={14} />} onClick={handleAddGame} title="Add Game" />
             </div>
           </details>
 
@@ -484,6 +607,7 @@ export const DevToolsPanel: React.FC = () => {
         round
         className={cn('bg-green-500 transition-all duration-200', open && 'rotate-12')}
         onClick={() => setOpen(o => !o)}
+        data-testid="dev-tools-button"
       >
         <Wrench size={20} />
       </Button>

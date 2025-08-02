@@ -22,6 +22,12 @@ export default tseslint.config(
         ecmaVersion: 2020,
         globals: globals.browser
       }
+    },
+    {
+      files: ['cypress/**/*.{ts,tsx}'],
+      rules: {
+        '@typescript-eslint/no-unused-expressions': 'off'
+      }
     }
   ],
   storybook.configs['flat/recommended']

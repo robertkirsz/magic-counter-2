@@ -81,7 +81,7 @@ export const ControlsSection: React.FC<ControlsSectionProps> = ({
           </Button>
 
           {isDropdownOpen && (
-            <div className="flex flex-col absolute top-full left-0 mt-1 rounded-lg shadow-lg z-10 min-w-[150px] overflow-clip">
+            <div className="flex flex-col absolute top-full right-0 mt-1 rounded-lg shadow-lg z-10 overflow-clip">
               {sortOptions.map(option => (
                 <Button
                   key={option}

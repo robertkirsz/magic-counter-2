@@ -60,7 +60,7 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
 
       return 'Unknown action'
     } else if (action.type === 'turn-change') {
-      if (action.to === null) return 'Game ended'
+      if (!action.to) return 'Game ended'
       const to = getPlayerName(action.to)
       return to ? `${to}'s turn` : 'Unknown turn'
     }
@@ -328,6 +328,7 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
                   </div>
                 </div>
               </div>
+
               <div className="p-4 space-y-2">
                 {lifeChangeActions.map(action => {
                   const actionTime = formatTime(safeToDateTime(action.createdAt))

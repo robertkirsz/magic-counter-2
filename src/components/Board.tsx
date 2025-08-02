@@ -236,7 +236,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
           )}
 
           {game.state === 'active' && (
-            <Button variant="primary" disabled={!canPlay} onClick={handleFinish}>
+            <Button variant="primary" onClick={handleFinish}>
               FINISH
             </Button>
           )}
