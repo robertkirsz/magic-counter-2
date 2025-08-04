@@ -44,7 +44,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       addRipple(e)
       
       // Add vibration for mobile devices
-      if (navigator.vibrate && !isDisabled) {
+      if (navigator.vibrate && !disabled && !loading) {
         navigator.vibrate(vibrationDuration)
       }
       
