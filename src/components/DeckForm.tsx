@@ -23,6 +23,8 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
   const [name, setName] = useState<Deck['name']>(deck?.name || '')
   const [selectedColors, setSelectedColors] = useState<Deck['colors']>(deck?.colors || [])
   const [commanders, setCommanders] = useState<Deck['commanders']>(deck?.commanders || [])
+  const [archidektUrl, setArchidektUrl] = useState('')
+  const [isLoadingDeckName, setIsLoadingDeckName] = useState(false)
 
   const updateColors = useCallback(
     (newCommanders: ScryfallCard[]) => {
@@ -93,6 +95,128 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
     }
   }
 
+  interface ArchidektDeckData {
+    name: string
+    cards: Array<{
+      card: {
+        uid: string
+        oracleCard: {
+          uid: string
+          name: string
+          colorIdentity: string[]
+          subTypes: string[]
+          superTypes: string[]
+          types: string[]
+        }
+        scryfallImageHash: string
+      }
+    }>
+  }
+
+  const extractDeckDataFromArchidekt = async (url: string): Promise<ArchidektDeckData | null> => {
+    try {
+      // Extract deck ID from Archidekt URL
+      const archidektRegex = /archidekt\.com\/decks\/(\d+)/i
+      const match = url.match(archidektRegex)
+
+      if (!match) throw new Error('Invalid Archidekt URL format')
+
+      const deckId = match[1]
+
+      // Try multiple approaches to handle CORS
+      const approaches = [
+        // Approach 1: Direct API call (may fail due to CORS)
+        // () => fetch(`https://archidekt.com/api/decks/${deckId}/`),
+        // Approach 2: CORS proxy
+        // () => fetch(`https://cors-anywhere.herokuapp.com/https://archidekt.com/api/decks/${deckId}/`),
+        // Approach 3: Alternative CORS proxy
+        () => fetch(`https://api.allorigins.win/raw?url=https://archidekt.com/api/decks/${deckId}/`),
+        // Approach 4: Another CORS proxy
+        () => fetch(`https://corsproxy.io/?https://archidekt.com/api/decks/${deckId}/`)
+      ]
+
+      let response: Response | null = null
+      let lastError: Error | null = null
+
+      // Try each approach until one works
+      for (const approach of approaches) {
+        try {
+          response = await approach()
+          if (response.ok) break
+        } catch (error) {
+          lastError = error as Error
+          continue
+        }
+      }
+
+      if (!response || !response.ok) {
+        throw lastError || new Error('Failed to fetch deck data from all sources')
+      }
+
+      const deckData = await response.json()
+      return deckData
+    } catch (error) {
+      console.error('Error fetching deck data from Archidekt:', error)
+      return null
+    }
+  }
+
+  const handleFetchDeckData = async () => {
+    if (!archidektUrl.trim()) return
+
+    setIsLoadingDeckName(true)
+
+    try {
+      const deckData = await extractDeckDataFromArchidekt(archidektUrl.trim())
+      console.log('🚀 ~ handleFetchDeckData ~ deckData:', deckData)
+
+      if (deckData) {
+        // Set deck name
+        setName(deckData.name)
+
+        // TODO: Get Commander insted of first card
+        const commanderCards = [deckData.cards[0]]
+
+        const archidektCommanders: ScryfallCard[] = commanderCards.map(cardData => ({
+          id: cardData.card.oracleCard.uid,
+          name: cardData.card.oracleCard.name,
+          type: `${[...cardData.card.oracleCard.superTypes, ...cardData.card.oracleCard.types].join(' ')} — ${cardData.card.oracleCard.subTypes.join(' ')}`,
+          colors: cardData.card.oracleCard.colorIdentity as ManaColor[],
+          image: cardData.card.scryfallImageHash
+            ? // ? `https://cards.scryfall.io/art_crop/front/${cardData.card.scryfallImageHash.slice(0, 2)}/${cardData.card.scryfallImageHash.slice(2, 4)}/${cardData.card.scryfallImageHash}.jpg`
+              `https://cards.scryfall.io/art_crop/front/${cardData.card.uid[0]}/${cardData.card.uid[1]}/${cardData.card.uid}.jpg?${cardData.card.scryfallImageHash}`
+            : null
+        }))
+
+        setCommanders(archidektCommanders)
+        setArchidektUrl('') // Clear the URL after successful fetch
+      } else {
+        // Fallback: try to extract deck name from URL path
+        const urlPath = new URL(archidektUrl.trim()).pathname
+        const pathParts = urlPath.split('/').filter(part => part.length > 0)
+
+        if (pathParts.length >= 3 && pathParts[0] === 'decks') {
+          // URL format: /decks/123456/deck-name
+          const potentialName = pathParts[2]
+          if (potentialName && potentialName !== pathParts[1]) {
+            // Convert URL-friendly name to readable name
+            const readableName = potentialName.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+
+            setName(readableName)
+            setArchidektUrl('')
+            return
+          }
+        }
+
+        alert('Could not fetch deck data from the provided URL. Please check the URL and try again.')
+      }
+    } catch {
+      alert('Error fetching deck data. Please check the URL and try again.')
+    } finally {
+      setIsLoadingDeckName(false)
+    }
+  }
+
   const mode = deck ? 'edit' : 'create'
   const baseId = `deck-form-${mode}`
   const testIdPrefix = testId ? `${testId}-${baseId}` : baseId
@@ -109,6 +233,39 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
         className="form-input"
         autoFocus
       />
+
+      {/* Archidekt URL Import - Only show when creating new deck */}
+      {!deck && (
+        <div className="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+          <div className="flex items-center gap-2">
+            <div className="flex-1">
+              <input
+                data-testid={`${testIdPrefix}-archidekt-url`}
+                type="url"
+                value={archidektUrl}
+                onChange={e => setArchidektUrl(e.target.value)}
+                placeholder="Paste Archidekt deck URL to get deck name"
+                className="form-input"
+              />
+            </div>
+
+            <Button
+              data-testid={`${testIdPrefix}-fetch-name`}
+              type="button"
+              variant="secondary"
+              onClick={handleFetchDeckData}
+              disabled={!archidektUrl.trim() || isLoadingDeckName}
+            >
+              {isLoadingDeckName ? 'Loading...' : 'Get Deck Data'}
+            </Button>
+          </div>
+
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            Paste an Archidekt deck URL to automatically fetch deck name and commanders. If API fails, we'll try to
+            extract the name from the URL.
+          </p>
+        </div>
+      )}
 
       {/* Commanders */}
       {commanders.length > 0 && (
