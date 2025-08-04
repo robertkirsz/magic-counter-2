@@ -10,6 +10,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   small?: boolean
   round?: boolean
   loading?: boolean
+  vibrationDuration?: number // Optional vibration duration in milliseconds
 }
 
 const variantToClass: Record<ButtonVariant, string> = {
@@ -31,6 +32,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       loading,
       children,
       onClick,
+      vibrationDuration = 50, // Default 50ms vibration
       ...props
     },
     ref
@@ -40,6 +42,12 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       addRipple(e)
+      
+      // Add vibration for mobile devices
+      if (navigator.vibrate && !disabled && !loading) {
+        navigator.vibrate(vibrationDuration)
+      }
+      
       onClick?.(e)
     }
 
