@@ -2,6 +2,7 @@ import React from 'react'
 import useRipple from 'useripple'
 
 import { cn } from '../utils/cn'
+import { useLongPress } from '../hooks/useLongPress'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'default' | 'ghost'
 
@@ -11,6 +12,10 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   round?: boolean
   loading?: boolean
   vibrationDuration?: number // Optional vibration duration in milliseconds
+  onLongPress?: (event: React.MouseEvent | React.TouchEvent) => void
+  longPressDelay?: number // Duration in milliseconds to trigger long press (default: 500ms)
+  shouldPreventDefaultOnLongPress?: boolean
+  shouldStopPropagationOnLongPress?: boolean
 }
 
 const variantToClass: Record<ButtonVariant, string> = {
@@ -33,6 +38,10 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       onClick,
       vibrationDuration = 50, // Default 50ms vibration
+      onLongPress,
+      longPressDelay = 500,
+      shouldPreventDefaultOnLongPress = false,
+      shouldStopPropagationOnLongPress = false,
       ...props
     },
     ref
@@ -51,12 +60,32 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       onClick?.(e)
     }
 
+    const handleLongPress = (e: React.MouseEvent | React.TouchEvent) => {
+      // Add stronger vibration for long press
+      if (navigator.vibrate && !disabled && !loading) {
+        navigator.vibrate([100, 50, 100]) // Pattern: vibrate-pause-vibrate
+      }
+      
+      onLongPress?.(e)
+    }
+
+    const longPressHandlers = useLongPress({
+      onLongPress: handleLongPress,
+      onPress: onLongPress ? undefined : handleClick, // Only handle regular clicks if no long press
+      delay: longPressDelay,
+      shouldPreventDefault: shouldPreventDefaultOnLongPress,
+      shouldStopPropagation: shouldStopPropagationOnLongPress
+    })
+
+    // If onLongPress is provided, use long press handlers, otherwise use regular click
+    const eventHandlers = onLongPress ? longPressHandlers : { onClick: handleClick }
+
     return (
       <button
         ref={ref}
         className={cn(variantToClass[variant], small && 'small', round && 'round', className)}
         disabled={isDisabled}
-        onClick={handleClick}
+        {...eventHandlers}
         {...props}
       >
         {ripples}
