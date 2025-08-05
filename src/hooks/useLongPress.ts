@@ -23,7 +23,7 @@ export const useLongPress = ({
   shouldPreventDefault = true,
   shouldStopPropagation = true
 }: UseLongPressOptions): UseLongPressReturn => {
-  const timeout = useRef<NodeJS.Timeout>()
+  const timeout = useRef<NodeJS.Timeout | undefined>(undefined)
   const isLongPress = useRef(false)
   const target = useRef<EventTarget | null>(null)
 
@@ -38,7 +38,7 @@ export const useLongPress = ({
 
       target.current = event.target
       isLongPress.current = false
-      
+
       timeout.current = setTimeout(() => {
         isLongPress.current = true
         onLongPress(event)
@@ -51,12 +51,13 @@ export const useLongPress = ({
     (event: React.MouseEvent | React.TouchEvent, shouldTriggerClick = true) => {
       if (timeout.current) {
         clearTimeout(timeout.current)
+        timeout.current = undefined
       }
-      
+
       if (shouldTriggerClick && !isLongPress.current && onPress) {
         onPress(event)
       }
-      
+
       isLongPress.current = false
       target.current = null
     },

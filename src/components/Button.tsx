@@ -1,8 +1,8 @@
 import React from 'react'
 import useRipple from 'useripple'
 
-import { cn } from '../utils/cn'
 import { useLongPress } from '../hooks/useLongPress'
+import { cn } from '../utils/cn'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'default' | 'ghost'
 
@@ -51,12 +51,12 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       addRipple(e)
-      
+
       // Add vibration for mobile devices
       if (navigator.vibrate && !disabled && !loading) {
         navigator.vibrate(vibrationDuration)
       }
-      
+
       onClick?.(e)
     }
 
@@ -65,13 +65,28 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       if (navigator.vibrate && !disabled && !loading) {
         navigator.vibrate([100, 50, 100]) // Pattern: vibrate-pause-vibrate
       }
-      
+
       onLongPress?.(e)
+    }
+
+    // Wrapper function to handle the type mismatch
+    const handlePress = (e: React.MouseEvent | React.TouchEvent) => {
+      if ('nativeEvent' in e && e.nativeEvent instanceof MouseEvent) {
+        const mouseEvent = e as React.MouseEvent<HTMLButtonElement>
+        addRipple(mouseEvent)
+
+        // Add vibration for mobile devices
+        if (navigator.vibrate && !disabled && !loading) {
+          navigator.vibrate(vibrationDuration)
+        }
+
+        onClick?.(mouseEvent)
+      }
     }
 
     const longPressHandlers = useLongPress({
       onLongPress: handleLongPress,
-      onPress: onLongPress ? undefined : handleClick, // Only handle regular clicks if no long press
+      onPress: handlePress, // Always handle regular clicks
       delay: longPressDelay,
       shouldPreventDefault: shouldPreventDefaultOnLongPress,
       shouldStopPropagation: shouldStopPropagationOnLongPress
