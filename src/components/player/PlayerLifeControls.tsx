@@ -9,6 +9,7 @@ import { generateId } from '../../utils/idGenerator'
 import { Button } from '../Button'
 
 const PlayerLifeControls: React.FC<{
+  testId?: string
   from?: string
   to: string[]
   gameId: string
@@ -16,7 +17,7 @@ const PlayerLifeControls: React.FC<{
   attackMode?: boolean
   onLifeCommitted?: (action: LifeChangeAction) => void
   commanderId?: string
-}> = ({ from, to, gameId, currentLife, attackMode = false, onLifeCommitted, commanderId }) => {
+}> = ({ testId, from, to, gameId, currentLife, attackMode = false, onLifeCommitted, commanderId }) => {
   const { dispatchAction } = useGames()
   const [pendingLifeChanges, setPendingLifeChanges] = useState<number>(0)
   const [commanderDamage, setCommanderDamage] = useState<boolean>(false)
@@ -77,30 +78,37 @@ const PlayerLifeControls: React.FC<{
   }
 
   const displayLife = currentLife + pendingLifeChanges
-  const testId = to.join(',')
+  const _testId = testId ? `${testId}-${to.join(',')}` : to.join(',')
 
   return (
     <div className="flex flex-col gap-2">
-      {/* Commander Damage Checkbox */}
+      {/* Commander Damage Icon */}
       {commanderId && (
-        <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            id={`commander-damage-${testId}`}
-            checked={commanderDamage}
-            onChange={e => setCommanderDamage(e.target.checked)}
-            // TODO: Check styles, reuse from Storybook
-            className="w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-800 focus:ring-2 bg-gray-700 border-gray-600"
-          />
-          <label htmlFor={`commander-damage-${testId}`} className="text-sm text-white">
-            Commander damage
-          </label>
+        <div className="flex justify-center">
+          <button
+            type="button"
+            onClick={() => setCommanderDamage(!commanderDamage)}
+            className={cn(
+              'p-2 rounded-lg transition-all duration-200 hover:bg-gray-700',
+              commanderDamage && 'ring-2 ring-blue-500 ring-opacity-75'
+            )}
+            title={commanderDamage ? 'Commander damage active' : 'Click to enable commander damage'}
+          >
+            <img
+              src="/icons/commander.png"
+              alt="Commander"
+              className={cn(
+                'w-8 h-8 transition-all duration-200',
+                commanderDamage && 'filter brightness-110 contrast-125 saturate-150'
+              )}
+            />
+          </button>
         </div>
       )}
 
       <div className="grid grid-cols-3">
         <Button
-          data-testid={`${testId}-remove-life`}
+          data-testid={`${_testId}-remove-life`}
           className="text-4xl"
           onClick={() => handleLifeChange(-1)}
           onLongPress={() => handleLongPressLifeChange(-1)}
@@ -109,7 +117,7 @@ const PlayerLifeControls: React.FC<{
         </Button>
 
         <div className={cn('relative text-center', pendingLifeChanges !== 0 ? 'text-blue-600' : 'text-white')}>
-          <span data-testid={`${testId}-life`} className="text-4xl font-bold">
+          <span data-testid={`${_testId}-life`} className="text-4xl font-bold">
             {displayLife}
           </span>
 
@@ -128,7 +136,7 @@ const PlayerLifeControls: React.FC<{
 
         {!attackMode && (
           <Button
-            data-testid={`${testId}-add-life`}
+            data-testid={`${_testId}-add-life`}
             className="text-4xl"
             onClick={() => handleLifeChange(1)}
             onLongPress={() => handleLongPressLifeChange(1)}

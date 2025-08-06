@@ -17,7 +17,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useGames } from '../hooks/useGames'
 import { cn } from '../utils/cn'
 import { EventDispatcher } from '../utils/eventDispatcher'
-import { getActivePlayers } from '../utils/gameUtils'
 import { generateId } from '../utils/idGenerator'
 import { ActionsList } from './ActionsList'
 import { Button } from './Button'
@@ -154,7 +153,6 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
   // Pass turn to next player (append TurnChangeAction)
   const handlePassTurn = (playerId?: string) => {
-    const activePlayers = getActivePlayers(game)
     const currentActivePlayer = getCurrentActivePlayer()
 
     if (playerId) {
@@ -166,14 +164,19 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         from: currentActivePlayer,
         to: playerId
       }
+
       dispatchAction(game.id, newAction)
+
       return
     }
 
+    // TODO: Perhaps use just active players? Need to figure out what to do after a player gets eliminated.
+    // const activePlayers = getActivePlayers(game)
+
     // Find the current active player in the active players list
-    const currentIndex = activePlayers.findIndex(p => p.id === currentActivePlayer)
-    const nextIndex = (currentIndex + 1) % activePlayers.length
-    const nextPlayer = activePlayers[nextIndex] || activePlayers[0]
+    const currentIndex = game.players.findIndex(p => p.id === currentActivePlayer)
+    const nextIndex = (currentIndex + 1) % game.players.length
+    const nextPlayer = game.players[nextIndex] || game.players[0]
 
     const newAction: TurnChangeAction = {
       id: generateId(),
