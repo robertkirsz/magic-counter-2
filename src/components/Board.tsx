@@ -19,6 +19,7 @@ import { EventDispatcher } from '../utils/eventDispatcher'
 import { generateId } from '../utils/idGenerator'
 import { ActionsList } from './ActionsList'
 import { Button } from './Button'
+import { GameEndModal } from './GameEndModal'
 import { GameForm } from './GameForm'
 import GameStatus from './GameStatus'
 import { Modal } from './Modal'
@@ -44,6 +45,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
   const [showSettings, setShowSettings] = useState(false)
   const [showActions, setShowActions] = useState(false)
+  const [showGameEndModal, setShowGameEndModal] = useState(false)
   const [previewPlayerCount, setPreviewPlayerCount] = useState<number>(game?.players.length || 4)
   const [dragEnabled, setDragEnabled] = useState(false)
   const [tableMode, setTableMode] = useState(getInitialTableMode())
@@ -72,16 +74,8 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
     if (!confirmed) return
 
-    // Add a TurnChangeAction with to=null to mark game end
-    const endAction: TurnChangeAction = {
-      id: generateId(),
-      createdAt: DateTime.now().toJSDate(),
-      type: 'turn-change',
-      from: getCurrentActivePlayer()
-    }
-
-    dispatchAction(game.id, endAction)
-    updateGame(game.id, { state: 'finished' })
+    // Show the game end modal first
+    setShowGameEndModal(true)
   }
 
   const handleCancel = () => {
@@ -286,6 +280,8 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       <Modal title="Who starts?" isOpen={showStartModal} hideCloseButton onClose={() => {}}>
         <StartGameModal gameId={gameId} onChoosePlayer={handlePassTurn} />
       </Modal>
+
+      <GameEndModal gameId={gameId} isOpen={showGameEndModal} onClose={() => setShowGameEndModal(false)} />
     </div>
   )
 }

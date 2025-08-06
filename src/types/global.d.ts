@@ -30,6 +30,8 @@ type Player = {
   deckId: Deck['id'] | null
 }
 
+type WinCondition = 'combat-damage' | 'commander-damage' | 'poison' | 'mill' | 'card-rule' | 'other'
+
 type Game = {
   id: string
   createdAt: Date
@@ -40,6 +42,8 @@ type Game = {
   startingLife: number
   commanders: boolean
   actions: (LifeChangeAction | TurnChangeAction)[]
+  winner?: User['id']
+  winCondition?: WinCondition
 }
 
 type LifeChangeAction = {

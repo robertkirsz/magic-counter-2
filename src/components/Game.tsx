@@ -1,4 +1,4 @@
-import { Calendar, ChevronDown, ChevronRight, Clock, Users } from 'lucide-react'
+import { Calendar, ChevronDown, ChevronRight, Clock, Trophy, Users } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useState } from 'react'
 
@@ -83,6 +83,26 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
     return finalLifeValues
   }
 
+  // Get win condition display text
+  const getWinConditionDisplay = (winCondition: WinCondition) => {
+    switch (winCondition) {
+      case 'combat-damage':
+        return 'Combat Damage'
+      case 'commander-damage':
+        return 'Commander Damage'
+      case 'poison':
+        return 'Poison'
+      case 'mill':
+        return 'Mill'
+      case 'card-rule':
+        return 'Card Rule'
+      case 'other':
+        return 'Other'
+      default:
+        return 'Unknown'
+    }
+  }
+
   // Get game state display
   const getGameStateDisplay = (game: Game) => {
     const duration = getGameDuration(game)
@@ -151,6 +171,15 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
             {game.turnTracking && (
               <div className="flex items-center gap-1 text-blue-400">
                 <Clock size={14} />
+              </div>
+            )}
+
+            {game.state === 'finished' && game.winner && game.winCondition && (
+              <div className="flex items-center gap-1 text-yellow-400">
+                <Trophy size={14} />
+                <span>
+                  {getPlayerName(game.winner)} - {getWinConditionDisplay(game.winCondition)}
+                </span>
               </div>
             )}
           </div>
