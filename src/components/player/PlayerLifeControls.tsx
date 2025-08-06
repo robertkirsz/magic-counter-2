@@ -81,35 +81,25 @@ const PlayerLifeControls: React.FC<{
   const _testId = testId ? `${testId}-${to.join(',')}` : to.join(',')
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-1">
       {/* Commander Damage Icon */}
       {commanderId && (
         <div className="flex justify-center">
-          <button
+          <Button
+            small
             type="button"
+            className={cn(commanderDamage && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500')}
             onClick={() => setCommanderDamage(!commanderDamage)}
-            className={cn(
-              'p-2 rounded-lg transition-all duration-200 hover:bg-gray-700',
-              commanderDamage && 'ring-2 ring-blue-500 ring-opacity-75'
-            )}
-            title={commanderDamage ? 'Commander damage active' : 'Click to enable commander damage'}
           >
-            <img
-              src="/icons/commander.png"
-              alt="Commander"
-              className={cn(
-                'w-8 h-8 transition-all duration-200',
-                commanderDamage && 'filter brightness-110 contrast-125 saturate-150'
-              )}
-            />
-          </button>
+            <img src="/icons/commander.png" className="w-5 h-5" />
+          </Button>
         </div>
       )}
 
-      <div className="grid grid-cols-3">
+      <div className="grid grid-cols-3 gap-1">
         <Button
+          type="button"
           data-testid={`${_testId}-remove-life`}
-          className="text-4xl"
           onClick={() => handleLifeChange(-1)}
           onLongPress={() => handleLongPressLifeChange(-1)}
         >
@@ -136,8 +126,9 @@ const PlayerLifeControls: React.FC<{
 
         {!attackMode && (
           <Button
+            type="button"
             data-testid={`${_testId}-add-life`}
-            className="text-4xl"
+            disabled={commanderDamage}
             onClick={() => handleLifeChange(1)}
             onLongPress={() => handleLongPressLifeChange(1)}
           >

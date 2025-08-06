@@ -159,11 +159,11 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
 
       <div
         className={cn(
-          'PlayerSectionContent hiddenWhenDragEnabled flex-1 relative flex flex-col gap-2 items-center justify-center',
+          'PlayerSectionContent hiddenWhenDragEnabled flex-1 relative flex flex-col gap-1 items-center justify-center',
           activePlayerId === playerId && 'outline-4 outline-blue-800'
         )}
       >
-        {gameIsActive && <p className="text-2xl font-bold text-white">{getUserName(player.userId)}</p>}
+        {gameIsActive && <p className="text-xl font-bold text-white">{getUserName(player.userId)}</p>}
 
         {gameIsActive && (
           <PlayerLifeControls
@@ -175,9 +175,10 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
           />
         )}
 
-        {gameIsActive && <DraggableSword playerId={playerId} gameId={gameId} />}
-
-        <CommanderDamage gameId={gameId} playerId={playerId} />
+        <div className="flex justify-center items-center gap-1">
+          {gameIsActive && <DraggableSword playerId={playerId} gameId={gameId} />}
+          <CommanderDamage gameId={gameId} playerId={playerId} />
+        </div>
 
         {!gameIsActive && (
           <>
