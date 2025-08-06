@@ -9,6 +9,7 @@ interface DraggableSwordProps {
   playerId: string
 }
 
+// TODO: Hide when Player drag mode is on
 export const DraggableSword: React.FC<DraggableSwordProps> = ({ className = '', playerId }) => {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `sword-${playerId}`,

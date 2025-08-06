@@ -14,7 +14,6 @@ interface SortablePlayerSectionProps extends React.HTMLAttributes<HTMLDivElement
   dragEnabled: boolean
 }
 
-// Sortable wrapper for PlayerSection
 export function SortablePlayerSection({
   id,
   index,
@@ -33,7 +32,6 @@ export function SortablePlayerSection({
     ...style,
     transform: CSS.Transform.toString(transform),
     transition,
-    // transition: isDragging ? transition : 'none',
     gridArea: `player-${index + 1}`,
     zIndex: isDragging ? 21 : 20
   }
@@ -62,15 +60,4 @@ export function SortablePlayerSection({
       <PlayerSection gameId={gameId} playerId={id} />
     </div>
   )
-}
-
-{
-  /* <Sortable
-  {...props}
-  strategy={rectSwappingStrategy}
-  reorderItems={arraySwap}
-  getNewIndex={({id, items, activeIndex, overIndex}) =>
-    arraySwap(items, activeIndex, overIndex).indexOf(id)
-  }
-/> */
 }

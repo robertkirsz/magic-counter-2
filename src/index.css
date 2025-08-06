@@ -28,6 +28,19 @@ dialog {
   height: 100%;
 }
 
+/* DraggableSword specific styles for mobile */
+.DraggableSword {
+  touch-action: none !important;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  /* Ensure the element can be touched and dragged */
+  -webkit-tap-highlight-color: transparent;
+}
+
 /* Hide elements with importance lower than current setting */
 .importance-1.hidden-importance {
   display: none;
