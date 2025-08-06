@@ -18,7 +18,11 @@ const meta: Meta<typeof Button> = {
     disabled: { control: 'boolean' },
     children: { control: 'text' },
     small: { control: 'boolean' },
-    round: { control: 'boolean' }
+    round: { control: 'boolean' },
+    onLongPress: { action: 'long pressed' },
+    longPressDelay: { control: 'number' },
+    shouldPreventDefaultOnLongPress: { control: 'boolean' },
+    shouldStopPropagationOnLongPress: { control: 'boolean' }
   },
   args: {
     children: 'Button',
@@ -122,5 +126,24 @@ export const SmallRoundPrimary: Story = {
     small: true,
     round: true,
     'aria-label': 'Check'
+  }
+}
+
+export const WithLongPress: Story = {
+  args: {
+    children: 'Hold me for 500ms',
+    variant: 'primary',
+    onLongPress: () => alert('Long press detected!'),
+    onClick: () => alert('Regular click detected!')
+  }
+}
+
+export const CustomLongPressDelay: Story = {
+  args: {
+    children: 'Hold me for 1 second',
+    variant: 'secondary',
+    longPressDelay: 1000,
+    onLongPress: () => alert('Long press after 1 second!'),
+    onClick: () => alert('Regular click detected!')
   }
 }

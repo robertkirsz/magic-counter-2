@@ -64,6 +64,18 @@ const PlayerLifeControls: React.FC<{
     debounceTimeoutRef.current = setTimeout(commitLifeChanges, 1500)
   }
 
+  const handleLongPressLifeChange = (value: number) => {
+    if (debounceTimeoutRef.current) clearTimeout(debounceTimeoutRef.current)
+
+    // Long press changes life by 10 instead of 1
+    const longPressValue = value * 10
+    pendingLifeChangesRef.current += longPressValue
+
+    setPendingLifeChanges(prev => prev + longPressValue)
+
+    debounceTimeoutRef.current = setTimeout(commitLifeChanges, 1500)
+  }
+
   const displayLife = currentLife + pendingLifeChanges
   const testId = to.join(',')
 
@@ -87,7 +99,12 @@ const PlayerLifeControls: React.FC<{
       )}
 
       <div className="grid grid-cols-3">
-        <Button data-testid={`${testId}-remove-life`} className="text-4xl" onClick={() => handleLifeChange(-1)}>
+        <Button
+          data-testid={`${testId}-remove-life`}
+          className="text-4xl"
+          onClick={() => handleLifeChange(-1)}
+          onLongPress={() => handleLongPressLifeChange(-1)}
+        >
           <MinusIcon className="w-6 h-6" />
         </Button>
 
@@ -110,7 +127,12 @@ const PlayerLifeControls: React.FC<{
         </div>
 
         {!attackMode && (
-          <Button data-testid={`${testId}-add-life`} className="text-4xl" onClick={() => handleLifeChange(1)}>
+          <Button
+            data-testid={`${testId}-add-life`}
+            className="text-4xl"
+            onClick={() => handleLifeChange(1)}
+            onLongPress={() => handleLongPressLifeChange(1)}
+          >
             <PlusIcon className="w-6 h-6" />
           </Button>
         )}
