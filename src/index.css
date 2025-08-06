@@ -41,6 +41,29 @@ dialog {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Eliminated player styles */
+.PlayerSection.eliminated {
+  opacity: 0.5;
+  filter: grayscale(100%);
+  position: relative;
+}
+
+.PlayerSection.eliminated::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 0, 0, 0.1) 50%, transparent 70%);
+  z-index: 5;
+  pointer-events: none;
+}
+
+.PlayerSection.eliminated .PlayerSectionContent {
+  filter: grayscale(100%);
+}
+
 /* Hide elements with importance lower than current setting */
 .importance-1.hidden-importance {
   display: none;

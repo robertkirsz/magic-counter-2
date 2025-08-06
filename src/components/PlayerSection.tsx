@@ -7,6 +7,7 @@ import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
 import { useSwordAttackListener } from '../utils/eventDispatcher'
+import { isPlayerEliminated } from '../utils/gameUtils'
 import { AttackModal } from './AttackModal'
 import { Button } from './Button'
 import { CommanderDamage } from './CommanderDamage'
@@ -85,6 +86,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   }
 
   const currentLife = calculateLifeFromActions(playerId)
+  const isEliminated = isPlayerEliminated(game, playerId)
 
   const handleUserSelect = (userId: string | null) => {
     updateGame(game.id, {
@@ -126,7 +128,8 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
       data-testid={playerId}
       className={cn(
         'PlayerSection flex-1 flex flex-col p-2 relative overflow-clip',
-        isOver && 'ring-2 ring-red-500 ring-opacity-50'
+        isOver && 'ring-2 ring-red-500 ring-opacity-50',
+        isEliminated && 'eliminated'
       )}
     >
       {/* Background image with effects */}
@@ -144,13 +147,23 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
         />
       )}
 
+      {/* Elimination overlay */}
+      {isEliminated && (
+        <div className="absolute inset-0 bg-black bg-opacity-75 flex items-center justify-center z-10">
+          <div className="text-center">
+            <div className="text-red-500 text-4xl font-bold mb-2">ELIMINATED</div>
+            <div className="text-gray-300 text-sm">{currentLife < 1 ? 'Life: Below 1' : 'Commander damage: 21+'}</div>
+          </div>
+        </div>
+      )}
+
       <div
         className={cn(
-          'PlayerSectionContent hiddenWhenDragEnabled flex-1 relative flex flex-col gap-6 items-center justify-center',
+          'PlayerSectionContent hiddenWhenDragEnabled flex-1 relative flex flex-col gap-2 items-center justify-center',
           activePlayerId === playerId && 'outline-4 outline-blue-800'
         )}
       >
-        <p className="text-2xl font-bold text-white">{getUserName(player.userId)}</p>
+        {gameIsActive && <p className="text-2xl font-bold text-white">{getUserName(player.userId)}</p>}
 
         {gameIsActive && (
           <PlayerLifeControls
@@ -162,7 +175,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
           />
         )}
 
-        {gameIsActive && <DraggableSword playerId={playerId} />}
+        {gameIsActive && <DraggableSword playerId={playerId} gameId={gameId} />}
 
         <CommanderDamage gameId={gameId} playerId={playerId} />
 

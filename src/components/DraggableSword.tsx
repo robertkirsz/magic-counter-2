@@ -2,15 +2,21 @@ import { useDraggable } from '@dnd-kit/core'
 import { Sword } from 'lucide-react'
 import React from 'react'
 
+import { useGames } from '../hooks/useGames'
 import { cn } from '../utils/cn'
+import { isPlayerEliminated } from '../utils/gameUtils'
 
 interface DraggableSwordProps {
   className?: string
   playerId: string
+  gameId?: string
 }
 
 // TODO: Hide when Player drag mode is on
-export const DraggableSword: React.FC<DraggableSwordProps> = ({ className = '', playerId }) => {
+export const DraggableSword: React.FC<DraggableSwordProps> = ({ className = '', playerId, gameId }) => {
+  const { games } = useGames()
+  const game = gameId ? games.find(g => g.id === gameId) : null
+
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `sword-${playerId}`,
     data: {
@@ -18,6 +24,11 @@ export const DraggableSword: React.FC<DraggableSwordProps> = ({ className = '', 
       playerId
     }
   })
+
+  // Hide sword if player is eliminated
+  if (game && isPlayerEliminated(game, playerId)) {
+    return null
+  }
 
   return (
     <div

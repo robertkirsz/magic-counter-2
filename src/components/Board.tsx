@@ -17,6 +17,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useGames } from '../hooks/useGames'
 import { cn } from '../utils/cn'
 import { EventDispatcher } from '../utils/eventDispatcher'
+import { getActivePlayers } from '../utils/gameUtils'
 import { generateId } from '../utils/idGenerator'
 import { ActionsList } from './ActionsList'
 import { Button } from './Button'
@@ -153,16 +154,33 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
   // Pass turn to next player (append TurnChangeAction)
   const handlePassTurn = (playerId?: string) => {
-    const currentIndex = game.players.findIndex(p => p.id === getCurrentActivePlayer())
-    const nextIndex = (currentIndex + 1) % game.players.length
-    const nextPlayer = game.players[nextIndex] || game.players[0]
+    const activePlayers = getActivePlayers(game)
+    const currentActivePlayer = getCurrentActivePlayer()
+
+    if (playerId) {
+      // If a specific player is provided, pass turn to them
+      const newAction: TurnChangeAction = {
+        id: generateId(),
+        createdAt: DateTime.now().toJSDate(),
+        type: 'turn-change',
+        from: currentActivePlayer,
+        to: playerId
+      }
+      dispatchAction(game.id, newAction)
+      return
+    }
+
+    // Find the current active player in the active players list
+    const currentIndex = activePlayers.findIndex(p => p.id === currentActivePlayer)
+    const nextIndex = (currentIndex + 1) % activePlayers.length
+    const nextPlayer = activePlayers[nextIndex] || activePlayers[0]
 
     const newAction: TurnChangeAction = {
       id: generateId(),
       createdAt: DateTime.now().toJSDate(),
       type: 'turn-change',
-      from: getCurrentActivePlayer(),
-      to: playerId || nextPlayer.id
+      from: currentActivePlayer,
+      to: nextPlayer.id
     }
 
     dispatchAction(game.id, newAction)
@@ -198,7 +216,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       {/* Player Sections */}
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
         <SortableContext items={displayPlayers.map(p => p.id)} strategy={rectSwappingStrategy}>
-          <div className="PlayersSortingWrapper flex-1" data-player-count={displayPlayerCount}>
+          <div className="PlayersSortingWrapper flex-1 w-full h-full" data-player-count={displayPlayerCount}>
             {displayPlayers.map((player, index) => (
               <SortablePlayerSection
                 key={player.id}
