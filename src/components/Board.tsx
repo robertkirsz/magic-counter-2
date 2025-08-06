@@ -11,7 +11,7 @@ import type { DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, rectSwappingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { ArrowBigRightDash, List, Move, Play, Settings, Sword, Table, Undo } from 'lucide-react'
 import { DateTime } from 'luxon'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
 import { cn } from '../utils/cn'
@@ -49,11 +49,27 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const [previewPlayerCount, setPreviewPlayerCount] = useState<number>(game?.players.length || 4)
   const [dragEnabled, setDragEnabled] = useState(false)
   const [tableMode, setTableMode] = useState(getInitialTableMode())
+  const [showSettingsMenu, setShowSettingsMenu] = useState(false)
+  const settingsMenuRef = useRef<HTMLDivElement>(null)
 
   // Save table mode to localStorage when it changes
   useEffect(() => {
     localStorage.setItem(TABLE_MODE_KEY, tableMode.toString())
   }, [tableMode])
+
+  // Close settings menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (settingsMenuRef.current && !settingsMenuRef.current.contains(event.target as Node)) {
+        setShowSettingsMenu(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [])
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -237,31 +253,75 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         </div>
       </div>
 
-      {/* Settings Overlay */}
-      <div className="absolute top-0 right-0 flex flex-col gap-3 p-2 z-20">
-        <Button round onClick={() => setShowSettings(true)}>
-          <Settings size={24} />
-        </Button>
+      {/* Settings Menu */}
+      <div className="absolute top-0 right-0 p-2 z-20" ref={settingsMenuRef}>
+        <div className="relative">
+          <Button
+            round
+            onClick={() => setShowSettingsMenu(!showSettingsMenu)}
+            className={cn(showSettingsMenu && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500')}
+          >
+            <Settings size={24} />
+          </Button>
 
-        <Button
-          round
-          className={cn(dragEnabled && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500')}
-          onClick={() => setDragEnabled(!dragEnabled)}
-        >
-          <Move size={24} />
-        </Button>
+          {showSettingsMenu && (
+            <div className="absolute top-full right-0 mt-2 bg-gray-800 border border-gray-600 rounded-lg shadow-lg min-w-[200px]">
+              <div className="p-2 space-y-1">
+                <button
+                  className="w-full flex items-center gap-3 px-3 py-2 text-left text-white hover:bg-gray-700 rounded transition-colors"
+                  onClick={() => {
+                    setShowSettings(true)
+                    setShowSettingsMenu(false)
+                  }}
+                >
+                  <Settings size={20} />
+                  <span>Game Settings</span>
+                </button>
 
-        <Button round onClick={() => setShowActions(true)}>
-          <List size={24} />
-        </Button>
+                <button
+                  className="w-full flex items-center gap-3 px-3 py-2 text-left text-white hover:bg-gray-700 rounded transition-colors"
+                  onClick={() => {
+                    setShowActions(true)
+                    setShowSettingsMenu(false)
+                  }}
+                >
+                  <List size={20} />
+                  <span>Game Actions</span>
+                </button>
 
-        <Button
-          round
-          className={cn(tableMode && 'bg-green-600/90 hover:bg-green-500 text-white border-green-500')}
-          onClick={() => setTableMode(!tableMode)}
-        >
-          <Table size={24} />
-        </Button>
+                <div className="border-t border-gray-600 my-1"></div>
+
+                <button
+                  className={cn(
+                    'w-full flex items-center gap-3 px-3 py-2 text-left text-white hover:bg-gray-700 rounded transition-colors',
+                    dragEnabled && 'bg-blue-600/90 text-white'
+                  )}
+                  onClick={() => {
+                    setDragEnabled(!dragEnabled)
+                    setShowSettingsMenu(false)
+                  }}
+                >
+                  <Move size={20} />
+                  <span>Drag Mode</span>
+                </button>
+
+                <button
+                  className={cn(
+                    'w-full flex items-center gap-3 px-3 py-2 text-left text-white hover:bg-gray-700 rounded transition-colors',
+                    tableMode && 'bg-green-600/90 text-white'
+                  )}
+                  onClick={() => {
+                    setTableMode(!tableMode)
+                    setShowSettingsMenu(false)
+                  }}
+                >
+                  <Table size={20} />
+                  <span>Table Mode</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       <Modal title="Game Settings" isOpen={showSettings} onClose={() => setShowSettings(false)}>
