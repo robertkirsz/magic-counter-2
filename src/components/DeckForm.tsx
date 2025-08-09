@@ -236,7 +236,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
 
       {/* Archidekt URL Import - Only show when creating new deck */}
       {!deck && (
-        <div className="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
+        <div className="flex flex-col gap-2 p-3 bg-gray-800 rounded-lg border border-gray-700">
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <input
@@ -260,7 +260,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
             </Button>
           </div>
 
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-gray-400">
             Paste an Archidekt deck URL to automatically fetch deck name and commanders. If API fails, we'll try to
             extract the name from the URL.
           </p>
@@ -296,16 +296,16 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
 
       {/* Action Buttons */}
       <div className="flex gap-2 justify-end">
+        <Button data-testid={`${testIdPrefix}-cancel`} type="button" variant="secondary" onClick={onCancel}>
+          Cancel
+        </Button>
+
         <Button
           data-testid={`${testIdPrefix}-save`}
           variant="primary"
           disabled={!name.trim() || selectedColors.length === 0}
         >
           Save
-        </Button>
-
-        <Button data-testid={`${testIdPrefix}-cancel`} type="button" variant="danger" onClick={onCancel}>
-          Cancel
         </Button>
       </div>
     </form>

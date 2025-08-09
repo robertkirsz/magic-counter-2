@@ -6,7 +6,6 @@ import { cn } from '../utils/cn'
 import { ControlsSection } from './ControlsSection'
 import type { SortOption } from './ControlsSection'
 import { Deck } from './Deck'
-import { DeckForm } from './DeckForm'
 import { FadeMask } from './FadeMask'
 
 interface DecksProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -16,7 +15,6 @@ interface DecksProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick, ...props }) => {
   const { decks } = useDecks()
-  const [deckFormVisible, setDeckFormVisible] = useState(false)
   const [sortBy, setSortBy] = useState<SortOption>('name')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const [searchQuery, setSearchQuery] = useState('')
@@ -174,11 +172,6 @@ export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick, ...props }) =
               : 'Add a deck to get started!'}
           </p>
         </div>
-      )}
-
-      {/* Deck Form Modal */}
-      {deckFormVisible && (
-        <DeckForm userId={userId} onSave={() => setDeckFormVisible(false)} onCancel={() => setDeckFormVisible(false)} />
       )}
     </div>
   )

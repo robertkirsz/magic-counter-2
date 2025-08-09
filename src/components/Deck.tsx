@@ -7,6 +7,7 @@ import { cn } from '../utils/cn'
 import { ColorBadges } from './ColorBadges'
 import { Commander } from './Commander'
 import { DeckForm } from './DeckForm'
+import { Modal } from './Modal'
 import { ThreeDotMenu } from './ThreeDotMenu'
 
 interface DeckProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -106,12 +107,14 @@ export const Deck: React.FC<DeckProps> = ({
         ))}
       </div>
 
-      {useContextControls && deckFormVisible && (
-        <DeckForm
-          deckId={deck.id}
-          onSave={() => setDeckFormVisible(false)}
-          onCancel={() => setDeckFormVisible(false)}
-        />
+      {useContextControls && (
+        <Modal isOpen={deckFormVisible} title="Edit Deck" onClose={() => setDeckFormVisible(false)}>
+          <DeckForm
+            deckId={deck.id}
+            onSave={() => setDeckFormVisible(false)}
+            onCancel={() => setDeckFormVisible(false)}
+          />
+        </Modal>
       )}
     </div>
   )
