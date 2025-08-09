@@ -16,7 +16,7 @@
   }
 
   &::backdrop {
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0);
     backdrop-filter: blur(10px);
   }
 
@@ -24,5 +24,71 @@
     width: calc(100% - 20px);
     height: calc(100% - 20px);
     @apply max-w-[1024px];
+  }
+
+  /* Default state before open */
+  opacity: 0;
+  transform: scale(0.98);
+  will-change: opacity, transform;
+  /* No transitions; animations will drive state */
+  transition: none;
+
+  /* Opening animation */
+  &.is-open {
+    animation: modal-fade-in 200ms ease forwards;
+  }
+
+  /* Closing animation */
+  &.is-closing {
+    animation: modal-fade-out 200ms ease forwards;
+  }
+}
+
+/* Backdrop animations */
+.Modal.is-open::backdrop {
+  animation: backdrop-fade-in 200ms ease forwards;
+}
+
+.Modal.is-closing::backdrop {
+  animation: backdrop-fade-out 200ms ease forwards;
+}
+
+@keyframes modal-fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes modal-fade-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.98);
+  }
+}
+
+@keyframes backdrop-fade-in {
+  from {
+    background: rgba(0, 0, 0, 0);
+  }
+  to {
+    background: rgba(0, 0, 0, 0.5);
+  }
+}
+
+@keyframes backdrop-fade-out {
+  from {
+    background: rgba(0, 0, 0, 0.5);
+  }
+  to {
+    background: rgba(0, 0, 0, 0);
   }
 }
