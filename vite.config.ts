@@ -57,6 +57,24 @@ export default defineConfig({
       }
     })
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Split heavy charting libs
+          charting: ['chart.js', 'react-chartjs-2'],
+          // React and runtime
+          react: ['react', 'react-dom'],
+          // date lib
+          luxon: ['luxon'],
+          // dnd kit
+          dnd: ['@dnd-kit/core', '@dnd-kit/sortable'],
+          // icons
+          lucide: ['lucide-react']
+        }
+      }
+    }
+  },
   server: {
     host: true
   }

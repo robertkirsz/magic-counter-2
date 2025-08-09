@@ -1,15 +1,17 @@
 import { BookOpen, History, Plus, Users as UsersIcon } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { Suspense, useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
 import { Button } from './Button'
-import { DeckForm } from './DeckForm'
-import { Decks } from './Decks'
-import { GameForm } from './GameForm'
-import { Games } from './Games'
 import { Modal } from './Modal'
-import { UserForm } from './UserForm'
-import { Users } from './Users'
+
+const DeckForm = React.lazy(() => import('./DeckForm').then(m => ({ default: m.DeckForm })))
+const Decks = React.lazy(() => import('./Decks').then(m => ({ default: m.Decks })))
+const GameForm = React.lazy(() => import('./GameForm').then(m => ({ default: m.GameForm })))
+const Games = React.lazy(() => import('./Games').then(m => ({ default: m.Games })))
+
+const UserForm = React.lazy(() => import('./UserForm').then(m => ({ default: m.UserForm })))
+const Users = React.lazy(() => import('./Users').then(m => ({ default: m.Users })))
 
 export const IntroScreen: React.FC = () => {
   const [showGames, setShowGames] = useState(false)
@@ -56,17 +58,23 @@ export const IntroScreen: React.FC = () => {
 
       {/* GameForm Modal */}
       <Modal testId="game-form" isOpen={showGameForm} onClose={() => setShowGameForm(false)} title="Game Form">
-        <GameForm onSave={() => setShowGameForm(false)} onCancel={() => setShowGameForm(false)} />
+        <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+          <GameForm onSave={() => setShowGameForm(false)} onCancel={() => setShowGameForm(false)} />
+        </Suspense>
       </Modal>
 
       {/* Games Modal */}
       <Modal testId="games" fullSize isOpen={showGames} onClose={() => setShowGames(false)} title="Games">
-        <Games className="flex-1" />
+        <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+          <Games className="flex-1" />
+        </Suspense>
       </Modal>
 
       {/* Users Modal */}
       <Modal testId="users" fullSize isOpen={showUsers} onClose={() => setShowUsers(false)} title="Users">
-        <Users className="flex-1" />
+        <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+          <Users className="flex-1" />
+        </Suspense>
 
         {/* Floating Add User Button */}
         <Button
@@ -81,13 +89,17 @@ export const IntroScreen: React.FC = () => {
 
         {/* User Form Modal */}
         <Modal isOpen={userFormVisible} title="Add User" onClose={() => setUserFormVisible(false)}>
-          <UserForm onSave={() => setUserFormVisible(false)} onCancel={() => setUserFormVisible(false)} />
+          <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+            <UserForm onSave={() => setUserFormVisible(false)} onCancel={() => setUserFormVisible(false)} />
+          </Suspense>
         </Modal>
       </Modal>
 
       {/* Decks Modal */}
       <Modal testId="decks" fullSize isOpen={showDecks} onClose={() => setShowDecks(false)} title="Decks">
-        <Decks className="flex-1" />
+        <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+          <Decks className="flex-1" />
+        </Suspense>
 
         {/* Floating Add Deck Button */}
         <Button
@@ -102,7 +114,9 @@ export const IntroScreen: React.FC = () => {
 
         {/* Deck Form Modal */}
         <Modal isOpen={deckFormVisible} title="Add Deck" onClose={() => setDeckFormVisible(false)}>
-          <DeckForm onSave={() => setDeckFormVisible(false)} onCancel={() => setDeckFormVisible(false)} />
+          <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+            <DeckForm onSave={() => setDeckFormVisible(false)} onCancel={() => setDeckFormVisible(false)} />
+          </Suspense>
         </Modal>
       </Modal>
     </div>

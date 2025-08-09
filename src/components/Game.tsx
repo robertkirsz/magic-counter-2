@@ -1,16 +1,19 @@
 import { Calendar, ChevronDown, ChevronRight, Clock, Trophy, Users } from 'lucide-react'
 import { DateTime } from 'luxon'
-import React, { useState } from 'react'
+import React, { Suspense, useState } from 'react'
 
 import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
 import { ActionsList } from './ActionsList'
-import { DamageChart } from './DamageChart'
 import { Deck } from './Deck'
-import { LifeChart } from './LifeChart'
 import { Modal } from './Modal'
-import { RoundDurationChart } from './RoundDurationChart'
 import { ThreeDotMenu } from './ThreeDotMenu'
+
+const LifeChart = React.lazy(() => import('./LifeChart').then(m => ({ default: m.LifeChart })))
+const DamageChart = React.lazy(() => import('./DamageChart').then(m => ({ default: m.DamageChart })))
+const RoundDurationChart = React.lazy(() =>
+  import('./RoundDurationChart').then(m => ({ default: m.RoundDurationChart }))
+)
 
 interface GameProps {
   game: Game
@@ -233,11 +236,19 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
             </button>
 
             {chartsExpanded && (
-              <div className="mt-3 space-y-4">
-                <LifeChart gameId={game.id} />
-                <DamageChart gameId={game.id} />
-                <RoundDurationChart gameId={game.id} />
-              </div>
+              <Suspense
+                fallback={
+                  <div className="mt-3 p-3 rounded-lg border border-slate-700 bg-slate-800 text-slate-400">
+                    Loading charts...
+                  </div>
+                }
+              >
+                <div className="mt-3 space-y-4">
+                  <LifeChart gameId={game.id} />
+                  <DamageChart gameId={game.id} />
+                  <RoundDurationChart gameId={game.id} />
+                </div>
+              </Suspense>
             )}
           </div>
         )}
