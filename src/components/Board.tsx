@@ -8,13 +8,14 @@ import {
   useSensor,
   useSensors
 } from '@dnd-kit/core'
-import type { DragEndEvent } from '@dnd-kit/core'
+import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import { SortableContext, rectSwappingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { ArrowBigRightDash, List, Move, Play, Settings, Sword, Table, Undo } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useEffect, useRef, useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
+import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
 import { EventDispatcher } from '../utils/eventDispatcher'
 import { generateId } from '../utils/idGenerator'
@@ -41,6 +42,7 @@ interface BoardProps {
 
 export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const { games, updateGame, getCurrentActivePlayer, dispatchAction, undoLastAction, removeGame } = useGames()
+  const { users } = useUsers()
 
   const game = games.find(g => g.id === gameId)
 
@@ -49,6 +51,8 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const [showGameEndModal, setShowGameEndModal] = useState(false)
   const [previewPlayerCount, setPreviewPlayerCount] = useState<number>(game?.players.length || 4)
   const [dragEnabled, setDragEnabled] = useState(false)
+  const [isSwordDragging, setIsSwordDragging] = useState(false)
+  const [draggedPlayerId, setDraggedPlayerId] = useState<string | null>(null)
   const [tableMode, setTableMode] = useState(getInitialTableMode())
   const [showSettingsMenu, setShowSettingsMenu] = useState(false)
   const settingsMenuRef = useRef<HTMLDivElement>(null)
@@ -120,6 +124,8 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
   // Drag end handler for reordering players and sword attacks
   const handleDragEnd = (event: DragEndEvent) => {
+    setIsSwordDragging(false)
+    setDraggedPlayerId(null)
     const { active, over } = event
 
     if (!over || active.id === over.id) return
@@ -149,6 +155,12 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
     newPlayers[newIndex] = temp
 
     updateGame(game.id, { players: newPlayers })
+  }
+
+  const handleDragStart = (event: DragStartEvent) => {
+    const isSword = event.active?.data?.current && (event.active.data.current as { type?: string }).type === 'sword'
+    setIsSwordDragging(!!isSword)
+    if (!isSword) setDraggedPlayerId(String(event.active.id))
   }
 
   // Pass turn to next player (append TurnChangeAction)
@@ -217,7 +229,12 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       )}
     >
       {/* Player Sections */}
-      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
         <SortableContext items={displayPlayers.map(p => p.id)} strategy={rectSwappingStrategy}>
           <div className="PlayersSortingWrapper flex-1 w-full h-full" data-player-count={displayPlayerCount}>
             {displayPlayers.map((player, index) => (
@@ -233,9 +250,23 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         </SortableContext>
 
         <DragOverlay>
-          <div className="rounded-full p-2 bg-red-600 hover:bg-red-500 text-white border-red-500">
-            <Sword size={24} />
-          </div>
+          {isSwordDragging && (
+            <div className="rounded-full p-2 bg-red-600 hover:bg-red-500 text-white border-red-500">
+              <Sword size={24} />
+            </div>
+          )}
+          {!isSwordDragging && draggedPlayerId && (
+            <div className="rounded-lg px-3 py-2 bg-slate-700/90 text-slate-100 border border-slate-600 shadow-lg min-w-[160px]">
+              <div className="text-sm font-semibold">
+                {(() => {
+                  const player = game.players.find(p => p.id === draggedPlayerId)
+                  if (!player) return 'Player'
+                  const user = users.find(u => u.id === player.userId)
+                  return user?.name || 'Player'
+                })()}
+              </div>
+            </div>
+          )}
         </DragOverlay>
       </DndContext>
 
