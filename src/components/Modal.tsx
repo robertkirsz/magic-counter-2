@@ -1,5 +1,5 @@
 import { X } from 'lucide-react'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 import { cn } from '../utils/cn'
 import { Button } from './Button'
@@ -26,8 +26,6 @@ export const Modal: React.FC<ModalProps> = ({
 }) => {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const childrenRef = useRef<HTMLDivElement>(null)
-  const [isClosing, setIsClosing] = useState(false)
-  const [isOpenClass, setIsOpenClass] = useState(false)
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -35,34 +33,11 @@ export const Modal: React.FC<ModalProps> = ({
     if (!dialog) return
 
     if (isOpen) {
-      setIsClosing(false)
       if (!dialog.open) dialog.showModal()
-      // next frame to ensure transition applies
-      requestAnimationFrame(() => setIsOpenClass(true))
       // Disable body scrolling when modal is open
       document.body.style.overflow = 'hidden'
     } else if (dialog.open) {
-      // start closing animation (CSS animation handles fade-out)
-      setIsOpenClass(false)
-      setIsClosing(true)
-
-      const handleAnimationEnd = (event: AnimationEvent) => {
-        // Only handle animation end for the dialog itself (ignore bubbled child animations)
-        if (event.target !== dialog) return
-
-        dialog.close()
-        setIsClosing(false)
-        // Re-enable body scrolling after close animation completes
-        document.body.style.overflow = ''
-        dialog.removeEventListener('animationend', handleAnimationEnd)
-      }
-
-      dialog.addEventListener('animationend', handleAnimationEnd)
-
-      // Fallback in case animationend doesn't fire
-      const timeout = setTimeout(() => handleAnimationEnd({ target: dialog } as unknown as AnimationEvent), 250)
-      dialog.addEventListener('close', () => clearTimeout(timeout), { once: true })
-    } else {
+      dialog.close()
       // Re-enable body scrolling when modal closes
       document.body.style.overflow = ''
     }
@@ -102,8 +77,6 @@ export const Modal: React.FC<ModalProps> = ({
       className={cn(
         'Modal flex flex-col gap-2 p-3 rounded-lg shadow-lg bg-slate-900 border border-slate-700',
         fullSize && 'fullSize',
-        isOpenClass && 'is-open',
-        isClosing && 'is-closing',
         className
       )}
     >
@@ -127,7 +100,7 @@ export const Modal: React.FC<ModalProps> = ({
           )}
         </div>
 
-        {(isOpen || isClosing) && children}
+        {children}
       </div>
     </dialog>
   )
