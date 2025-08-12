@@ -10,7 +10,7 @@ import {
 } from '@dnd-kit/core'
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import { SortableContext, rectSwappingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
-import { ArrowBigRightDash, List, Move, Play, Settings, Sword, Table, Undo } from 'lucide-react'
+import { ArrowBigRightDash, List, Move, Play, Settings, Sword, Table, Trophy, Undo } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useEffect, useRef, useState } from 'react'
 
@@ -255,6 +255,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
               <Sword size={24} />
             </div>
           )}
+
           {!isSwordDragging && draggedPlayerId && (
             <div className="rounded-lg px-3 py-2 bg-slate-700/90 text-slate-100 border border-slate-600 shadow-lg min-w-[160px]">
               <div className="text-sm font-semibold">
@@ -289,8 +290,8 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
           )}
         </div>
 
-        {/* Play/Finish and Cancel Buttons */}
-        <div className="flex gap-2 empty:hidden">
+        {/* Start and Cancel Buttons */}
+        <div className="flex gap-2 min-h-[30px]">
           {game.state === 'setup' && (
             <>
               <Button variant="primary" disabled={!canPlay} onClick={handlePlay}>
@@ -306,12 +307,6 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
                 CANCEL
               </Button>
             </>
-          )}
-
-          {game.state === 'active' && (
-            <Button variant="primary" onClick={handleFinish}>
-              FINISH
-            </Button>
           )}
         </div>
       </div>
@@ -381,6 +376,22 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
                   <Table size={20} />
                   <span>Table Mode</span>
                 </button>
+
+                {game.state === 'active' && (
+                  <>
+                    <div className="border-t border-gray-600 my-1"></div>
+                    <button
+                      className="w-full flex items-center gap-3 px-3 py-2 text-left text-red-400 hover:bg-red-600/20 rounded transition-colors"
+                      onClick={() => {
+                        handleFinish()
+                        setShowSettingsMenu(false)
+                      }}
+                    >
+                      <Trophy size={20} />
+                      <span>Finish Game</span>
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           )}
