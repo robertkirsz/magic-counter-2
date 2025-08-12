@@ -40,7 +40,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       vibrationDuration = 50, // Default 50ms vibration
       onLongPress,
       longPressDelay = 500,
-      shouldPreventDefaultOnLongPress = false,
+      shouldPreventDefaultOnLongPress = true,
       shouldStopPropagationOnLongPress = false,
       ...props
     },

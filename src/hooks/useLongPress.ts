@@ -14,6 +14,8 @@ interface UseLongPressReturn {
   onMouseLeave: (event: React.MouseEvent) => void
   onTouchStart: (event: React.TouchEvent) => void
   onTouchEnd: (event: React.TouchEvent) => void
+  onTouchMove: (event: React.TouchEvent) => void
+  onContextMenu: (event: React.MouseEvent) => void
 }
 
 export const useLongPress = ({
@@ -69,6 +71,18 @@ export const useLongPress = ({
     onTouchStart: (event: React.TouchEvent) => start(event),
     onMouseUp: (event: React.MouseEvent) => clear(event),
     onMouseLeave: (event: React.MouseEvent) => clear(event, false),
-    onTouchEnd: (event: React.TouchEvent) => clear(event)
+    onTouchEnd: (event: React.TouchEvent) => clear(event),
+    onTouchMove: (event: React.TouchEvent) => {
+      // Prevent scrolling when long pressing
+      if (shouldPreventDefault) {
+        event.preventDefault()
+      }
+    },
+    onContextMenu: (event: React.MouseEvent) => {
+      // Prevent context menu on long press
+      if (shouldPreventDefault) {
+        event.preventDefault()
+      }
+    }
   }
 }
