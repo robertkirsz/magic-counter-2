@@ -102,8 +102,9 @@ const PlayerLifeControls: React.FC<{
           data-testid={`${_testId}-remove-life`}
           onClick={() => handleLifeChange(-1)}
           onLongPress={() => handleLongPressLifeChange(-1)}
+          className="!px-6 !py-3"
         >
-          <MinusIcon className="w-6 h-6" />
+          <MinusIcon className="w-8 h-8" />
         </Button>
 
         <div className={cn('relative text-center', pendingLifeChanges !== 0 ? 'text-blue-600' : 'text-white')}>
@@ -131,8 +132,9 @@ const PlayerLifeControls: React.FC<{
             disabled={commanderDamage}
             onClick={() => handleLifeChange(1)}
             onLongPress={() => handleLongPressLifeChange(1)}
+            className="!px-6 !py-3"
           >
-            <PlusIcon className="w-6 h-6" />
+            <PlusIcon className="w-8 h-8" />
           </Button>
         )}
       </div>
