@@ -10,7 +10,19 @@ import {
 } from '@dnd-kit/core'
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import { SortableContext, rectSwappingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
-import { ArrowBigRightDash, List, Move, Play, Settings, Sword, Table, Trophy, Undo } from 'lucide-react'
+import {
+  ArrowBigRightDash,
+  List,
+  Maximize2,
+  Minimize2,
+  Move,
+  Play,
+  Settings,
+  Sword,
+  Table,
+  Trophy,
+  Undo
+} from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useEffect, useRef, useState } from 'react'
 
@@ -18,6 +30,7 @@ import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
 import { EventDispatcher } from '../utils/eventDispatcher'
+import { isFullscreen, toggleFullscreen } from '../utils/fullscreen'
 import { generateId } from '../utils/idGenerator'
 import { ActionsList } from './ActionsList'
 import { Button } from './Button'
@@ -55,12 +68,35 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const [draggedPlayerId, setDraggedPlayerId] = useState<string | null>(null)
   const [tableMode, setTableMode] = useState(getInitialTableMode())
   const [showSettingsMenu, setShowSettingsMenu] = useState(false)
+  const [fullscreen, setFullscreen] = useState(false)
   const settingsMenuRef = useRef<HTMLDivElement>(null)
 
   // Save table mode to localStorage when it changes
   useEffect(() => {
     localStorage.setItem(TABLE_MODE_KEY, tableMode.toString())
   }, [tableMode])
+
+  // Fullscreen change listener
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setFullscreen(isFullscreen())
+    }
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange)
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange)
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange)
+
+    // Set initial state
+    setFullscreen(isFullscreen())
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange)
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange)
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange)
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange)
+    }
+  }, [])
 
   // Close settings menu when clicking outside
   useEffect(() => {
@@ -220,6 +256,15 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
     setPreviewPlayerCount(count)
   }
 
+  // Fullscreen toggle handler
+  const handleToggleFullscreen = async () => {
+    try {
+      await toggleFullscreen()
+    } catch (error) {
+      console.error('Failed to toggle fullscreen:', error)
+    }
+  }
+
   return (
     <div
       className={cn(
@@ -318,6 +363,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
             round
             onClick={() => setShowSettingsMenu(!showSettingsMenu)}
             className={cn(showSettingsMenu && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500')}
+            title="Settings"
           >
             <Settings size={24} />
           </Button>
@@ -375,6 +421,17 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
                 >
                   <Table size={20} />
                   <span>Table Mode</span>
+                </button>
+
+                <button
+                  className="w-full flex items-center gap-3 px-3 py-2 text-left text-white hover:bg-gray-700 rounded transition-colors"
+                  onClick={() => {
+                    handleToggleFullscreen()
+                    setShowSettingsMenu(false)
+                  }}
+                >
+                  {fullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
+                  <span>{fullscreen ? 'Exit Fullscreen' : 'Fullscreen'}</span>
                 </button>
 
                 {game.state === 'active' && (
