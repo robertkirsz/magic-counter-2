@@ -269,8 +269,8 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
           {/* Pass Turn Button */}
           {game.state === 'active' && game.turnTracking && currentActivePlayer && (
-            <Button round variant="primary" onClick={() => handlePassTurn()} title="Pass turn">
-              <ArrowBigRightDash size={32} />
+            <Button round variant="primary" onClick={() => handlePassTurn()} title="Pass turn" className="!p-4">
+              <ArrowBigRightDash size={64} />
             </Button>
           )}
         </div>
