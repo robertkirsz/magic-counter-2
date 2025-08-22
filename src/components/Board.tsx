@@ -10,27 +10,14 @@ import {
 } from '@dnd-kit/core'
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import { SortableContext, rectSwappingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
-import {
-  ArrowBigRightDash,
-  List,
-  Maximize2,
-  Minimize2,
-  Move,
-  Play,
-  Settings,
-  Sword,
-  Table,
-  Trophy,
-  Undo
-} from 'lucide-react'
+import { ArrowBigRightDash, Play, Sword, Undo } from 'lucide-react'
 import { DateTime } from 'luxon'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
 import { EventDispatcher } from '../utils/eventDispatcher'
-import { isFullscreen, toggleFullscreen } from '../utils/fullscreen'
 import { generateId } from '../utils/idGenerator'
 import { ActionsList } from './ActionsList'
 import { Button } from './Button'
@@ -38,6 +25,7 @@ import { GameEndModal } from './GameEndModal'
 import { GameForm } from './GameForm'
 import GameStatus from './GameStatus'
 import { Modal } from './Modal'
+import { SettingsMenu } from './SettingsMenu'
 import { SortablePlayerSection } from './SortablePlayerSection'
 import StartGameModal from './board/StartGameModal'
 
@@ -67,50 +55,11 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const [isSwordDragging, setIsSwordDragging] = useState(false)
   const [draggedPlayerId, setDraggedPlayerId] = useState<string | null>(null)
   const [tableMode, setTableMode] = useState(getInitialTableMode())
-  const [showSettingsMenu, setShowSettingsMenu] = useState(false)
-  const [fullscreen, setFullscreen] = useState(false)
-  const settingsMenuRef = useRef<HTMLDivElement>(null)
 
   // Save table mode to localStorage when it changes
   useEffect(() => {
     localStorage.setItem(TABLE_MODE_KEY, tableMode.toString())
   }, [tableMode])
-
-  // Fullscreen change listener
-  useEffect(() => {
-    const handleFullscreenChange = () => {
-      setFullscreen(isFullscreen())
-    }
-
-    document.addEventListener('fullscreenchange', handleFullscreenChange)
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange)
-    document.addEventListener('mozfullscreenchange', handleFullscreenChange)
-    document.addEventListener('MSFullscreenChange', handleFullscreenChange)
-
-    // Set initial state
-    setFullscreen(isFullscreen())
-
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange)
-      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange)
-      document.removeEventListener('mozfullscreenchange', handleFullscreenChange)
-      document.removeEventListener('MSFullscreenChange', handleFullscreenChange)
-    }
-  }, [])
-
-  // Close settings menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (settingsMenuRef.current && !settingsMenuRef.current.contains(event.target as Node)) {
-        setShowSettingsMenu(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -256,15 +205,6 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
     setPreviewPlayerCount(count)
   }
 
-  // Fullscreen toggle handler
-  const handleToggleFullscreen = async () => {
-    try {
-      await toggleFullscreen()
-    } catch (error) {
-      console.error('Failed to toggle fullscreen:', error)
-    }
-  }
-
   return (
     <div
       className={cn(
@@ -357,103 +297,16 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       </div>
 
       {/* Settings Menu */}
-      <div className="absolute top-0 right-0 p-2 z-20" ref={settingsMenuRef}>
-        <div className="relative">
-          <Button
-            round
-            onClick={() => setShowSettingsMenu(!showSettingsMenu)}
-            className={cn(showSettingsMenu && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500')}
-            title="Settings"
-          >
-            <Settings size={24} />
-          </Button>
-
-          {showSettingsMenu && (
-            <div className="absolute top-full right-0 mt-2 bg-gray-800 border border-gray-600 rounded-lg shadow-lg min-w-[200px]">
-              <div className="p-2 space-y-1">
-                <button
-                  className="w-full flex items-center gap-3 px-3 py-2 text-left text-white hover:bg-gray-700 rounded transition-colors"
-                  onClick={() => {
-                    setShowSettings(true)
-                    setShowSettingsMenu(false)
-                  }}
-                >
-                  <Settings size={20} />
-                  <span>Game Settings</span>
-                </button>
-
-                <button
-                  className="w-full flex items-center gap-3 px-3 py-2 text-left text-white hover:bg-gray-700 rounded transition-colors"
-                  onClick={() => {
-                    setShowActions(true)
-                    setShowSettingsMenu(false)
-                  }}
-                >
-                  <List size={20} />
-                  <span>Game Actions</span>
-                </button>
-
-                <div className="border-t border-gray-600 my-1"></div>
-
-                <button
-                  className={cn(
-                    'w-full flex items-center gap-3 px-3 py-2 text-left text-white hover:bg-gray-700 rounded transition-colors',
-                    dragEnabled && 'bg-blue-600/90 text-white'
-                  )}
-                  onClick={() => {
-                    setDragEnabled(!dragEnabled)
-                    setShowSettingsMenu(false)
-                  }}
-                >
-                  <Move size={20} />
-                  <span>Drag Mode</span>
-                </button>
-
-                <button
-                  className={cn(
-                    'w-full flex items-center gap-3 px-3 py-2 text-left text-white hover:bg-gray-700 rounded transition-colors',
-                    tableMode && 'bg-green-600/90 text-white'
-                  )}
-                  onClick={() => {
-                    setTableMode(!tableMode)
-                    setShowSettingsMenu(false)
-                  }}
-                >
-                  <Table size={20} />
-                  <span>Table Mode</span>
-                </button>
-
-                <button
-                  className="w-full flex items-center gap-3 px-3 py-2 text-left text-white hover:bg-gray-700 rounded transition-colors"
-                  onClick={() => {
-                    handleToggleFullscreen()
-                    setShowSettingsMenu(false)
-                  }}
-                >
-                  {fullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  <span>{fullscreen ? 'Exit Fullscreen' : 'Fullscreen'}</span>
-                </button>
-
-                {game.state === 'active' && (
-                  <>
-                    <div className="border-t border-gray-600 my-1"></div>
-                    <button
-                      className="w-full flex items-center gap-3 px-3 py-2 text-left text-red-400 hover:bg-red-600/20 rounded transition-colors"
-                      onClick={() => {
-                        handleFinish()
-                        setShowSettingsMenu(false)
-                      }}
-                    >
-                      <Trophy size={20} />
-                      <span>Finish Game</span>
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+      <SettingsMenu
+        tableMode={tableMode}
+        dragEnabled={dragEnabled}
+        gameState={game.state}
+        onTableModeChange={setTableMode}
+        onDragEnabledChange={setDragEnabled}
+        onShowSettings={() => setShowSettings(true)}
+        onShowActions={() => setShowActions(true)}
+        onFinishGame={handleFinish}
+      />
 
       <Modal title="Game Settings" isOpen={showSettings} onClose={() => setShowSettings(false)}>
         <GameForm
