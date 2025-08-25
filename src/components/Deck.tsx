@@ -83,6 +83,20 @@ export const Deck: React.FC<DeckProps> = ({
               </span>
             )}
           </div>
+
+          {/* Deck Options */}
+          {deck.options && deck.options.length > 0 && (
+            <div className="flex items-center gap-2">
+              {deck.options.map(option => (
+                <span
+                  key={option}
+                  className="text-xs bg-purple-900/30 text-purple-300 px-2 py-1 rounded font-medium border border-purple-700"
+                >
+                  {option === 'infect' ? 'Infect' : option === 'monarch' ? 'Monarch' : option}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
 
         {menuVisible && (

@@ -34,6 +34,7 @@
           "image": "https://cards.scryfall.io/art_crop/front/8/8/889c1a0f-7df2-4497-8058-04358173d7e8.jpg?1562438016"
         }
       ],
+      "options": ["infect"],
       "createdBy": "bfe4aac5-25c0-4e5c-b449-9ed6bb7816a4",
       "id": "11fcefec-68b6-46bf-8eba-0b3ea5d715c7",
       "createdAt": "2025-07-15T11:14:02.306Z"
@@ -98,6 +99,7 @@
           "image": "https://cards.scryfall.io/art_crop/front/2/b/2b902f64-7795-4f1f-81e6-26db7c78a10c.jpg?1690005330"
         }
       ],
+      "options": ["infect", "monarch"],
       "createdBy": "a1199e6d-65b5-42a9-baf7-a081efe530a9",
       "id": "616b71d3-40dc-4744-8689-96f87fe07da5",
       "createdAt": "2025-07-15T11:15:42.505Z"

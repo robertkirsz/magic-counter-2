@@ -1,5 +1,6 @@
 type GameState = 'setup' | 'active' | 'finished'
 type ManaColor = 'W' | 'U' | 'B' | 'R' | 'G' | 'C'
+type DeckOption = 'infect' | 'monarch'
 
 type ScryfallCard = {
   id: string
@@ -16,6 +17,7 @@ type Deck = {
   name: string
   colors: ManaColor[]
   commanders: ScryfallCard[]
+  options?: DeckOption[]
 }
 
 type User = {

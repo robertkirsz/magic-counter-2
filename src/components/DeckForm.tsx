@@ -23,6 +23,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
   const [name, setName] = useState<Deck['name']>(deck?.name || '')
   const [selectedColors, setSelectedColors] = useState<Deck['colors']>(deck?.colors || [])
   const [commanders, setCommanders] = useState<Deck['commanders']>(deck?.commanders || [])
+  const [selectedOptions, setSelectedOptions] = useState<Deck['options']>(deck?.options || [])
   const [archidektUrl, setArchidektUrl] = useState('')
   const [isLoadingDeckName, setIsLoadingDeckName] = useState(false)
 
@@ -48,6 +49,12 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
     setSelectedColors(prev => (prev.includes(color) ? prev.filter(c => c !== color) : [...prev, color]))
   }
 
+  const handleOptionToggle = (option: DeckOption) => {
+    setSelectedOptions(prev =>
+      (prev || []).includes(option) ? (prev || []).filter(o => o !== option) : [...(prev || []), option]
+    )
+  }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -56,7 +63,8 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
         updateDeck(deckId, {
           name: name.trim(),
           colors: selectedColors,
-          commanders: commanders.length > 0 ? commanders : []
+          commanders: commanders.length > 0 ? commanders : [],
+          options: (selectedOptions || []).length > 0 ? selectedOptions : undefined
         })
 
         onSave?.(deckId)
@@ -67,6 +75,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
         name: name.trim(),
         colors: selectedColors,
         commanders: commanders.length > 0 ? commanders : [],
+        options: (selectedOptions || []).length > 0 ? selectedOptions : undefined,
         createdBy: userId
       })
 
@@ -293,6 +302,35 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
 
       {/* Mana Colors */}
       <ManaPicker selectedColors={selectedColors} onColorToggle={handleColorToggle} />
+
+      {/* Deck Options */}
+      <div className="flex flex-col gap-2">
+        <label className="text-sm font-medium text-gray-300">Deck Options</label>
+
+        <div className="flex flex-col gap-2">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={selectedOptions?.includes('infect') || false}
+              onChange={() => handleOptionToggle('infect')}
+              className="form-checkbox"
+            />
+
+            <span className="text-sm">Infect</span>
+          </label>
+
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={selectedOptions?.includes('monarch') || false}
+              onChange={() => handleOptionToggle('monarch')}
+              className="form-checkbox"
+            />
+
+            <span className="text-sm">Monarch</span>
+          </label>
+        </div>
+      </div>
 
       {/* Action Buttons */}
       <div className="flex gap-2 justify-end">

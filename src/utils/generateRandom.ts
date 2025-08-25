@@ -33,16 +33,18 @@ export interface GenerateRandomDeckOptions {
   colors?: ManaColor[]
   commanders?: ScryfallCard[]
   createdBy?: string | null
+  options?: DeckOption[]
 }
 
 export const generateRandomDeck = (options: GenerateRandomDeckOptions = {}): Omit<Deck, 'id' | 'createdAt'> => {
-  const { name, randomNumber, commanderCount, colors, commanders, createdBy } = options
+  const { name, randomNumber, commanderCount, colors, commanders, createdBy, options: deckOptions } = options
 
   if (name) {
     return {
       name,
       colors: colors ?? ['C' as ManaColor],
       commanders: commanders ?? [],
+      options: deckOptions,
       createdBy: createdBy ?? null
     }
   }
@@ -59,10 +61,16 @@ export const generateRandomDeck = (options: GenerateRandomDeckOptions = {}): Omi
   const allColors = selectedCommanders.map(commander => commander.colors).flat()
   const uniqueColors = [...new Set(allColors)]
 
+  // Randomly add some deck options
+  const randomOptions: DeckOption[] = []
+  if (Math.random() > 0.7) randomOptions.push('infect')
+  if (Math.random() > 0.8) randomOptions.push('monarch')
+
   return {
     name: `${randomDeckName} Deck ${number}`,
     colors: colors ?? (uniqueColors.length > 0 ? (uniqueColors as ManaColor[]) : ['C' as ManaColor]),
     commanders: selectedCommanders,
+    options: deckOptions ?? (randomOptions.length > 0 ? randomOptions : undefined),
     createdBy: createdBy ?? null
   }
 }
