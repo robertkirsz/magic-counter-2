@@ -8,8 +8,10 @@ export interface GamesContextType {
   setGames: React.Dispatch<React.SetStateAction<Game[]>>
   getCurrentActivePlayer: (gameId?: Game['id']) => string | undefined
   getCurrentRound: (gameId: string) => number
-  groupActionsByRound: (gameId: string) => Array<{ round: number; actions: (LifeChangeAction | TurnChangeAction)[] }>
-  dispatchAction: (gameId: string, action: LifeChangeAction | TurnChangeAction) => void
+  groupActionsByRound: (
+    gameId: string
+  ) => Array<{ round: number; actions: (LifeChangeAction | TurnChangeAction | MonarchChangeAction)[] }>
+  dispatchAction: (gameId: string, action: LifeChangeAction | TurnChangeAction | MonarchChangeAction) => void
   undoLastAction: (gameId: string) => void
 }
 

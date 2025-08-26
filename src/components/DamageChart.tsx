@@ -81,7 +81,7 @@ export const DamageChart: React.FC<DamageChartProps> = ({ gameId }) => {
     dataPoints.push(initialDataPoint)
 
     // Process actions to build damage history
-    game.actions.forEach((action: LifeChangeAction | TurnChangeAction) => {
+    game.actions.forEach((action: LifeChangeAction | TurnChangeAction | MonarchChangeAction) => {
       if (action.type === 'turn-change') {
         turnCount++
 

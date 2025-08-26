@@ -75,7 +75,7 @@ export const LifeChart: React.FC<LifeChartProps> = ({ gameId }) => {
     dataPoints.push(initialDataPoint)
 
     // Process actions to build life history
-    game.actions.forEach((action: LifeChangeAction | TurnChangeAction) => {
+    game.actions.forEach((action: LifeChangeAction | TurnChangeAction | MonarchChangeAction) => {
       if (action.type === 'turn-change') {
         turnCount++
 

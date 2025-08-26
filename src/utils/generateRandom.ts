@@ -132,6 +132,7 @@ export const generateRandomGame = (options: GenerateRandomGameOptions = {}): Omi
     turnTracking: tracking,
     startingLife: life,
     commanders: useCommanders,
+    monarch: null,
     actions: []
   }
 }

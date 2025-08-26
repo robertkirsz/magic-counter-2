@@ -7,6 +7,7 @@ import { cn } from '../../utils/cn'
 import { useTurnChangeListener } from '../../utils/eventDispatcher'
 import { generateId } from '../../utils/idGenerator'
 import { Button } from '../Button'
+import { MonarchToggle } from '../MonarchToggle'
 
 const PlayerLifeControls: React.FC<{
   testId?: string
@@ -17,7 +18,8 @@ const PlayerLifeControls: React.FC<{
   attackMode?: boolean
   onLifeCommitted?: (action: LifeChangeAction) => void
   commanderId?: string
-}> = ({ testId, from, to, gameId, currentLife, attackMode = false, onLifeCommitted, commanderId }) => {
+  playerId?: string
+}> = ({ testId, from, to, gameId, currentLife, attackMode = false, onLifeCommitted, commanderId, playerId }) => {
   const { dispatchAction } = useGames()
   const [pendingLifeChanges, setPendingLifeChanges] = useState<number>(0)
   const [commanderDamage, setCommanderDamage] = useState<boolean>(false)
@@ -93,6 +95,13 @@ const PlayerLifeControls: React.FC<{
           >
             <img src="/icons/commander.png" className="w-5 h-5" />
           </Button>
+        </div>
+      )}
+
+      {/* Monarch Toggle */}
+      {playerId && (
+        <div className="flex justify-center">
+          <MonarchToggle gameId={gameId} playerId={playerId} />
         </div>
       )}
 

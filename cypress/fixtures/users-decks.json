@@ -98,6 +98,7 @@
           "image": "https://cards.scryfall.io/art_crop/front/2/b/2b902f64-7795-4f1f-81e6-26db7c78a10c.jpg?1690005330"
         }
       ],
+      "options": ["monarch"],
       "createdBy": "a1199e6d-65b5-42a9-baf7-a081efe530a9",
       "id": "616b71d3-40dc-4744-8689-96f87fe07da5",
       "createdAt": "2025-07-15T11:15:42.505Z"

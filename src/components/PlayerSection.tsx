@@ -7,7 +7,8 @@ import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
 import { useSwordAttackListener } from '../utils/eventDispatcher'
-import { isPlayerEliminated } from '../utils/gameUtils'
+import { getCurrentMonarch, isPlayerEliminated } from '../utils/gameUtils'
+import { generateId } from '../utils/idGenerator'
 import { AttackModal } from './AttackModal'
 import { Button } from './Button'
 import { CommanderDamage } from './CommanderDamage'
@@ -15,6 +16,7 @@ import { DeckForm } from './DeckForm'
 import { Decks } from './Decks'
 import { DraggableSword } from './DraggableSword'
 import { Modal } from './Modal'
+import { MonarchDrawReminder } from './MonarchDrawReminder'
 import { UserForm } from './UserForm'
 import PlayerDeckSelector from './player/PlayerDeckSelector'
 import PlayerLifeControls from './player/PlayerLifeControls'
@@ -29,7 +31,7 @@ interface PlayerSectionProps {
 export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }) => {
   const { users } = useUsers()
   const { decks } = useDecks()
-  const { games, updateGame, getCurrentActivePlayer } = useGames()
+  const { games, updateGame, getCurrentActivePlayer, dispatchAction } = useGames()
   const [showUserSelect, setShowUserSelect] = useState<boolean>(false)
   const [showDeckSelect, setShowDeckSelect] = useState<boolean>(false)
   const [showDeckForm, setShowDeckForm] = useState<boolean>(false)
@@ -102,6 +104,28 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
     setShowDeckSelect(false)
   }
 
+  const handleLifeCommitted = (action: LifeChangeAction) => {
+    // Check if damage was dealt to the monarch
+    if (action.value < 0) {
+      // Damage was dealt
+      const currentMonarch = getCurrentMonarch(game)
+      const targetPlayerId = player?.id
+
+      if (currentMonarch === targetPlayerId && action.from) {
+        // Monarch was dealt damage, steal the title
+        const monarchChangeAction = {
+          id: generateId(),
+          createdAt: new Date(),
+          type: 'monarch-change' as const,
+          from: currentMonarch,
+          to: action.from
+        }
+
+        dispatchAction(gameId, monarchChangeAction)
+      }
+    }
+  }
+
   const getUserName = (userId: string | null) => {
     if (!userId) return 'Unknown User'
 
@@ -172,6 +196,8 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
             gameId={gameId}
             currentLife={currentLife}
             commanderId={activePlayerCommanderId}
+            playerId={playerId}
+            onLifeCommitted={handleLifeCommitted}
           />
         )}
 
@@ -260,6 +286,9 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
           currentLife={currentLife}
         />
       )}
+
+      {/* Monarch Draw Reminder */}
+      {gameIsActive && <MonarchDrawReminder gameId={gameId} playerId={playerId} />}
     </div>
   )
 }

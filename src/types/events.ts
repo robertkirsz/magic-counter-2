@@ -73,6 +73,21 @@ export interface LifeChangeEvent {
 }
 
 /**
+ * Monarch change event - triggered when the monarch changes
+ */
+export interface MonarchChangeEvent {
+  type: 'monarch-change'
+  detail: {
+    /** ID of the game */
+    gameId: string
+    /** ID of the player who was previously monarch (null if no monarch) */
+    fromPlayerId: string | null
+    /** ID of the player who is now monarch (null if monarch removed) */
+    toPlayerId: string | null
+  }
+}
+
+/**
  * Game deletion event - triggered when a game is permanently deleted
  */
 export interface GameDeleteEvent {
@@ -90,7 +105,13 @@ export interface GameDeleteEvent {
 /**
  * Union type of all possible application events
  */
-export type AppEvent = SwordAttackEvent | GameStateChangeEvent | TurnChangeEvent | LifeChangeEvent | GameDeleteEvent
+export type AppEvent =
+  | SwordAttackEvent
+  | GameStateChangeEvent
+  | TurnChangeEvent
+  | LifeChangeEvent
+  | MonarchChangeEvent
+  | GameDeleteEvent
 
 // ============================================================================
 // Event Type Guards
@@ -122,6 +143,13 @@ export function isTurnChangeEvent(event: Event): event is CustomEvent<TurnChange
  */
 export function isLifeChangeEvent(event: Event): event is CustomEvent<LifeChangeEvent['detail']> {
   return event instanceof CustomEvent && event.type === 'life-change'
+}
+
+/**
+ * Type guard to check if an event is a monarch change event
+ */
+export function isMonarchChangeEvent(event: Event): event is CustomEvent<MonarchChangeEvent['detail']> {
+  return event instanceof CustomEvent && event.type === 'monarch-change'
 }
 
 /**

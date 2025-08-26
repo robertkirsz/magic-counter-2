@@ -3,6 +3,8 @@ import React from 'react'
 import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
+import { getCurrentMonarch } from '../utils/gameUtils'
+import { generateId } from '../utils/idGenerator'
 import { Modal } from './Modal'
 import PlayerLifeControls from './player/PlayerLifeControls'
 
@@ -23,7 +25,7 @@ export const AttackModal: React.FC<AttackModalProps> = ({
   gameId,
   currentLife
 }) => {
-  const { games } = useGames()
+  const { games, dispatchAction } = useGames()
   const { users } = useUsers()
   const { decks } = useDecks()
 
@@ -46,6 +48,28 @@ export const AttackModal: React.FC<AttackModalProps> = ({
   const attackerName = attacker ? getUserName(attacker.userId) : 'Unknown Attacker'
   const targetName = target ? getUserName(target.userId) : 'Unknown Target'
 
+  const handleLifeCommitted = (action: LifeChangeAction) => {
+    // Check if damage was dealt to the monarch
+    if (action.value < 0) {
+      // Damage was dealt
+      const currentMonarch = getCurrentMonarch(game)
+      const targetUserId = target?.userId
+
+      if (currentMonarch === targetUserId && attacker?.userId) {
+        // Monarch was dealt damage, steal the title
+        const monarchChangeAction = {
+          id: generateId(),
+          createdAt: new Date(),
+          type: 'monarch-change' as const,
+          from: currentMonarch,
+          to: attacker.userId
+        }
+
+        dispatchAction(gameId, monarchChangeAction)
+      }
+    }
+  }
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="flex flex-col items-center gap-4">
@@ -65,6 +89,7 @@ export const AttackModal: React.FC<AttackModalProps> = ({
             attackMode
             commanderId={attackerCommanderId}
             testId="attack-modal"
+            onLifeCommitted={handleLifeCommitted}
           />
         </div>
       </div>

@@ -13,11 +13,13 @@ import {
   type GameDeleteEvent,
   type GameStateChangeEvent,
   type LifeChangeEvent,
+  type MonarchChangeEvent,
   type SwordAttackEvent,
   type TurnChangeEvent,
   isGameDeleteEvent,
   isGameStateChangeEvent,
   isLifeChangeEvent,
+  isMonarchChangeEvent,
   isSwordAttackEvent,
   isTurnChangeEvent
 } from '../types/events'
@@ -88,6 +90,19 @@ export class EventDispatcher {
   ): void {
     const event = new CustomEvent<LifeChangeEvent['detail']>('life-change', {
       detail: { gameId, playerId, previousLife, newLife, change }
+    })
+    window.dispatchEvent(event)
+  }
+
+  /**
+   * Dispatch a monarch change event
+   * @param gameId - ID of the game
+   * @param fromPlayerId - ID of the player who was previously monarch (null if no monarch)
+   * @param toPlayerId - ID of the player who is now monarch (null if monarch removed)
+   */
+  static dispatchMonarchChange(gameId: string, fromPlayerId: string | null, toPlayerId: string | null): void {
+    const event = new CustomEvent<MonarchChangeEvent['detail']>('monarch-change', {
+      detail: { gameId, fromPlayerId, toPlayerId }
     })
     window.dispatchEvent(event)
   }
@@ -198,6 +213,26 @@ export function addLifeChangeListener(
 
   window.addEventListener('life-change', handler, options)
   return () => window.removeEventListener('life-change', handler, options)
+}
+
+/**
+ * Add a typed event listener for monarch change events
+ * @param callback - Function to call when a monarch change event occurs
+ * @param options - Optional listener options
+ * @returns Function to remove the event listener
+ */
+export function addMonarchChangeListener(
+  callback: (event: CustomEvent<MonarchChangeEvent['detail']>) => void,
+  options?: EventListenerOptions
+): () => void {
+  const handler = (event: Event) => {
+    if (isMonarchChangeEvent(event)) {
+      callback(event)
+    }
+  }
+
+  window.addEventListener('monarch-change', handler, options)
+  return () => window.removeEventListener('monarch-change', handler, options)
 }
 
 /**
@@ -317,6 +352,30 @@ export function useLifeChangeListener(
 
     window.addEventListener('life-change', handler)
     return () => window.removeEventListener('life-change', handler)
+  }, deps) // eslint-disable-line react-hooks/exhaustive-deps
+}
+
+/**
+ * React hook for listening to monarch change events
+ * @param callback - Function to call when a monarch change event occurs
+ * @param deps - Dependencies array for the callback
+ */
+export function useMonarchChangeListener(
+  callback: (event: CustomEvent<MonarchChangeEvent['detail']>) => void,
+  deps: React.DependencyList = []
+): void {
+  const callbackRef = useRef(callback)
+  callbackRef.current = callback
+
+  useEffect(() => {
+    const handler = (event: Event) => {
+      if (isMonarchChangeEvent(event)) {
+        callbackRef.current(event)
+      }
+    }
+
+    window.addEventListener('monarch-change', handler)
+    return () => window.removeEventListener('monarch-change', handler)
   }, deps) // eslint-disable-line react-hooks/exhaustive-deps
 }
 

@@ -43,7 +43,8 @@ type Game = {
   turnTracking: boolean
   startingLife: number
   commanders: boolean
-  actions: (LifeChangeAction | TurnChangeAction)[]
+  monarch?: User['id'] | null
+  actions: (LifeChangeAction | TurnChangeAction | MonarchChangeAction)[]
   winner?: User['id']
   winCondition?: WinCondition
 }
@@ -64,4 +65,12 @@ type TurnChangeAction = {
   createdAt: Date
   from?: User['id']
   to?: User['id']
+}
+
+type MonarchChangeAction = {
+  type: 'monarch-change'
+  id: string
+  createdAt: Date
+  from?: User['id'] | null
+  to?: User['id'] | null
 }

@@ -21,7 +21,7 @@ const readGames = (): Game[] => {
       return parsed.map((g: Game) => ({
         ...g,
         createdAt: new Date(g.createdAt),
-        actions: g.actions.map((action: LifeChangeAction | TurnChangeAction) => ({
+        actions: g.actions.map((action: LifeChangeAction | TurnChangeAction | MonarchChangeAction) => ({
           ...action,
           createdAt: new Date(action.createdAt)
         }))
@@ -84,7 +84,7 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
     )
   }
 
-  const dispatchAction = (gameId: string, action: LifeChangeAction | TurnChangeAction) => {
+  const dispatchAction = (gameId: string, action: LifeChangeAction | TurnChangeAction | MonarchChangeAction) => {
     // Dispatch typed events based on action type
     if (action.type === 'turn-change') {
       EventDispatcher.dispatchTurnChange(gameId, action.from || null, action.to || null)
@@ -108,6 +108,8 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
           EventDispatcher.dispatchLifeChange(gameId, playerId, currentLife, newLife, action.value)
         })
       }
+    } else if (action.type === 'monarch-change') {
+      EventDispatcher.dispatchMonarchChange(gameId, action.from || null, action.to || null)
     }
 
     setGames(prev =>
@@ -168,9 +170,9 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
     const game = games.find(g => g.id === gameId)
     if (!game) return []
 
-    const groups: Array<{ round: number; actions: (LifeChangeAction | TurnChangeAction)[] }> = []
+    const groups: Array<{ round: number; actions: (LifeChangeAction | TurnChangeAction | MonarchChangeAction)[] }> = []
     let currentRound = 1
-    let roundActions: (LifeChangeAction | TurnChangeAction)[] = []
+    let roundActions: (LifeChangeAction | TurnChangeAction | MonarchChangeAction)[] = []
     let turnCount = 0
 
     game.actions.forEach(action => {

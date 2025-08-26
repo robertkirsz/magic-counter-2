@@ -51,3 +51,17 @@ export const isPlayerEliminated = (game: Game, playerId: string): boolean => {
 export const getActivePlayers = (game: Game): Player[] => {
   return game.players.filter(player => !isPlayerEliminated(game, player.id))
 }
+
+export const getCurrentMonarch = (game: Game): User['id'] | null => {
+  // Find the last monarch change action to determine current monarch
+  const lastMonarchAction = [...game.actions].reverse().find(action => action.type === 'monarch-change') as
+    | MonarchChangeAction
+    | undefined
+
+  if (!lastMonarchAction) {
+    // No monarch change actions, check if game has a monarch field set
+    return game.monarch || null
+  }
+
+  return lastMonarchAction.to || null
+}

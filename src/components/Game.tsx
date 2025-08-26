@@ -73,7 +73,7 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
     })
 
     // Process all life change actions to calculate final values
-    game.actions.forEach((action: LifeChangeAction | TurnChangeAction) => {
+    game.actions.forEach((action: LifeChangeAction | TurnChangeAction | MonarchChangeAction) => {
       if (action.type === 'life-change' && action.to) {
         action.to.forEach((playerId: string) => {
           if (finalLifeValues[playerId] !== undefined) {
