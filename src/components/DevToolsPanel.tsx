@@ -10,7 +10,6 @@ import {
   useGameDeleteListener,
   useGameStateChangeListener,
   useLifeChangeListener,
-  useSwordAttackListener,
   useTurnChangeListener
 } from '../utils/eventDispatcher'
 import {
@@ -188,13 +187,6 @@ export const DevToolsPanel: React.FC = () => {
   })
 
   // Event listeners for logging
-  useSwordAttackListener(event => {
-    const logEntry = createLogEntry('Sword Attack', event)
-    queueMicrotask(() => {
-      setLogs(prev => [logEntry, ...prev.slice(0, MAX_LOG_ENTRIES - 1)])
-    })
-  })
-
   useGameStateChangeListener(event => {
     const logEntry = createLogEntry('Game State Change', event)
     queueMicrotask(() => {

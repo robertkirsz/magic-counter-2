@@ -24,9 +24,6 @@ The event system provides:
 ```typescript
 import { EventDispatcher } from '../utils/eventDispatcher'
 
-// Dispatch a sword attack event
-EventDispatcher.dispatchSwordAttack('player1', 'player2')
-
 // Dispatch a game state change event
 EventDispatcher.dispatchGameStateChange('game1', 'setup', 'active')
 
@@ -43,41 +40,27 @@ EventDispatcher.dispatchGameDelete('game1')
 ### Listening to Events in React Components
 
 ```typescript
-import { useSwordAttackListener } from '../utils/eventDispatcher'
+import { useGameStateChangeListener } from '../utils/eventDispatcher'
 
 function MyComponent() {
-  useSwordAttackListener((event) => {
-    const { attackerId, targetId } = event.detail
-    console.log(`${attackerId} attacked ${targetId}`)
+  useGameStateChangeListener((event) => {
+    const { gameId, previousState, newState } = event.detail
+    console.log(`Game ${gameId} changed from ${previousState} to ${newState}`)
   })
 
-  return <div>Listening to sword attacks...</div>
+  return <div>Listening to game state changes...</div>
 }
 ```
 
 ### Available Event Listeners
 
-- `useSwordAttackListener` - Listen to sword attack events
 - `useGameStateChangeListener` - Listen to game state changes
 - `useTurnChangeListener` - Listen to turn changes
 - `useLifeChangeListener` - Listen to life changes
+- `useMonarchChangeListener` - Listen to monarch changes
 - `useGameDeleteListener` - Listen to game deletions
 
 ### Event Types
-
-#### SwordAttackEvent
-
-Triggered when a player drags a sword to attack another player.
-
-```typescript
-{
-  type: 'sword-attack'
-  detail: {
-    attackerId: string // ID of the player initiating the attack
-    targetId: string // ID of the player being attacked
-  }
-}
-```
 
 #### GameStateChangeEvent
 

@@ -11,19 +11,6 @@
 // ============================================================================
 
 /**
- * Sword attack event - triggered when a player drags a sword to attack another player
- */
-export interface SwordAttackEvent {
-  type: 'sword-attack'
-  detail: {
-    /** ID of the player initiating the attack */
-    attackerId: string
-    /** ID of the player being attacked */
-    targetId: string
-  }
-}
-
-/**
  * Game state change event - triggered when a game's state changes
  */
 export interface GameStateChangeEvent {
@@ -105,24 +92,11 @@ export interface GameDeleteEvent {
 /**
  * Union type of all possible application events
  */
-export type AppEvent =
-  | SwordAttackEvent
-  | GameStateChangeEvent
-  | TurnChangeEvent
-  | LifeChangeEvent
-  | MonarchChangeEvent
-  | GameDeleteEvent
+export type AppEvent = GameStateChangeEvent | TurnChangeEvent | LifeChangeEvent | MonarchChangeEvent | GameDeleteEvent
 
 // ============================================================================
 // Event Type Guards
 // ============================================================================
-
-/**
- * Type guard to check if an event is a sword attack event
- */
-export function isSwordAttackEvent(event: Event): event is CustomEvent<SwordAttackEvent['detail']> {
-  return event instanceof CustomEvent && event.type === 'sword-attack'
-}
 
 /**
  * Type guard to check if an event is a game state change event

@@ -6,15 +6,12 @@ import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
-import { useSwordAttackListener } from '../utils/eventDispatcher'
 import { getCurrentMonarch, isPlayerEliminated } from '../utils/gameUtils'
 import { generateId } from '../utils/idGenerator'
-import { AttackModal } from './AttackModal'
 import { Button } from './Button'
 import { CommanderDamage } from './CommanderDamage'
 import { DeckForm } from './DeckForm'
 import { Decks } from './Decks'
-import { DraggableSword } from './DraggableSword'
 import { Modal } from './Modal'
 import { MonarchDrawReminder } from './MonarchDrawReminder'
 import { UserForm } from './UserForm'
@@ -36,9 +33,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   const [showDeckSelect, setShowDeckSelect] = useState<boolean>(false)
   const [showDeckForm, setShowDeckForm] = useState<boolean>(false)
   const [showUserForm, setShowUserForm] = useState<boolean>(false)
-  const [showAttackModal, setShowAttackModal] = useState<boolean>(false)
-  const [attackData, setAttackData] = useState<{ attackerId: string; targetId: string } | null>(null)
-
   const activePlayerId = getCurrentActivePlayer(gameId)
 
   const { setNodeRef, isOver } = useDroppable({
@@ -48,18 +42,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
       playerId
     }
   })
-
-  useSwordAttackListener(
-    event => {
-      const { attackerId, targetId } = event.detail
-
-      if (targetId === playerId) {
-        setAttackData({ attackerId, targetId })
-        setShowAttackModal(true)
-      }
-    },
-    [playerId]
-  )
 
   const game = games.find(g => g.id === gameId)
 
@@ -201,7 +183,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
         )}
 
         <div className="flex justify-center items-center gap-1">
-          {gameIsActive && <DraggableSword playerId={playerId} gameId={gameId} />}
           <CommanderDamage gameId={gameId} playerId={playerId} />
         </div>
 
@@ -269,21 +250,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
           </>
         )}
       </div>
-
-      {/* Attack Modal */}
-      {showAttackModal && attackData && (
-        <AttackModal
-          isOpen={showAttackModal}
-          onClose={() => {
-            setShowAttackModal(false)
-            setAttackData(null)
-          }}
-          attackerId={attackData.attackerId}
-          targetId={attackData.targetId}
-          gameId={gameId}
-          currentLife={currentLife}
-        />
-      )}
 
       {/* Monarch Draw Reminder */}
       {gameIsActive && <MonarchDrawReminder gameId={gameId} playerId={playerId} />}

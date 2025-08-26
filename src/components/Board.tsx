@@ -10,7 +10,7 @@ import {
 } from '@dnd-kit/core'
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import { SortableContext, rectSwappingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
-import { ArrowBigRightDash, Play, Sword, Undo } from 'lucide-react'
+import { ArrowBigRightDash, Play, Undo } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useEffect, useState } from 'react'
 
@@ -52,7 +52,6 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const [showGameEndModal, setShowGameEndModal] = useState(false)
   const [previewPlayerCount, setPreviewPlayerCount] = useState<number>(game?.players.length || 4)
   const [dragEnabled, setDragEnabled] = useState(false)
-  const [isSwordDragging, setIsSwordDragging] = useState(false)
   const [draggedPlayerId, setDraggedPlayerId] = useState<string | null>(null)
   const [tableMode, setTableMode] = useState(getInitialTableMode())
 
@@ -107,27 +106,14 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
     removeGame(game.id)
   }
 
-  // Drag end handler for reordering players and sword attacks
+  // Drag end handler for reordering players
   const handleDragEnd = (event: DragEndEvent) => {
-    setIsSwordDragging(false)
     setDraggedPlayerId(null)
     const { active, over } = event
 
     if (!over || active.id === over.id) return
 
-    // Handle sword attacks
-    if (active.data.current?.type === 'sword' && over.data.current?.type === 'player') {
-      const attackerId = active.data.current.playerId
-      const targetId = over.data.current.playerId
-
-      if (attackerId !== targetId) {
-        // Trigger attack modal using typed event dispatcher
-        EventDispatcher.dispatchSwordAttack(attackerId, targetId)
-        return
-      }
-    }
-
-    // Handle player reordering (existing logic)
+    // Handle player reordering
     const oldIndex = game.players.findIndex(p => p.id === active.id)
     const newIndex = game.players.findIndex(p => p.id === over.data.current?.playerId)
 
@@ -143,9 +129,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   }
 
   const handleDragStart = (event: DragStartEvent) => {
-    const isSword = event.active?.data?.current && (event.active.data.current as { type?: string }).type === 'sword'
-    setIsSwordDragging(!!isSword)
-    if (!isSword) setDraggedPlayerId(String(event.active.id))
+    setDraggedPlayerId(String(event.active.id))
   }
 
   // Pass turn to next player (append TurnChangeAction)
@@ -235,13 +219,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         </SortableContext>
 
         <DragOverlay>
-          {isSwordDragging && (
-            <div className="rounded-full p-2 bg-red-600 hover:bg-red-500 text-white border-red-500">
-              <Sword size={24} />
-            </div>
-          )}
-
-          {!isSwordDragging && draggedPlayerId && (
+          {draggedPlayerId && (
             <div className="rounded-lg px-3 py-2 bg-slate-700/90 text-slate-100 border border-slate-600 shadow-lg min-w-[160px]">
               <div className="text-sm font-semibold">
                 {(() => {

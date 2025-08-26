@@ -14,13 +14,11 @@ import {
   type GameStateChangeEvent,
   type LifeChangeEvent,
   type MonarchChangeEvent,
-  type SwordAttackEvent,
   type TurnChangeEvent,
   isGameDeleteEvent,
   isGameStateChangeEvent,
   isLifeChangeEvent,
   isMonarchChangeEvent,
-  isSwordAttackEvent,
   isTurnChangeEvent
 } from '../types/events'
 
@@ -31,18 +29,6 @@ import {
  * and listening to application events.
  */
 export class EventDispatcher {
-  /**
-   * Dispatch a sword attack event
-   * @param attackerId - ID of the player initiating the attack
-   * @param targetId - ID of the player being attacked
-   */
-  static dispatchSwordAttack(attackerId: string, targetId: string): void {
-    const event = new CustomEvent<SwordAttackEvent['detail']>('sword-attack', {
-      detail: { attackerId, targetId }
-    })
-    window.dispatchEvent(event)
-  }
-
   /**
    * Dispatch a game state change event
    * @param gameId - ID of the game that changed state
@@ -133,26 +119,6 @@ export interface EventListenerOptions {
   capture?: boolean
   /** Whether the listener should be passive */
   passive?: boolean
-}
-
-/**
- * Add a typed event listener for sword attack events
- * @param callback - Function to call when a sword attack event occurs
- * @param options - Optional listener options
- * @returns Function to remove the event listener
- */
-export function addSwordAttackListener(
-  callback: (event: CustomEvent<SwordAttackEvent['detail']>) => void,
-  options?: EventListenerOptions
-): () => void {
-  const handler = (event: Event) => {
-    if (isSwordAttackEvent(event)) {
-      callback(event)
-    }
-  }
-
-  window.addEventListener('sword-attack', handler, options)
-  return () => window.removeEventListener('sword-attack', handler, options)
 }
 
 /**
@@ -258,30 +224,6 @@ export function addGameDeleteListener(
 // ============================================================================
 
 // ============================================================================
-
-/**
- * React hook for listening to sword attack events
- * @param callback - Function to call when a sword attack event occurs
- * @param deps - Dependencies array for the callback
- */
-export function useSwordAttackListener(
-  callback: (event: CustomEvent<SwordAttackEvent['detail']>) => void,
-  deps: React.DependencyList = []
-): void {
-  const callbackRef = useRef(callback)
-  callbackRef.current = callback
-
-  useEffect(() => {
-    const handler = (event: Event) => {
-      if (isSwordAttackEvent(event)) {
-        callbackRef.current(event)
-      }
-    }
-
-    window.addEventListener('sword-attack', handler)
-    return () => window.removeEventListener('sword-attack', handler)
-  }, deps) // eslint-disable-line react-hooks/exhaustive-deps
-}
 
 /**
  * React hook for listening to game state change events
