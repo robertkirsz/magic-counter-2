@@ -6,7 +6,6 @@ import { Button } from './Button'
 import './Modal.css'
 
 interface ModalProps extends React.HTMLAttributes<HTMLDialogElement> {
-  testId?: string
   isOpen: boolean
   title?: string
   fullSize?: boolean
@@ -15,7 +14,6 @@ interface ModalProps extends React.HTMLAttributes<HTMLDialogElement> {
 }
 
 export const Modal: React.FC<ModalProps> = ({
-  testId = '',
   isOpen,
   title = '',
   fullSize = false,
@@ -68,12 +66,9 @@ export const Modal: React.FC<ModalProps> = ({
     }
   }, [onClose])
 
-  const testIdPrefix = testId ? `${testId}-modal` : 'modal'
-
   return (
     <dialog
       ref={dialogRef}
-      data-testid={testIdPrefix}
       className={cn(
         'Modal flex flex-col gap-2 p-3 rounded-lg shadow-lg bg-slate-900 border border-slate-700',
         fullSize && 'fullSize',
@@ -86,7 +81,6 @@ export const Modal: React.FC<ModalProps> = ({
 
           {onClose && !hideCloseButton && (
             <Button
-              data-testid={`${testIdPrefix}-close`}
               type="button"
               aria-label="Close modal"
               round

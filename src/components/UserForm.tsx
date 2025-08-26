@@ -4,16 +4,13 @@ import { useUsers } from '../hooks/useUsers'
 import { Button } from './Button'
 
 interface UserFormProps {
-  testId?: string
   userId?: User['id']
   onSave: (userId: string) => void
   onCancel: () => void
 }
 
-export const UserForm: React.FC<UserFormProps> = ({ testId = '', userId, onSave, onCancel }) => {
+export const UserForm: React.FC<UserFormProps> = ({ userId, onSave, onCancel }) => {
   const mode = userId ? 'edit' : 'create'
-  const baseId = `user-form-${mode}`
-  const testIdPrefix = testId ? `${testId}-${baseId}` : baseId
 
   const { addUser, updateUser, users } = useUsers()
 
@@ -37,24 +34,17 @@ export const UserForm: React.FC<UserFormProps> = ({ testId = '', userId, onSave,
   }
 
   return (
-    <form data-testid={baseId} className="flex flex-col gap-4" onSubmit={handleSubmit}>
+    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       {/* Name Input */}
-      <input
-        data-testid={`${testIdPrefix}-name`}
-        autoFocus
-        value={name}
-        placeholder="Name"
-        onChange={e => setName(e.target.value)}
-        className="form-input"
-      />
+      <input autoFocus value={name} placeholder="Name" onChange={e => setName(e.target.value)} className="form-input" />
 
       {/* Action Buttons */}
       <div className="flex gap-2 justify-end">
-        <Button data-testid={`${testIdPrefix}-save`} variant="primary" disabled={!name.trim()}>
+        <Button variant="primary" disabled={!name.trim()}>
           {mode === 'create' ? 'Save User' : 'Save Changes'}
         </Button>
 
-        <Button type="button" data-testid={`${testIdPrefix}-cancel`} variant="danger" onClick={onCancel}>
+        <Button type="button" variant="danger" onClick={onCancel}>
           Cancel
         </Button>
       </div>

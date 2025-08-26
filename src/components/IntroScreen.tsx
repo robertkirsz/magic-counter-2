@@ -45,40 +45,39 @@ export const IntroScreen: React.FC = () => {
           </Button>
         )}
 
-        <Button variant="secondary" data-testid="intro-screen-users-button" onClick={() => setShowUsers(true)}>
+        <Button variant="secondary" onClick={() => setShowUsers(true)}>
           <UsersIcon size={20} />
           Users
         </Button>
 
-        <Button variant="secondary" data-testid="intro-screen-decks-button" onClick={() => setShowDecks(true)}>
+        <Button variant="secondary" onClick={() => setShowDecks(true)}>
           <BookOpen size={20} />
           Decks
         </Button>
       </div>
 
       {/* GameForm Modal */}
-      <Modal testId="game-form" isOpen={showGameForm} onClose={() => setShowGameForm(false)} title="Game Form">
+      <Modal isOpen={showGameForm} onClose={() => setShowGameForm(false)} title="Game Form">
         <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
           <GameForm onSave={() => setShowGameForm(false)} onCancel={() => setShowGameForm(false)} />
         </Suspense>
       </Modal>
 
       {/* Games Modal */}
-      <Modal testId="games" fullSize isOpen={showGames} onClose={() => setShowGames(false)} title="Games">
+      <Modal fullSize isOpen={showGames} onClose={() => setShowGames(false)} title="Games">
         <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
           <Games className="flex-1" />
         </Suspense>
       </Modal>
 
       {/* Users Modal */}
-      <Modal testId="users" fullSize isOpen={showUsers} onClose={() => setShowUsers(false)} title="Users">
+      <Modal fullSize isOpen={showUsers} onClose={() => setShowUsers(false)} title="Users">
         <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
           <Users className="flex-1" />
         </Suspense>
 
         {/* Floating Add User Button */}
         <Button
-          data-testid="users-add"
           variant="primary"
           round
           className="absolute bottom-3 right-3 shadow-lg z-10"
@@ -96,14 +95,13 @@ export const IntroScreen: React.FC = () => {
       </Modal>
 
       {/* Decks Modal */}
-      <Modal testId="decks" fullSize isOpen={showDecks} onClose={() => setShowDecks(false)} title="Decks">
+      <Modal fullSize isOpen={showDecks} onClose={() => setShowDecks(false)} title="Decks">
         <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
           <Decks className="flex-1" />
         </Suspense>
 
         {/* Floating Add Deck Button */}
         <Button
-          data-testid="decks-add"
           variant="primary"
           round
           className="absolute bottom-3 right-3 shadow-lg z-10"

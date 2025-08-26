@@ -3,7 +3,6 @@ import { DateTime } from 'luxon'
 
 import { createFinishedGame } from './gameGenerator'
 import { generateId } from './idGenerator'
-import { AVAILABLE_COMMANDERS } from './scryfall'
 
 // Deck archetypes for random deck generation
 const DECK_ARCHETYPES = ['Aggro', 'Control', 'Combo', 'Midrange', 'Tempo', 'Ramp', 'Burn', 'Tribal']
@@ -29,7 +28,6 @@ export const generateRandomUser = (options: GenerateRandomUserOptions = {}): Omi
 export interface GenerateRandomDeckOptions {
   name?: string
   randomNumber?: number
-  commanderCount?: number
   colors?: ManaColor[]
   commanders?: ScryfallCard[]
   createdBy?: string | null
@@ -37,7 +35,7 @@ export interface GenerateRandomDeckOptions {
 }
 
 export const generateRandomDeck = (options: GenerateRandomDeckOptions = {}): Omit<Deck, 'id' | 'createdAt'> => {
-  const { name, randomNumber, commanderCount, colors, commanders, createdBy, options: deckOptions } = options
+  const { name, randomNumber, colors, commanders, createdBy, options: deckOptions } = options
 
   if (name) {
     return {
@@ -54,9 +52,7 @@ export const generateRandomDeck = (options: GenerateRandomDeckOptions = {}): Omi
   const deckTheme = faker.word.adjective()
   const randomDeckName = `${deckArchetype} ${deckTheme}`
 
-  const count = commanderCount ?? (Math.random() > 0.05 ? 1 : 2)
-  const shuffledCommanders = [...AVAILABLE_COMMANDERS].sort(() => Math.random() - 0.5)
-  const selectedCommanders = commanders ?? shuffledCommanders.slice(0, count)
+  const selectedCommanders = commanders ?? []
 
   const allColors = selectedCommanders.map(commander => commander.colors).flat()
   const uniqueColors = [...new Set(allColors)]

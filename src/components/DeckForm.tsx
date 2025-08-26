@@ -9,14 +9,13 @@ import { CommanderSearch } from './CommanderSearch'
 import { ManaPicker } from './ManaPicker'
 
 interface DeckFormProps {
-  testId?: string
   deckId?: string
   userId?: User['id'] | null
   onSave?: (deckId: string) => void
   onCancel?: () => void
 }
 
-export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId = null, onSave, onCancel }) => {
+export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSave, onCancel }) => {
   const { decks, addDeck, updateDeck } = useDecks()
   const deck = decks.find(d => d.id === deckId)
 
@@ -226,15 +225,10 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
     }
   }
 
-  const mode = deck ? 'edit' : 'create'
-  const baseId = `deck-form-${mode}`
-  const testIdPrefix = testId ? `${testId}-${baseId}` : baseId
-
   return (
-    <form data-testid={baseId} className="flex flex-col gap-4" onSubmit={handleSubmit}>
+    <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       {/* Name Input */}
       <input
-        data-testid={`${testIdPrefix}-name`}
         type="text"
         value={name}
         onChange={e => setName(e.target.value)}
@@ -249,7 +243,6 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
           <div className="flex items-center gap-2">
             <div className="flex-1">
               <input
-                data-testid={`${testIdPrefix}-archidekt-url`}
                 type="url"
                 value={archidektUrl}
                 onChange={e => setArchidektUrl(e.target.value)}
@@ -259,7 +252,6 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
             </div>
 
             <Button
-              data-testid={`${testIdPrefix}-fetch-name`}
               type="button"
               variant="secondary"
               onClick={handleFetchDeckData}
@@ -334,15 +326,11 @@ export const DeckForm: React.FC<DeckFormProps> = ({ testId = '', deckId, userId 
 
       {/* Action Buttons */}
       <div className="flex gap-2 justify-end">
-        <Button data-testid={`${testIdPrefix}-cancel`} type="button" variant="secondary" onClick={onCancel}>
+        <Button type="button" variant="secondary" onClick={onCancel}>
           Cancel
         </Button>
 
-        <Button
-          data-testid={`${testIdPrefix}-save`}
-          variant="primary"
-          disabled={!name.trim() || selectedColors.length === 0}
-        >
+        <Button variant="primary" disabled={!name.trim() || selectedColors.length === 0}>
           Save
         </Button>
       </div>

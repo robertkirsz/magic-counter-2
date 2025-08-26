@@ -92,11 +92,10 @@ export const Users: React.FC<React.HTMLAttributes<HTMLDivElement>> = props => {
       {hasUsers && (
         <FadeMask>
           <div className="flex flex-col gap-2">
-            {sortedUsers.map((user, index) => (
+            {sortedUsers.map(user => (
               <User
                 key={user.id}
                 user={user}
-                testIndex={index}
                 onEdit={() => setEditingId(user.id)}
                 onRemove={() => removeUser(user.id)}
                 onCreateDeck={() => setSelectedUser(user.id)}

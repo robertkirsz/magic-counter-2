@@ -88,7 +88,6 @@ export const AttackModal: React.FC<AttackModalProps> = ({
             currentLife={currentLife}
             attackMode
             commanderId={attackerCommanderId}
-            testId="attack-modal"
             onLifeCommitted={handleLifeCommitted}
           />
         </div>

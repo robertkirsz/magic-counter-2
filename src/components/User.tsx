@@ -9,17 +9,15 @@ import { ThreeDotMenu } from './ThreeDotMenu'
 
 interface UserProps {
   user: User
-  testIndex: number
   onEdit: () => void
   onRemove: () => void
   onCreateDeck: () => void
 }
 
-export const User: React.FC<UserProps> = ({ user, testIndex, onEdit, onRemove, onCreateDeck }) => {
+export const User: React.FC<UserProps> = ({ user, onEdit, onRemove, onCreateDeck }) => {
   const { decks } = useDecks()
   const { games } = useGames()
   const [decksExpanded, setDecksExpanded] = useState(false)
-  const testId = `user-${testIndex}`
 
   const filteredDecks = decks.filter(deck => deck.createdBy === user.id)
 
@@ -27,7 +25,7 @@ export const User: React.FC<UserProps> = ({ user, testIndex, onEdit, onRemove, o
   const gamesPlayed = games.filter(game => game.players.some(player => player.userId === user.id)).length
 
   return (
-    <div className="bg-slate-900 rounded-lg p-4 border border-slate-700" data-testid={testId}>
+    <div className="bg-slate-900 rounded-lg p-4 border border-slate-700">
       {/* User Header */}
       <div className="flex items-center gap-3 mb-4">
         <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
@@ -35,12 +33,10 @@ export const User: React.FC<UserProps> = ({ user, testIndex, onEdit, onRemove, o
         </div>
 
         <div className="flex-1">
-          <h3 className="text-white font-semibold line-clamp-1" data-testid={`${testId}-name`}>
-            {user.name}
-          </h3>
+          <h3 className="text-white font-semibold line-clamp-1">{user.name}</h3>
         </div>
 
-        <ThreeDotMenu testId={testId} onEdit={onEdit} onRemove={onRemove} />
+        <ThreeDotMenu onEdit={onEdit} onRemove={onRemove} />
       </div>
 
       {/* Statistics Section */}
@@ -73,9 +69,9 @@ export const User: React.FC<UserProps> = ({ user, testIndex, onEdit, onRemove, o
 
           {decksExpanded && (
             <div className="mt-3 flex flex-wrap gap-2">
-              {filteredDecks.map((deck, index) => (
+              {filteredDecks.map(deck => (
                 <div key={deck.id} className="flex-shrink-0">
-                  <Deck id={deck.id} testIndex={index} useContextControls />
+                  <Deck id={deck.id} useContextControls />
                 </div>
               ))}
             </div>
@@ -83,7 +79,7 @@ export const User: React.FC<UserProps> = ({ user, testIndex, onEdit, onRemove, o
         </div>
       )}
 
-      <Button data-testid={`${testId}-create-deck`} variant="primary" onClick={onCreateDeck}>
+      <Button variant="primary" onClick={onCreateDeck}>
         Create New Deck
       </Button>
     </div>

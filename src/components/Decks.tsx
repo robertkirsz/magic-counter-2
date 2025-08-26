@@ -144,11 +144,10 @@ export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick, ...props }) =
         <FadeMask>
           {/* TODO: make number of columns depend on container's width */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
-            {sortedDecks.map((deck, index) => (
+            {sortedDecks.map(deck => (
               <Deck
                 key={deck.id}
                 id={deck.id}
-                testIndex={index}
                 useContextControls={!onDeckClick}
                 onClick={onDeckClick ? () => onDeckClick(deck.id) : undefined}
                 className={onDeckClick ? 'cursor-pointer' : undefined}

@@ -11,8 +11,6 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "type-check": "tsc --noEmit --project tsconfig.app.json",
-    "cy:open": "cypress open",
-    "cy:run": "cypress run",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -41,7 +39,6 @@
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-basic-ssl": "^2.1.0",
     "@vitejs/plugin-react-swc": "^3.11.0",
-    "cypress": "^14.5.3",
     "eslint": "^9.32.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",

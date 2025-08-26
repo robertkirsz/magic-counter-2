@@ -285,26 +285,3 @@ dialog {
     pointer-events: auto;
   }
 }
-
-/* Test IDs */
-/* *[data-testid] {
-  position: relative;
-
-  &:hover {
-    &::before {
-      background-color: green;
-    }
-  }
-
-  &::before {
-    content: attr(data-testid);
-    position: absolute;
-    background-color: red;
-    color: white;
-    font-size: 7px;
-    pointer-events: none;
-    white-space: nowrap;
-    padding: 2px 4px;
-    border-radius: 4px;
-  }
-} */

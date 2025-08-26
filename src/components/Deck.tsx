@@ -12,8 +12,6 @@ import { ThreeDotMenu } from './ThreeDotMenu'
 
 interface DeckProps extends React.HTMLAttributes<HTMLDivElement> {
   id: Deck['id']
-  testId?: string
-  testIndex?: number | string
   useContextControls?: boolean
   showCreator?: boolean
   showStats?: boolean
@@ -22,8 +20,6 @@ interface DeckProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export const Deck: React.FC<DeckProps> = ({
   id,
-  testId = '',
-  testIndex = 0,
   useContextControls,
   showCreator = true,
   showStats = true,
@@ -58,10 +54,8 @@ export const Deck: React.FC<DeckProps> = ({
     if (onRemove) onRemove(deck.id)
   }
 
-  const testIdPrefix = testId ? `${testId}-deck-${testIndex}` : `deck-${testIndex}`
-
   return (
-    <div data-testid={testIdPrefix} className={cn('Deck flex flex-col gap-2', className)} {...props}>
+    <div className={cn('Deck flex flex-col gap-2', className)} {...props}>
       {/* Header */}
       <div className="flex items-start justify-between gap-2">
         <div className="flex flex-col gap-2">
@@ -102,7 +96,6 @@ export const Deck: React.FC<DeckProps> = ({
         {menuVisible && (
           <div className="flex-none">
             <ThreeDotMenu
-              testId={testIdPrefix}
               onEdit={useContextControls ? handleEdit : undefined}
               onRemove={useContextControls || onRemove ? handleRemove : undefined}
             />
@@ -111,13 +104,8 @@ export const Deck: React.FC<DeckProps> = ({
       </div>
 
       <div className="flex gap-2">
-        {deck.commanders.map((commander, index) => (
-          <Commander
-            key={commander.id}
-            commander={commander}
-            testIdIndex={testIndex + '-' + index}
-            className="flex-1 max-w-35"
-          />
+        {deck.commanders.map(commander => (
+          <Commander key={commander.id} commander={commander} className="flex-1 max-w-35" />
         ))}
       </div>
 

@@ -30,7 +30,6 @@ export const ManaPicker: React.FC<ManaPickerProps> = ({ selectedColors, onColorT
             aria-checked={isSelected}
             aria-label={`${label} mana (${isSelected ? 'selected' : 'not selected'})`}
             onKeyDown={handleKeyDown}
-            data-testid={`mana-${value}`}
           >
             <input
               type="checkbox"

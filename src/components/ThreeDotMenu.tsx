@@ -6,7 +6,6 @@ import { Button } from './Button'
 import { Modal } from './Modal'
 
 interface ThreeDotMenuProps extends React.HTMLAttributes<HTMLDivElement> {
-  testId?: string
   asMenu?: boolean
   onEdit?: () => void
   onClose?: () => void
@@ -14,7 +13,6 @@ interface ThreeDotMenuProps extends React.HTMLAttributes<HTMLDivElement> {
 }
 
 export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
-  testId = '',
   asMenu = true,
   onEdit,
   onClose,
@@ -28,8 +26,6 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
   const [menuAlignment, setMenuAlignment] = useState<'right' | 'left'>('right')
   const wrapperRef = useRef<HTMLDivElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
-
-  const testIdPrefix = testId ? `${testId}-...` : '...'
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -56,26 +52,19 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
     return (
       <div className={cn('flex gap-1 empty:hidden', className)} {...props}>
         {onEdit && (
-          <Button data-testid={`${testIdPrefix}-edit`} round small variant="secondary" title="Edit" onClick={onEdit}>
+          <Button round small variant="secondary" title="Edit" onClick={onEdit}>
             <Edit3 size={16} />
           </Button>
         )}
 
         {onRemove && (
-          <Button
-            data-testid={`${testIdPrefix}-delete`}
-            round
-            small
-            variant="danger"
-            title="Delete"
-            onClick={() => setShowConfirm(true)}
-          >
+          <Button round small variant="danger" title="Delete" onClick={() => setShowConfirm(true)}>
             <Trash2 size={16} />
           </Button>
         )}
 
         {onClose && (
-          <Button data-testid={`${testIdPrefix}-close`} round small variant="secondary" title="Close" onClick={onClose}>
+          <Button round small variant="secondary" title="Close" onClick={onClose}>
             <X size={16} />
           </Button>
         )}
@@ -87,16 +76,11 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
             <p className="text-gray-600">Are you sure you want to delete this item? This action cannot be undone.</p>
 
             <div className="flex gap-2 justify-end">
-              <Button
-                data-testid={`${testIdPrefix}-confirm-cancel`}
-                variant="secondary"
-                onClick={() => setShowConfirm(false)}
-              >
+              <Button variant="secondary" onClick={() => setShowConfirm(false)}>
                 Cancel
               </Button>
 
               <Button
-                data-testid={`${testIdPrefix}-confirm-delete`}
                 variant="danger"
                 onClick={() => {
                   onRemove?.()
@@ -114,14 +98,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
 
   return (
     <div ref={wrapperRef} className={cn('relative flex max-w-fit max-h-fit', className)} {...props}>
-      <Button
-        data-testid={testIdPrefix}
-        variant="secondary"
-        round
-        small
-        title="More options"
-        onClick={() => setIsOpen(!isOpen)}
-      >
+      <Button variant="secondary" round small title="More options" onClick={() => setIsOpen(!isOpen)}>
         <MoreVertical size={16} />
       </Button>
 
@@ -136,7 +113,6 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
         >
           {onEdit && (
             <Button
-              data-testid={`${testIdPrefix}-edit`}
               variant="secondary"
               className="rounded-none"
               onClick={() => {
@@ -151,7 +127,6 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
 
           {onRemove && (
             <Button
-              data-testid={`${testIdPrefix}-delete`}
               variant="danger"
               className="rounded-none"
               onClick={() => {
@@ -185,16 +160,11 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
           <p>Are you sure you want to delete this item? This action cannot be undone.</p>
 
           <div className="flex gap-2 justify-end">
-            <Button
-              data-testid={`${testIdPrefix}-confirm-cancel-button`}
-              variant="secondary"
-              onClick={() => setShowConfirm(false)}
-            >
+            <Button variant="secondary" onClick={() => setShowConfirm(false)}>
               Cancel
             </Button>
 
             <Button
-              data-testid={`${testIdPrefix}-confirm-delete-button`}
               variant="danger"
               onClick={() => {
                 onRemove?.()

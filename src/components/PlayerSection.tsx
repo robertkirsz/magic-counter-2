@@ -149,7 +149,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   return (
     <div
       ref={setNodeRef}
-      data-testid={playerId}
       className={cn(
         'PlayerSection flex-1 flex flex-col p-2 relative overflow-clip',
         isOver && 'ring-2 ring-red-500 ring-opacity-50',
@@ -247,7 +246,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
 
               {/* Floating Add Deck Button */}
               <Button
-                data-testid="decks-add"
                 variant="primary"
                 round
                 className="absolute bottom-3 right-3 shadow-lg z-10"

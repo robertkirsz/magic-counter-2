@@ -10,7 +10,6 @@ import { Button } from '../Button'
 import { MonarchToggle } from '../MonarchToggle'
 
 const PlayerLifeControls: React.FC<{
-  testId?: string
   from?: string
   to: string[]
   gameId: string
@@ -19,7 +18,7 @@ const PlayerLifeControls: React.FC<{
   onLifeCommitted?: (action: LifeChangeAction) => void
   commanderId?: string
   playerId?: string
-}> = ({ testId, from, to, gameId, currentLife, attackMode = false, onLifeCommitted, commanderId, playerId }) => {
+}> = ({ from, to, gameId, currentLife, attackMode = false, onLifeCommitted, commanderId, playerId }) => {
   const { dispatchAction } = useGames()
   const [pendingLifeChanges, setPendingLifeChanges] = useState<number>(0)
   const [commanderDamage, setCommanderDamage] = useState<boolean>(false)
@@ -80,7 +79,6 @@ const PlayerLifeControls: React.FC<{
   }
 
   const displayLife = currentLife + pendingLifeChanges
-  const _testId = testId ? `${testId}-${to.join(',')}` : to.join(',')
 
   return (
     <div className="flex flex-col gap-1">
@@ -108,7 +106,6 @@ const PlayerLifeControls: React.FC<{
       <div className="grid grid-cols-3 gap-1">
         <Button
           type="button"
-          data-testid={`${_testId}-remove-life`}
           onClick={() => handleLifeChange(-1)}
           onLongPress={() => handleLongPressLifeChange(-1)}
           className="!px-6 !py-3"
@@ -117,9 +114,7 @@ const PlayerLifeControls: React.FC<{
         </Button>
 
         <div className={cn('relative text-center', pendingLifeChanges !== 0 ? 'text-blue-600' : 'text-white')}>
-          <span data-testid={`${_testId}-life`} className="text-4xl font-bold">
-            {displayLife}
-          </span>
+          <span className="text-4xl font-bold">{displayLife}</span>
 
           {pendingLifeChanges !== 0 && (
             <span
@@ -137,7 +132,6 @@ const PlayerLifeControls: React.FC<{
         {!attackMode && (
           <Button
             type="button"
-            data-testid={`${_testId}-add-life`}
             disabled={commanderDamage}
             onClick={() => handleLifeChange(1)}
             onLongPress={() => handleLongPressLifeChange(1)}

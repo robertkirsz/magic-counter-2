@@ -1,6 +1,3 @@
-// Import the scryfall fixture data
-import scryfallData from '../../cypress/fixtures/scryfall.json'
-
 interface ScryfallCardRaw {
   id: string
   name: string
@@ -130,21 +127,3 @@ export const fetchRandomCommander = async (): Promise<ScryfallCard | null> => {
     return null
   }
 }
-
-/**
- * Transform scryfall card data into commander format
- */
-export function transformScryfallToCommanders(): CommanderData[] {
-  return scryfallData.data.map(card => ({
-    id: card.id,
-    name: card.name,
-    type: card.type_line,
-    colors: card.color_identity as ManaColor[],
-    image: card.image_uris.art_crop
-  }))
-}
-
-/**
- * Get available commanders from scryfall fixture
- */
-export const AVAILABLE_COMMANDERS = transformScryfallToCommanders()
