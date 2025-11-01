@@ -81,29 +81,31 @@ const PlayerLifeControls: React.FC<{
   const displayLife = currentLife + pendingLifeChanges
 
   return (
-    <div className="flex flex-col gap-1">
-      {/* Commander Damage Icon */}
-      {commanderId && (
-        <div className="flex justify-center">
-          <Button
-            small
-            type="button"
-            className={cn(commanderDamage && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500')}
-            onClick={() => setCommanderDamage(!commanderDamage)}
-          >
-            <img src="/icons/commander.png" className="w-5 h-5" />
-          </Button>
-        </div>
-      )}
+    <div className="flex flex-col gap-2 items-center justify-center">
+      <div className="flex gap-2">
+        {/* Commander Damage Icon */}
+        {commanderId && (
+          <div className="flex justify-center">
+            <Button
+              small
+              type="button"
+              className={cn(commanderDamage && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500')}
+              onClick={() => setCommanderDamage(!commanderDamage)}
+            >
+              <img src="/icons/commander.png" className="w-5 h-5" />
+            </Button>
+          </div>
+        )}
 
-      {/* Monarch Toggle */}
-      {playerId && (
-        <div className="flex justify-center">
-          <MonarchToggle gameId={gameId} playerId={playerId} />
-        </div>
-      )}
+        {/* Monarch Toggle */}
+        {playerId && (
+          <div className="flex justify-center">
+            <MonarchToggle gameId={gameId} playerId={playerId} />
+          </div>
+        )}
+      </div>
 
-      <div className="grid grid-cols-3 gap-1">
+      <div className="flex gap-4 items-center">
         <Button
           type="button"
           onClick={() => handleLifeChange(-1)}

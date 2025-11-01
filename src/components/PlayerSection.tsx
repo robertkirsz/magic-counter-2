@@ -172,19 +172,9 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
         />
       )}
 
-      {/* Elimination overlay */}
-      {isEliminated && (
-        <div className="absolute inset-0 bg-black bg-opacity-75 flex items-center justify-center z-10">
-          <div className="text-center">
-            <div className="text-red-500 text-4xl font-bold mb-2">ELIMINATED</div>
-            <div className="text-gray-300 text-sm">{currentLife < 1 ? 'Life: Below 1' : 'Commander damage: 21+'}</div>
-          </div>
-        </div>
-      )}
-
       <div
         className={cn(
-          'PlayerSectionContent hiddenWhenDragEnabled flex-1 relative flex flex-col gap-1 items-center justify-center',
+          'PlayerSectionContent hiddenWhenDragEnabled flex-1 relative flex flex-col gap-4 items-center justify-center',
           effectiveActivePlayerId === playerId && 'outline-4 outline-blue-800',
           hasEffectiveActivePlayer(gameId) && effectiveActivePlayerId === playerId && 'outline-4 outline-green-800'
         )}
