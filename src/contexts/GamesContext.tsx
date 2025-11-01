@@ -146,6 +146,35 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
     return lastTurn.to
   }
 
+  const getEffectiveActivePlayer = (gameId?: string): string | undefined => {
+    const game = games.find(g => g.id === gameId) || latestActiveGame
+
+    if (!game) return undefined
+
+    if (game.state !== 'active') return undefined
+
+    // Return effective active player if set, otherwise return the real active player
+    if (game.effectiveActivePlayerId) {
+      return game.effectiveActivePlayerId
+    }
+
+    return getCurrentActivePlayer(gameId)
+  }
+
+  const setEffectiveActivePlayer = (gameId: string, playerId: User['id'] | null) => {
+    setGames(prev =>
+      prev.map(game => {
+        if (game.id !== gameId) return game
+        return { ...game, effectiveActivePlayerId: playerId }
+      })
+    )
+  }
+
+  const hasEffectiveActivePlayer = (gameId: string): boolean => {
+    const game = games.find(g => g.id === gameId)
+    return game ? !!game.effectiveActivePlayerId : false
+  }
+
   // Derived round functions
   const getCurrentRound = (gameId: string): number => {
     const game = games.find(g => g.id === gameId)
@@ -210,10 +239,13 @@ export const GamesProvider: React.FC<GamesProviderProps> = ({ children }) => {
     updateGame,
     setGames,
     getCurrentActivePlayer,
+    getEffectiveActivePlayer,
     getCurrentRound,
     groupActionsByRound,
     dispatchAction,
-    undoLastAction
+    undoLastAction,
+    setEffectiveActivePlayer,
+    hasEffectiveActivePlayer
   }
 
   return <GamesContext.Provider value={value}>{children}</GamesContext.Provider>

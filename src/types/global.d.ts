@@ -20,12 +20,20 @@ type Deck = {
   options?: DeckOption[]
 }
 
+/**
+ * User is a user of the application.
+ * They can be a player in a game.
+ */
 type User = {
   id: string
   createdAt: Date
   name: string
 }
 
+/**
+ * Player is a player in a game.
+ * They are identified by their user ID.
+ */
 type Player = {
   id: string
   userId: User['id'] | null
@@ -40,6 +48,7 @@ type Game = {
   state: GameState
   players: Player[]
   activePlayerId: User['id'] | null
+  effectiveActivePlayerId?: User['id'] | null
   turnTracking: boolean
   startingLife: number
   commanders: boolean

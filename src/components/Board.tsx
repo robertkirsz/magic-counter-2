@@ -25,6 +25,7 @@ import { GameEndModal } from './GameEndModal'
 import { GameForm } from './GameForm'
 import GameStatus from './GameStatus'
 import { Modal } from './Modal'
+import { MonarchDrawReminder } from './MonarchDrawReminder'
 import { SettingsMenu } from './SettingsMenu'
 import { SortablePlayerSection } from './SortablePlayerSection'
 import StartGameModal from './board/StartGameModal'
@@ -42,7 +43,15 @@ interface BoardProps {
 }
 
 export const Board: React.FC<BoardProps> = ({ gameId }) => {
-  const { games, updateGame, getCurrentActivePlayer, dispatchAction, undoLastAction, removeGame } = useGames()
+  const {
+    games,
+    updateGame,
+    getEffectiveActivePlayer,
+    hasEffectiveActivePlayer,
+    dispatchAction,
+    undoLastAction,
+    removeGame
+  } = useGames()
   const { users } = useUsers()
 
   const game = games.find(g => g.id === gameId)
@@ -134,7 +143,10 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
   // Pass turn to next player (append TurnChangeAction)
   const handlePassTurn = (playerId?: string) => {
-    const currentActivePlayer = getCurrentActivePlayer()
+    // Don't allow passing turn when there's a temporary active player
+    if (hasEffectiveActivePlayer(gameId)) return
+
+    const activePlayer = getEffectiveActivePlayer()
 
     if (playerId) {
       // If a specific player is provided, pass turn to them
@@ -142,7 +154,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         id: generateId(),
         createdAt: DateTime.now().toJSDate(),
         type: 'turn-change',
-        from: currentActivePlayer,
+        from: activePlayer,
         to: playerId
       }
 
@@ -155,7 +167,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
     // const activePlayers = getActivePlayers(game)
 
     // Find the current active player in the active players list
-    const currentIndex = game.players.findIndex(p => p.id === currentActivePlayer)
+    const currentIndex = game.players.findIndex(p => p.id === activePlayer)
     const nextIndex = (currentIndex + 1) % game.players.length
     const nextPlayer = game.players[nextIndex] || game.players[0]
 
@@ -163,7 +175,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
       id: generateId(),
       createdAt: DateTime.now().toJSDate(),
       type: 'turn-change',
-      from: currentActivePlayer,
+      from: activePlayer,
       to: nextPlayer.id
     }
 
@@ -172,8 +184,8 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
 
   const validPlayers = game.players.filter(player => player.userId && player.deckId)
   const canPlay = game.turnTracking ? validPlayers.length === game.players.length : true
-  const currentActivePlayer = getCurrentActivePlayer()
-  const showStartModal = game.state === 'active' && !currentActivePlayer && game.turnTracking
+  const activePlayer = getEffectiveActivePlayer()
+  const showStartModal = game.state === 'active' && !activePlayer && game.turnTracking
 
   const handleUndoLastAction = () => {
     undoLastAction(game.id)
@@ -246,12 +258,24 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
           )}
 
           {/* Pass Turn Button */}
-          {game.state === 'active' && game.turnTracking && currentActivePlayer && (
-            <Button round variant="primary" onClick={() => handlePassTurn()} title="Pass turn" className="!p-4">
+          {game.state === 'active' && game.turnTracking && activePlayer && (
+            <Button
+              round
+              variant="primary"
+              onClick={() => handlePassTurn()}
+              title={
+                hasEffectiveActivePlayer(gameId) ? 'Cannot pass turn while temporary player is active' : 'Pass turn'
+              }
+              className="!p-4"
+              disabled={hasEffectiveActivePlayer(gameId)}
+            >
               <ArrowBigRightDash size={64} />
             </Button>
           )}
         </div>
+
+        {/* Monarch Draw Reminder */}
+        {game.state === 'active' && <MonarchDrawReminder gameId={gameId} />}
 
         {/* Start and Cancel Buttons */}
         <div className="flex gap-2 min-h-[30px]">

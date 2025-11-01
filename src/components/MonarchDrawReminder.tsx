@@ -6,22 +6,23 @@ import { getCurrentMonarch } from '../utils/gameUtils'
 
 interface MonarchDrawReminderProps {
   gameId: string
-  playerId: string
 }
 
-export const MonarchDrawReminder: React.FC<MonarchDrawReminderProps> = ({ gameId, playerId }) => {
+export const MonarchDrawReminder: React.FC<MonarchDrawReminderProps> = ({ gameId }) => {
   const [showReminder, setShowReminder] = useState(false)
-  const { games } = useGames()
+  const { games, getCurrentActivePlayer } = useGames()
+
+  const activePlayerId = getCurrentActivePlayer(gameId)
 
   useTurnChangeListener(
     event => {
-      if (event.detail.gameId === gameId && event.detail.fromPlayerId === playerId) {
+      if (event.detail.gameId === gameId && event.detail.fromPlayerId === activePlayerId) {
         // Player is passing their turn, check if they are the monarch
         const game = games.find(g => g.id === gameId)
 
         if (game) {
           const currentMonarch = getCurrentMonarch(game)
-          const player = game.players.find(p => p.id === playerId)
+          const player = game.players.find(p => p.id === activePlayerId)
 
           if (currentMonarch === player?.id) {
             setShowReminder(true)
@@ -29,7 +30,7 @@ export const MonarchDrawReminder: React.FC<MonarchDrawReminderProps> = ({ gameId
         }
       }
     },
-    [gameId, playerId, games]
+    [gameId, activePlayerId, games]
   )
 
   useEffect(() => {
@@ -45,7 +46,7 @@ export const MonarchDrawReminder: React.FC<MonarchDrawReminderProps> = ({ gameId
   if (!showReminder) return null
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center z-50 pointer-events-none">
+    <div className="fixed inset-0 flex items-center justify-center z-1000 pointer-events-none">
       <div className="bg-yellow-600 text-white px-6 py-4 rounded-lg shadow-lg pointer-events-auto animate-pulse">
         <div className="flex items-center gap-2">
           <span className="text-2xl">👑</span>

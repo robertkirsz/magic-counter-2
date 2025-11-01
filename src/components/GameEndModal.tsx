@@ -25,7 +25,7 @@ const WIN_CONDITIONS = [
 ] as const
 
 export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onClose }) => {
-  const { games, updateGame, dispatchAction, getCurrentActivePlayer } = useGames()
+  const { games, updateGame, dispatchAction, getEffectiveActivePlayer } = useGames()
   const { users } = useUsers()
   const game = games.find(g => g.id === gameId)
 
@@ -50,7 +50,7 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onCl
       id: generateId(),
       createdAt: DateTime.now().toJSDate(),
       type: 'turn-change',
-      from: getCurrentActivePlayer(gameId)
+      from: getEffectiveActivePlayer(gameId)
     }
 
     // Update the game with winner, win condition, and finished state

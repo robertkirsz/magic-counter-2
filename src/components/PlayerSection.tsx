@@ -13,7 +13,6 @@ import { CommanderDamage } from './CommanderDamage'
 import { DeckForm } from './DeckForm'
 import { Decks } from './Decks'
 import { Modal } from './Modal'
-import { MonarchDrawReminder } from './MonarchDrawReminder'
 import { UserForm } from './UserForm'
 import PlayerDeckSelector from './player/PlayerDeckSelector'
 import PlayerLifeControls from './player/PlayerLifeControls'
@@ -28,12 +27,20 @@ interface PlayerSectionProps {
 export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }) => {
   const { users } = useUsers()
   const { decks } = useDecks()
-  const { games, updateGame, getCurrentActivePlayer, dispatchAction } = useGames()
+  const {
+    games,
+    updateGame,
+    getEffectiveActivePlayer,
+    setEffectiveActivePlayer,
+    hasEffectiveActivePlayer,
+    dispatchAction
+  } = useGames()
   const [showUserSelect, setShowUserSelect] = useState<boolean>(false)
   const [showDeckSelect, setShowDeckSelect] = useState<boolean>(false)
   const [showDeckForm, setShowDeckForm] = useState<boolean>(false)
   const [showUserForm, setShowUserForm] = useState<boolean>(false)
-  const activePlayerId = getCurrentActivePlayer(gameId)
+  const effectiveActivePlayerId = getEffectiveActivePlayer(gameId)
+  const isTemporaryActive = hasEffectiveActivePlayer(gameId)
 
   const { setNodeRef, isOver } = useDroppable({
     id: `player-drop-${playerId}`,
@@ -108,6 +115,19 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
     }
   }
 
+  const handlePlayerNameClick = () => {
+    if (!gameIsActive) return
+
+    // If this player is already the temporary active player, remove the temporary status
+    if (effectiveActivePlayerId === player.id && isTemporaryActive) {
+      setEffectiveActivePlayer(gameId, null)
+    }
+    // If this player is not the current active player, make them the temporary active player
+    else if (effectiveActivePlayerId !== player.id) {
+      setEffectiveActivePlayer(gameId, player.id)
+    }
+  }
+
   const getUserName = (userId: string | null) => {
     if (!userId) return 'Unknown User'
 
@@ -122,8 +142,8 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   const playerDeck = player.deckId ? decks.find(d => d.id === player.deckId) : null
   const commanderImage = playerDeck?.commanders?.[0]?.image
 
-  const activePlayerDeck = game.players.find(p => p.id === activePlayerId)?.deckId
-    ? decks.find(d => d.id === game.players.find(p => p.id === activePlayerId)?.deckId)
+  const activePlayerDeck = game.players.find(p => p.id === effectiveActivePlayerId)?.deckId
+    ? decks.find(d => d.id === game.players.find(p => p.id === effectiveActivePlayerId)?.deckId)
     : null
 
   const activePlayerCommanderId = activePlayerDeck?.commanders?.[0]?.id
@@ -165,14 +185,29 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
       <div
         className={cn(
           'PlayerSectionContent hiddenWhenDragEnabled flex-1 relative flex flex-col gap-1 items-center justify-center',
-          activePlayerId === playerId && 'outline-4 outline-blue-800'
+          effectiveActivePlayerId === playerId && 'outline-4 outline-blue-800',
+          hasEffectiveActivePlayer(gameId) && effectiveActivePlayerId === playerId && 'outline-4 outline-green-800'
         )}
       >
-        {gameIsActive && <p className="text-xl font-bold text-white">{getUserName(player.userId)}</p>}
+        {gameIsActive && (
+          <p
+            className={cn(
+              'text-xl font-bold cursor-pointer transition-colors',
+              effectiveActivePlayerId === player.id
+                ? isTemporaryActive
+                  ? 'text-green-400' // Temporary active player
+                  : 'text-blue-600' // Real active player
+                : 'text-white hover:text-blue-300' // Non-active player
+            )}
+            onClick={handlePlayerNameClick}
+          >
+            {getUserName(player.userId)}
+          </p>
+        )}
 
         {gameIsActive && (
           <PlayerLifeControls
-            from={activePlayerId}
+            from={effectiveActivePlayerId}
             to={[playerId]}
             gameId={gameId}
             currentLife={currentLife}
@@ -250,9 +285,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
           </>
         )}
       </div>
-
-      {/* Monarch Draw Reminder */}
-      {gameIsActive && <MonarchDrawReminder gameId={gameId} playerId={playerId} />}
     </div>
   )
 }
