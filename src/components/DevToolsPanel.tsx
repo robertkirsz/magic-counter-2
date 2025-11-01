@@ -275,7 +275,16 @@ export const DevToolsPanel: React.FC = () => {
     } else if (type === 'decks') {
       setDecks(reviveDates(parsed as Deck[]))
     } else if (type === 'games') {
-      setGames(reviveDates(parsed as Game[]))
+      setGames(
+        reviveDates(parsed as Game[]).map(game => ({
+          ...game,
+          actions: game.actions.map(action => ({
+            ...action,
+            createdAt:
+              typeof action.createdAt === 'string' ? DateTime.fromISO(action.createdAt).toJSDate() : action.createdAt
+          }))
+        }))
+      )
     }
   }
 
@@ -347,7 +356,16 @@ export const DevToolsPanel: React.FC = () => {
       // Apply imported data
       setUsers(reviveDates(importedUsers))
       setDecks(reviveDates(importedDecks))
-      setGames(reviveDates(importedGames))
+      setGames(
+        reviveDates(importedGames).map(game => ({
+          ...game,
+          actions: game.actions.map(action => ({
+            ...action,
+            createdAt:
+              typeof action.createdAt === 'string' ? DateTime.fromISO(action.createdAt).toJSDate() : action.createdAt
+          }))
+        }))
+      )
       setImportError(null)
     }
 

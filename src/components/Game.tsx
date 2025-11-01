@@ -36,7 +36,7 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
 
     // Find the last TurnChangeAction with to=null (game end)
     for (let i = turnActions.length - 1; i >= 0; i--) {
-      if (turnActions[i].to === null) {
+      if (!turnActions[i].to) {
         gameEndTime = DateTime.fromJSDate(turnActions[i].createdAt)
         break
       }
@@ -121,13 +121,13 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
         return {
           label: 'ACTIVE',
           color: 'bg-green-900/20 text-green-300 border-green-700 animate-pulse',
-          duration: duration
+          duration
         }
       case 'finished':
         return {
           label: 'FINISHED',
           color: 'bg-slate-800 text-slate-200 border-slate-700',
-          duration: duration
+          duration
         }
       default:
         return {
@@ -152,6 +152,7 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
             )}
           >
             {stateDisplay.label}
+
             {stateDisplay.duration && (
               <div className="flex items-center gap-1 text-slate-400">
                 <Clock size={14} />
