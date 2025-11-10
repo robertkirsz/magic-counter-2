@@ -209,7 +209,7 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
             const finalLife = finalLifeValues[player.id]
 
             return (
-              <div key={player.id} className="flex items-start gap-2 p-2 bg-slate-700/50 rounded-lg">
+              <div key={player.id} className="flex items-start gap-2 flex-1 max-w-43 p-2 bg-slate-700/50 rounded-lg">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="font-medium text-slate-100">{getPlayerName(player.userId)}</span>

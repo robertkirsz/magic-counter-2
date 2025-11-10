@@ -137,6 +137,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   }
 
   const gameIsActive = game.state === 'active'
+  const playerIsActive = effectiveActivePlayerId === playerId
 
   // Get player's deck and commander image
   const playerDeck = player.deckId ? decks.find(d => d.id === player.deckId) : null
@@ -167,7 +168,8 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
             backgroundSize: 'cover',
             backgroundRepeat: 'no-repeat',
             backgroundColor: 'black',
-            filter: 'brightness(0.25) blur(6px)'
+            filter: playerIsActive ? 'brightness(0.4) blur(3px)' : 'brightness(0.25) blur(6px)',
+            transition: 'filter 0.2s'
           }}
         />
       )}
@@ -175,22 +177,12 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
       <div
         className={cn(
           'PlayerSectionContent hiddenWhenDragEnabled flex-1 relative flex flex-col gap-4 items-center justify-center',
-          effectiveActivePlayerId === playerId && 'outline-4 outline-blue-800',
-          hasEffectiveActivePlayer(gameId) && effectiveActivePlayerId === playerId && 'outline-4 outline-green-800'
+          playerIsActive && 'outline-4 outline-blue-800',
+          hasEffectiveActivePlayer(gameId) && playerIsActive && 'outline-4 outline-green-800'
         )}
       >
         {gameIsActive && (
-          <p
-            className={cn(
-              'text-xl font-bold cursor-pointer transition-colors',
-              effectiveActivePlayerId === player.id
-                ? isTemporaryActive
-                  ? 'text-green-400' // Temporary active player
-                  : 'text-blue-600' // Real active player
-                : 'text-white hover:text-blue-300' // Non-active player
-            )}
-            onClick={handlePlayerNameClick}
-          >
+          <p className="text-xl font-bold cursor-pointer transition-colors text-whit" onClick={handlePlayerNameClick}>
             {getUserName(player.userId)}
           </p>
         )}

@@ -77,20 +77,6 @@ export const Deck: React.FC<DeckProps> = ({
               </span>
             )}
           </div>
-
-          {/* Deck Options */}
-          {deck.options && deck.options.length > 0 && (
-            <div className="flex items-center gap-2">
-              {deck.options.map(option => (
-                <span
-                  key={option}
-                  className="text-xs bg-purple-900/30 text-purple-300 px-2 py-1 rounded font-medium border border-purple-700"
-                >
-                  {option === 'infect' ? 'Infect' : option === 'monarch' ? 'Monarch' : option}
-                </span>
-              ))}
-            </div>
-          )}
         </div>
 
         {menuVisible && (
@@ -108,6 +94,20 @@ export const Deck: React.FC<DeckProps> = ({
           <Commander key={commander.id} commander={commander} className="flex-1 max-w-35" />
         ))}
       </div>
+
+      {/* Deck Options */}
+      {deck.options && deck.options.length > 0 && (
+        <div className="flex items-center gap-2">
+          {deck.options.map(option => (
+            <span
+              key={option}
+              className="text-xs bg-purple-900/30 text-purple-300 px-2 py-1 rounded font-medium border border-purple-700"
+            >
+              {option === 'infect' ? 'Infect' : option === 'monarch' ? 'Monarch' : option}
+            </span>
+          ))}
+        </div>
+      )}
 
       {useContextControls && (
         <Modal isOpen={deckFormVisible} title="Edit Deck" onClose={() => setDeckFormVisible(false)}>

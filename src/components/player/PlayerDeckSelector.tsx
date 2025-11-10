@@ -21,7 +21,7 @@ const PlayerDeckSelector: React.FC<{
       <Deck
         id={player.deckId}
         role="button"
-        className="cursor-pointer"
+        className="cursor-pointer max-w-20"
         showCreator={false}
         showStats={false}
         onClick={onShowDeckSelect}

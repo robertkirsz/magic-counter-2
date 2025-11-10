@@ -18,7 +18,7 @@ export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick, ...props }) =
   const [sortBy, setSortBy] = useState<SortOption>('name')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc')
   const [searchQuery, setSearchQuery] = useState('')
-  const [showOnlyUserDecks, setShowOnlyUserDecks] = useState(false)
+  const [showOnlyUserDecks, setShowOnlyUserDecks] = useState(true)
 
   const handleSortChange = (newSortBy: SortOption) => {
     if (sortBy === newSortBy) {

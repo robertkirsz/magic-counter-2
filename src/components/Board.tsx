@@ -266,10 +266,10 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
               title={
                 hasEffectiveActivePlayer(gameId) ? 'Cannot pass turn while temporary player is active' : 'Pass turn'
               }
-              className="!p-4"
+              className="!p-3"
               disabled={hasEffectiveActivePlayer(gameId)}
             >
-              <ArrowBigRightDash size={64} />
+              <ArrowBigRightDash size={48} />
             </Button>
           )}
         </div>
