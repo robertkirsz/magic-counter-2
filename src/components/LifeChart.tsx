@@ -108,7 +108,10 @@ export const LifeChart: React.FC<LifeChartProps> = ({ gameId }) => {
 
             if (toPlayerIndex !== -1) {
               const playerName = playerNames[toPlayerIndex]
-              currentLifeValues[playerName] += action.value
+              // Poison damage does not reduce life, only adds poison counters
+              if (!action.poison) {
+                currentLifeValues[playerName] += action.value
+              }
             }
           })
         }

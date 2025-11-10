@@ -6,13 +6,14 @@ import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
-import { getCurrentMonarch, isPlayerEliminated } from '../utils/gameUtils'
+import { calculateLifeFromActions, getCurrentMonarch, isPlayerEliminated } from '../utils/gameUtils'
 import { generateId } from '../utils/idGenerator'
 import { Button } from './Button'
 import { CommanderDamage } from './CommanderDamage'
 import { DeckForm } from './DeckForm'
 import { Decks } from './Decks'
 import { Modal } from './Modal'
+import { PoisonCounters } from './PoisonCounters'
 import { UserForm } from './UserForm'
 import PlayerDeckSelector from './player/PlayerDeckSelector'
 import PlayerLifeControls from './player/PlayerLifeControls'
@@ -39,6 +40,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   const [showDeckSelect, setShowDeckSelect] = useState<boolean>(false)
   const [showDeckForm, setShowDeckForm] = useState<boolean>(false)
   const [showUserForm, setShowUserForm] = useState<boolean>(false)
+  const [pendingPoisonChange, setPendingPoisonChange] = useState<number>(0)
   const effectiveActivePlayerId = getEffectiveActivePlayer(gameId)
   const isTemporaryActive = hasEffectiveActivePlayer(gameId)
 
@@ -58,25 +60,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
 
   if (!player) return <div>Player not found</div>
 
-  const calculateLifeFromActions = (playerId: string) => {
-    const player = game.players.find(p => p.id === playerId)
-
-    if (!player) return 0
-
-    let life = game.startingLife
-
-    game.actions.forEach(action => {
-      if (action.type === 'life-change') {
-        if (action.to?.includes(playerId)) {
-          life += action.value
-        }
-      }
-    })
-
-    return life
-  }
-
-  const currentLife = calculateLifeFromActions(playerId)
+  const currentLife = calculateLifeFromActions(game, playerId)
   const isEliminated = isPlayerEliminated(game, playerId)
 
   const handleUserSelect = (userId: string | null) => {
@@ -196,11 +180,13 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
             commanderId={activePlayerCommanderId}
             playerId={playerId}
             onLifeCommitted={handleLifeCommitted}
+            onPendingPoisonChange={setPendingPoisonChange}
           />
         )}
 
-        <div className="flex justify-center items-center gap-1">
+        <div className="flex items-center gap-2">
           <CommanderDamage gameId={gameId} playerId={playerId} />
+          <PoisonCounters gameId={gameId} playerId={playerId} pendingChange={pendingPoisonChange} />
         </div>
 
         {!gameIsActive && (

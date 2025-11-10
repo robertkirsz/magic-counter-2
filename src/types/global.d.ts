@@ -66,6 +66,7 @@ type LifeChangeAction = {
   to: User['id'][]
   value: number
   commanderId?: ScryfallCard['id']
+  poison?: boolean
 }
 
 type TurnChangeAction = {

@@ -77,7 +77,10 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
       if (action.type === 'life-change' && action.to) {
         action.to.forEach((playerId: string) => {
           if (finalLifeValues[playerId] !== undefined) {
-            finalLifeValues[playerId] += action.value
+            // Poison damage does not reduce life, only adds poison counters
+            if (!action.poison) {
+              finalLifeValues[playerId] += action.value
+            }
           }
         })
       }

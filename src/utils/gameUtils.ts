@@ -7,7 +7,10 @@ export const calculateLifeFromActions = (game: Game, playerId: string): number =
   game.actions.forEach(action => {
     if (action.type === 'life-change') {
       if (action.to?.includes(playerId)) {
-        life += action.value
+        // Poison damage does not reduce life, only adds poison counters
+        if (!action.poison) {
+          life += action.value
+        }
       }
     }
   })
@@ -15,11 +18,34 @@ export const calculateLifeFromActions = (game: Game, playerId: string): number =
   return life
 }
 
+export const calculatePoisonCounters = (game: Game, playerId: string): number => {
+  const player = game.players.find(p => p.id === playerId)
+  if (!player) return 0
+
+  let poisonCounters = 0
+
+  game.actions.forEach(action => {
+    if (action.type === 'life-change') {
+      if (action.to?.includes(playerId) && action.poison) {
+        // Negative values add poison counters, positive values remove them
+        poisonCounters -= action.value // Subtract because value is negative for damage, positive for healing
+      }
+    }
+  })
+
+  // Ensure poison counters don't go below 0
+  return Math.max(0, poisonCounters)
+}
+
 export const isPlayerEliminated = (game: Game, playerId: string): boolean => {
   const currentLife = calculateLifeFromActions(game, playerId)
 
   // Check if life is below 1 (eliminated)
   if (currentLife < 1) return true
+
+  // Check if player has 10 or more poison counters (eliminated by poison)
+  const poisonCounters = calculatePoisonCounters(game, playerId)
+  if (poisonCounters >= 10) return true
 
   // Check if any commander has dealt more than 20 damage (21+ damage eliminates)
   const commanderDamageActions = game.actions.filter(action => {

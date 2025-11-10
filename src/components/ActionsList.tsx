@@ -1,4 +1,4 @@
-import { ChevronDown, ChevronRight, CircleSlash, Heart, Zap } from 'lucide-react'
+import { ChevronDown, ChevronRight, CircleSlash, Heart, Skull, Zap } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useState } from 'react'
 
@@ -48,6 +48,18 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
       const from = getPlayerName(action.from)
       const to = action.to?.map(getPlayerName).join(', ')
 
+      // Handle poison counter changes
+      if (action.poison) {
+        if (lifeGained) {
+          // Positive value means removing poison counters (healing)
+          return `${to} lost ${value} poison counter${value !== 1 ? 's' : ''}`
+        } else {
+          // Negative value means gaining poison counters (damage)
+          return `${to} gained ${value} poison counter${value !== 1 ? 's' : ''}`
+        }
+      }
+
+      // Handle regular life changes
       if (lifeGained) return `${to} gains ${value} life`
       if (fromSelf && !lifeGained) return `${from} loses ${value} life`
       if (!lifeGained) {
@@ -403,11 +415,14 @@ const LifeChangeItem: React.FC<LifeChangeItemProps> = ({
 }) => {
   const actionTime = formatTime(safeToDateTime(action.createdAt))
   const isLifeGain = action.value > 0
+  const isPoison = action.poison
+  const Icon = isPoison ? Skull : Heart
+  const iconColor = isLifeGain ? 'text-green-400' : 'text-red-400'
 
   return (
     <div className="flex items-center justify-between py-1 px-2 bg-gray-800 rounded border border-gray-600">
       <div className="flex items-center gap-2">
-        <Heart className={cn('flex-none w-3 h-3', isLifeGain ? 'text-green-400' : 'text-red-400')} />
+        <Icon className={cn('flex-none w-3 h-3', iconColor)} />
         <span className="text-sm text-gray-300">{formatAction(action)}</span>
         <span className="text-xs text-gray-400">{actionTime}</span>
       </div>

@@ -2,6 +2,7 @@ import { MinusIcon, PlusIcon } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useCallback, useRef, useState } from 'react'
 
+import { useDecks } from '../../hooks/useDecks'
 import { useGames } from '../../hooks/useGames'
 import { cn } from '../../utils/cn'
 import { useTurnChangeListener } from '../../utils/eventDispatcher'
@@ -18,10 +19,31 @@ const PlayerLifeControls: React.FC<{
   onLifeCommitted?: (action: LifeChangeAction) => void
   commanderId?: string
   playerId?: string
-}> = ({ from, to, gameId, currentLife, attackMode = false, onLifeCommitted, commanderId, playerId }) => {
-  const { dispatchAction } = useGames()
+  onPendingPoisonChange?: (pendingChange: number) => void
+}> = ({
+  from,
+  to,
+  gameId,
+  currentLife,
+  attackMode = false,
+  onLifeCommitted,
+  commanderId,
+  playerId,
+  onPendingPoisonChange
+}) => {
+  const { dispatchAction, games } = useGames()
+  const { decks } = useDecks()
   const [pendingLifeChanges, setPendingLifeChanges] = useState<number>(0)
   const [commanderDamage, setCommanderDamage] = useState<boolean>(false)
+  const [poisonDamage, setPoisonDamage] = useState<boolean>(false)
+
+  // Check if any deck in the game has infect option
+  const game = games.find(g => g.id === gameId)
+  const hasInfectOption = game?.players.some(p => {
+    if (!p.deckId) return false
+    const deck = decks.find(d => d.id === p.deckId)
+    return deck?.options?.includes('infect')
+  })
 
   // Debouncing for life changes
   const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -37,7 +59,9 @@ const PlayerLifeControls: React.FC<{
       value: pendingLifeChangesRef.current,
       from,
       to,
-      ...(commanderDamage && commanderId && { commanderId })
+      ...(commanderDamage && commanderId && { commanderId }),
+      // When poison toggle is on, mark the action as poison (works for both damage and healing)
+      ...(poisonDamage && { poison: true })
     }
 
     dispatchAction(gameId, newAction)
@@ -46,7 +70,8 @@ const PlayerLifeControls: React.FC<{
     pendingLifeChangesRef.current = 0
     setPendingLifeChanges(0)
     setCommanderDamage(false)
-  }, [dispatchAction, from, gameId, onLifeCommitted, to, commanderDamage, commanderId])
+    setPoisonDamage(false)
+  }, [dispatchAction, from, gameId, onLifeCommitted, to, commanderDamage, commanderId, poisonDamage])
 
   // Clear timeout and commit life changes when a turn is passed
   useTurnChangeListener(event => {
@@ -78,7 +103,21 @@ const PlayerLifeControls: React.FC<{
     debounceTimeoutRef.current = setTimeout(commitLifeChanges, 1500)
   }
 
-  const displayLife = currentLife + pendingLifeChanges
+  // When poison toggle is on, pending changes affect poison counters, not life
+  const displayLife = poisonDamage ? currentLife : currentLife + pendingLifeChanges
+
+  // Calculate pending poison counter change and notify parent
+  // When poison toggle is on: negative pendingLifeChanges adds poison, positive removes poison
+  React.useEffect(() => {
+    if (onPendingPoisonChange) {
+      if (poisonDamage) {
+        // When poison toggle is on: negative pendingLifeChanges adds poison, positive removes poison
+        onPendingPoisonChange(-pendingLifeChanges)
+      } else {
+        onPendingPoisonChange(0)
+      }
+    }
+  }, [poisonDamage, pendingLifeChanges, onPendingPoisonChange])
 
   return (
     <div className="flex flex-col gap-2 items-center justify-center">
@@ -93,6 +132,25 @@ const PlayerLifeControls: React.FC<{
               onClick={() => setCommanderDamage(!commanderDamage)}
             >
               <img src="/icons/commander.png" className="w-5 h-5" />
+            </Button>
+          </div>
+        )}
+
+        {/* Poison Toggle - Only show when infect option is available */}
+        {hasInfectOption && (
+          <div className="flex justify-center">
+            <Button
+              small
+              type="button"
+              className={cn(poisonDamage && 'bg-green-600/90 hover:bg-green-500 text-white border-green-500')}
+              title={
+                poisonDamage
+                  ? 'Poison mode: - adds poison, + removes poison'
+                  : 'Toggle poison mode: - adds poison, + removes poison'
+              }
+              onClick={() => setPoisonDamage(!poisonDamage)}
+            >
+              ☠️
             </Button>
           </div>
         )}
@@ -115,10 +173,15 @@ const PlayerLifeControls: React.FC<{
           <MinusIcon className="w-8 h-8" />
         </Button>
 
-        <div className={cn('relative text-center', pendingLifeChanges !== 0 ? 'text-blue-600' : 'text-white')}>
+        <div
+          className={cn(
+            'relative text-center',
+            pendingLifeChanges !== 0 && !poisonDamage ? 'text-blue-600' : 'text-white'
+          )}
+        >
           <span className="text-4xl font-bold">{displayLife}</span>
 
-          {pendingLifeChanges !== 0 && (
+          {pendingLifeChanges !== 0 && !poisonDamage && (
             <span
               className={cn(
                 'absolute text-sm left-1/2 top-full -translate-x-1/2',
