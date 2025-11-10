@@ -18,6 +18,10 @@ export const UserForm: React.FC<UserFormProps> = ({ userId, onSave, onCancel }) 
 
   const [name, setName] = useState(user?.name || '')
 
+  const resetForm = () => {
+    setName('')
+  }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -27,10 +31,17 @@ export const UserForm: React.FC<UserFormProps> = ({ userId, onSave, onCancel }) 
       if (userId) {
         updateUser(userId, { name: trimmedName })
         onSave(userId)
+        resetForm()
       } else {
         onSave(addUser({ name: trimmedName }).id)
+        resetForm()
       }
     }
+  }
+
+  const handleCancel = () => {
+    resetForm()
+    onCancel()
   }
 
   return (
@@ -44,7 +55,7 @@ export const UserForm: React.FC<UserFormProps> = ({ userId, onSave, onCancel }) 
           {mode === 'create' ? 'Save User' : 'Save Changes'}
         </Button>
 
-        <Button type="button" variant="danger" onClick={onCancel}>
+        <Button type="button" variant="danger" onClick={handleCancel}>
           Cancel
         </Button>
       </div>

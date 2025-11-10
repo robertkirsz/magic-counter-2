@@ -54,6 +54,15 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
     )
   }
 
+  const resetForm = () => {
+    setName('')
+    setSelectedColors([])
+    setCommanders([])
+    setSelectedOptions([])
+    setArchidektUrl('')
+    setIsLoadingDeckName(false)
+  }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
@@ -67,6 +76,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
         })
 
         onSave?.(deckId)
+        resetForm()
         return
       }
 
@@ -79,7 +89,13 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
       })
 
       onSave?.(newDeck.id)
+      resetForm()
     }
+  }
+
+  const handleCancel = () => {
+    resetForm()
+    onCancel?.()
   }
 
   const handleCommanderChange = (commander: ScryfallCard) => {
@@ -326,7 +342,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
 
       {/* Action Buttons */}
       <div className="flex gap-2 justify-end">
-        <Button type="button" variant="secondary" onClick={onCancel}>
+        <Button type="button" variant="secondary" onClick={handleCancel}>
           Cancel
         </Button>
 
