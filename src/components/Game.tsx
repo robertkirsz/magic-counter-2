@@ -67,9 +67,9 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
   const getFinalLifeValues = (game: Game) => {
     const finalLifeValues: { [playerId: string]: number } = {}
 
-    // Initialize with starting life values (typically 40 for Commander)
+    // Initialize with starting life values
     game.players.forEach((player: Player) => {
-      finalLifeValues[player.id] = 40 // Default starting life
+      finalLifeValues[player.id] = game.startingLife
     })
 
     // Process all life change actions to calculate final values
