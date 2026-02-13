@@ -35,7 +35,7 @@ graph TB
         BOARD --> SORTABLE_PLAYERS[SortablePlayerSection]
         BOARD --> ACTIONS_LIST[ActionsList]
         BOARD --> GAME_END_MODAL[GameEndModal]
-        BOARD --> SETTINGS[SettingsMenu]
+        BOARD --> INTRO_MODAL[IntroScreen Modal]
         BOARD --> MONARCH_REMINDER[MonarchDrawReminder]
         BOARD --> START_GAME_MODAL[StartGameModal]
         
@@ -197,7 +197,7 @@ magic-counter-2/
 │   │   ├── PoisonCounters.tsx      # Poison counter display
 │   │   ├── PWAInstallPrompt.tsx    # PWA install prompt
 │   │   ├── RoundDurationChart.tsx  # Round duration chart
-│   │   ├── SettingsMenu.tsx        # Settings menu
+
 │   │   ├── SortablePlayerSection.tsx # Draggable player section
 │   │   ├── ThreeDotMenu.tsx        # Three dot menu
 │   │   ├── User.tsx                # User display component

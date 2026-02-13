@@ -10,7 +10,7 @@ import {
 } from '@dnd-kit/core'
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core'
 import { SortableContext, rectSwappingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
-import { ArrowBigRightDash, Play, Undo } from 'lucide-react'
+import { ArrowBigRightDash, Play, Settings, Undo } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useEffect, useState } from 'react'
 
@@ -25,8 +25,8 @@ import { GameEndModal } from './GameEndModal'
 import { GameForm } from './GameForm'
 import GameStatus from './GameStatus'
 import { Modal } from './Modal'
+import { IntroScreen } from './IntroScreen'
 import { MonarchDrawReminder } from './MonarchDrawReminder'
-import { SettingsMenu } from './SettingsMenu'
 import { SortablePlayerSection } from './SortablePlayerSection'
 import StartGameModal from './board/StartGameModal'
 
@@ -40,9 +40,10 @@ function getInitialTableMode(): boolean {
 
 interface BoardProps {
   gameId: string
+  onRequestNewGame?: () => void
 }
 
-export const Board: React.FC<BoardProps> = ({ gameId }) => {
+export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
   const {
     games,
     updateGame,
@@ -59,6 +60,7 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
   const [showSettings, setShowSettings] = useState(false)
   const [showActions, setShowActions] = useState(false)
   const [showGameEndModal, setShowGameEndModal] = useState(false)
+  const [showIntroModal, setShowIntroModal] = useState(false)
   const [previewPlayerCount, setPreviewPlayerCount] = useState<number>(game?.players.length || 4)
   const [dragEnabled, setDragEnabled] = useState(false)
   const [draggedPlayerId, setDraggedPlayerId] = useState<string | null>(null)
@@ -298,17 +300,38 @@ export const Board: React.FC<BoardProps> = ({ gameId }) => {
         </div>
       </div>
 
-      {/* Settings Menu */}
-      <SettingsMenu
-        tableMode={tableMode}
-        dragEnabled={dragEnabled}
-        gameState={game.state}
-        onTableModeChange={setTableMode}
-        onDragEnabledChange={setDragEnabled}
-        onShowSettings={() => setShowSettings(true)}
-        onShowActions={() => setShowActions(true)}
-        onFinishGame={handleFinish}
-      />
+      {/* Menu Button */}
+      <div className="absolute top-0 right-0 p-2 z-20">
+        <Button round onClick={() => setShowIntroModal(true)} title="Menu">
+          <Settings size={24} />
+        </Button>
+      </div>
+
+      {/* IntroScreen Modal */}
+      <Modal isOpen={showIntroModal} onClose={() => setShowIntroModal(false)} title="Menu">
+        <IntroScreen
+          gameId={gameId}
+          tableMode={tableMode}
+          dragEnabled={dragEnabled}
+          gameState={game.state}
+          onTableModeChange={setTableMode}
+          onDragEnabledChange={setDragEnabled}
+          onShowGameSettings={() => {
+            setShowSettings(true)
+            setShowIntroModal(false)
+          }}
+          onShowActions={() => {
+            setShowActions(true)
+            setShowIntroModal(false)
+          }}
+          onFinishGame={() => {
+            handleFinish()
+            setShowIntroModal(false)
+          }}
+          onNewGame={onRequestNewGame}
+          onClose={() => setShowIntroModal(false)}
+        />
+      </Modal>
 
       <Modal title="Game Settings" isOpen={showSettings} onClose={() => setShowSettings(false)}>
         <GameForm

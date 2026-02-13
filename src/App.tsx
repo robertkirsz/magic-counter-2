@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useState } from 'react'
 
 import pkg from '../package.json'
 import PWAInstallPrompt from './components/PWAInstallPrompt'
@@ -35,17 +35,18 @@ const AppContent: React.FC = () => {
 const AppMain: React.FC = () => {
   const { games } = useGames()
   const lastNotFinishedGame = games.filter(game => game.state !== 'finished').pop()
+  const [pendingNewGame, setPendingNewGame] = useState(false)
 
   return (
     <>
       {lastNotFinishedGame && (
         <Suspense fallback={null}>
-          <Board gameId={lastNotFinishedGame.id} />
+          <Board gameId={lastNotFinishedGame.id} onRequestNewGame={() => setPendingNewGame(true)} />
         </Suspense>
       )}
       {!lastNotFinishedGame && (
         <Suspense fallback={null}>
-          <IntroScreen />
+          <IntroScreen autoShowGameForm={pendingNewGame} onGameFormShown={() => setPendingNewGame(false)} />
         </Suspense>
       )}
     </>

@@ -1,7 +1,22 @@
-import { BookOpen, History, Plus, Users as UsersIcon } from 'lucide-react'
-import React, { Suspense, useState } from 'react'
+import {
+  BookOpen,
+  History,
+  List,
+  Maximize2,
+  Minimize2,
+  Move,
+  Plus,
+  Settings,
+  Table,
+  Trophy,
+  Users as UsersIcon
+} from 'lucide-react'
+import React, { Suspense, useEffect, useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
+import { cn } from '../utils/cn'
+import { EventDispatcher } from '../utils/eventDispatcher'
+import { isFullscreen, toggleFullscreen } from '../utils/fullscreen'
 import { Button } from './Button'
 import { Modal } from './Modal'
 
@@ -9,34 +24,118 @@ const DeckForm = React.lazy(() => import('./DeckForm').then(m => ({ default: m.D
 const Decks = React.lazy(() => import('./Decks').then(m => ({ default: m.Decks })))
 const GameForm = React.lazy(() => import('./GameForm').then(m => ({ default: m.GameForm })))
 const Games = React.lazy(() => import('./Games').then(m => ({ default: m.Games })))
-
 const UserForm = React.lazy(() => import('./UserForm').then(m => ({ default: m.UserForm })))
 const Users = React.lazy(() => import('./Users').then(m => ({ default: m.Users })))
 
-export const IntroScreen: React.FC = () => {
+interface IntroScreenProps {
+  // In-game settings (only provided when opened from Board)
+  gameId?: string
+  tableMode?: boolean
+  dragEnabled?: boolean
+  gameState?: 'setup' | 'active' | 'finished'
+  onTableModeChange?: (v: boolean) => void
+  onDragEnabledChange?: (v: boolean) => void
+  onShowGameSettings?: () => void
+  onShowActions?: () => void
+  onFinishGame?: () => void
+  onNewGame?: () => void
+  onClose?: () => void
+  // Auto-open GameForm (for the "New Game" flow from Board)
+  autoShowGameForm?: boolean
+  onGameFormShown?: () => void
+}
+
+export const IntroScreen: React.FC<IntroScreenProps> = ({
+  gameId,
+  tableMode,
+  dragEnabled,
+  gameState,
+  onTableModeChange,
+  onDragEnabledChange,
+  onShowGameSettings,
+  onShowActions,
+  onFinishGame,
+  onNewGame,
+  onClose,
+  autoShowGameForm,
+  onGameFormShown
+}) => {
   const [showGames, setShowGames] = useState(false)
   const [showUsers, setShowUsers] = useState(false)
   const [showDecks, setShowDecks] = useState(false)
   const [showGameForm, setShowGameForm] = useState(false)
   const [deckFormVisible, setDeckFormVisible] = useState(false)
   const [userFormVisible, setUserFormVisible] = useState(false)
+  const [fullscreen, setFullscreen] = useState(false)
 
-  const { games } = useGames()
+  const { games, removeGame } = useGames()
 
   const hasGames = games.length > 0
-  const hasGamesInProgress = games.some(game => game.state === 'active' || game.state === 'setup')
+  const isInGame = !!gameId
+
+  // Auto-open GameForm when requested (e.g. after removing a game from Board)
+  useEffect(() => {
+    if (autoShowGameForm) {
+      setShowGameForm(true)
+      onGameFormShown?.()
+    }
+  }, [autoShowGameForm, onGameFormShown])
+
+  // Fullscreen change listener (only needed during a game)
+  useEffect(() => {
+    if (!isInGame) return
+
+    const handleFullscreenChange = () => {
+      setFullscreen(isFullscreen())
+    }
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange)
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange)
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange)
+
+    setFullscreen(isFullscreen())
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange)
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange)
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange)
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange)
+    }
+  }, [isInGame])
+
+  const handleToggleFullscreen = async () => {
+    try {
+      await toggleFullscreen()
+    } catch (error) {
+      console.error('Failed to toggle fullscreen:', error)
+    }
+  }
+
+  const handleNewGame = () => {
+    if (isInGame && gameId) {
+      const confirmed = window.confirm(
+        'Are you sure you want to start a new game? The current game will be removed.'
+      )
+      if (!confirmed) return
+
+      EventDispatcher.dispatchGameDelete(gameId)
+      removeGame(gameId)
+      onNewGame?.()
+    } else {
+      setShowGameForm(true)
+    }
+  }
 
   return (
-    <div className="h-svh flex flex-col items-center justify-center p-4">
-      <h1 className="mb-40 text-2xl text-center">Magic Counter</h1>
+    <div className={cn('flex flex-col items-center justify-center p-4', !isInGame && 'h-svh')}>
+      {!isInGame && <h1 className="mb-40 text-2xl text-center">Magic Counter</h1>}
 
-      <div className="flex flex-col items-center gap-2">
-        {!hasGamesInProgress && (
-          <Button variant="primary" onClick={() => setShowGameForm(true)}>
-            <Plus size={20} />
-            New Game
-          </Button>
-        )}
+      <div className="grid grid-cols-2 gap-2 w-full max-w-xs">
+        <Button variant="primary" className="col-span-2" onClick={handleNewGame}>
+          <Plus size={20} />
+          New Game
+        </Button>
 
         {hasGames && (
           <Button variant="secondary" onClick={() => setShowGames(true)}>
@@ -54,6 +153,69 @@ export const IntroScreen: React.FC = () => {
           <BookOpen size={20} />
           Decks
         </Button>
+
+        {/* In-game settings */}
+        {isInGame && (
+          <>
+            <div className="col-span-2 border-t border-slate-600 my-1"></div>
+
+            <Button variant="secondary" onClick={() => onShowGameSettings?.()}>
+              <Settings size={20} />
+              Game Settings
+            </Button>
+
+            <Button variant="secondary" onClick={() => onShowActions?.()}>
+              <List size={20} />
+              Game Actions
+            </Button>
+
+            <Button
+              variant="secondary"
+              className={cn(dragEnabled && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500')}
+              onClick={() => {
+                onDragEnabledChange?.(!dragEnabled)
+                onClose?.()
+              }}
+            >
+              <Move size={20} />
+              Drag Mode
+            </Button>
+
+            <Button
+              variant="secondary"
+              className={cn(tableMode && 'bg-green-600/90 hover:bg-green-500 text-white border-green-500')}
+              onClick={() => {
+                onTableModeChange?.(!tableMode)
+                onClose?.()
+              }}
+            >
+              <Table size={20} />
+              Table Mode
+            </Button>
+
+            <Button
+              variant="secondary"
+              className="col-span-2"
+              onClick={() => {
+                handleToggleFullscreen()
+                onClose?.()
+              }}
+            >
+              {fullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
+              {fullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
+            </Button>
+
+            {gameState === 'active' && (
+              <>
+                <div className="col-span-2 border-t border-slate-600 my-1"></div>
+                <Button variant="danger" className="col-span-2" onClick={() => onFinishGame?.()}>
+                  <Trophy size={20} />
+                  Finish Game
+                </Button>
+              </>
+            )}
+          </>
+        )}
       </div>
 
       {/* GameForm Modal */}
