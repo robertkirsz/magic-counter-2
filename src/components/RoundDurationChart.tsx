@@ -13,6 +13,7 @@ import { Bar } from 'react-chartjs-2'
 
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
+import { getPlayerColor } from '../utils/playerColors'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
@@ -165,10 +166,16 @@ export const RoundDurationChart: React.FC<RoundDurationChartProps> = ({ gameId }
     )
   }
 
+  // Build player color map
+  const playerColorMap: Record<string, string> = {}
+  chartData.playerNames.forEach((name, index) => {
+    playerColorMap[name] = getPlayerColor(index)
+  })
+
   // Prepare data for Chart.js
   const labels = chartData.dataPoints.map(point => point.label)
   const durations = chartData.dataPoints.map(point => point.duration)
-  const colors = chartData.dataPoints.map(point => (point.round % 2 === 1 ? '#3B82F6' : '#EF4444'))
+  const colors = chartData.dataPoints.map(point => playerColorMap[point.playerName] ?? '#6B7280')
 
   const data = {
     labels,
@@ -256,7 +263,10 @@ export const RoundDurationChart: React.FC<RoundDurationChartProps> = ({ gameId }
         <div className="mb-4 grid grid-cols-2 gap-3">
           {playerStats.players.map(({ name, average, longest, shortest }) => (
             <div key={name} className="bg-slate-700/50 rounded-lg p-3">
-              <p className="text-xs text-slate-400 uppercase tracking-wide">{name}</p>
+              <p className="text-xs text-slate-400 uppercase tracking-wide flex items-center gap-1.5">
+                <span className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: playerColorMap[name] }} />
+                {name}
+              </p>
               <p className="text-lg font-semibold text-slate-100">Avg: {formatDuration(average)}</p>
               <div className="mt-1 space-y-0.5">
                 <p className="text-sm text-slate-300">

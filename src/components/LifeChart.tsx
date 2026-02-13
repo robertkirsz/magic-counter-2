@@ -13,6 +13,7 @@ import { Line } from 'react-chartjs-2'
 
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
+import { getPlayerColor } from '../utils/playerColors'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
@@ -135,6 +136,58 @@ export const LifeChart: React.FC<LifeChartProps> = ({ gameId }) => {
     return { dataPoints, playerNames }
   }, [game, users])
 
+  // Compute player life stats
+  const playerStats = useMemo(() => {
+    if (!game || chartData.dataPoints.length === 0 || chartData.playerNames.length === 0) {
+      return { players: [], biggestHit: null }
+    }
+
+    const players = chartData.playerNames.map(name => {
+      const values = chartData.dataPoints.map(p => p[name] as number).filter(v => typeof v === 'number')
+      const startLife = values[0] ?? 0
+      const finalLife = values[values.length - 1] ?? 0
+      const peak = Math.max(...values)
+      const lowest = Math.min(...values)
+      const netChange = finalLife - startLife
+      return { name, finalLife, peak, lowest, netChange }
+    })
+
+    // Find biggest single hit (largest negative life-change action)
+    let biggestHit: { from: string; to: string; damage: number; round: number; turn: number } | null = null
+    const getPlayerNameById = (playerId?: string | null) => {
+      if (!playerId) return 'Unknown'
+      const player = game.players.find((p: Player) => p.id === playerId)
+      if (!player?.userId) return 'Unknown'
+      const user = users.find((u: User) => u.id === player.userId)
+      return user?.name || 'Unknown'
+    }
+
+    let hitRound = 1
+    let hitTurn = 1
+    let hitTurnCount = 0
+
+    for (const action of game.actions) {
+      if (action.type === 'turn-change') {
+        hitTurnCount++
+        if (hitTurnCount % game.players.length === 0) {
+          hitRound++
+          hitTurn = 1
+        } else {
+          hitTurn++
+        }
+      } else if (action.type === 'life-change' && action.value < 0 && !action.poison) {
+        const damage = Math.abs(action.value)
+        if (!biggestHit || damage > biggestHit.damage) {
+          const fromName = action.from ? getPlayerNameById(action.from) : 'Unknown'
+          const toName = action.to?.length ? getPlayerNameById(action.to[0]) : 'Unknown'
+          biggestHit = { from: fromName, to: toName, damage, round: hitRound, turn: hitTurn }
+        }
+      }
+    }
+
+    return { players, biggestHit }
+  }, [game, users, chartData])
+
   if (!game || chartData.dataPoints.length === 0) {
     return (
       <div className="flex items-center justify-center py-8 text-center">
@@ -153,15 +206,20 @@ export const LifeChart: React.FC<LifeChartProps> = ({ gameId }) => {
     )
   }
 
+  // Build player color map
+  const playerColorMap: Record<string, string> = {}
+  chartData.playerNames.forEach((name, index) => {
+    playerColorMap[name] = getPlayerColor(index)
+  })
+
   // Prepare data for Chart.js
   const labels = chartData.dataPoints.map(point => point.turnLabel)
-  const colors = ['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16']
 
   const datasets = chartData.playerNames.map((playerName, index) => ({
     label: playerName,
     data: chartData.dataPoints.map(point => point[playerName] as number),
-    borderColor: colors[index % colors.length],
-    backgroundColor: colors[index % colors.length],
+    borderColor: getPlayerColor(index),
+    backgroundColor: getPlayerColor(index),
     borderWidth: 2,
     pointRadius: 0,
     pointHoverRadius: 4,
@@ -236,6 +294,44 @@ export const LifeChart: React.FC<LifeChartProps> = ({ gameId }) => {
   return (
     <div className="flex-1 bg-gray-800 rounded-lg border border-gray-700 p-4">
       <h3 className="text-lg font-semibold text-gray-100 mb-4">Life Chart</h3>
+
+      {(playerStats.players.length > 0 || playerStats.biggestHit) && (
+        <div className="mb-4 grid grid-cols-2 gap-3">
+          {playerStats.players.map(({ name, finalLife, peak, lowest, netChange }) => (
+            <div key={name} className="bg-gray-700/50 rounded-lg p-3">
+              <p className="text-xs text-gray-400 uppercase tracking-wide flex items-center gap-1.5">
+                <span className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: playerColorMap[name] }} />
+                {name}
+              </p>
+              <p className="text-lg font-semibold text-gray-100">
+                {finalLife} HP{' '}
+                <span className={`text-sm font-normal ${netChange >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                  ({netChange >= 0 ? '+' : ''}{netChange})
+                </span>
+              </p>
+              <div className="mt-1 space-y-0.5">
+                <p className="text-sm text-gray-300">
+                  <span className="text-gray-400">Peak:</span> {peak} HP
+                </p>
+                <p className="text-sm text-gray-300">
+                  <span className="text-gray-400">Lowest:</span> {lowest} HP
+                </p>
+              </div>
+            </div>
+          ))}
+          {playerStats.biggestHit && (
+            <div className="bg-gray-600/50 rounded-lg p-3">
+              <p className="text-xs text-gray-400 uppercase tracking-wide">Biggest Hit</p>
+              <p className="text-lg font-semibold text-gray-100">{playerStats.biggestHit.damage} damage</p>
+              <p className="text-sm text-gray-300">
+                {playerStats.biggestHit.from} <span className="text-gray-500">dealt to</span> {playerStats.biggestHit.to}{' '}
+                <span className="text-gray-500">R{playerStats.biggestHit.round}T{playerStats.biggestHit.turn}</span>
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="h-80 relative">
         <Line key={`life-chart-${gameId}`} data={data} options={options} />
       </div>

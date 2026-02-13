@@ -13,6 +13,7 @@ import { Line } from 'react-chartjs-2'
 
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
+import { getPlayerColor } from '../utils/playerColors'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend)
 
@@ -137,6 +138,33 @@ export const DamageChart: React.FC<DamageChartProps> = ({ gameId }) => {
     return { dataPoints, playerNames }
   }, [game, users])
 
+  // Compute player damage stats
+  const playerStats = useMemo(() => {
+    if (!game || chartData.dataPoints.length === 0 || chartData.playerNames.length === 0) {
+      return { players: [], topDamager: null }
+    }
+
+    // Count turns from turn-change actions
+    const totalTurns = game.actions.filter((a: LifeChangeAction | TurnChangeAction | MonarchChangeAction) => a.type === 'turn-change').length
+    const turnsPerPlayer = Math.max(1, Math.floor(totalTurns / game.players.length))
+
+    const lastPoint = chartData.dataPoints[chartData.dataPoints.length - 1]
+
+    const players = chartData.playerNames.map(name => {
+      const totalDamage = (lastPoint[name] as number) ?? 0
+      const avgPerTurn = Math.round(totalDamage / turnsPerPlayer)
+      return { name, totalDamage, avgPerTurn }
+    })
+
+    // Find top damager
+    const topDamager = players.reduce(
+      (top, p) => (p.totalDamage > (top?.totalDamage ?? 0) ? p : top),
+      players[0]
+    )
+
+    return { players, topDamager: topDamager?.totalDamage > 0 ? topDamager : null }
+  }, [game, chartData])
+
   if (!game || chartData.dataPoints.length === 0) {
     return (
       <div className="flex items-center justify-center py-8 text-center">
@@ -156,15 +184,20 @@ export const DamageChart: React.FC<DamageChartProps> = ({ gameId }) => {
     )
   }
 
+  // Build player color map
+  const playerColorMap: Record<string, string> = {}
+  chartData.playerNames.forEach((name, index) => {
+    playerColorMap[name] = getPlayerColor(index)
+  })
+
   // Prepare data for Chart.js
   const labels = chartData.dataPoints.map(point => point.turnLabel)
-  const colors = ['#EF4444', '#3B82F6', '#10B981', '#F59E0B', '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16']
 
   const datasets = chartData.playerNames.map((playerName, index) => ({
     label: playerName,
     data: chartData.dataPoints.map(point => point[playerName] as number),
-    borderColor: colors[index % colors.length],
-    backgroundColor: colors[index % colors.length],
+    borderColor: getPlayerColor(index),
+    backgroundColor: getPlayerColor(index),
     borderWidth: 2,
     pointRadius: 0,
     pointHoverRadius: 4,
@@ -239,6 +272,33 @@ export const DamageChart: React.FC<DamageChartProps> = ({ gameId }) => {
   return (
     <div className="flex-1 bg-gray-800 rounded-lg border border-gray-700 p-4">
       <h3 className="text-lg font-semibold text-gray-100 mb-4">Total Damage Chart</h3>
+
+      {(playerStats.players.length > 0 || playerStats.topDamager) && (
+        <div className="mb-4 grid grid-cols-2 gap-3">
+          {playerStats.players.map(({ name, totalDamage, avgPerTurn }) => (
+            <div key={name} className="bg-gray-700/50 rounded-lg p-3">
+              <p className="text-xs text-gray-400 uppercase tracking-wide flex items-center gap-1.5">
+                <span className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: playerColorMap[name] }} />
+                {name}
+              </p>
+              <p className="text-lg font-semibold text-gray-100">{totalDamage} damage</p>
+              <div className="mt-1">
+                <p className="text-sm text-gray-300">
+                  <span className="text-gray-400">Avg/turn:</span> {avgPerTurn}
+                </p>
+              </div>
+            </div>
+          ))}
+          {playerStats.topDamager && (
+            <div className="bg-gray-600/50 rounded-lg p-3">
+              <p className="text-xs text-gray-400 uppercase tracking-wide">Top Damager</p>
+              <p className="text-lg font-semibold text-gray-100">{playerStats.topDamager.totalDamage} damage</p>
+              <p className="text-sm text-gray-300">{playerStats.topDamager.name}</p>
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="h-80 relative">
         <Line key={`damage-chart-${gameId}`} data={data} options={options} />
       </div>
