@@ -1,25 +1,19 @@
-// import { useImportanceVisibility } from './hooks/useImportanceVisibility'
 import React, { Suspense } from 'react'
 
 import pkg from '../package.json'
 import PWAInstallPrompt from './components/PWAInstallPrompt'
 import { DecksProvider } from './contexts/DecksContext'
 import { GamesProvider } from './contexts/GamesContext'
-import { ImportanceProvider } from './contexts/ImportanceContext'
 import { UsersProvider } from './contexts/UsersContext'
 import { useGames } from './hooks/useGames'
 
 const Board = React.lazy(() => import('./components/Board').then(m => ({ default: m.Board })))
 const DevToolsPanel = React.lazy(() => import('./components/DevToolsPanel').then(m => ({ default: m.DevToolsPanel })))
-// import { ImportanceSlider } from './components/ImportanceSlider'
 const IntroScreen = React.lazy(() => import('./components/IntroScreen').then(m => ({ default: m.IntroScreen })))
 
 const APP_VERSION = pkg.version
 
 const AppContent: React.FC = () => {
-  // Initialize the importance visibility system
-  // useImportanceVisibility()
-
   return (
     <>
       <div className="fixed top-1 left-1 text-xs text-slate-400 z-50 pointer-events-none">v{APP_VERSION}</div>
@@ -31,7 +25,6 @@ const AppContent: React.FC = () => {
               <AppMain />
               <DevToolsPanel />
             </Suspense>
-            {/* <ImportanceSlider /> */}
           </DecksProvider>
         </GamesProvider>
       </UsersProvider>
@@ -61,9 +54,9 @@ const AppMain: React.FC = () => {
 
 export default function App() {
   return (
-    <ImportanceProvider>
+    <>
       <AppContent />
       <PWAInstallPrompt />
-    </ImportanceProvider>
+    </>
   )
 }

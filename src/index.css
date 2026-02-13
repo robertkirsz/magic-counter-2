@@ -51,26 +51,6 @@ dialog {
   filter: grayscale(100%);
 }
 
-/* Hide elements with importance lower than current setting */
-.importance-1.hidden-importance {
-  display: none;
-}
-
-.importance-2.hidden-importance {
-  display: none;
-}
-
-.importance-3.hidden-importance {
-  display: none;
-}
-
-.importance-4.hidden-importance {
-  display: none;
-}
-
-.importance-5.hidden-importance {
-  display: none;
-}
 
 /* Hide number input arrows for Chrome, Safari, Edge, Opera */
 .hide-number-arrows::-webkit-outer-spin-button,

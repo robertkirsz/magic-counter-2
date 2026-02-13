@@ -3,10 +3,8 @@ import React, { useState } from 'react'
 
 import { Button } from '../components/Button'
 import { CommanderSearch } from '../components/CommanderSearch'
-import { ImportanceSlider } from '../components/ImportanceSlider'
 import { ManaPicker } from '../components/ManaPicker'
 import type { ManaColor } from '../constants/mana'
-import { ImportanceProvider } from '../contexts/ImportanceContext'
 
 const meta: Meta = {
   title: 'Showcase/Form Showcase',
@@ -567,41 +565,6 @@ export const AllFormElements: Story = {
   )
 }
 
-export const ImportanceSliderShowcase: Story = {
-  render: () => (
-    <ImportanceProvider>
-      <AppLayout>
-        <Section
-          title="Importance Slider"
-          description="A specialized range input for controlling UI element visibility based on importance levels."
-        >
-          <div className="space-y-6">
-            <div className="rounded-lg border border-slate-600 bg-slate-700 p-6">
-              <h4 className="mb-4 font-medium text-slate-200">Importance Control</h4>
-              <p className="mb-4 text-sm text-slate-400">
-                The importance slider controls which UI elements are visible. Elements with importance levels lower than
-                the current setting are automatically hidden.
-              </p>
-
-              <div className="flex items-center gap-4">
-                <span className="text-sm text-slate-200">Importance Level:</span>
-                <ImportanceSlider />
-              </div>
-
-              <div className="mt-6 space-y-2">
-                <div className="importance-1 p-2 bg-blue-900 rounded">Level 1 - Always visible</div>
-                <div className="importance-2 p-2 bg-green-900 rounded">Level 2 - Hidden when importance &lt; 2</div>
-                <div className="importance-3 p-2 bg-yellow-900 rounded">Level 3 - Hidden when importance &lt; 3</div>
-                <div className="importance-4 p-2 bg-orange-900 rounded">Level 4 - Hidden when importance &lt; 4</div>
-                <div className="importance-5 p-2 bg-red-900 rounded">Level 5 - Hidden when importance &lt; 5</div>
-              </div>
-            </div>
-          </div>
-        </Section>
-      </AppLayout>
-    </ImportanceProvider>
-  )
-}
 
 export const FormValidation: Story = {
   render: () => (
