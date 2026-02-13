@@ -1,4 +1,13 @@
-import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip, type TooltipItem } from 'chart.js'
+import {
+  BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
+  Title,
+  Tooltip,
+  type TooltipItem
+} from 'chart.js'
 import React, { useMemo } from 'react'
 import { Bar } from 'react-chartjs-2'
 
@@ -14,9 +23,9 @@ interface RoundDurationChartProps {
 interface DurationDataPoint {
   label: string
   duration: number
-  type: 'round' | 'turn'
   round: number
   turn: number
+  playerName: string
 }
 
 export const RoundDurationChart: React.FC<RoundDurationChartProps> = ({ gameId }) => {
@@ -61,56 +70,82 @@ export const RoundDurationChart: React.FC<RoundDurationChartProps> = ({ gameId }
       const currentAction = turnChangeActions[i]
       const nextAction = turnChangeActions[i + 1]
 
-      turnCount++
-
-      // Calculate current round and turn
-      if (turnCount % game.players.length === 0) {
-        currentRound++
-        currentTurn = 1
-      } else {
-        currentTurn++
-      }
-
       // Calculate duration
       let duration = 0
       if (nextAction) {
         const currentTime = new Date(currentAction.createdAt).getTime()
         const nextTime = new Date(nextAction.createdAt).getTime()
-        duration = (nextTime - currentTime) / 1000 // Convert to seconds
+        duration = Math.ceil((nextTime - currentTime) / 1000) // Convert to seconds, round up
       }
 
       // Add turn duration
       dataPoints.push({
         label: `R${currentRound}T${currentTurn}`,
         duration,
-        type: 'turn',
         round: currentRound,
-        turn: currentTurn
+        turn: currentTurn,
+        playerName: getPlayerName(currentAction.to)
       })
 
-      // If this completes a round, add round duration
+      // Advance round and turn counters
+      turnCount++
       if (turnCount % game.players.length === 0) {
-        const roundStartAction = turnChangeActions[i - (game.players.length - 1)]
-        const roundEndAction = currentAction
-
-        if (roundStartAction) {
-          const roundStartTime = new Date(roundStartAction.createdAt).getTime()
-          const roundEndTime = new Date(roundEndAction.createdAt).getTime()
-          const roundDuration = (roundEndTime - roundStartTime) / 1000
-
-          dataPoints.push({
-            label: `Round ${currentRound - 1}`,
-            duration: roundDuration,
-            type: 'round',
-            round: currentRound,
-            turn: 0
-          })
-        }
+        currentRound++
+        currentTurn = 1
+      } else {
+        currentTurn++
       }
     }
 
     return { dataPoints, playerNames }
   }, [game, users])
+
+  const formatDuration = (duration: number) => {
+    const minutes = Math.floor(duration / 60)
+    const seconds = Math.floor(duration % 60)
+    if (minutes > 0) {
+      return `${minutes}m ${seconds}s`
+    }
+    return `${seconds}s`
+  }
+
+  // Compute player stats from data points
+  const playerStats = useMemo(() => {
+    const points = chartData.dataPoints.filter(p => p.duration > 0)
+    if (points.length === 0) return { players: [], longest: null }
+
+    // Group data points by player name
+    const byPlayer: Record<string, DurationDataPoint[]> = {}
+    for (const point of points) {
+      if (!byPlayer[point.playerName]) {
+        byPlayer[point.playerName] = []
+      }
+      byPlayer[point.playerName].push(point)
+    }
+
+    const players = Object.entries(byPlayer).map(([name, turns]) => {
+      const average = Math.round(turns.reduce((sum, t) => sum + t.duration, 0) / turns.length)
+      const longestTurn = turns.reduce((max, t) => (t.duration > max.duration ? t : max), turns[0])
+      const shortestTurn = turns.reduce((min, t) => (t.duration < min.duration ? t : min), turns[0])
+      return {
+        name,
+        average,
+        longest: { duration: longestTurn.duration, round: longestTurn.round, turn: longestTurn.turn },
+        shortest: { duration: shortestTurn.duration, round: shortestTurn.round, turn: shortestTurn.turn }
+      }
+    })
+
+    // Find the overall longest turn
+    const longestPoint = points.reduce((max, p) => (p.duration > max.duration ? p : max), points[0])
+    const longest = {
+      playerName: longestPoint.playerName,
+      duration: longestPoint.duration,
+      round: longestPoint.round,
+      turn: longestPoint.turn
+    }
+
+    return { players, longest }
+  }, [chartData.dataPoints])
 
   if (!game || chartData.dataPoints.length === 0) {
     return (
@@ -133,7 +168,7 @@ export const RoundDurationChart: React.FC<RoundDurationChartProps> = ({ gameId }
   // Prepare data for Chart.js
   const labels = chartData.dataPoints.map(point => point.label)
   const durations = chartData.dataPoints.map(point => point.duration)
-  const colors = chartData.dataPoints.map(point => (point.type === 'round' ? '#EF4444' : '#3B82F6'))
+  const colors = chartData.dataPoints.map(point => (point.round % 2 === 1 ? '#3B82F6' : '#EF4444'))
 
   const data = {
     labels,
@@ -165,17 +200,15 @@ export const RoundDurationChart: React.FC<RoundDurationChartProps> = ({ gameId }
         borderColor: '#374151',
         borderWidth: 1,
         callbacks: {
+          title: function (tooltipItems: TooltipItem<'bar'>[]) {
+            const index = tooltipItems[0].dataIndex
+            const point = chartData.dataPoints[index]
+            return [`Round ${point.round}`, `Turn ${point.turn}`, point.playerName]
+          },
           label: function (context: TooltipItem<'bar'>) {
             const duration = context.parsed.y
             if (duration === null) return ''
-            const minutes = Math.floor(duration / 60)
-            const seconds = Math.floor(duration % 60)
-
-            if (minutes > 0) {
-              return `${minutes}m ${seconds}s`
-            } else {
-              return `${seconds}s`
-            }
+            return formatDuration(duration)
           }
         }
       }
@@ -208,14 +241,7 @@ export const RoundDurationChart: React.FC<RoundDurationChartProps> = ({ gameId }
           color: '#6B7280',
           callback: function (value: number | string) {
             const duration = typeof value === 'string' ? parseFloat(value) : value
-            const minutes = Math.floor(duration / 60)
-            const seconds = Math.floor(duration % 60)
-
-            if (minutes > 0) {
-              return `${minutes}m ${seconds}s`
-            } else {
-              return `${seconds}s`
-            }
+            return formatDuration(duration)
           }
         }
       }
@@ -225,6 +251,37 @@ export const RoundDurationChart: React.FC<RoundDurationChartProps> = ({ gameId }
   return (
     <div className="flex-1 bg-slate-800 rounded-lg border border-slate-700 p-4">
       <h3 className="text-lg font-semibold text-slate-100 mb-4">Round Duration Chart</h3>
+
+      {(playerStats.players.length > 0 || playerStats.longest) && (
+        <div className="mb-4 grid grid-cols-2 gap-3">
+          {playerStats.players.map(({ name, average, longest, shortest }) => (
+            <div key={name} className="bg-slate-700/50 rounded-lg p-3">
+              <p className="text-xs text-slate-400 uppercase tracking-wide">{name}</p>
+              <p className="text-lg font-semibold text-slate-100">Avg: {formatDuration(average)}</p>
+              <div className="mt-1 space-y-0.5">
+                <p className="text-sm text-slate-300">
+                  <span className="text-slate-400">Longest:</span> {formatDuration(longest.duration)}{' '}
+                  <span className="text-slate-500">R{longest.round}T{longest.turn}</span>
+                </p>
+                <p className="text-sm text-slate-300">
+                  <span className="text-slate-400">Shortest:</span> {formatDuration(shortest.duration)}{' '}
+                  <span className="text-slate-500">R{shortest.round}T{shortest.turn}</span>
+                </p>
+              </div>
+            </div>
+          ))}
+          {playerStats.longest && (
+            <div className="bg-slate-600/50 rounded-lg p-3">
+              <p className="text-xs text-slate-400 uppercase tracking-wide">Longest Turn</p>
+              <p className="text-lg font-semibold text-slate-100">{formatDuration(playerStats.longest.duration)}</p>
+              <p className="text-sm text-slate-300">
+                {playerStats.longest.playerName} (R{playerStats.longest.round}T{playerStats.longest.turn})
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="h-80 relative">
         <Bar key={`round-duration-${gameId}`} data={data} options={options} />
       </div>
