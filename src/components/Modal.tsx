@@ -66,6 +66,8 @@ export const Modal: React.FC<ModalProps> = ({
     }
   }, [onClose])
 
+  if (!isOpen) return null
+
   return (
     <dialog
       ref={dialogRef}
