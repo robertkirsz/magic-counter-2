@@ -15,8 +15,7 @@ graph TB
     end
 
     subgraph "Context Providers"
-        APP --> IMPORTANCE[ImportanceProvider]
-        IMPORTANCE --> APP_CONTENT[AppContent]
+        APP --> APP_CONTENT[AppContent]
         APP_CONTENT --> USERS_PROV[UsersProvider]
         USERS_PROV --> GAMES_PROV[GamesProvider]
         GAMES_PROV --> DECKS_PROV[DecksProvider]
@@ -80,8 +79,6 @@ graph TB
         COLOR_BADGES[ColorBadges]
         FADE_MASK[FadeMask]
         THREE_DOT[ThreeDotMenu]
-        IMPORTANCE_SLIDER[ImportanceSlider]
-        IMPORTANCE_WRAPPER[ImportanceWrapper]
         CONTROLS_SECTION[ControlsSection]
     end
 
@@ -89,8 +86,6 @@ graph TB
         USE_GAMES[useGames]
         USE_USERS[useUsers]
         USE_DECKS[useDecks]
-        USE_IMPORTANCE[useImportance]
-        USE_IMPORTANCE_VIS[useImportanceVisibility]
         USE_LONG_PRESS[useLongPress]
     end
 
@@ -98,7 +93,6 @@ graph TB
         GAMES_CTX[GamesContext]
         USERS_CTX[UsersContext]
         DECKS_CTX[DecksContext]
-        IMPORTANCE_CTX[ImportanceContext]
     end
 
     subgraph "Utils"
@@ -110,7 +104,6 @@ graph TB
         GENERATE_RANDOM[generateRandom]
         GRADIENTS[gradients]
         ID_GEN[idGenerator]
-        IMPORTANCE_UTIL[importance]
         SCRYFALL[scryfall]
     end
 
@@ -135,7 +128,6 @@ graph TB
     USE_GAMES -.-> GAMES_CTX
     USE_USERS -.-> USERS_CTX
     USE_DECKS -.-> DECKS_CTX
-    USE_IMPORTANCE -.-> IMPORTANCE_CTX
 
     %% Utility connections
     BOARD -.-> CN
@@ -153,7 +145,6 @@ graph TB
     style MAIN fill:#e1f5ff
     style APP fill:#e1f5ff
     style BOARD fill:#fff4e1
-    style IMPORTANCE fill:#e8f5e9
     style USERS_PROV fill:#e8f5e9
     style GAMES_PROV fill:#e8f5e9
     style DECKS_PROV fill:#e8f5e9
@@ -196,8 +187,6 @@ magic-counter-2/
 │   │   ├── GameForm.tsx            # Game creation form
 │   │   ├── GameStatus.tsx           # Game status display
 │   │   ├── Games.tsx               # Games list view
-│   │   ├── ImportanceSlider.tsx    # Importance slider UI
-│   │   ├── ImportanceWrapper.tsx   # Importance wrapper
 │   │   ├── IntroScreen.tsx         # Landing/intro screen
 │   │   ├── LifeChart.tsx           # Life total chart
 │   │   ├── ManaPicker.tsx          # Mana color picker
@@ -221,16 +210,12 @@ magic-counter-2/
 │   │   ├── DecksContextDef.ts      # Decks context types
 │   │   ├── GamesContext.tsx        # Games state management
 │   │   ├── GamesContextDef.ts      # Games context types
-│   │   ├── ImportanceContext.tsx   # Importance state management
-│   │   ├── ImportanceContextDef.ts # Importance context types
 │   │   ├── UsersContext.tsx        # Users state management
 │   │   └── UsersContextDef.ts      # Users context types
 │   │
 │   ├── hooks/                      # Custom React hooks
 │   │   ├── useDecks.ts             # Decks hook
 │   │   ├── useGames.ts             # Games hook
-│   │   ├── useImportance.ts        # Importance hook
-│   │   ├── useImportanceVisibility.ts # Importance visibility hook
 │   │   ├── useLongPress.ts         # Long press gesture hook
 │   │   ├── useUsers.ts             # Users hook
 │   │   └── index.ts                # Hook exports
@@ -244,7 +229,6 @@ magic-counter-2/
 │   │   ├── generateRandom.ts       # Random data generation
 │   │   ├── gradients.ts            # Gradient utilities
 │   │   ├── idGenerator.ts          # ID generation
-│   │   ├── importance.ts           # Importance utilities
 │   │   ├── scryfall.ts             # Scryfall API integration
 │   │   └── README.md               # Utils documentation
 │   │
@@ -280,18 +264,15 @@ magic-counter-2/
 ## Data Flow
 
 ### Context Providers Hierarchy
-1. **ImportanceProvider** (outermost)
-   - Manages importance/visibility system
-   
-2. **UsersProvider**
+1. **UsersProvider** (outermost)
    - Manages user data (players)
    - Provides: `users`, `addUser`, `updateUser`, `removeUser`
    
-3. **GamesProvider**
+2. **GamesProvider**
    - Manages game state
    - Provides: `games`, `addGame`, `updateGame`, `removeGame`
    
-4. **DecksProvider** (innermost)
+3. **DecksProvider** (innermost)
    - Manages deck data
    - Provides: `decks`, `addDeck`, `updateDeck`, `removeDeck`
 
@@ -299,7 +280,7 @@ magic-counter-2/
 
 1. **Entry**: `main.tsx` → `App.tsx` wrapped in `ErrorBoundary`
 2. **App Structure**:
-   - `App` wraps everything in `ImportanceProvider`
+   - `App` contains `AppContent` and `PWAInstallPrompt`
    - `AppContent` contains all context providers
    - `AppMain` conditionally renders:
      - `Board` if there's an active game
