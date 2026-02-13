@@ -1,4 +1,4 @@
-import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip } from 'chart.js'
+import { BarElement, CategoryScale, Chart as ChartJS, Legend, LinearScale, Title, Tooltip, type TooltipItem } from 'chart.js'
 import React, { useMemo } from 'react'
 import { Bar } from 'react-chartjs-2'
 
@@ -165,8 +165,9 @@ export const RoundDurationChart: React.FC<RoundDurationChartProps> = ({ gameId }
         borderColor: '#374151',
         borderWidth: 1,
         callbacks: {
-          label: function (context: { parsed: { y: number } }) {
+          label: function (context: TooltipItem<'bar'>) {
             const duration = context.parsed.y
+            if (duration === null) return ''
             const minutes = Math.floor(duration / 60)
             const seconds = Math.floor(duration % 60)
 
