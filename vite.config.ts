@@ -14,9 +14,9 @@ export default defineConfig({
       domains: ['localhost', '127.0.0.1']
     }),
     VitePWA({
-      // Explicitly inject SW registration and keep manifest filename stable.
-      // (We link to /site.webmanifest in index.html)
-      injectRegister: 'auto',
+      // We manually register the SW in src/main.tsx (virtual:pwa-register)
+      // so we can later surface a toast/UI for updates.
+      injectRegister: null,
       registerType: 'autoUpdate',
       manifestFilename: 'site.webmanifest',
       workbox: {

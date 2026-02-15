@@ -27,7 +27,9 @@ Tip: also test a hard reload and closing/reopening the tab while offline.
 
 ## Update behavior
 
-We register the service worker in `src/main.tsx` via `virtual:pwa-register`.
+We register the service worker manually in `src/main.tsx` via `virtual:pwa-register`.
+
+Note: `vite-plugin-pwa` is configured with `injectRegister: null`, so we don’t double-register.
 
 For now we log `onOfflineReady` / `onNeedRefresh` to the console.
 Future improvement: show a UI toast (“Update available”).
