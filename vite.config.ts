@@ -20,7 +20,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       manifestFilename: 'site.webmanifest',
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,webmanifest}'],
         navigateFallback: '/index.html',
         runtimeCaching: [
           {
@@ -29,6 +29,9 @@ export default defineConfig({
             handler: 'CacheFirst',
             options: {
               cacheName: 'scryfall-api',
+              cacheableResponse: {
+                statuses: [0, 200]
+              },
               expiration: {
                 maxEntries: 100,
                 maxAgeSeconds: 60 * 60 * 24 * 7 // 7 days
@@ -42,6 +45,9 @@ export default defineConfig({
             handler: 'CacheFirst',
             options: {
               cacheName: 'scryfall-images',
+              cacheableResponse: {
+                statuses: [0, 200]
+              },
               expiration: {
                 maxEntries: 150,
                 maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
