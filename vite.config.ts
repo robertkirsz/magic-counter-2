@@ -14,18 +14,43 @@ export default defineConfig({
       domains: ['localhost', '127.0.0.1']
     }),
     VitePWA({
+      // We manually register the SW in src/main.tsx (virtual:pwa-register)
+      // so we can later surface a toast/UI for updates.
+      injectRegister: null,
       registerType: 'autoUpdate',
+      manifestFilename: 'site.webmanifest',
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,json}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,json,webmanifest}'],
+        navigateFallback: '/index.html',
         runtimeCaching: [
           {
+            // Cache Scryfall API responses (card data)
             urlPattern: /^https:\/\/api\.scryfall\.com\/.*/i,
-            handler: 'CacheFirst',
+            handler: 'NetworkFirst',
             options: {
               cacheName: 'scryfall-api',
+              cacheableResponse: {
+                statuses: [0, 200]
+              },
               expiration: {
                 maxEntries: 100,
                 maxAgeSeconds: 60 * 60 * 24 * 7 // 7 days
+              }
+            }
+          },
+          {
+            // Optional: cache Scryfall-hosted images for offline browsing.
+            // Keep this bounded so it doesn't grow forever.
+            urlPattern: /^https:\/\/(cards\.scryfall\.io|c1\.scryfall\.com|c2\.scryfall\.com|c3\.scryfall\.com)\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'scryfall-images',
+              cacheableResponse: {
+                statuses: [0, 200]
+              },
+              expiration: {
+                maxEntries: 150,
+                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
               }
             }
           }
