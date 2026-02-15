@@ -33,3 +33,13 @@ Note: `vite-plugin-pwa` is configured with `injectRegister: null`, so we don’t
 
 For now we log `onOfflineReady` / `onNeedRefresh` to the console.
 Future improvement: show a UI toast (“Update available”).
+
+### How to test update behavior
+
+1. Run `npm run build && npm run preview` and open the app in Chrome.
+2. Open DevTools → **Console** so you can see `onOfflineReady` / `onNeedRefresh` logs.
+3. While the app tab is open, deploy a new version (for local testing: change some UI text, rebuild, and restart `npm run preview`).
+4. Return to the open tab:
+   - the service worker should detect the new version and log an `onNeedRefresh` message.
+5. Refresh the page:
+   - the new service worker becomes active and the updated version of the app should load (verify by checking the changed UI or version indicator).
