@@ -14,11 +14,17 @@ export default defineConfig({
       domains: ['localhost', '127.0.0.1']
     }),
     VitePWA({
+      // Explicitly inject SW registration and keep manifest filename stable.
+      // (We link to /site.webmanifest in index.html)
+      injectRegister: 'auto',
       registerType: 'autoUpdate',
+      manifestFilename: 'site.webmanifest',
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,json}'],
+        navigateFallback: '/index.html',
         runtimeCaching: [
           {
+            // Cache Scryfall API responses (card data)
             urlPattern: /^https:\/\/api\.scryfall\.com\/.*/i,
             handler: 'CacheFirst',
             options: {
@@ -26,6 +32,19 @@ export default defineConfig({
               expiration: {
                 maxEntries: 100,
                 maxAgeSeconds: 60 * 60 * 24 * 7 // 7 days
+              }
+            }
+          },
+          {
+            // Optional: cache Scryfall-hosted images for offline browsing.
+            // Keep this bounded so it doesn't grow forever.
+            urlPattern: /^https:\/\/(cards\.scryfall\.io|c1\.scryfall\.com|c2\.scryfall\.com|c3\.scryfall\.com)\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'scryfall-images',
+              expiration: {
+                maxEntries: 150,
+                maxAgeSeconds: 60 * 60 * 24 * 30 // 30 days
               }
             }
           }
