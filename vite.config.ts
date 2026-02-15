@@ -26,7 +26,7 @@ export default defineConfig({
           {
             // Cache Scryfall API responses (card data)
             urlPattern: /^https:\/\/api\.scryfall\.com\/.*/i,
-            handler: 'CacheFirst',
+            handler: 'NetworkFirst',
             options: {
               cacheName: 'scryfall-api',
               cacheableResponse: {
