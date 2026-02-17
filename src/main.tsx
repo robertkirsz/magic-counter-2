@@ -19,7 +19,7 @@ registerSW({
   onNeedRefresh() {
     console.info('[PWA] Update available (refresh to load)')
   },
-  onRegisterError(error) {
+  onRegisterError(error: unknown) {
     console.warn('[PWA] Service worker registration error', error)
   }
 })
