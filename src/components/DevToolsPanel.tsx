@@ -2,6 +2,9 @@ import { BookOpen, Swords, UserPlus, Wrench } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useEffect, useState } from 'react'
 
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Textarea } from '@/components/ui/textarea'
 import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
@@ -123,8 +126,8 @@ const DataSectionComponent: React.FC<DataSectionProps> = ({ section, text, setTe
   <details open>
     <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">{section.title}</summary>
 
-    <textarea
-      className={cn('form-textarea resize-y mb-1 h-28', error && 'border-red-500')}
+    <Textarea
+      className={cn('mb-1 h-28 resize-y', error && 'border-red-500')}
       value={text}
       onChange={e => setText(e.target.value)}
       spellCheck={false}
@@ -458,81 +461,47 @@ export const DevToolsPanel: React.FC = () => {
             {/* Game Creation Controls */}
             <div className="mb-3">
               <div className="mb-2">
-                <label className="text-xs text-slate-300 mb-1 block">Game Type:</label>
-                <div className="flex gap-2">
-                  <label className="flex items-center gap-1 text-xs">
-                    <input
-                      type="radio"
-                      name="gameType"
-                      value="untracked"
-                      checked={gameType === 'untracked'}
-                      onChange={e => setGameType(e.target.value as GameType)}
-                      className="mr-1"
-                    />
+                <Label className="mb-1 block text-xs text-slate-300">Game Type:</Label>
+                <RadioGroup
+                  value={gameType}
+                  onValueChange={value => setGameType(value as GameType)}
+                  className="grid grid-cols-3 gap-2"
+                >
+                  <Label className="flex items-center gap-1 text-xs">
+                    <RadioGroupItem value="untracked" />
                     Untracked
-                  </label>
-                  <label className="flex items-center gap-1 text-xs">
-                    <input
-                      type="radio"
-                      name="gameType"
-                      value="tracked"
-                      checked={gameType === 'tracked'}
-                      onChange={e => setGameType(e.target.value as GameType)}
-                      className="mr-1"
-                    />
+                  </Label>
+                  <Label className="flex items-center gap-1 text-xs">
+                    <RadioGroupItem value="tracked" />
                     Tracked
-                  </label>
-                  <label className="flex items-center gap-1 text-xs">
-                    <input
-                      type="radio"
-                      name="gameType"
-                      value="random"
-                      checked={gameType === 'random'}
-                      onChange={e => setGameType(e.target.value as GameType)}
-                      className="mr-1"
-                    />
+                  </Label>
+                  <Label className="flex items-center gap-1 text-xs">
+                    <RadioGroupItem value="random" />
                     Random
-                  </label>
-                </div>
+                  </Label>
+                </RadioGroup>
               </div>
 
               <div className="mb-2">
-                <label className="text-xs text-slate-300 mb-1 block">Game State:</label>
-                <div className="flex gap-2">
-                  <label className="flex items-center gap-1 text-xs">
-                    <input
-                      type="radio"
-                      name="gameState"
-                      value="setup"
-                      checked={gameState === 'setup'}
-                      onChange={e => setGameState(e.target.value as GameState)}
-                      className="mr-1"
-                    />
+                <Label className="mb-1 block text-xs text-slate-300">Game State:</Label>
+                <RadioGroup
+                  value={gameState}
+                  onValueChange={value => setGameState(value as GameState)}
+                  className="grid grid-cols-3 gap-2"
+                >
+                  <Label className="flex items-center gap-1 text-xs">
+                    <RadioGroupItem value="setup" />
                     Setup
-                  </label>
-                  <label className="flex items-center gap-1 text-xs">
-                    <input
-                      type="radio"
-                      name="gameState"
-                      value="active"
-                      checked={gameState === 'active'}
-                      onChange={e => setGameState(e.target.value as GameState)}
-                      className="mr-1"
-                    />
+                  </Label>
+                  <Label className="flex items-center gap-1 text-xs">
+                    <RadioGroupItem value="active" />
                     Active
-                  </label>
-                  <label className="flex items-center gap-1 text-xs">
-                    <input
-                      type="radio"
-                      name="gameState"
-                      value="finished"
-                      checked={gameState === 'finished'}
-                      onChange={e => setGameState(e.target.value as GameState)}
-                      className="mr-1"
-                    />
+                  </Label>
+                  <Label className="flex items-center gap-1 text-xs">
+                    <RadioGroupItem value="finished" />
                     Finished
-                  </label>
-                </div>
+                  </Label>
+                </RadioGroup>
               </div>
 
               <QuickActionButton icon={<Swords size={14} />} onClick={handleAddGame} title="Add Game" />
@@ -548,10 +517,12 @@ export const DevToolsPanel: React.FC = () => {
                 Export
               </Button>
 
-              <label className="btn primary">
-                Import
-                <input type="file" accept=".json" onChange={handleImport} className="hidden" />
-              </label>
+              <Button asChild>
+                <label className="cursor-pointer">
+                  Import
+                  <input type="file" accept=".json" onChange={handleImport} className="hidden" />
+                </label>
+              </Button>
 
               <Button variant="danger" onClick={handleClearData}>
                 Delete

@@ -7,6 +7,9 @@ import App from './App.tsx'
 import ErrorBoundary from './components/ErrorBoundary'
 import './index.css'
 
+// Keep the app on the dark shadcn theme.
+document.documentElement.classList.add('dark')
+
 // PWA: register service worker (offline support + update notifications)
 registerSW({
   immediate: true,

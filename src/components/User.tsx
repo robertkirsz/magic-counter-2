@@ -1,6 +1,8 @@
 import { ChevronDown, ChevronRight, Gamepad2, User as UserIcon } from 'lucide-react'
 import React, { useState } from 'react'
 
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
 import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
 import { Button } from './Button'
@@ -25,7 +27,8 @@ export const User: React.FC<UserProps> = ({ user, onEdit, onRemove, onCreateDeck
   const gamesPlayed = games.filter(game => game.players.some(player => player.userId === user.id)).length
 
   return (
-    <div className="bg-slate-900 rounded-lg p-4 border border-slate-700">
+    <Card className="border-slate-700 bg-slate-900">
+      <CardContent className="p-4">
       {/* User Header */}
       <div className="flex items-center gap-3 mb-4">
         <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
@@ -41,31 +44,32 @@ export const User: React.FC<UserProps> = ({ user, onEdit, onRemove, onCreateDeck
 
       {/* Statistics Section */}
       <div className="flex items-center gap-4 mb-4 p-3 bg-gray-800 rounded-lg">
-        <div className="flex items-center gap-2">
+        <Badge variant="secondary" className="flex items-center gap-2 border-none bg-transparent px-0 py-0 text-gray-300">
           <Gamepad2 size={16} className="text-blue-400" />
-          <span className="text-sm text-gray-300">
+          <span className="text-sm">
             {gamesPlayed} game{gamesPlayed !== 1 ? 's' : ''} played
           </span>
-        </div>
+        </Badge>
 
-        <div className="flex items-center gap-2">
+        <Badge variant="secondary" className="flex items-center gap-2 border-none bg-transparent px-0 py-0 text-gray-300">
           <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-          <span className="text-sm text-gray-300">
+          <span className="text-sm">
             {filteredDecks.length} deck{filteredDecks.length !== 1 ? 's' : ''}
           </span>
-        </div>
+        </Badge>
       </div>
 
       {/* User's Decks */}
       {filteredDecks.length > 0 && (
         <div className="mb-4">
-          <button
+          <Button
+            variant="secondary"
             onClick={() => setDecksExpanded(!decksExpanded)}
-            className="flex items-center gap-2 w-full p-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+            className="h-auto w-full justify-start p-3"
           >
             {decksExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
             <span className="font-medium text-gray-100">Decks ({filteredDecks.length})</span>
-          </button>
+          </Button>
 
           {decksExpanded && (
             <div className="mt-3 flex flex-wrap gap-2">
@@ -82,6 +86,7 @@ export const User: React.FC<UserProps> = ({ user, onEdit, onRemove, onCreateDeck
       <Button variant="primary" onClick={onCreateDeck}>
         Create New Deck
       </Button>
-    </div>
+      </CardContent>
+    </Card>
   )
 }

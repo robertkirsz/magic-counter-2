@@ -83,21 +83,21 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onCl
           {validPlayers.map(player => {
             const user = users.find(u => u.id === player.userId)
             return (
-              <button
+              <Button
                 key={player.id}
+                type="button"
+                variant={selectedWinner === player.userId ? 'primary' : 'default'}
                 onClick={() => setSelectedWinner(player.userId!)}
                 className={cn(
-                  'p-3 rounded-lg border-2 transition-colors',
-                  selectedWinner === player.userId
-                    ? 'border-blue-500 bg-blue-500/20 text-white'
-                    : 'border-gray-600 text-gray-300 hover:border-gray-500 hover:text-white'
+                  'h-auto justify-between p-3',
+                  selectedWinner !== player.userId && 'text-slate-300'
                 )}
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium">{user?.name || 'Unknown Player'}</span>
                   {selectedWinner === player.userId && <CheckIcon className="w-4 h-4" />}
                 </div>
-              </button>
+              </Button>
             )
           })}
         </div>
@@ -108,21 +108,21 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onCl
         <label className="block text-sm font-medium text-white mb-2">Win Condition</label>
         <div className="grid grid-cols-2 gap-2">
           {WIN_CONDITIONS.map(condition => (
-            <button
+            <Button
               key={condition.value}
+              type="button"
+              variant={selectedWinCondition === condition.value ? 'primary' : 'default'}
               onClick={() => setSelectedWinCondition(condition.value)}
               className={cn(
-                'p-3 rounded-lg border-2 transition-colors',
-                selectedWinCondition === condition.value
-                  ? 'border-green-500 bg-green-500/20 text-white'
-                  : 'border-gray-600 text-gray-300 hover:border-gray-500 hover:text-white'
+                'h-auto justify-between p-3',
+                selectedWinCondition !== condition.value && 'text-slate-300'
               )}
             >
               <div className="flex items-center justify-between">
                 <span className="font-medium">{condition.label}</span>
                 {selectedWinCondition === condition.value && <CheckIcon className="w-4 h-4" />}
               </div>
-            </button>
+            </Button>
           ))}
         </div>
       </div>

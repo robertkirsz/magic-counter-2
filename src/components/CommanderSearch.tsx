@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
+import { Loader2 } from 'lucide-react'
 
+import { Input } from '@/components/ui/input'
 import { fetchCommanderSuggestions } from '../utils/scryfall'
 import { Commander } from './Commander'
 import { FadeMask } from './FadeMask'
@@ -52,12 +54,11 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ onChange }) =>
   return (
     <div className="flex flex-col gap-2">
       {/* Search Commander Input */}
-      <input
+      <Input
         value={newCommander}
         onChange={e => setNewCommander(e.target.value)}
         onFocus={() => setShowSuggestions(true)}
         placeholder="Search for commanders..."
-        className="form-input"
       />
 
       {/* Suggestions Dropdown */}
@@ -66,7 +67,7 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ onChange }) =>
           <div className="flex flex-col gap-1 max-h-58">
             {isLoading && (
               <div className="flex items-center justify-center gap-2 p-3 text-center text-slate-400">
-                <div className="animate-spin inline-block w-4 h-4 border-2 border-slate-600 border-t-blue-600 rounded-full"></div>
+                <Loader2 className="h-4 w-4 animate-spin" />
                 Searching...
               </div>
             )}

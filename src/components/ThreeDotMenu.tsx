@@ -1,6 +1,7 @@
 import { Edit3, MoreVertical, Trash2, X } from 'lucide-react'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
 
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { cn } from '../utils/cn'
 import { Button } from './Button'
 import { Modal } from './Modal'
@@ -20,33 +21,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
   className,
   ...props
 }) => {
-  const [isOpen, setIsOpen] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
-  const [menuPosition, setMenuPosition] = useState<'bottom' | 'top'>('bottom')
-  const [menuAlignment, setMenuAlignment] = useState<'right' | 'left'>('right')
-  const wrapperRef = useRef<HTMLDivElement>(null)
-  const menuRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
-      }
-    }
-
-    if (isOpen) document.addEventListener('mousedown', handleClickOutside)
-
-    if (menuRef.current) {
-      const menuRect = menuRef.current.getBoundingClientRect()
-      const viewportHeight = window.innerHeight
-      if (menuRect.bottom > viewportHeight) setMenuPosition('top')
-      if (menuRect.left < 0) setMenuAlignment('left')
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [isOpen])
 
   if (!asMenu) {
     return (
@@ -97,62 +72,36 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
   }
 
   return (
-    <div ref={wrapperRef} className={cn('relative flex max-w-fit max-h-fit', className)} {...props}>
-      <Button variant="secondary" round small title="More options" onClick={() => setIsOpen(!isOpen)}>
-        <MoreVertical size={16} />
-      </Button>
-
-      {isOpen && (
-        <div
-          ref={menuRef}
-          className={cn(
-            'flex flex-col absolute rounded-lg shadow-lg z-20 min-w-[120px] overflow-clip empty:hidden',
-            menuPosition === 'bottom' ? 'top-full mt-1' : 'bottom-full mb-1',
-            menuAlignment === 'right' ? 'right-0' : 'left-0'
-          )}
-        >
+    <div className={cn('relative flex max-h-fit max-w-fit', className)} {...props}>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="secondary" round small title="More options">
+            <MoreVertical size={16} />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
           {onEdit && (
-            <Button
-              variant="secondary"
-              className="rounded-none"
-              onClick={() => {
-                onEdit()
-                setIsOpen(false)
-              }}
-            >
+            <DropdownMenuItem onClick={onEdit}>
               <Edit3 size={14} />
               Edit
-            </Button>
+            </DropdownMenuItem>
           )}
 
           {onRemove && (
-            <Button
-              variant="danger"
-              className="rounded-none"
-              onClick={() => {
-                setShowConfirm(true)
-                setIsOpen(false)
-              }}
-            >
+            <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={() => setShowConfirm(true)}>
               <Trash2 size={14} />
               Delete
-            </Button>
+            </DropdownMenuItem>
           )}
 
           {onClose && (
-            <Button
-              variant="secondary"
-              onClick={() => {
-                onClose()
-                setIsOpen(false)
-              }}
-            >
+            <DropdownMenuItem onClick={onClose}>
               <X size={14} />
               Close
-            </Button>
+            </DropdownMenuItem>
           )}
-        </div>
-      )}
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       {/* Confirmation Dialog */}
       <Modal isOpen={showConfirm} onClose={() => setShowConfirm(false)} title="Confirm Delete">

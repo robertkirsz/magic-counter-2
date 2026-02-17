@@ -1,6 +1,9 @@
 import { HeartIcon, UserIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 
+import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { useGames } from '../hooks/useGames'
 import { cn } from '../utils/cn'
 import { Button } from './Button'
@@ -123,15 +126,15 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
         </Button>
 
         <div className="relative">
-          <input
+          <Input
             type="number"
             min="1"
             max="999"
             value={startingLife}
-            onChange={e => handleLifeChange(parseInt(e.target.value))}
-            className="form-input-number hide-number-arrows pr-5"
+            onChange={e => handleLifeChange(Number.parseInt(e.target.value, 10) || 0)}
+            className="hide-number-arrows w-24 pr-8 text-center"
           />
-          <span className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
+          <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 transform">
             <HeartIcon className="w-4 h-4 text-slate-400" />
           </span>
         </div>
@@ -143,26 +146,16 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
 
       <div className="flex flex-col gap-2">
         {/* Section 3: Commander Game */}
-        <label className="flex gap-2 items-center cursor-pointer">
-          <input
-            type="checkbox"
-            checked={commanders}
-            onChange={() => setCommanders(!commanders)}
-            className="form-checkbox"
-          />
-          <span className="text-slate-200">Commander</span>
-        </label>
+        <Label className="flex cursor-pointer items-center gap-2 text-slate-200">
+          <Checkbox checked={commanders} onCheckedChange={checked => setCommanders(checked === true)} />
+          Commander
+        </Label>
 
         {/* Section 4: Tracking Type */}
-        <label className="flex gap-2 items-center cursor-pointer">
-          <input
-            type="checkbox"
-            checked={turnTracking}
-            onChange={() => setTurnTracking(!turnTracking)}
-            className="form-checkbox"
-          />
-          <span className="text-slate-200">Turn tracking</span>
-        </label>
+        <Label className="flex cursor-pointer items-center gap-2 text-slate-200">
+          <Checkbox checked={turnTracking} onCheckedChange={checked => setTurnTracking(checked === true)} />
+          Turn tracking
+        </Label>
       </div>
 
       {/* Action Buttons */}

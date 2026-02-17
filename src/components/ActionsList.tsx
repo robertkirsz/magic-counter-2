@@ -6,6 +6,7 @@ import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
+import { Button } from './Button'
 import { FadeMask } from './FadeMask'
 import { ThreeDotMenu } from './ThreeDotMenu'
 
@@ -311,12 +312,13 @@ interface CollapsibleSectionProps {
 
 const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({ isCollapsed, onToggle, header, children }) => (
   <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
-    <button
+    <Button
+      variant="ghost"
       onClick={onToggle}
-      className="w-full px-4 py-3 bg-gradient-to-r from-blue-900/20 to-indigo-900/20 hover:from-blue-900/30 hover:to-indigo-900/30 transition-colors border-b border-gray-700"
+      className="h-auto w-full rounded-none border-b border-gray-700 bg-gradient-to-r from-blue-900/20 to-indigo-900/20 px-4 py-3 hover:from-blue-900/30 hover:to-indigo-900/30"
     >
       {header}
-    </button>
+    </Button>
     {!isCollapsed && <div className="p-4 space-y-3">{children}</div>}
   </div>
 )
@@ -334,8 +336,8 @@ const RoundHeader: React.FC<RoundHeaderProps> = ({ roundNumber, summary, isColla
         <span className="text-blue-300 font-semibold text-sm">{roundNumber}</span>
       </div>
       <div className="text-left">
-        <h3 className="font-semiboldtext-gray-100">Round {roundNumber}</h3>
-        <p className="text-xstext-gray-400 mt-0.5">{summary}</p>
+        <h3 className="font-semibold text-gray-100">Round {roundNumber}</h3>
+        <p className="mt-0.5 text-xs text-gray-400">{summary}</p>
       </div>
     </div>
     {isCollapsed ? <ChevronRight size={16} /> : <ChevronDown size={16} />}

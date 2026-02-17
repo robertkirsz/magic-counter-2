@@ -1,6 +1,8 @@
 import { BookImageIcon } from 'lucide-react'
 import React, { useMemo, useState } from 'react'
 
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
 import { useDecks } from '../hooks/useDecks'
 import { cn } from '../utils/cn'
 import { ControlsSection } from './ControlsSection'
@@ -125,17 +127,15 @@ export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick, ...props }) =
       {/* User Filter Checkbox */}
       {userId && (
         <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
+          <Checkbox
             id="show-only-user-decks"
             checked={showOnlyUserDecks}
-            onChange={e => setShowOnlyUserDecks(e.target.checked)}
-            className="form-checkbox"
+            onCheckedChange={checked => setShowOnlyUserDecks(checked === true)}
           />
 
-          <label htmlFor="show-only-user-decks" className="text-sm cursor-pointer">
+          <Label htmlFor="show-only-user-decks" className="cursor-pointer text-sm">
             Show only my decks
-          </label>
+          </Label>
         </div>
       )}
 

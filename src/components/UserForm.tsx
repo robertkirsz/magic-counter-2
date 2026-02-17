@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 
+import { Input } from '@/components/ui/input'
 import { useUsers } from '../hooks/useUsers'
 import { Button } from './Button'
 
@@ -47,7 +48,7 @@ export const UserForm: React.FC<UserFormProps> = ({ userId, onSave, onCancel }) 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       {/* Name Input */}
-      <input autoFocus value={name} placeholder="Name" onChange={e => setName(e.target.value)} className="form-input" />
+      <Input autoFocus value={name} placeholder="Name" onChange={e => setName(e.target.value)} />
 
       {/* Action Buttons */}
       <div className="flex gap-2 justify-end">

@@ -1,6 +1,9 @@
 import { Download, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from './Button'
+
 interface BeforeInstallPromptEvent extends Event {
   readonly platforms: string[]
   readonly userChoice: Promise<{
@@ -58,8 +61,8 @@ export default function PWAInstallPrompt() {
   if (!showInstallPrompt) return null
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-50 bg-slate-800 text-white rounded-lg shadow-lg p-4 border border-slate-700">
-      <div className="flex items-center justify-between">
+    <Card className="fixed bottom-4 left-4 right-4 z-50 border-slate-700 bg-slate-800 text-white shadow-lg">
+      <CardContent className="flex items-center justify-between p-4">
         <div className="flex items-center space-x-3">
           <Download className="w-5 h-5 text-blue-400" />
           <div>
@@ -68,17 +71,12 @@ export default function PWAInstallPrompt() {
           </div>
         </div>
         <div className="flex items-center space-x-2">
-          <button
-            onClick={handleInstallClick}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-          >
-            Install
-          </button>
-          <button onClick={handleDismiss} className="text-slate-400 hover:text-white transition-colors">
+          <Button onClick={handleInstallClick}>Install</Button>
+          <Button variant="ghost" onClick={handleDismiss} className="text-slate-400 hover:text-white">
             <X className="w-5 h-5" />
-          </button>
+          </Button>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   )
 }

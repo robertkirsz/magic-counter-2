@@ -2,9 +2,11 @@ import { Calendar, ChevronDown, ChevronRight, Clock, Trophy, Users } from 'lucid
 import { DateTime } from 'luxon'
 import React, { Suspense, useState } from 'react'
 
+import { Card, CardContent } from '@/components/ui/card'
 import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
 import { ActionsList } from './ActionsList'
+import { Button } from './Button'
 import { Deck } from './Deck'
 import { Modal } from './Modal'
 import { ThreeDotMenu } from './ThreeDotMenu'
@@ -144,7 +146,8 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
   const stateDisplay = getGameStateDisplay(game)
 
   return (
-    <div className="flex flex-col gap-2 p-2 bg-slate-800 rounded-lg border border-slate-700 shadow-sm overflow-hidden">
+    <Card className="overflow-hidden border-slate-700 bg-slate-800 shadow-sm">
+      <CardContent className="flex flex-col gap-2 p-2">
       {/* Game Header */}
       <div className="flex flex-wrap gap-2 items-center justify-between">
         <div className="flex items-center gap-2">
@@ -193,12 +196,13 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
         </div>
 
         <div className="flex items-center gap-2">
-          <button
+          <Button
+            variant="ghost"
             onClick={() => setActionsListVisible(true)}
-            className="px-3 py-1 text-sm bg-blue-900/20 hover:bg-blue-900/30 text-blue-300 rounded border border-blue-700 transition-colors"
+            className="border border-blue-700 bg-blue-900/20 text-blue-300 hover:bg-blue-900/30"
           >
             Actions
-          </button>
+          </Button>
 
           <ThreeDotMenu onRemove={onRemove} asMenu={false} />
         </div>
@@ -231,13 +235,14 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
 
         {game.actions.length > 0 && (
           <div className="w-full">
-            <button
+            <Button
+              variant="secondary"
               onClick={() => setChartsExpanded(!chartsExpanded)}
-              className="flex items-center gap-2 w-full p-3 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors"
+              className="h-auto w-full justify-start p-3 text-slate-100"
             >
               {chartsExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
               <span className="font-medium text-slate-100">Charts & Analytics</span>
-            </button>
+            </Button>
 
             {chartsExpanded && (
               <Suspense
@@ -262,6 +267,7 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
       <Modal isOpen={actionsListVisible} title="Game Actions" onClose={() => setActionsListVisible(false)} fullSize>
         <ActionsList gameId={game.id} />
       </Modal>
-    </div>
+      </CardContent>
+    </Card>
   )
 }

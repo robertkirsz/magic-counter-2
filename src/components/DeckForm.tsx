@@ -1,6 +1,9 @@
 import { X } from 'lucide-react'
 import React, { useCallback, useEffect, useState } from 'react'
 
+import { Checkbox } from '@/components/ui/checkbox'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import type { ManaColor } from '../constants/mana'
 import { useDecks } from '../hooks/useDecks'
 import { Button } from './Button'
@@ -244,12 +247,11 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       {/* Name Input */}
-      <input
+      <Input
         type="text"
         value={name}
         onChange={e => setName(e.target.value)}
         placeholder="Deck name"
-        className="form-input"
         autoFocus
       />
 
@@ -258,12 +260,11 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
         <div className="flex flex-col gap-2 p-3 bg-gray-800 rounded-lg border border-gray-700">
           <div className="flex items-center gap-2">
             <div className="flex-1">
-              <input
+              <Input
                 type="url"
                 value={archidektUrl}
                 onChange={e => setArchidektUrl(e.target.value)}
                 placeholder="Paste Archidekt deck URL to get deck name"
-                className="form-input"
               />
             </div>
 
@@ -313,30 +314,24 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
 
       {/* Deck Options */}
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-gray-300">Deck Options</label>
+        <Label className="text-sm font-medium text-gray-300">Deck Options</Label>
 
         <div className="flex flex-col gap-2">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
+          <Label className="flex cursor-pointer items-center gap-2 text-sm">
+            <Checkbox
               checked={selectedOptions?.includes('infect') || false}
-              onChange={() => handleOptionToggle('infect')}
-              className="form-checkbox"
+              onCheckedChange={() => handleOptionToggle('infect')}
             />
+            Infect
+          </Label>
 
-            <span className="text-sm">Infect</span>
-          </label>
-
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
+          <Label className="flex cursor-pointer items-center gap-2 text-sm">
+            <Checkbox
               checked={selectedOptions?.includes('monarch') || false}
-              onChange={() => handleOptionToggle('monarch')}
-              className="form-checkbox"
+              onCheckedChange={() => handleOptionToggle('monarch')}
             />
-
-            <span className="text-sm">Monarch</span>
-          </label>
+            Monarch
+          </Label>
         </div>
       </div>
 
