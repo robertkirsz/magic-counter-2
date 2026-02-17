@@ -3,27 +3,31 @@ import useRipple from 'useripple'
 
 import { useLongPress } from '../hooks/useLongPress'
 import { cn } from '../utils/cn'
+import { buttonVariants } from './ui/button'
+
+import type { VariantProps } from 'class-variance-authority'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'default' | 'ghost'
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'className'> {
+  className?: string
   variant?: ButtonVariant
   small?: boolean
   round?: boolean
   loading?: boolean
-  vibrationDuration?: number // Optional vibration duration in milliseconds
+  vibrationDuration?: number
   onLongPress?: (event: React.MouseEvent | React.TouchEvent) => void
-  longPressDelay?: number // Duration in milliseconds to trigger long press (default: 500ms)
+  longPressDelay?: number
   shouldPreventDefaultOnLongPress?: boolean
   shouldStopPropagationOnLongPress?: boolean
 }
 
-const variantToClass: Record<ButtonVariant, string> = {
-  primary: 'btn primary',
-  secondary: 'btn secondary',
-  danger: 'btn danger',
-  default: 'btn default',
-  ghost: 'btn ghost'
+const variantMap: Record<ButtonVariant, VariantProps<typeof buttonVariants>['variant']> = {
+  primary: 'default',
+  secondary: 'secondary',
+  danger: 'destructive',
+  default: 'outline',
+  ghost: 'ghost'
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
@@ -37,7 +41,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       loading,
       children,
       onClick,
-      vibrationDuration = 50, // Default 50ms vibration
+      vibrationDuration = 50,
       onLongPress,
       longPressDelay = 500,
       shouldPreventDefaultOnLongPress = true,
@@ -52,7 +56,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
       addRipple(e)
 
-      // Add vibration for mobile devices
       if (navigator.vibrate && !disabled && !loading) {
         navigator.vibrate(vibrationDuration)
       }
@@ -61,21 +64,18 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     }
 
     const handleLongPress = (e: React.MouseEvent | React.TouchEvent) => {
-      // Add stronger vibration for long press
       if (navigator.vibrate && !disabled && !loading) {
-        navigator.vibrate([100, 50, 100]) // Pattern: vibrate-pause-vibrate
+        navigator.vibrate([100, 50, 100])
       }
 
       onLongPress?.(e)
     }
 
-    // Wrapper function to handle the type mismatch
     const handlePress = (e: React.MouseEvent | React.TouchEvent) => {
       if ('nativeEvent' in e && e.nativeEvent instanceof MouseEvent) {
         const mouseEvent = e as React.MouseEvent<HTMLButtonElement>
         addRipple(mouseEvent)
 
-        // Add vibration for mobile devices
         if (navigator.vibrate && !disabled && !loading) {
           navigator.vibrate(vibrationDuration)
         }
@@ -86,25 +86,35 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     const longPressHandlers = useLongPress({
       onLongPress: handleLongPress,
-      onPress: handlePress, // Always handle regular clicks
+      onPress: handlePress,
       delay: longPressDelay,
       shouldPreventDefault: shouldPreventDefaultOnLongPress,
       shouldStopPropagation: shouldStopPropagationOnLongPress
     })
 
-    // If onLongPress is provided, use long press handlers, otherwise use regular click
     const eventHandlers = onLongPress ? longPressHandlers : { onClick: handleClick }
+
+    const mappedVariant = variantMap[variant]
+    const sizeValue = round ? 'icon' : small ? 'sm' : 'default'
 
     return (
       <button
         ref={ref}
-        className={cn(variantToClass[variant], small && 'small', round && 'round', className)}
+        className={cn(
+          buttonVariants({ variant: mappedVariant, size: sizeValue }),
+          'cursor-pointer relative overflow-clip',
+          round && 'rounded-full aspect-square',
+          round && small && 'h-7 w-7',
+          className
+        )}
         disabled={isDisabled}
         {...eventHandlers}
         {...props}
       >
         {ripples}
-        {loading && <span className="animate-spin" />}
+        {loading && (
+          <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent align-middle" />
+        )}
         {children}
       </button>
     )

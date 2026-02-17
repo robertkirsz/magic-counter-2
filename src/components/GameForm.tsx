@@ -4,6 +4,9 @@ import React, { useEffect, useState } from 'react'
 import { useGames } from '../hooks/useGames'
 import { cn } from '../utils/cn'
 import { Button } from './Button'
+import { Checkbox } from './ui/checkbox'
+import { Input } from './ui/input'
+import { Label } from './ui/label'
 
 interface GameFormProps extends React.HTMLAttributes<HTMLFormElement> {
   gameId?: Game['id']
@@ -22,13 +25,11 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
   const [hasUserChangedLife, setHasUserChangedLife] = useState<boolean>(false)
   const [commanders, setCommanders] = useState<boolean>(game?.commanders ?? true)
 
-  // Auto-adjust starting life based on player count (only if user hasn't manually changed it)
   useEffect(() => {
     if (!hasUserChangedLife && numberOfPlayers >= 3) setStartingLife(40)
     else if (!hasUserChangedLife && numberOfPlayers < 3) setStartingLife(20)
   }, [numberOfPlayers, hasUserChangedLife])
 
-  // Notify parent component of player count changes
   useEffect(() => {
     onPlayerCountChange?.(numberOfPlayers)
   }, [numberOfPlayers, onPlayerCountChange])
@@ -38,12 +39,10 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
 
     if (numberOfPlayers === 0) return
 
-    // If editing existing game, preserve existing players and their assignments
     if (game) {
       let updatedPlayers: Player[]
 
       if (numberOfPlayers > game.players.length) {
-        // Add new players
         const newPlayers = Array.from({ length: numberOfPlayers - game.players.length }, (_, index) => ({
           id: `player-${game.players.length + index + 1}`,
           userId: null,
@@ -51,10 +50,8 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
         }))
         updatedPlayers = [...game.players, ...newPlayers]
       } else if (numberOfPlayers < game.players.length) {
-        // Remove players from the end
         updatedPlayers = game.players.slice(0, numberOfPlayers)
       } else {
-        // Same number of players, just update life
         updatedPlayers = game.players
       }
 
@@ -78,7 +75,6 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
         commanders
       })
 
-      // If turn tracking is disabled, automatically start the game
       if (!turnTracking) {
         updateGame(newGameId, { state: 'active' })
       }
@@ -102,7 +98,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
 
   return (
     <form className={cn('flex flex-col items-center gap-6', props.className)} onSubmit={handleSubmit}>
-      {/* Section 1: Number of Players */}
+      {/* Number of Players */}
       <div className="grid grid-cols-3 gap-2">
         {[1, 2, 3, 4, 5, 6].map(count => (
           <Button
@@ -116,23 +112,23 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
         ))}
       </div>
 
-      {/* Section 2: Starting Life */}
+      {/* Starting Life */}
       <div className="flex gap-2 items-center">
         <Button type="button" variant="secondary" onClick={() => handleLifeChange(startingLife - 5)}>
           -
         </Button>
 
         <div className="relative">
-          <input
+          <Input
             type="number"
             min="1"
             max="999"
             value={startingLife}
             onChange={e => handleLifeChange(parseInt(e.target.value))}
-            className="form-input-number hide-number-arrows pr-5"
+            className="hide-number-arrows pr-8"
           />
-          <span className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
-            <HeartIcon className="w-4 h-4 text-slate-400" />
+          <span className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none">
+            <HeartIcon className="w-4 h-4 text-muted-foreground" />
           </span>
         </div>
 
@@ -141,28 +137,30 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
         </Button>
       </div>
 
-      <div className="flex flex-col gap-2">
-        {/* Section 3: Commander Game */}
-        <label className="flex gap-2 items-center cursor-pointer">
-          <input
-            type="checkbox"
+      <div className="flex flex-col gap-3">
+        {/* Commander Game */}
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id="commanders"
             checked={commanders}
-            onChange={() => setCommanders(!commanders)}
-            className="form-checkbox"
+            onCheckedChange={checked => setCommanders(checked === true)}
           />
-          <span className="text-slate-200">Commander</span>
-        </label>
+          <Label htmlFor="commanders" className="cursor-pointer">
+            Commander
+          </Label>
+        </div>
 
-        {/* Section 4: Tracking Type */}
-        <label className="flex gap-2 items-center cursor-pointer">
-          <input
-            type="checkbox"
+        {/* Turn Tracking */}
+        <div className="flex items-center gap-2">
+          <Checkbox
+            id="turnTracking"
             checked={turnTracking}
-            onChange={() => setTurnTracking(!turnTracking)}
-            className="form-checkbox"
+            onCheckedChange={checked => setTurnTracking(checked === true)}
           />
-          <span className="text-slate-200">Turn tracking</span>
-        </label>
+          <Label htmlFor="turnTracking" className="cursor-pointer">
+            Turn tracking
+          </Label>
+        </div>
       </div>
 
       {/* Action Buttons */}

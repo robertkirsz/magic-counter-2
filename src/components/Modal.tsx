@@ -1,16 +1,16 @@
-import { X } from 'lucide-react'
-import React, { useEffect, useRef } from 'react'
+import React from 'react'
 
 import { cn } from '../utils/cn'
-import { Button } from './Button'
-import './Modal.css'
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog'
 
-interface ModalProps extends React.HTMLAttributes<HTMLDialogElement> {
+interface ModalProps {
   isOpen: boolean
   title?: string
   fullSize?: boolean
   hideCloseButton?: boolean
   onClose?: () => void
+  children?: React.ReactNode
+  className?: string
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -22,82 +22,34 @@ export const Modal: React.FC<ModalProps> = ({
   className = '',
   onClose
 }) => {
-  const dialogRef = useRef<HTMLDialogElement>(null)
-  const childrenRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const dialog = dialogRef.current
-
-    if (!dialog) return
-
-    if (isOpen) {
-      if (!dialog.open) dialog.showModal()
-      // Disable body scrolling when modal is open
-      document.body.style.overflow = 'hidden'
-    } else if (dialog.open) {
-      dialog.close()
-      // Re-enable body scrolling when modal closes
-      document.body.style.overflow = ''
-    }
-
-    // Cleanup function to ensure body scrolling is re-enabled
-    return () => {
-      document.body.style.overflow = ''
-    }
-  }, [isOpen])
-
-  useEffect(() => {
-    const dialog = dialogRef.current
-
-    if (!dialog) return
-
-    const handleClose = () => onClose?.()
-
-    const handleBackdropClick = (event: MouseEvent) => {
-      if (!childrenRef.current?.contains(event.target as Node)) onClose?.()
-    }
-
-    dialog.addEventListener('close', handleClose)
-    dialog.addEventListener('click', handleBackdropClick)
-
-    return () => {
-      dialog.removeEventListener('close', handleClose)
-      dialog.removeEventListener('click', handleBackdropClick)
-    }
-  }, [onClose])
-
   if (!isOpen) return null
 
   return (
-    <dialog
-      ref={dialogRef}
-      className={cn(
-        'Modal flex flex-col gap-2 p-3 rounded-lg shadow-lg bg-slate-900 border border-slate-700',
-        fullSize && 'fullSize',
-        className
-      )}
-    >
-      <div ref={childrenRef} className="contents">
-        <div className="flex-none flex justify-between items-center empty:hidden text-slate-100">
-          {title && <h3 className="text-xl font-semibold text-slate-100">{title}</h3>}
-
-          {onClose && !hideCloseButton && (
-            <Button
-              type="button"
-              aria-label="Close modal"
-              round
-              small
-              variant="secondary"
-              className="ml-auto"
-              onClick={onClose}
-            >
-              <X size={20} />
-            </Button>
-          )}
-        </div>
-
+    <Dialog open={isOpen} onOpenChange={open => !open && onClose?.()}>
+      <DialogContent
+        className={cn(
+          'max-h-[100dvh] overflow-y-auto',
+          fullSize && 'w-[calc(100%-20px)] h-[calc(100%-20px)] max-w-[1024px]',
+          hideCloseButton && '[&>button]:hidden',
+          className
+        )}
+        onInteractOutside={hideCloseButton ? e => e.preventDefault() : undefined}
+        onEscapeKeyDown={hideCloseButton ? e => e.preventDefault() : undefined}
+      >
+        {title && (
+          <DialogHeader>
+            <DialogTitle>{title}</DialogTitle>
+            <DialogDescription className="sr-only">{title}</DialogDescription>
+          </DialogHeader>
+        )}
+        {!title && (
+          <>
+            <DialogTitle className="sr-only">Dialog</DialogTitle>
+            <DialogDescription className="sr-only">Dialog content</DialogDescription>
+          </>
+        )}
         {children}
-      </div>
-    </dialog>
+      </DialogContent>
+    </Dialog>
   )
 }

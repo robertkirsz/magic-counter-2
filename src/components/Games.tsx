@@ -19,22 +19,19 @@ export const Games: React.FC<React.HTMLAttributes<HTMLDivElement>> = props => {
       setSortDirection(prev => (prev === 'asc' ? 'desc' : 'asc'))
     } else {
       setSortBy(newSortBy)
-      setSortDirection('desc') // Default to newest first for games
+      setSortDirection('desc')
     }
   }
 
-  // Filter games based on search query
   const filteredGames = useMemo(() => {
     if (!searchQuery.trim()) return games
 
     const query = searchQuery.toLowerCase().trim()
 
     return games.filter(game => {
-      // Search by game ID or state
       if (game.id.toLowerCase().includes(query)) return true
       if (game.state.toLowerCase().includes(query)) return true
 
-      // Search by player IDs
       const playerIds = game.players.map(player => player.id.toLowerCase()).join(' ')
       if (playerIds.includes(query)) return true
 
@@ -54,11 +51,9 @@ export const Games: React.FC<React.HTMLAttributes<HTMLDivElement>> = props => {
           comparison = a.createdAt.getTime() - b.createdAt.getTime()
           break
         case 'games':
-          // For games, this could be game duration or number of players
           comparison = a.players.length - b.players.length
           break
         case 'decks':
-          // For games, this could be number of decks used
           comparison = a.players.length - b.players.length
           break
         default:
@@ -76,7 +71,6 @@ export const Games: React.FC<React.HTMLAttributes<HTMLDivElement>> = props => {
 
   return (
     <div className={cn('flex flex-col gap-4 overflow-hidden', props.className)}>
-      {/* Controls Section */}
       <ControlsSection
         hasMultipleItems={hasMultipleGames}
         searchQuery={searchQuery}
@@ -100,13 +94,11 @@ export const Games: React.FC<React.HTMLAttributes<HTMLDivElement>> = props => {
 
       {!hasGames && (
         <div className="m-auto flex flex-col items-center justify-center text-center">
-          <SwordsIcon size={48} className="text-gray-400" />
-
-          <h3 className="text-xl font-semibold text-gray-300">
+          <SwordsIcon size={48} className="text-muted-foreground" />
+          <h3 className="text-xl font-semibold">
             {searchQuery.trim() ? 'No games match your search' : 'No games yet'}
           </h3>
-
-          <p className="text-gray-400">
+          <p className="text-muted-foreground">
             {searchQuery.trim() ? 'Try a different search' : 'Create your first game to get started'}
           </p>
         </div>

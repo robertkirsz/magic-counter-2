@@ -20,11 +20,11 @@ import {
 } from '../utils/generateRandom'
 import { generateId } from '../utils/idGenerator'
 import { Button } from './Button'
+import { Label } from './ui/label'
+import { Textarea } from './ui/textarea'
 
-// Types for data validation
 type DataType = 'users' | 'decks' | 'games'
 
-// Game creation types
 type GameType = 'untracked' | 'tracked' | 'random'
 type GameState = 'setup' | 'active' | 'finished'
 
@@ -35,7 +35,6 @@ interface DataSection {
   errorMessage: string
 }
 
-// Types for event logging
 interface LogEntry {
   id: string
   timestamp: Date
@@ -43,10 +42,8 @@ interface LogEntry {
   data: unknown
 }
 
-// Constants
 const MAX_LOG_ENTRIES = 20
 
-// Utility functions
 function tryParseJSON<T>(value: string): [T | null, string | null] {
   try {
     return [JSON.parse(value), null]
@@ -110,7 +107,6 @@ function reviveDates<T extends { createdAt: string | Date }>(arr: T[]): T[] {
   }))
 }
 
-// Data section component
 interface DataSectionProps {
   section: DataSection
   text: string
@@ -121,24 +117,23 @@ interface DataSectionProps {
 
 const DataSectionComponent: React.FC<DataSectionProps> = ({ section, text, setText, error, onSave }) => (
   <details open>
-    <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">{section.title}</summary>
+    <summary className="font-bold mb-2 cursor-pointer select-none">{section.title}</summary>
 
-    <textarea
-      className={cn('form-textarea resize-y mb-1 h-28', error && 'border-red-500')}
+    <Textarea
+      className={cn('resize-y mb-1 h-28 font-mono text-xs', error && 'border-destructive')}
       value={text}
       onChange={e => setText(e.target.value)}
       spellCheck={false}
     />
 
-    {error && <div className="text-red-600 text-xs mb-1">{error}</div>}
+    {error && <div className="text-destructive text-xs mb-1">{error}</div>}
 
-    <Button variant="secondary" onClick={onSave}>
+    <Button variant="secondary" small onClick={onSave}>
       Save
     </Button>
   </details>
 )
 
-// Quick action button component
 interface QuickActionButtonProps {
   icon: React.ReactNode
   onClick: () => void
@@ -147,7 +142,7 @@ interface QuickActionButtonProps {
 }
 
 const QuickActionButton: React.FC<QuickActionButtonProps> = ({ icon, onClick, disabled, title }) => (
-  <Button variant="secondary" onClick={onClick} disabled={disabled} className="flex items-center gap-1" title={title}>
+  <Button variant="secondary" small onClick={onClick} disabled={disabled} title={title}>
     {icon}
   </Button>
 )
@@ -158,11 +153,9 @@ export const DevToolsPanel: React.FC = () => {
   const { games, setGames } = useGames()
   const [open, setOpen] = useState(false)
 
-  // Game creation state
   const [gameType, setGameType] = useState<GameType>('random')
   const [gameState, setGameState] = useState<GameState>('active')
 
-  // Local state for editing
   const [texts, setTexts] = useState({
     users: JSON.stringify(users, null, 2),
     decks: JSON.stringify(decks, null, 2),
@@ -175,10 +168,8 @@ export const DevToolsPanel: React.FC = () => {
   })
   const [importError, setImportError] = useState<string | null>(null)
 
-  // Event logging state
   const [logs, setLogs] = useState<LogEntry[]>([])
 
-  // Helper function to create log entries
   const createLogEntry = (type: string, event: CustomEvent<unknown>): LogEntry => ({
     id: `${type.toLowerCase().replace(/\s+/g, '-')}-${Date.now()}`,
     timestamp: new Date(),
@@ -186,7 +177,6 @@ export const DevToolsPanel: React.FC = () => {
     data: event.detail
   })
 
-  // Event listeners for logging
   useGameStateChangeListener(event => {
     const logEntry = createLogEntry('Game State Change', event)
     queueMicrotask(() => {
@@ -215,7 +205,6 @@ export const DevToolsPanel: React.FC = () => {
     })
   })
 
-  // Keep textareas in sync with context changes
   useEffect(() => {
     setTexts(prev => ({ ...prev, users: JSON.stringify(users, null, 2) }))
   }, [users])
@@ -228,7 +217,6 @@ export const DevToolsPanel: React.FC = () => {
     setTexts(prev => ({ ...prev, games: JSON.stringify(games, null, 2) }))
   }, [games])
 
-  // Data sections configuration
   const dataSections: DataSection[] = [
     {
       type: 'users',
@@ -269,7 +257,6 @@ export const DevToolsPanel: React.FC = () => {
 
     setErrors(prev => ({ ...prev, [type]: null }))
 
-    // Apply the data based on type
     if (type === 'users') {
       setUsers(reviveDates(parsed as User[]))
     } else if (type === 'decks') {
@@ -337,7 +324,6 @@ export const DevToolsPanel: React.FC = () => {
         games: unknown[]
       }
 
-      // Validate imported data
       if (!Array.isArray(importedUsers) || !importedUsers.every(isValidUser)) {
         setImportError('Invalid users data in imported file')
         return
@@ -353,7 +339,6 @@ export const DevToolsPanel: React.FC = () => {
         return
       }
 
-      // Apply imported data
       setUsers(reviveDates(importedUsers))
       setDecks(reviveDates(importedDecks))
       setGames(
@@ -390,38 +375,28 @@ export const DevToolsPanel: React.FC = () => {
       let gameData: Omit<Game, 'id' | 'createdAt'> | Game
 
       if (gameState === 'finished') {
-        // For finished games, use generateFinishedGame which creates proper actions
         if (gameType === 'untracked') {
           gameData = generateFinishedGame({ users, decks, turnTracking: false })
         } else if (gameType === 'tracked') {
           gameData = generateFinishedGame({ users, decks, turnTracking: true })
         } else {
-          // For 'random' type, let the generator decide randomly
           gameData = generateFinishedGame({ users, decks })
         }
       } else {
-        // For setup and active games, use generateRandomGame
         if (gameType === 'untracked') {
-          // Force untracked game
           gameData = generateRandomGame({ users, decks, turnTracking: false })
         } else if (gameType === 'tracked') {
-          // Force tracked game
           gameData = generateRandomGame({ users, decks, turnTracking: true })
         } else {
-          // For 'random' type, let the generator decide randomly
           gameData = generateRandomGame({ users, decks })
         }
 
-        // Set the game state
         gameData.state = gameState
       }
 
-      // Use setGames directly to preserve the state we want to set
       if ('id' in gameData) {
-        // gameData is already a complete Game (from generateFinishedGame)
         setGames(prev => [...prev, gameData as Game])
       } else {
-        // gameData is Omit<Game, 'id' | 'createdAt'> (from generateRandomGame)
         setGames(prev => [
           ...prev,
           {
@@ -445,93 +420,52 @@ export const DevToolsPanel: React.FC = () => {
   return (
     <div className="fixed z-100 gap-2 bottom-2 right-2 flex flex-col items-end">
       {open && (
-        <div className="flex flex-col gap-2 bg-slate-900 border border-slate-700 font-mono rounded-lg p-4 shadow-lg max-h-[400px] max-w-[100%] overflow-y-auto text-xs">
-          {/* Quick Actions Section */}
+        <div className="flex flex-col gap-2 bg-card border font-mono rounded-lg p-4 shadow-lg max-h-[400px] max-w-[100%] overflow-y-auto text-xs">
+          {/* Quick Actions */}
           <details open>
-            <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">Quick Actions</summary>
+            <summary className="font-bold mb-2 cursor-pointer select-none">Quick Actions</summary>
 
             <div className="flex flex-wrap gap-2 mb-3">
               <QuickActionButton icon={<UserPlus size={14} />} onClick={handleAddRandomUser} title="Add Random User" />
               <QuickActionButton icon={<BookOpen size={14} />} onClick={handleAddRandomDeck} title="Add Random Deck" />
             </div>
 
-            {/* Game Creation Controls */}
             <div className="mb-3">
               <div className="mb-2">
-                <label className="text-xs text-slate-300 mb-1 block">Game Type:</label>
+                <Label className="text-xs mb-1 block">Game Type:</Label>
                 <div className="flex gap-2">
-                  <label className="flex items-center gap-1 text-xs">
-                    <input
-                      type="radio"
-                      name="gameType"
-                      value="untracked"
-                      checked={gameType === 'untracked'}
-                      onChange={e => setGameType(e.target.value as GameType)}
-                      className="mr-1"
-                    />
-                    Untracked
-                  </label>
-                  <label className="flex items-center gap-1 text-xs">
-                    <input
-                      type="radio"
-                      name="gameType"
-                      value="tracked"
-                      checked={gameType === 'tracked'}
-                      onChange={e => setGameType(e.target.value as GameType)}
-                      className="mr-1"
-                    />
-                    Tracked
-                  </label>
-                  <label className="flex items-center gap-1 text-xs">
-                    <input
-                      type="radio"
-                      name="gameType"
-                      value="random"
-                      checked={gameType === 'random'}
-                      onChange={e => setGameType(e.target.value as GameType)}
-                      className="mr-1"
-                    />
-                    Random
-                  </label>
+                  {(['untracked', 'tracked', 'random'] as GameType[]).map(type => (
+                    <label key={type} className="flex items-center gap-1 text-xs">
+                      <input
+                        type="radio"
+                        name="gameType"
+                        value={type}
+                        checked={gameType === type}
+                        onChange={e => setGameType(e.target.value as GameType)}
+                        className="mr-1"
+                      />
+                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                    </label>
+                  ))}
                 </div>
               </div>
 
               <div className="mb-2">
-                <label className="text-xs text-slate-300 mb-1 block">Game State:</label>
+                <Label className="text-xs mb-1 block">Game State:</Label>
                 <div className="flex gap-2">
-                  <label className="flex items-center gap-1 text-xs">
-                    <input
-                      type="radio"
-                      name="gameState"
-                      value="setup"
-                      checked={gameState === 'setup'}
-                      onChange={e => setGameState(e.target.value as GameState)}
-                      className="mr-1"
-                    />
-                    Setup
-                  </label>
-                  <label className="flex items-center gap-1 text-xs">
-                    <input
-                      type="radio"
-                      name="gameState"
-                      value="active"
-                      checked={gameState === 'active'}
-                      onChange={e => setGameState(e.target.value as GameState)}
-                      className="mr-1"
-                    />
-                    Active
-                  </label>
-                  <label className="flex items-center gap-1 text-xs">
-                    <input
-                      type="radio"
-                      name="gameState"
-                      value="finished"
-                      checked={gameState === 'finished'}
-                      onChange={e => setGameState(e.target.value as GameState)}
-                      className="mr-1"
-                    />
-                    Finished
-                  </label>
+                  {(['setup', 'active', 'finished'] as GameState[]).map(state => (
+                    <label key={state} className="flex items-center gap-1 text-xs">
+                      <input
+                        type="radio"
+                        name="gameState"
+                        value={state}
+                        checked={gameState === state}
+                        onChange={e => setGameState(e.target.value as GameState)}
+                        className="mr-1"
+                      />
+                      {state.charAt(0).toUpperCase() + state.slice(1)}
+                    </label>
+                  ))}
                 </div>
               </div>
 
@@ -539,54 +473,54 @@ export const DevToolsPanel: React.FC = () => {
             </div>
           </details>
 
-          {/* Import/Export Section */}
+          {/* Import/Export */}
           <details open>
-            <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">Import/Export</summary>
+            <summary className="font-bold mb-2 cursor-pointer select-none">Import/Export</summary>
 
             <div className="flex gap-2 mb-3">
-              <Button variant="secondary" onClick={handleExport}>
+              <Button variant="secondary" small onClick={handleExport}>
                 Export
               </Button>
 
-              <label className="btn primary">
+              <label className={cn('inline-flex items-center justify-center gap-2 rounded-md text-xs font-medium cursor-pointer h-8 px-3 bg-primary text-primary-foreground shadow hover:bg-primary/90')}>
                 Import
                 <input type="file" accept=".json" onChange={handleImport} className="hidden" />
               </label>
 
-              <Button variant="danger" onClick={handleClearData}>
+              <Button variant="danger" small onClick={handleClearData}>
                 Delete
               </Button>
             </div>
 
-            {importError && <div className="text-red-600 text-xs mb-2">{importError}</div>}
+            {importError && <div className="text-destructive text-xs mb-2">{importError}</div>}
           </details>
 
-          {/* Event Logger Section */}
+          {/* Event Logger */}
           <details open>
-            <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">Event Logger</summary>
+            <summary className="font-bold mb-2 cursor-pointer select-none">Event Logger</summary>
 
             <div className="flex gap-2 mb-3">
-              <Button variant="secondary" onClick={handleClearLogs}>
+              <Button variant="secondary" small onClick={handleClearLogs}>
                 Clear Logs
               </Button>
 
-              <span className="text-xs text-slate-400 flex items-center">
+              <span className="text-xs text-muted-foreground flex items-center">
                 {logs.length}/{MAX_LOG_ENTRIES} events
               </span>
             </div>
 
-            <div className="space-y-2 max-h-48 overflow-y-auto bg-slate-800 rounded p-2">
+            <div className="space-y-2 max-h-48 overflow-y-auto bg-secondary rounded p-2">
               {logs.length === 0 ? (
-                <p className="text-slate-400 text-xs">No events logged yet...</p>
+                <p className="text-muted-foreground text-xs">No events logged yet...</p>
               ) : (
                 logs.map(log => (
-                  <div key={log.id} className="text-xs border-l-2 border-blue-500 pl-2">
+                  <div key={log.id} className="text-xs border-l-2 border-primary pl-2">
                     <div className="flex justify-between">
-                      <span className="font-semibold text-slate-200">{log.type}</span>
-                      <span className="text-slate-400">{log.timestamp.toLocaleTimeString()}</span>
+                      <span className="font-semibold">{log.type}</span>
+                      <span className="text-muted-foreground">{log.timestamp.toLocaleTimeString()}</span>
                     </div>
 
-                    <pre className="text-slate-300 mt-1 text-xs overflow-x-auto whitespace-pre-wrap">
+                    <pre className="mt-1 text-xs overflow-x-auto whitespace-pre-wrap text-muted-foreground">
                       {JSON.stringify(log.data, null, 2)}
                     </pre>
                   </div>
@@ -612,7 +546,7 @@ export const DevToolsPanel: React.FC = () => {
       <Button
         variant="primary"
         round
-        className={cn('bg-green-500 transition-all duration-200', open && 'rotate-12')}
+        className={cn('bg-green-500 hover:bg-green-600 transition-all duration-200', open && 'rotate-12')}
         onClick={() => setOpen(o => !o)}
       >
         <Wrench size={20} />

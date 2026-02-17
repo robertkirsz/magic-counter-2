@@ -7,6 +7,8 @@ import { ControlsSection } from './ControlsSection'
 import type { SortOption } from './ControlsSection'
 import { Deck } from './Deck'
 import { FadeMask } from './FadeMask'
+import { Checkbox } from './ui/checkbox'
+import { Label } from './ui/label'
 
 interface DecksProps extends React.HTMLAttributes<HTMLDivElement> {
   userId?: string
@@ -29,11 +31,9 @@ export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick, ...props }) =
     }
   }
 
-  // Filter decks based on search query and user filter
   const filteredDecks = useMemo(() => {
     let filtered = decks
 
-    // Filter by user if checkbox is checked and userId is provided
     if (showOnlyUserDecks && userId) {
       filtered = filtered.filter(deck => deck.createdBy === userId)
     }
@@ -43,10 +43,8 @@ export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick, ...props }) =
     const query = searchQuery.toLowerCase().trim()
 
     return filtered.filter(deck => {
-      // Search by name
       if (deck.name.toLowerCase().includes(query)) return true
 
-      // Search by colors
       const colorNames = {
         W: 'white',
         U: 'blue',
@@ -60,7 +58,6 @@ export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick, ...props }) =
 
       if (deckColors.includes(query)) return true
 
-      // Search by commanders
       if (deck.commanders) {
         const commanderNames = deck.commanders.map(c => c.name.toLowerCase()).join(' ')
 
@@ -110,7 +107,6 @@ export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick, ...props }) =
 
   return (
     <div className={cn('flex flex-col gap-4 overflow-hidden', props.className)}>
-      {/* Controls Section */}
       <ControlsSection
         hasMultipleItems={hasMultipleDecks}
         searchQuery={searchQuery}
@@ -122,27 +118,21 @@ export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick, ...props }) =
         sortOptions={['name', 'date', 'colors', 'creator']}
       />
 
-      {/* User Filter Checkbox */}
       {userId && (
         <div className="flex items-center gap-2">
-          <input
-            type="checkbox"
+          <Checkbox
             id="show-only-user-decks"
             checked={showOnlyUserDecks}
-            onChange={e => setShowOnlyUserDecks(e.target.checked)}
-            className="form-checkbox"
+            onCheckedChange={checked => setShowOnlyUserDecks(checked === true)}
           />
-
-          <label htmlFor="show-only-user-decks" className="text-sm cursor-pointer">
+          <Label htmlFor="show-only-user-decks" className="text-sm cursor-pointer">
             Show only my decks
-          </label>
+          </Label>
         </div>
       )}
 
-      {/* Decks List */}
       {hasDecks && (
         <FadeMask>
-          {/* TODO: make number of columns depend on container's width */}
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">
             {sortedDecks.map(deck => (
               <Deck
@@ -159,13 +149,11 @@ export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick, ...props }) =
 
       {!hasDecks && (
         <div className="m-auto flex flex-col items-center justify-center text-center">
-          <BookImageIcon size={48} className="text-slate-400" />
-
-          <h3 className="text-xl font-semibold text-slate-300">
+          <BookImageIcon size={48} className="text-muted-foreground" />
+          <h3 className="text-xl font-semibold">
             {searchQuery.trim() || showOnlyUserDecks ? 'No decks match your criteria' : 'No decks yet'}
           </h3>
-
-          <p className="text-slate-400">
+          <p className="text-muted-foreground">
             {searchQuery.trim() || showOnlyUserDecks
               ? 'Try adjusting your search or filters'
               : 'Add a deck to get started!'}

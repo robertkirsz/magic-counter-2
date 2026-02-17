@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
 import { cn } from '../utils/cn'
+import { Badge } from './ui/badge'
 
 interface GameStatusProps {
   gameId: string
@@ -32,7 +33,6 @@ export default function GameStatus({ gameId }: GameStatusProps) {
       let gameEndTime: DateTime | null = null
       let finished = false
 
-      // Find the last TurnChangeAction with to=null (game end)
       for (let i = turnActions.length - 1; i >= 0; i--) {
         if (turnActions[i].to === null) {
           gameEndTime = DateTime.fromJSDate(turnActions[i].createdAt)
@@ -68,20 +68,21 @@ export default function GameStatus({ gameId }: GameStatusProps) {
   const currentRound = getCurrentRound(gameId)
 
   return (
-    <div
+    <Badge
+      variant={isFinished ? 'default' : 'secondary'}
       className={cn(
-        'px-2 py-1 rounded-lg shadow-lg border flex items-center gap-2 pointer-events-none',
-        isFinished ? 'bg-green-800/90 text-white border-green-600' : 'bg-slate-800/90 text-white border-slate-700'
+        'pointer-events-none gap-2',
+        isFinished && 'bg-green-700 hover:bg-green-700'
       )}
     >
       <span className="font-mono text-sm font-medium">{currentRound}</span>
 
       {elapsedTime && (
         <>
-          <Clock size={14} className={cn(isFinished ? 'text-green-400' : 'text-blue-400')} />
+          <Clock size={14} className={cn(isFinished ? 'text-green-300' : 'text-primary')} />
           <span className="font-mono text-sm font-medium">{elapsedTime}</span>
         </>
       )}
-    </div>
+    </Badge>
   )
 }

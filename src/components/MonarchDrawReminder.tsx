@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useGames } from '../hooks/useGames'
 import { useTurnChangeListener } from '../utils/eventDispatcher'
 import { getCurrentMonarch } from '../utils/gameUtils'
+import { Card } from './ui/card'
 
 interface MonarchDrawReminderProps {
   gameId: string
@@ -17,7 +18,6 @@ export const MonarchDrawReminder: React.FC<MonarchDrawReminderProps> = ({ gameId
   useTurnChangeListener(
     event => {
       if (event.detail.gameId === gameId && event.detail.fromPlayerId === activePlayerId) {
-        // Player is passing their turn, check if they are the monarch
         const game = games.find(g => g.id === gameId)
 
         if (game) {
@@ -37,7 +37,7 @@ export const MonarchDrawReminder: React.FC<MonarchDrawReminderProps> = ({ gameId
     if (showReminder) {
       const timer = setTimeout(() => {
         setShowReminder(false)
-      }, 3000) // Hide after 3 seconds
+      }, 3000)
 
       return () => clearTimeout(timer)
     }
@@ -47,7 +47,7 @@ export const MonarchDrawReminder: React.FC<MonarchDrawReminderProps> = ({ gameId
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-1000 pointer-events-none">
-      <div className="bg-yellow-600 text-white px-6 py-4 rounded-lg shadow-lg pointer-events-auto animate-pulse">
+      <Card className="bg-yellow-600 text-white px-6 py-4 shadow-lg pointer-events-auto animate-pulse border-yellow-500">
         <div className="flex items-center gap-2">
           <span className="text-2xl">👑</span>
           <div>
@@ -55,7 +55,7 @@ export const MonarchDrawReminder: React.FC<MonarchDrawReminderProps> = ({ gameId
             <div className="text-sm">Draw a card at the beginning of your end step!</div>
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   )
 }

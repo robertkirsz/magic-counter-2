@@ -29,14 +29,12 @@ export const Users: React.FC<React.HTMLAttributes<HTMLDivElement>> = props => {
     }
   }
 
-  // Filter users based on search query
   const filteredUsers = useMemo(() => {
     if (!searchQuery.trim()) return users
 
     const query = searchQuery.toLowerCase().trim()
 
     return users.filter(user => {
-      // Search by name
       if (user.name.toLowerCase().includes(query)) return true
       return false
     })
@@ -54,11 +52,9 @@ export const Users: React.FC<React.HTMLAttributes<HTMLDivElement>> = props => {
           comparison = a.createdAt.getTime() - b.createdAt.getTime()
           break
         case 'games':
-          // For now, we'll sort by name as a fallback since we don't have games data here
           comparison = a.name.localeCompare(b.name)
           break
         case 'decks':
-          // For now, we'll sort by name as a fallback since we don't have decks data here
           comparison = a.name.localeCompare(b.name)
           break
         default:
@@ -76,7 +72,6 @@ export const Users: React.FC<React.HTMLAttributes<HTMLDivElement>> = props => {
 
   return (
     <div className={cn('flex flex-col gap-4 overflow-hidden', props.className)}>
-      {/* Controls Section */}
       <ControlsSection
         hasMultipleItems={hasMultipleUsers}
         searchQuery={searchQuery}
@@ -88,7 +83,6 @@ export const Users: React.FC<React.HTMLAttributes<HTMLDivElement>> = props => {
         sortOptions={['name', 'date', 'games', 'decks']}
       />
 
-      {/* Users List */}
       {hasUsers && (
         <FadeMask>
           <div className="flex flex-col gap-2">
@@ -107,24 +101,20 @@ export const Users: React.FC<React.HTMLAttributes<HTMLDivElement>> = props => {
 
       {!hasUsers && (
         <div className="m-auto flex flex-col items-center justify-center text-center">
-          <UsersIcon size={48} className="text-slate-400" />
-
-          <h3 className="text-xl font-semibold text-slate-300">
+          <UsersIcon size={48} className="text-muted-foreground" />
+          <h3 className="text-xl font-semibold">
             {searchQuery.trim() ? 'No users match your search' : 'No users yet'}
           </h3>
-
-          <p className="text-slate-400">
+          <p className="text-muted-foreground">
             {searchQuery.trim() ? 'Try a different search' : 'Add someone to play with!'}
           </p>
         </div>
       )}
 
-      {/* Create User Modal */}
       <Modal isOpen={!!editingId} title="Edit User" onClose={() => setEditingId(undefined)}>
         <UserForm userId={editingId} onSave={() => setEditingId(undefined)} onCancel={() => setEditingId(undefined)} />
       </Modal>
 
-      {/* Add Deck Modal */}
       <Modal isOpen={!!selectedUser} title="Add Deck" onClose={() => setSelectedUser(null)}>
         <DeckForm userId={selectedUser} onSave={() => setSelectedUser(null)} onCancel={() => setSelectedUser(null)} />
       </Modal>

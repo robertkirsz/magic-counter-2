@@ -66,7 +66,6 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
   const [draggedPlayerId, setDraggedPlayerId] = useState<string | null>(null)
   const [tableMode, setTableMode] = useState(getInitialTableMode())
 
-  // Save table mode to localStorage when it changes
   useEffect(() => {
     localStorage.setItem(TABLE_MODE_KEY, tableMode.toString())
   }, [tableMode])
@@ -95,42 +94,35 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
   }
 
   const handleFinish = () => {
-    // Add confirmation dialog
     const confirmed = window.confirm('Are you sure you want to finish this game? This action cannot be undone.')
 
     if (!confirmed) return
 
-    // Show the game end modal first
     setShowGameEndModal(true)
   }
 
   const handleCancel = () => {
-    // Add confirmation dialog
     const confirmed = window.confirm(
       'Are you sure you want to cancel this game? This will permanently delete the game and cannot be undone.'
     )
 
     if (!confirmed) return
 
-    // Dispatch game delete event before removing the game
     EventDispatcher.dispatchGameDelete(game.id)
     removeGame(game.id)
   }
 
-  // Drag end handler for reordering players
   const handleDragEnd = (event: DragEndEvent) => {
     setDraggedPlayerId(null)
     const { active, over } = event
 
     if (!over || active.id === over.id) return
 
-    // Handle player reordering
     const oldIndex = game.players.findIndex(p => p.id === active.id)
     const newIndex = game.players.findIndex(p => p.id === over.data.current?.playerId)
 
     if (oldIndex === -1 || newIndex === -1) return
 
-    // Switch places instead of moving
     const newPlayers = [...game.players]
     const temp = newPlayers[oldIndex]
     newPlayers[oldIndex] = newPlayers[newIndex]
@@ -143,15 +135,12 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
     setDraggedPlayerId(String(event.active.id))
   }
 
-  // Pass turn to next player (append TurnChangeAction)
   const handlePassTurn = (playerId?: string) => {
-    // Don't allow passing turn when there's a temporary active player
     if (hasEffectiveActivePlayer(gameId)) return
 
     const activePlayer = getEffectiveActivePlayer()
 
     if (playerId) {
-      // If a specific player is provided, pass turn to them
       const newAction: TurnChangeAction = {
         id: generateId(),
         createdAt: DateTime.now().toJSDate(),
@@ -165,10 +154,6 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
       return
     }
 
-    // TODO: Perhaps use just active players? Need to figure out what to do after a player gets eliminated.
-    // const activePlayers = getActivePlayers(game)
-
-    // Find the current active player in the active players list
     const currentIndex = game.players.findIndex(p => p.id === activePlayer)
     const nextIndex = (currentIndex + 1) % game.players.length
     const nextPlayer = game.players[nextIndex] || game.players[0]
@@ -195,7 +180,6 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
 
   const canUndo = game.actions.length > 0
 
-  // Use previewPlayerCount for layout, but actual game.players for data
   const displayPlayerCount = showSettings ? previewPlayerCount : game.players.length
   const displayPlayers = game.players.slice(0, displayPlayerCount)
 
@@ -211,7 +195,6 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
         tableMode && 'tableMode'
       )}
     >
-      {/* Player Sections */}
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -234,7 +217,7 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
 
         <DragOverlay>
           {draggedPlayerId && (
-            <div className="rounded-lg px-3 py-2 bg-slate-700/90 text-slate-100 border border-slate-600 shadow-lg min-w-[160px]">
+            <div className="rounded-lg px-3 py-2 bg-secondary text-secondary-foreground border shadow-lg min-w-[160px]">
               <div className="text-sm font-semibold">
                 {(() => {
                   const player = game.players.find(p => p.id === draggedPlayerId)
@@ -252,14 +235,12 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
         <GameStatus gameId={gameId} />
 
         <div className="flex items-center gap-4">
-          {/* Undo Last Action Button */}
           {game.state === 'active' && canUndo && (
             <Button round variant="secondary" onClick={handleUndoLastAction} title="Undo last action">
               <Undo size={32} />
             </Button>
           )}
 
-          {/* Pass Turn Button */}
           {game.state === 'active' && game.turnTracking && activePlayer && (
             <Button
               round
@@ -276,10 +257,8 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
           )}
         </div>
 
-        {/* Monarch Draw Reminder */}
         {game.state === 'active' && <MonarchDrawReminder gameId={gameId} />}
 
-        {/* Start and Cancel Buttons */}
         <div className="flex gap-2 min-h-[30px]">
           {game.state === 'setup' && (
             <>
@@ -288,11 +267,7 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
                 <span>START</span>
               </Button>
 
-              <Button
-                variant="secondary"
-                className="bg-red-600 hover:bg-red-500 text-white border-red-500"
-                onClick={handleCancel}
-              >
+              <Button variant="danger" onClick={handleCancel}>
                 CANCEL
               </Button>
             </>
@@ -300,14 +275,12 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
         </div>
       </div>
 
-      {/* Menu Button */}
       <div className="absolute top-0 right-0 p-2 z-20">
         <Button round onClick={() => setShowIntroModal(true)} title="Menu">
           <Settings size={24} />
         </Button>
       </div>
 
-      {/* IntroScreen Modal */}
       <Modal isOpen={showIntroModal} onClose={() => setShowIntroModal(false)} title="Menu">
         <IntroScreen
           gameId={gameId}

@@ -7,6 +7,7 @@ import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
 import { generateId } from '../utils/idGenerator'
 import { Button } from './Button'
+import { Label } from './ui/label'
 import { Modal } from './Modal'
 
 interface GameEndModalProps {
@@ -32,7 +33,6 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onCl
   const [selectedWinner, setSelectedWinner] = useState<string>('')
   const [selectedWinCondition, setSelectedWinCondition] = useState<string>('')
 
-  // Reset state when modal opens/closes
   React.useEffect(() => {
     if (!isOpen) {
       setSelectedWinner('')
@@ -45,7 +45,6 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onCl
   const handleSave = () => {
     if (!selectedWinner || !selectedWinCondition) return
 
-    // Add a TurnChangeAction with to=null to mark game end
     const endAction: TurnChangeAction = {
       id: generateId(),
       createdAt: DateTime.now().toJSDate(),
@@ -53,14 +52,12 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onCl
       from: getEffectiveActivePlayer(gameId)
     }
 
-    // Update the game with winner, win condition, and finished state
     updateGame(gameId, {
       winner: selectedWinner,
       winCondition: selectedWinCondition as WinCondition,
       state: 'finished'
     })
 
-    // Dispatch the end action
     dispatchAction(gameId, endAction)
 
     onClose()
@@ -78,7 +75,7 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onCl
     <Modal isOpen={isOpen} onClose={handleCancel}>
       {/* Winner Selection */}
       <div>
-        <label className="block text-sm font-medium text-white mb-2">Winner</label>
+        <Label className="block mb-2">Winner</Label>
         <div className="grid grid-cols-2 gap-2">
           {validPlayers.map(player => {
             const user = users.find(u => u.id === player.userId)
@@ -89,8 +86,8 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onCl
                 className={cn(
                   'p-3 rounded-lg border-2 transition-colors',
                   selectedWinner === player.userId
-                    ? 'border-blue-500 bg-blue-500/20 text-white'
-                    : 'border-gray-600 text-gray-300 hover:border-gray-500 hover:text-white'
+                    ? 'border-primary bg-primary/20 text-foreground'
+                    : 'border-border text-muted-foreground hover:border-muted-foreground hover:text-foreground'
                 )}
               >
                 <div className="flex items-center justify-between">
@@ -105,7 +102,7 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onCl
 
       {/* Win Condition Selection */}
       <div>
-        <label className="block text-sm font-medium text-white mb-2">Win Condition</label>
+        <Label className="block mb-2">Win Condition</Label>
         <div className="grid grid-cols-2 gap-2">
           {WIN_CONDITIONS.map(condition => (
             <button
@@ -114,8 +111,8 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onCl
               className={cn(
                 'p-3 rounded-lg border-2 transition-colors',
                 selectedWinCondition === condition.value
-                  ? 'border-green-500 bg-green-500/20 text-white'
-                  : 'border-gray-600 text-gray-300 hover:border-gray-500 hover:text-white'
+                  ? 'border-green-500 bg-green-500/20 text-foreground'
+                  : 'border-border text-muted-foreground hover:border-muted-foreground hover:text-foreground'
               )}
             >
               <div className="flex items-center justify-between">
@@ -132,7 +129,7 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onCl
         <Button variant="secondary" onClick={handleCancel} className="flex-1">
           Cancel
         </Button>
-        <Button onClick={handleSave} disabled={!selectedWinner || !selectedWinCondition} className="flex-1">
+        <Button variant="primary" onClick={handleSave} disabled={!selectedWinner || !selectedWinCondition} className="flex-1">
           Save
         </Button>
       </div>

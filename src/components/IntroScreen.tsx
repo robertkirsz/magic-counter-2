@@ -19,6 +19,7 @@ import { EventDispatcher } from '../utils/eventDispatcher'
 import { isFullscreen, toggleFullscreen } from '../utils/fullscreen'
 import { Button } from './Button'
 import { Modal } from './Modal'
+import { Separator } from './ui/separator'
 
 const DeckForm = React.lazy(() => import('./DeckForm').then(m => ({ default: m.DeckForm })))
 const Decks = React.lazy(() => import('./Decks').then(m => ({ default: m.Decks })))
@@ -28,7 +29,6 @@ const UserForm = React.lazy(() => import('./UserForm').then(m => ({ default: m.U
 const Users = React.lazy(() => import('./Users').then(m => ({ default: m.Users })))
 
 interface IntroScreenProps {
-  // In-game settings (only provided when opened from Board)
   gameId?: string
   tableMode?: boolean
   dragEnabled?: boolean
@@ -40,7 +40,6 @@ interface IntroScreenProps {
   onFinishGame?: () => void
   onNewGame?: () => void
   onClose?: () => void
-  // Auto-open GameForm (for the "New Game" flow from Board)
   autoShowGameForm?: boolean
   onGameFormShown?: () => void
 }
@@ -73,7 +72,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
   const hasGames = games.length > 0
   const isInGame = !!gameId
 
-  // Auto-open GameForm when requested (e.g. after removing a game from Board)
   useEffect(() => {
     if (autoShowGameForm) {
       setShowGameForm(true)
@@ -81,7 +79,6 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
     }
   }, [autoShowGameForm, onGameFormShown])
 
-  // Fullscreen change listener (only needed during a game)
   useEffect(() => {
     if (!isInGame) return
 
@@ -157,7 +154,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         {/* In-game settings */}
         {isInGame && (
           <>
-            <div className="col-span-2 border-t border-slate-600 my-1"></div>
+            <Separator className="col-span-2 my-1" />
 
             <Button variant="secondary" onClick={() => onShowGameSettings?.()}>
               <Settings size={20} />
@@ -171,7 +168,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
             <Button
               variant="secondary"
-              className={cn(dragEnabled && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500')}
+              className={cn(dragEnabled && 'bg-primary text-primary-foreground hover:bg-primary/90')}
               onClick={() => {
                 onDragEnabledChange?.(!dragEnabled)
                 onClose?.()
@@ -183,7 +180,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
             <Button
               variant="secondary"
-              className={cn(tableMode && 'bg-green-600/90 hover:bg-green-500 text-white border-green-500')}
+              className={cn(tableMode && 'bg-green-600 text-white hover:bg-green-500')}
               onClick={() => {
                 onTableModeChange?.(!tableMode)
                 onClose?.()
@@ -207,7 +204,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
             {gameState === 'active' && (
               <>
-                <div className="col-span-2 border-t border-slate-600 my-1"></div>
+                <Separator className="col-span-2 my-1" />
                 <Button variant="danger" className="col-span-2" onClick={() => onFinishGame?.()}>
                   <Trophy size={20} />
                   Finish Game
@@ -220,25 +217,24 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
       {/* GameForm Modal */}
       <Modal isOpen={showGameForm} onClose={() => setShowGameForm(false)} title="Game Form">
-        <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+        <Suspense fallback={<div className="p-3 text-muted-foreground">Loading...</div>}>
           <GameForm onSave={() => setShowGameForm(false)} onCancel={() => setShowGameForm(false)} />
         </Suspense>
       </Modal>
 
       {/* Games Modal */}
       <Modal fullSize isOpen={showGames} onClose={() => setShowGames(false)} title="Games">
-        <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+        <Suspense fallback={<div className="p-3 text-muted-foreground">Loading...</div>}>
           <Games className="flex-1" />
         </Suspense>
       </Modal>
 
       {/* Users Modal */}
       <Modal fullSize isOpen={showUsers} onClose={() => setShowUsers(false)} title="Users">
-        <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+        <Suspense fallback={<div className="p-3 text-muted-foreground">Loading...</div>}>
           <Users className="flex-1" />
         </Suspense>
 
-        {/* Floating Add User Button */}
         <Button
           variant="primary"
           round
@@ -248,9 +244,8 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           <Plus size={36} />
         </Button>
 
-        {/* User Form Modal */}
         <Modal isOpen={userFormVisible} title="Add User" onClose={() => setUserFormVisible(false)}>
-          <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+          <Suspense fallback={<div className="p-3 text-muted-foreground">Loading...</div>}>
             <UserForm onSave={() => setUserFormVisible(false)} onCancel={() => setUserFormVisible(false)} />
           </Suspense>
         </Modal>
@@ -258,11 +253,10 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
       {/* Decks Modal */}
       <Modal fullSize isOpen={showDecks} onClose={() => setShowDecks(false)} title="Decks">
-        <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+        <Suspense fallback={<div className="p-3 text-muted-foreground">Loading...</div>}>
           <Decks className="flex-1" />
         </Suspense>
 
-        {/* Floating Add Deck Button */}
         <Button
           variant="primary"
           round
@@ -272,9 +266,8 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           <Plus size={36} />
         </Button>
 
-        {/* Deck Form Modal */}
         <Modal isOpen={deckFormVisible} title="Add Deck" onClose={() => setDeckFormVisible(false)}>
-          <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+          <Suspense fallback={<div className="p-3 text-muted-foreground">Loading...</div>}>
             <DeckForm onSave={() => setDeckFormVisible(false)} onCancel={() => setDeckFormVisible(false)} />
           </Suspense>
         </Modal>

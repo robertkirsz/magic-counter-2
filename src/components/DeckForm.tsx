@@ -4,6 +4,9 @@ import React, { useCallback, useEffect, useState } from 'react'
 import type { ManaColor } from '../constants/mana'
 import { useDecks } from '../hooks/useDecks'
 import { Button } from './Button'
+import { Checkbox } from './ui/checkbox'
+import { Input } from './ui/input'
+import { Label } from './ui/label'
 import { Commander } from './Commander'
 import { CommanderSearch } from './CommanderSearch'
 import { ManaPicker } from './ManaPicker'
@@ -35,7 +38,6 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
         if (uniqueColors.length > 0) setSelectedColors(uniqueColors)
         else setSelectedColors(['C'])
       } else {
-        // Only clear colors if we're in create mode or if the deck has no existing colors
         if (!deck || deck.colors.length === 0) setSelectedColors([])
       }
     },
@@ -103,7 +105,6 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
 
     setCommanders(commanders => [...commanders, commander])
 
-    // Auto-set deck name to commander name if deck name is empty
     if (!name.trim()) {
       setName(commander.name)
     }
@@ -113,7 +114,6 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
     const removedCommander = commanders[index]
     setCommanders(commanders => commanders.filter((_, i) => i !== index))
 
-    // Clear deck name if it matches the removed commander's name
     if (name.trim() === removedCommander.name) {
       setName('')
     }
@@ -139,7 +139,6 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
 
   const extractDeckDataFromArchidekt = async (url: string): Promise<ArchidektDeckData | null> => {
     try {
-      // Extract deck ID from Archidekt URL
       const archidektRegex = /archidekt\.com\/decks\/(\d+)/i
       const match = url.match(archidektRegex)
 
@@ -147,22 +146,14 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
 
       const deckId = match[1]
 
-      // Try multiple approaches to handle CORS
       const approaches = [
-        // Approach 1: Direct API call (may fail due to CORS)
-        // () => fetch(`https://archidekt.com/api/decks/${deckId}/`),
-        // Approach 2: CORS proxy
-        // () => fetch(`https://cors-anywhere.herokuapp.com/https://archidekt.com/api/decks/${deckId}/`),
-        // Approach 3: Alternative CORS proxy
         () => fetch(`https://api.allorigins.win/raw?url=https://archidekt.com/api/decks/${deckId}/`),
-        // Approach 4: Another CORS proxy
         () => fetch(`https://corsproxy.io/?https://archidekt.com/api/decks/${deckId}/`)
       ]
 
       let response: Response | null = null
       let lastError: Error | null = null
 
-      // Try each approach until one works
       for (const approach of approaches) {
         try {
           response = await approach()
@@ -192,13 +183,10 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
 
     try {
       const deckData = await extractDeckDataFromArchidekt(archidektUrl.trim())
-      console.log('🚀 ~ handleFetchDeckData ~ deckData:', deckData)
 
       if (deckData) {
-        // Set deck name
         setName(deckData.name)
 
-        // TODO: Get Commander insted of first card
         const commanderCards = [deckData.cards[0]]
 
         const archidektCommanders: ScryfallCard[] = commanderCards.map(cardData => ({
@@ -207,23 +195,19 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
           type: `${[...cardData.card.oracleCard.superTypes, ...cardData.card.oracleCard.types].join(' ')} — ${cardData.card.oracleCard.subTypes.join(' ')}`,
           colors: cardData.card.oracleCard.colorIdentity as ManaColor[],
           image: cardData.card.scryfallImageHash
-            ? // ? `https://cards.scryfall.io/art_crop/front/${cardData.card.scryfallImageHash.slice(0, 2)}/${cardData.card.scryfallImageHash.slice(2, 4)}/${cardData.card.scryfallImageHash}.jpg`
-              `https://cards.scryfall.io/art_crop/front/${cardData.card.uid[0]}/${cardData.card.uid[1]}/${cardData.card.uid}.jpg?${cardData.card.scryfallImageHash}`
+            ? `https://cards.scryfall.io/art_crop/front/${cardData.card.uid[0]}/${cardData.card.uid[1]}/${cardData.card.uid}.jpg?${cardData.card.scryfallImageHash}`
             : null
         }))
 
         setCommanders(archidektCommanders)
-        setArchidektUrl('') // Clear the URL after successful fetch
+        setArchidektUrl('')
       } else {
-        // Fallback: try to extract deck name from URL path
         const urlPath = new URL(archidektUrl.trim()).pathname
         const pathParts = urlPath.split('/').filter(part => part.length > 0)
 
         if (pathParts.length >= 3 && pathParts[0] === 'decks') {
-          // URL format: /decks/123456/deck-name
           const potentialName = pathParts[2]
           if (potentialName && potentialName !== pathParts[1]) {
-            // Convert URL-friendly name to readable name
             const readableName = potentialName.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
 
             setName(readableName)
@@ -243,27 +227,24 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-      {/* Name Input */}
-      <input
+      <Input
         type="text"
         value={name}
         onChange={e => setName(e.target.value)}
         placeholder="Deck name"
-        className="form-input"
         autoFocus
       />
 
-      {/* Archidekt URL Import - Only show when creating new deck */}
+      {/* Archidekt URL Import */}
       {!deck && (
-        <div className="flex flex-col gap-2 p-3 bg-gray-800 rounded-lg border border-gray-700">
+        <div className="flex flex-col gap-2 p-3 rounded-lg border bg-card">
           <div className="flex items-center gap-2">
             <div className="flex-1">
-              <input
+              <Input
                 type="url"
                 value={archidektUrl}
                 onChange={e => setArchidektUrl(e.target.value)}
                 placeholder="Paste Archidekt deck URL to get deck name"
-                className="form-input"
               />
             </div>
 
@@ -277,7 +258,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
             </Button>
           </div>
 
-          <p className="text-xs text-gray-400">
+          <p className="text-xs text-muted-foreground">
             Paste an Archidekt deck URL to automatically fetch deck name and commanders. If API fails, we'll try to
             extract the name from the URL.
           </p>
@@ -313,30 +294,30 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
 
       {/* Deck Options */}
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-medium text-gray-300">Deck Options</label>
+        <Label className="text-sm font-medium text-muted-foreground">Deck Options</Label>
 
         <div className="flex flex-col gap-2">
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="infect"
               checked={selectedOptions?.includes('infect') || false}
-              onChange={() => handleOptionToggle('infect')}
-              className="form-checkbox"
+              onCheckedChange={() => handleOptionToggle('infect')}
             />
+            <Label htmlFor="infect" className="text-sm cursor-pointer">
+              Infect
+            </Label>
+          </div>
 
-            <span className="text-sm">Infect</span>
-          </label>
-
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="monarch"
               checked={selectedOptions?.includes('monarch') || false}
-              onChange={() => handleOptionToggle('monarch')}
-              className="form-checkbox"
+              onCheckedChange={() => handleOptionToggle('monarch')}
             />
-
-            <span className="text-sm">Monarch</span>
-          </label>
+            <Label htmlFor="monarch" className="text-sm cursor-pointer">
+              Monarch
+            </Label>
+          </div>
         </div>
       </div>
 
