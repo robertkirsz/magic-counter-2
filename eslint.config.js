@@ -9,7 +9,7 @@ import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
   [
-    globalIgnores(['dist']),
+    globalIgnores(['dist', 'src/components/ui']),
     js.configs.recommended,
     ...tseslint.configs.recommended,
     reactHooks.configs.flat.recommended,
