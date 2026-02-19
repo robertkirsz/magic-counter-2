@@ -91,10 +91,3 @@ export const getCurrentMonarch = (game: Game): User['id'] | null => {
 
   return lastMonarchAction.to || null
 }
-
-/**
- * Get the effective active player ID (either the real active player or temporary active player)
- */
-export const getEffectiveActivePlayerId = (game: Game): User['id'] | null => {
-  return game.effectiveActivePlayerId || game.activePlayerId
-}

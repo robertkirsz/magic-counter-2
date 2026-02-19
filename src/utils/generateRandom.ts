@@ -7,7 +7,7 @@ import { generateId } from './idGenerator'
 // Deck archetypes for random deck generation
 const DECK_ARCHETYPES = ['Aggro', 'Control', 'Combo', 'Midrange', 'Tempo', 'Ramp', 'Burn', 'Tribal']
 
-export interface GenerateRandomUserOptions {
+interface GenerateRandomUserOptions {
   name?: string
   randomNumber?: number
 }
@@ -25,7 +25,7 @@ export const generateRandomUser = (options: GenerateRandomUserOptions = {}): Omi
   return { name: `${firstName} ${lastName}${number}` }
 }
 
-export interface GenerateRandomDeckOptions {
+interface GenerateRandomDeckOptions {
   name?: string
   randomNumber?: number
   colors?: ManaColor[]
@@ -71,7 +71,7 @@ export const generateRandomDeck = (options: GenerateRandomDeckOptions = {}): Omi
   }
 }
 
-export interface GenerateRandomGameOptions {
+interface GenerateRandomGameOptions {
   playerCount?: number
   turnTracking?: boolean
   startingLife?: number
@@ -133,7 +133,7 @@ export const generateRandomGame = (options: GenerateRandomGameOptions = {}): Omi
   }
 }
 
-export interface GenerateFinishedGameOptions {
+interface GenerateFinishedGameOptions {
   playerCount?: number
   turnTracking?: boolean
   startingLife?: number

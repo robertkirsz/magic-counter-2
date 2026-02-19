@@ -16,14 +16,6 @@ interface ScryfallError {
   details: string
 }
 
-export interface CommanderData {
-  id: string
-  name: string
-  type: string
-  colors: ManaColor[]
-  image: string
-}
-
 // Rate limiting: 50-100ms delay between requests (10 requests per second)
 let lastRequestTime = 0
 const MIN_REQUEST_DELAY = 100 // 100ms delay
@@ -89,41 +81,5 @@ export const fetchCommanderSuggestions = async (query: string): Promise<Scryfall
   } catch (error) {
     console.error('Error fetching commander suggestions:', error)
     return []
-  }
-}
-
-export const fetchCardByName = async (cardName: string): Promise<ScryfallCard | null> => {
-  try {
-    const card = (await makeScryfallRequest(
-      `https://api.scryfall.com/cards/named?fuzzy=${encodeURIComponent(cardName)}`
-    )) as ScryfallCardRaw
-
-    return {
-      id: card.id,
-      name: card.name,
-      type: card.type_line,
-      colors: card.color_identity || card.colors || [],
-      image: card.card_faces?.[0]?.image_uris?.art_crop || card.image_uris?.art_crop || null
-    }
-  } catch (error) {
-    console.error('Error fetching card by name:', error)
-    return null
-  }
-}
-
-export const fetchRandomCommander = async (): Promise<ScryfallCard | null> => {
-  try {
-    const card = (await makeScryfallRequest('https://api.scryfall.com/cards/random?q=is:commander')) as ScryfallCardRaw
-
-    return {
-      id: card.id,
-      name: card.name,
-      type: card.type_line,
-      colors: card.color_identity || card.colors || [],
-      image: card.card_faces?.[0]?.image_uris?.art_crop || card.image_uris?.art_crop || null
-    }
-  } catch (error) {
-    console.error('Error fetching random commander:', error)
-    return null
   }
 }

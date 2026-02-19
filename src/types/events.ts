@@ -86,15 +86,6 @@ export interface GameDeleteEvent {
 }
 
 // ============================================================================
-// Union Type for All Events
-// ============================================================================
-
-/**
- * Union type of all possible application events
- */
-export type AppEvent = GameStateChangeEvent | TurnChangeEvent | LifeChangeEvent | MonarchChangeEvent | GameDeleteEvent
-
-// ============================================================================
 // Event Type Guards
 // ============================================================================
 

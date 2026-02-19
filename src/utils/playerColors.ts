@@ -1,4 +1,4 @@
-export const PLAYER_COLORS = [
+const PLAYER_COLORS = [
   '#3B82F6', // blue
   '#EF4444', // red
   '#10B981', // emerald

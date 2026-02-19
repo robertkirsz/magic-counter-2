@@ -4,7 +4,7 @@ import useRipple from 'useripple'
 import { useLongPress } from '../hooks/useLongPress'
 import { cn } from '../utils/cn'
 
-export type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'default' | 'ghost'
+type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'default' | 'ghost'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant
