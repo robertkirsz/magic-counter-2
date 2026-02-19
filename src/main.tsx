@@ -1,6 +1,4 @@
-// import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-
 import { registerSW } from 'virtual:pwa-register'
 
 import App from './App.tsx'
@@ -16,15 +14,13 @@ registerSW({
   onNeedRefresh() {
     console.info('[PWA] Update available (refresh to load)')
   },
-  onRegisterError(error: unknown) {
+  onRegisterError(error) {
     console.warn('[PWA] Service worker registration error', error)
   }
 })
 
 createRoot(document.getElementById('root')!).render(
-  // <StrictMode>
   <ErrorBoundary>
     <App />
   </ErrorBoundary>
-  // </StrictMode>
 )
