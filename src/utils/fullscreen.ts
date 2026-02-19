@@ -76,10 +76,3 @@ export const toggleFullscreen = async (): Promise<void> => {
 export const isFullscreen = (): boolean => {
   return !!document.fullscreenElement
 }
-
-/**
- * Gets the fullscreen element (if any)
- */
-export const getFullscreenElement = (): Element | null => {
-  return document.fullscreenElement
-}
