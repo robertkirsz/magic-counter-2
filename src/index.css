@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@plugin 'daisyui';
 
 /* Mobile PWA Fullscreen Styles */
 html {
@@ -50,7 +51,6 @@ dialog {
 .PlayerSection.eliminated .PlayerSectionContent {
   filter: grayscale(100%);
 }
-
 
 /* Hide number input arrows for Chrome, Safari, Edge, Opera */
 .hide-number-arrows::-webkit-outer-spin-button,
