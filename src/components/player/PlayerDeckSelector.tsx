@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { Button } from '../Button'
 import { Deck } from '../Deck'
 import { ThreeDotMenu } from '../ThreeDotMenu'
 
@@ -11,9 +10,9 @@ const PlayerDeckSelector: React.FC<{
 }> = ({ player, onShowDeckSelect, onRemoveDeck }) => {
   if (!player.deckId)
     return (
-      <Button variant="primary" onClick={onShowDeckSelect}>
+      <button className={'btn btn-primary'} onClick={onShowDeckSelect}>
         Deck
-      </Button>
+      </button>
     )
 
   return (

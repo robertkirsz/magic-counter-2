@@ -6,7 +6,6 @@ import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
 import { generateId } from '../utils/idGenerator'
-import { Button } from './Button'
 import { Modal } from './Modal'
 
 interface GameEndModalProps {
@@ -129,12 +128,16 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onCl
 
       {/* Action Buttons */}
       <div className="flex gap-3 pt-4">
-        <Button variant="secondary" onClick={handleCancel} className="flex-1">
+        <button className="btn btn flex-1" onClick={handleCancel}>
           Cancel
-        </Button>
-        <Button onClick={handleSave} disabled={!selectedWinner || !selectedWinCondition} className="flex-1">
+        </button>
+        <button
+          className={'btn flex-1'}
+          onClick={handleSave}
+          disabled={!selectedWinner || !selectedWinCondition}
+        >
           Save
-        </Button>
+        </button>
       </div>
     </Modal>
   )

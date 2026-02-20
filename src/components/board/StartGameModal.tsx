@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 
 import { useGames } from '../../hooks/useGames'
 import { useUsers } from '../../hooks/useUsers'
-import { Button } from '../Button'
 
 interface StartGameModalProps {
   gameId: string
@@ -39,19 +38,19 @@ const StartGameModal: React.FC<StartGameModalProps> = ({ gameId, onChoosePlayer 
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-2 gap-2">
         {players.map(player => (
-          <Button
+          <button
             key={player.id}
-            variant={selectedPlayerId === player.id ? 'primary' : 'secondary'}
+            className={selectedPlayerId === player.id ? 'btn btn-primary' : 'btn btn'}
             onClick={() => setSelectedPlayerId(player.id)}
           >
             {getPlayerName(player.id)}
-          </Button>
+          </button>
         ))}
       </div>
 
-      <Button variant="primary" disabled={!selectedPlayerId} onClick={handleConfirm}>
+      <button className={'btn btn-primary'} disabled={!selectedPlayerId} onClick={handleConfirm}>
         Confirm
-      </Button>
+      </button>
     </div>
   )
 }

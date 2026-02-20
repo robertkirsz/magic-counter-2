@@ -3,7 +3,6 @@ import React, { useCallback, useEffect, useState } from 'react'
 
 import type { ManaColor } from '../constants/mana'
 import { useDecks } from '../hooks/useDecks'
-import { Button } from './Button'
 import { Commander } from './Commander'
 import { CommanderSearch } from './CommanderSearch'
 import { ManaPicker } from './ManaPicker'
@@ -249,7 +248,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
         value={name}
         onChange={e => setName(e.target.value)}
         placeholder="Deck name"
-        className="form-input"
+        className="input input-bordered w-full"
         autoFocus
       />
 
@@ -263,18 +262,18 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
                 value={archidektUrl}
                 onChange={e => setArchidektUrl(e.target.value)}
                 placeholder="Paste Archidekt deck URL to get deck name"
-                className="form-input"
+                className="input input-bordered w-full"
               />
             </div>
 
-            <Button
+            <button
               type="button"
-              variant="secondary"
+              className={'btn btn'}
               onClick={handleFetchDeckData}
               disabled={!archidektUrl.trim() || isLoadingDeckName}
             >
               {isLoadingDeckName ? 'Loading...' : 'Get Deck Data'}
-            </Button>
+            </button>
           </div>
 
           <p className="text-xs text-gray-400">
@@ -291,16 +290,13 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
             <div key={index} className="relative">
               <Commander key={index} commander={commander} />
 
-              <Button
+              <button
                 type="button"
-                variant="secondary"
-                round
-                small
-                className="absolute top-2 right-2"
+                className={'btn btn btn-circle btn-sm absolute top-2 right-2'}
                 onClick={() => handleRemoveCommander(index)}
               >
                 <X size={10} />
-              </Button>
+              </button>
             </div>
           ))}
         </div>
@@ -321,7 +317,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
               type="checkbox"
               checked={selectedOptions?.includes('infect') || false}
               onChange={() => handleOptionToggle('infect')}
-              className="form-checkbox"
+              className="checkbox"
             />
 
             <span className="text-sm">Infect</span>
@@ -332,7 +328,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
               type="checkbox"
               checked={selectedOptions?.includes('monarch') || false}
               onChange={() => handleOptionToggle('monarch')}
-              className="form-checkbox"
+              className="checkbox"
             />
 
             <span className="text-sm">Monarch</span>
@@ -342,13 +338,13 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
 
       {/* Action Buttons */}
       <div className="flex gap-2 justify-end">
-        <Button type="button" variant="secondary" onClick={handleCancel}>
+        <button type="button" className={'btn btn'} onClick={handleCancel}>
           Cancel
-        </Button>
+        </button>
 
-        <Button variant="primary" disabled={!name.trim() || selectedColors.length === 0}>
+        <button className={'btn btn-primary'} disabled={!name.trim() || selectedColors.length === 0}>
           Save
-        </Button>
+        </button>
       </div>
     </form>
   )

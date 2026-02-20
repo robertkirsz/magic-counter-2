@@ -57,7 +57,7 @@ export const CommanderSearch: React.FC<CommanderSearchProps> = ({ onChange }) =>
         onChange={e => setNewCommander(e.target.value)}
         onFocus={() => setShowSuggestions(true)}
         placeholder="Search for commanders..."
-        className="form-input"
+        className="input"
       />
 
       {/* Suggestions Dropdown */}

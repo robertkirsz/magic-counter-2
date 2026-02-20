@@ -4,7 +4,6 @@ import { GripVertical } from 'lucide-react'
 import React from 'react'
 
 import { cn } from '../utils/cn'
-import { Button } from './Button'
 import { PlayerSection } from './PlayerSection'
 
 interface SortablePlayerSectionProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -44,17 +43,15 @@ export function SortablePlayerSection({
       {...props}
     >
       {dragEnabled && (
-        <Button
+        <button
           ref={setActivatorNodeRef}
           {...listeners}
           {...attributes}
           type="button"
-          className="DragHandle"
-          round
-          variant="secondary"
+          className={'btn btn btn-circle DragHandle'}
         >
           <GripVertical />
-        </Button>
+        </button>
       )}
 
       <PlayerSection gameId={gameId} playerId={id} />

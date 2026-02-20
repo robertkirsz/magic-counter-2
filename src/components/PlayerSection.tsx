@@ -8,7 +8,6 @@ import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
 import { calculateLifeFromActions, getCurrentMonarch, isPlayerEliminated } from '../utils/gameUtils'
 import { generateId } from '../utils/idGenerator'
-import { Button } from './Button'
 import { CommanderDamage } from './CommanderDamage'
 import { DeckForm } from './DeckForm'
 import { Decks } from './Decks'
@@ -229,14 +228,12 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
               <Decks userId={player.userId || undefined} onDeckClick={handleDeckSelect} />
 
               {/* Floating Add Deck Button */}
-              <Button
-                variant="primary"
-                round
-                className="absolute bottom-3 right-3 shadow-lg z-10"
+              <button
+                className={'btn btn-primary btn-circle absolute bottom-3 right-3 shadow-lg z-10'}
                 onClick={() => setShowDeckForm(true)}
               >
                 <Plus size={36} />
-              </Button>
+              </button>
 
               {/* Deck Form Modal */}
               <Modal isOpen={showDeckForm} title="Add Deck" onClose={() => setShowDeckForm(false)}>

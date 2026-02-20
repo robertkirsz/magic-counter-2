@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { useUsers } from '../../hooks/useUsers'
-import { Button } from '../Button'
 import { Modal } from '../Modal'
 
 const UserSelectionModal: React.FC<{
@@ -21,9 +20,9 @@ const UserSelectionModal: React.FC<{
             {users
               .filter(user => !game.players.some(p => p.userId === user.id))
               .map(user => (
-                <Button key={user.id} variant="secondary" onClick={() => onSelect(user.id)}>
+                <button key={user.id} className={'btn btn'} onClick={() => onSelect(user.id)}>
                   {user.name}
-                </Button>
+                </button>
               ))}
           </div>
         ) : (
@@ -34,9 +33,9 @@ const UserSelectionModal: React.FC<{
           <p>All users are already assigned to players.</p>
         )}
 
-        <Button variant="primary" onClick={onCreateUser}>
+        <button className={'btn btn-primary'} onClick={onCreateUser}>
           Create New User
-        </Button>
+        </button>
       </div>
     </Modal>
   )

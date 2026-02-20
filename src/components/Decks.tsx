@@ -130,7 +130,7 @@ export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick, ...props }) =
             id="show-only-user-decks"
             checked={showOnlyUserDecks}
             onChange={e => setShowOnlyUserDecks(e.target.checked)}
-            className="form-checkbox"
+            className="checkbox"
           />
 
           <label htmlFor="show-only-user-decks" className="text-sm cursor-pointer">

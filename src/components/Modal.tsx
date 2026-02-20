@@ -2,7 +2,6 @@ import { X } from 'lucide-react'
 import React, { useEffect, useRef } from 'react'
 
 import { cn } from '../utils/cn'
-import { Button } from './Button'
 import './Modal.css'
 
 interface ModalProps extends React.HTMLAttributes<HTMLDialogElement> {
@@ -82,17 +81,14 @@ export const Modal: React.FC<ModalProps> = ({
           {title && <h3 className="text-xl font-semibold text-slate-100">{title}</h3>}
 
           {onClose && !hideCloseButton && (
-            <Button
+            <button
               type="button"
               aria-label="Close modal"
-              round
-              small
-              variant="secondary"
-              className="ml-auto"
+              className={'btn btn btn-circle btn-sm ml-auto'}
               onClick={onClose}
             >
               <X size={20} />
-            </Button>
+            </button>
           )}
         </div>
 

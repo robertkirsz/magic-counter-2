@@ -19,7 +19,6 @@ import {
   generateRandomUser
 } from '../utils/generateRandom'
 import { generateId } from '../utils/idGenerator'
-import { Button } from './Button'
 
 // Types for data validation
 type DataType = 'users' | 'decks' | 'games'
@@ -124,7 +123,7 @@ const DataSectionComponent: React.FC<DataSectionProps> = ({ section, text, setTe
     <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">{section.title}</summary>
 
     <textarea
-      className={cn('form-textarea resize-y mb-1 h-28', error && 'border-red-500')}
+      className={cn('textarea textarea-bordered w-full resize-y mb-1 h-28', error && 'border-red-500')}
       value={text}
       onChange={e => setText(e.target.value)}
       spellCheck={false}
@@ -132,9 +131,9 @@ const DataSectionComponent: React.FC<DataSectionProps> = ({ section, text, setTe
 
     {error && <div className="text-red-600 text-xs mb-1">{error}</div>}
 
-    <Button variant="secondary" onClick={onSave}>
+    <button className={'btn btn'} onClick={onSave}>
       Save
-    </Button>
+    </button>
   </details>
 )
 
@@ -147,9 +146,14 @@ interface QuickActionButtonProps {
 }
 
 const QuickActionButton: React.FC<QuickActionButtonProps> = ({ icon, onClick, disabled, title }) => (
-  <Button variant="secondary" onClick={onClick} disabled={disabled} className="flex items-center gap-1" title={title}>
+  <button
+    className={'btn btn flex items-center gap-1'}
+    onClick={onClick}
+    disabled={disabled}
+    title={title}
+  >
     {icon}
-  </Button>
+  </button>
 )
 
 export const DevToolsPanel: React.FC = () => {
@@ -544,18 +548,18 @@ export const DevToolsPanel: React.FC = () => {
             <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">Import/Export</summary>
 
             <div className="flex gap-2 mb-3">
-              <Button variant="secondary" onClick={handleExport}>
+              <button className={'btn btn'} onClick={handleExport}>
                 Export
-              </Button>
+              </button>
 
-              <label className="btn primary">
+              <label className="btn btn-primary">
                 Import
                 <input type="file" accept=".json" onChange={handleImport} className="hidden" />
               </label>
 
-              <Button variant="danger" onClick={handleClearData}>
+              <button className={'btn btn-error'} onClick={handleClearData}>
                 Delete
-              </Button>
+              </button>
             </div>
 
             {importError && <div className="text-red-600 text-xs mb-2">{importError}</div>}
@@ -566,9 +570,9 @@ export const DevToolsPanel: React.FC = () => {
             <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">Event Logger</summary>
 
             <div className="flex gap-2 mb-3">
-              <Button variant="secondary" onClick={handleClearLogs}>
+              <button className={'btn btn'} onClick={handleClearLogs}>
                 Clear Logs
-              </Button>
+              </button>
 
               <span className="text-xs text-slate-400 flex items-center">
                 {logs.length}/{MAX_LOG_ENTRIES} events
@@ -609,14 +613,12 @@ export const DevToolsPanel: React.FC = () => {
         </div>
       )}
 
-      <Button
-        variant="primary"
-        round
-        className={cn('bg-green-500 transition-all duration-200', open && 'rotate-12')}
+      <button
+        className={cn('btn btn-primary btn-circle bg-green-500 transition-all duration-200', open && 'rotate-12')}
         onClick={() => setOpen(o => !o)}
       >
         <Wrench size={20} />
-      </Button>
+      </button>
     </div>
   )
 }

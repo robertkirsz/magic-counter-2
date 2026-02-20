@@ -1,7 +1,6 @@
 import React from 'react'
 
 import pkg from '../../package.json'
-import { Button } from './Button'
 
 const APP_VERSION = pkg.version
 
@@ -57,15 +56,15 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren, ErrorBounda
             </details>
           )}
 
-          <Button variant="danger" onClick={this.handleReload}>
+          <button className={'btn btn-error'} onClick={this.handleReload}>
             Reload Page
-          </Button>
+          </button>
 
           <div className="flex flex-col gap-1 mt-2">
             {STORAGE_KEYS.map(({ key, label }) => (
-              <Button key={key} variant="secondary" onClick={() => this.handleClearKey(key)}>
+              <button key={key} className={'btn btn'} onClick={() => this.handleClearKey(key)}>
                 {label}
-              </Button>
+              </button>
             ))}
           </div>
 

@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 
 import { useDecks } from '../hooks/useDecks'
 import { useGames } from '../hooks/useGames'
-import { Button } from './Button'
 import { Deck } from './Deck'
 import { ThreeDotMenu } from './ThreeDotMenu'
 
@@ -79,9 +78,9 @@ export const User: React.FC<UserProps> = ({ user, onEdit, onRemove, onCreateDeck
         </div>
       )}
 
-      <Button variant="primary" onClick={onCreateDeck}>
+      <button className={'btn btn-primary'} onClick={onCreateDeck}>
         Create New Deck
-      </Button>
+      </button>
     </div>
   )
 }

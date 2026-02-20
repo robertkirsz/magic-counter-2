@@ -1,7 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import React, { useState } from 'react'
 
-import { Button } from '../components/Button'
 import { CommanderSearch } from '../components/CommanderSearch'
 import { ManaPicker } from '../components/ManaPicker'
 import type { ManaColor } from '../constants/mana'
@@ -87,7 +86,7 @@ const TextInputExample = () => {
         value={value}
         onChange={handleChange}
         placeholder="Enter player name..."
-        className={`form-input ${error ? 'border-red-500 focus:border-red-400 focus:ring-red-400' : ''}`}
+        className={`input input-bordered w-full ${error ? 'border-red-500 focus:border-red-400 focus:ring-red-400' : ''}`}
       />
       {error && <p className="text-sm text-red-400">{error}</p>}
     </div>
@@ -109,7 +108,7 @@ const NumberInputExample = () => {
         max="999"
         value={value}
         onChange={e => setValue(e.target.value)}
-        className="form-input-number hide-number-arrows"
+        className="input input-bordered w-full hide-number-arrows"
       />
     </div>
   )
@@ -130,7 +129,7 @@ const RangeInputExample = () => {
         max="100"
         value={value}
         onChange={e => setValue(Number(e.target.value))}
-        className="form-input-range"
+        className="range range-primary w-full"
       />
     </div>
   )
@@ -150,7 +149,7 @@ const TextareaExample = () => {
         onChange={e => setValue(e.target.value)}
         placeholder="Enter game notes, strategies, or memorable moments..."
         rows={4}
-        className="form-textarea"
+        className="textarea textarea-bordered w-full"
       />
     </div>
   )
@@ -166,7 +165,7 @@ const CheckboxExample = () => {
           type="checkbox"
           checked={checked}
           onChange={e => setChecked(e.target.checked)}
-          className="form-checkbox"
+          className="checkbox"
         />
         <span className="text-sm text-slate-200">Enable turn tracking</span>
       </label>
@@ -273,7 +272,7 @@ export const AllFormElements: Story = {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-200 mb-2">Normal Input</label>
-                  <input type="text" placeholder="Normal state..." className="form-input" />
+                  <input type="text" placeholder="Normal state..." className="input input-bordered w-full" />
                 </div>
 
                 <div>
@@ -281,7 +280,7 @@ export const AllFormElements: Story = {
                   <input
                     type="text"
                     placeholder="Click to focus..."
-                    className="form-input border-blue-400 ring-2 ring-blue-400"
+                    className="input input-bordered w-full border-blue-400 ring-2 ring-blue-400"
                     autoFocus
                   />
                 </div>
@@ -291,7 +290,7 @@ export const AllFormElements: Story = {
                   <input
                     type="text"
                     placeholder="Error state..."
-                    className="form-input border-red-500 focus:border-red-400 focus:ring-red-400"
+                    className="input input-bordered w-full border-red-500 focus:border-red-400 focus:ring-red-400"
                   />
                   <p className="text-sm text-red-400 mt-1">This field is required</p>
                 </div>
@@ -301,7 +300,7 @@ export const AllFormElements: Story = {
                   <input
                     type="text"
                     placeholder="Disabled state..."
-                    className="form-input opacity-50 cursor-not-allowed"
+                    className="input input-bordered w-full opacity-50 cursor-not-allowed"
                     disabled
                   />
                 </div>
@@ -313,7 +312,7 @@ export const AllFormElements: Story = {
                 <div>
                   <label className="block text-sm font-medium text-slate-200 mb-2">Loading Search</label>
                   <div className="relative">
-                    <input type="text" placeholder="Searching commanders..." className="form-input pr-10" disabled />
+                    <input type="text" placeholder="Searching commanders..." className="input input-bordered w-full pr-10" disabled />
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                       <div className="animate-spin inline-block w-4 h-4 border-2 border-slate-600 border-t-blue-600 rounded-full"></div>
                     </div>
@@ -330,7 +329,7 @@ export const AllFormElements: Story = {
                   <div className="space-y-2">
                     {['Turn Tracking', 'Commander Damage', 'Life History', 'Auto-save'].map(option => (
                       <label key={option} className="flex items-center gap-2 cursor-pointer">
-                        <input type="checkbox" className="form-checkbox" />
+                        <input type="checkbox" className="checkbox" />
                         <span className="text-sm text-slate-200">{option}</span>
                       </label>
                     ))}
@@ -355,7 +354,7 @@ export const AllFormElements: Story = {
                   <label htmlFor="player-name" className="block text-sm font-medium text-slate-200 mb-2">
                     Player Name
                   </label>
-                  <input id="player-name" type="text" placeholder="Enter player name..." className="form-input" />
+                  <input id="player-name" type="text" placeholder="Enter player name..." className="input input-bordered w-full" />
                 </div>
 
                 <div>
@@ -364,12 +363,12 @@ export const AllFormElements: Story = {
                 </div>
 
                 <div className="flex gap-2 justify-end">
-                  <Button variant="secondary" type="button">
+                  <button className={'btn btn'} type="button">
                     Cancel
-                  </Button>
-                  <Button variant="primary" type="submit">
+                  </button>
+                  <button className={'btn btn-primary'} type="submit">
                     Create Player
-                  </Button>
+                  </button>
                 </div>
               </form>
             </div>
@@ -389,7 +388,7 @@ export const AllFormElements: Story = {
                       min="1"
                       max="6"
                       defaultValue="4"
-                      className="form-input-number hide-number-arrows"
+                      className="input input-bordered w-full hide-number-arrows"
                     />
                   </div>
 
@@ -403,24 +402,24 @@ export const AllFormElements: Story = {
                       min="1"
                       max="999"
                       defaultValue="40"
-                      className="form-input-number hide-number-arrows"
+                      className="input input-bordered w-full hide-number-arrows"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" className="form-checkbox" defaultChecked />
+                    <input type="checkbox" className="checkbox" defaultChecked />
                     <span className="text-sm text-slate-200">Enable turn tracking</span>
                   </label>
 
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" className="form-checkbox" defaultChecked />
+                    <input type="checkbox" className="checkbox" defaultChecked />
                     <span className="text-sm text-slate-200">Track commander damage</span>
                   </label>
 
                   <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" className="form-checkbox" />
+                    <input type="checkbox" className="checkbox" />
                     <span className="text-sm text-slate-200">Auto-save game state</span>
                   </label>
                 </div>
@@ -433,17 +432,17 @@ export const AllFormElements: Story = {
                     id="game-notes"
                     placeholder="Optional notes about this game..."
                     rows={3}
-                    className="form-textarea"
+                    className="textarea textarea-bordered w-full"
                   />
                 </div>
 
                 <div className="flex gap-2 justify-end">
-                  <Button variant="secondary" type="button">
+                  <button className={'btn btn'} type="button">
                     Cancel
-                  </Button>
-                  <Button variant="primary" type="submit">
+                  </button>
+                  <button className={'btn btn-primary'} type="submit">
                     Start Game
-                  </Button>
+                  </button>
                 </div>
               </form>
             </div>
@@ -456,7 +455,7 @@ export const AllFormElements: Story = {
                   <label htmlFor="deck-name" className="block text-sm font-medium text-slate-200 mb-2">
                     Deck Name
                   </label>
-                  <input id="deck-name" type="text" placeholder="Enter deck name..." className="form-input" />
+                  <input id="deck-name" type="text" placeholder="Enter deck name..." className="input input-bordered w-full" />
                 </div>
 
                 <div>
@@ -470,12 +469,12 @@ export const AllFormElements: Story = {
                 </div>
 
                 <div className="flex gap-2 justify-end">
-                  <Button variant="secondary" type="button">
+                  <button className={'btn btn'} type="button">
                     Cancel
-                  </Button>
-                  <Button variant="primary" type="submit">
+                  </button>
+                  <button className={'btn btn-primary'} type="submit">
                     Create Deck
-                  </Button>
+                  </button>
                 </div>
               </form>
             </div>
@@ -503,7 +502,7 @@ export const AllFormElements: Story = {
                       id="accessible-input"
                       type="text"
                       placeholder="Type here..."
-                      className="form-input"
+                      className="input input-bordered w-full"
                       aria-describedby="input-help"
                     />
                     <p id="input-help" className="text-sm text-slate-400 mt-1">
@@ -520,7 +519,7 @@ export const AllFormElements: Story = {
                       type="number"
                       min="1"
                       max="999"
-                      className="form-input-number hide-number-arrows"
+                      className="input input-bordered w-full hide-number-arrows"
                       aria-label="Life total between 1 and 999"
                     />
                   </div>
@@ -537,7 +536,7 @@ export const AllFormElements: Story = {
                       </div>
                       {['Option 1', 'Option 2', 'Option 3'].map(option => (
                         <label key={option} className="flex items-center gap-2 cursor-pointer">
-                          <input type="checkbox" className="form-checkbox" />
+                          <input type="checkbox" className="checkbox" />
                           <span className="text-sm text-slate-200">{option}</span>
                         </label>
                       ))}
@@ -551,7 +550,7 @@ export const AllFormElements: Story = {
                       min="1"
                       max="100"
                       defaultValue="50"
-                      className="form-input-range"
+                      className="range range-primary w-full"
                       aria-label="Value between 1 and 100"
                     />
                   </div>
@@ -585,7 +584,7 @@ export const FormValidation: Story = {
                   id="valid-input"
                   type="text"
                   value="Valid value"
-                  className="form-input border-green-500 focus:border-green-400 focus:ring-green-400"
+                  className="input input-bordered w-full border-green-500 focus:border-green-400 focus:ring-green-400"
                 />
                 <p className="text-sm text-green-400 mt-1">✓ Input is valid</p>
               </div>
@@ -598,7 +597,7 @@ export const FormValidation: Story = {
                   id="invalid-input"
                   type="text"
                   value=""
-                  className="form-input border-red-500 focus:border-red-400 focus:ring-red-400"
+                  className="input input-bordered w-full border-red-500 focus:border-red-400 focus:ring-red-400"
                 />
                 <p className="text-sm text-red-400 mt-1">✗ This field is required</p>
               </div>
@@ -611,7 +610,7 @@ export const FormValidation: Story = {
                   id="warning-input"
                   type="text"
                   value="Short"
-                  className="form-input border-yellow-500 focus:border-yellow-400 focus:ring-yellow-400"
+                  className="input input-bordered w-full border-yellow-500 focus:border-yellow-400 focus:ring-yellow-400"
                 />
                 <p className="text-sm text-yellow-400 mt-1">⚠ Consider adding more detail</p>
               </div>

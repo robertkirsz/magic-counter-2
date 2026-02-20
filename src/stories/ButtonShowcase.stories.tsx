@@ -1,11 +1,49 @@
 import type { Meta, StoryObj } from '@storybook/react-vite'
 import React from 'react'
 
-import { Button } from '../components/Button'
+import { cn } from '../utils/cn'
 
-const meta: Meta<typeof Button> = {
+type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'default' | 'ghost'
+
+interface StoryButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: ButtonVariant
+  small?: boolean
+  round?: boolean
+  loading?: boolean
+}
+
+const StoryButton: React.FC<StoryButtonProps> = ({
+  variant = 'default',
+  small = false,
+  round = false,
+  loading = false,
+  disabled,
+  className,
+  children,
+  ...props
+}) => (
+  <button
+    className={cn(
+      variant === 'primary' && 'btn btn-primary',
+      variant === 'secondary' && 'btn btn',
+      variant === 'danger' && 'btn btn-error',
+      variant === 'default' && 'btn',
+      variant === 'ghost' && 'btn btn-ghost',
+      small && 'btn-sm',
+      round && 'btn-circle',
+      className
+    )}
+    disabled={disabled || loading}
+    {...props}
+  >
+    {loading && <span className="loading loading-spinner loading-xs" />}
+    {children}
+  </button>
+)
+
+const meta: Meta<typeof StoryButton> = {
   title: 'Showcase/Button Showcase',
-  component: Button,
+  component: StoryButton,
   parameters: {
     layout: 'fullscreen',
     docs: {
@@ -19,7 +57,7 @@ const meta: Meta<typeof Button> = {
 }
 
 export default meta
-type Story = StoryObj<typeof Button>
+type Story = StoryObj<typeof StoryButton>
 
 // App Layout Component for Showcase
 const AppLayout = ({ children }: { children: React.ReactNode }) => (
@@ -72,8 +110,8 @@ export const AllVariants: Story = {
             button variants in realistic contexts.
           </p>
           <div className="flex gap-4">
-            <Button variant="primary">Get Started</Button>
-            <Button variant="ghost">Learn More</Button>
+            <StoryButton variant="primary">Get Started</StoryButton>
+            <StoryButton variant="ghost">Learn More</StoryButton>
           </div>
         </section>
 
@@ -83,37 +121,37 @@ export const AllVariants: Story = {
           description="Main call-to-action buttons used for important user actions like starting games, saving data, or confirming actions."
         >
           <ButtonGroup title="Standard Primary Buttons">
-            <Button variant="primary">Start New Game</Button>
-            <Button variant="primary" loading>
+            <StoryButton variant="primary">Start New Game</StoryButton>
+            <StoryButton variant="primary" loading>
               Processing...
-            </Button>
-            <Button variant="primary" disabled>
+            </StoryButton>
+            <StoryButton variant="primary" disabled>
               Disabled Action
-            </Button>
+            </StoryButton>
           </ButtonGroup>
 
           <ButtonGroup title="Small Primary Buttons">
-            <Button variant="primary" small>
+            <StoryButton variant="primary" small>
               Save Game
-            </Button>
-            <Button variant="primary" small loading>
+            </StoryButton>
+            <StoryButton variant="primary" small loading>
               Loading...
-            </Button>
-            <Button variant="primary" small disabled>
+            </StoryButton>
+            <StoryButton variant="primary" small disabled>
               Disabled
-            </Button>
+            </StoryButton>
           </ButtonGroup>
 
           <ButtonGroup title="Round Primary Buttons">
-            <Button variant="primary" round aria-label="Add Player">
+            <StoryButton variant="primary" round aria-label="Add Player">
               +
-            </Button>
-            <Button variant="primary" round small aria-label="Quick Add">
+            </StoryButton>
+            <StoryButton variant="primary" round small aria-label="Quick Add">
               +
-            </Button>
-            <Button variant="primary" round disabled aria-label="Disabled Add">
+            </StoryButton>
+            <StoryButton variant="primary" round disabled aria-label="Disabled Add">
               +
-            </Button>
+            </StoryButton>
           </ButtonGroup>
         </Section>
 
@@ -123,37 +161,37 @@ export const AllVariants: Story = {
           description="Supporting actions that complement primary actions, often used for navigation, settings, or alternative options."
         >
           <ButtonGroup title="Standard Secondary Buttons">
-            <Button variant="secondary">View Statistics</Button>
-            <Button variant="secondary" loading>
+            <StoryButton variant="secondary">View Statistics</StoryButton>
+            <StoryButton variant="secondary" loading>
               Loading Stats...
-            </Button>
-            <Button variant="secondary" disabled>
+            </StoryButton>
+            <StoryButton variant="secondary" disabled>
               Stats Unavailable
-            </Button>
+            </StoryButton>
           </ButtonGroup>
 
           <ButtonGroup title="Small Secondary Buttons">
-            <Button variant="secondary" small>
+            <StoryButton variant="secondary" small>
               Edit Settings
-            </Button>
-            <Button variant="secondary" small loading>
+            </StoryButton>
+            <StoryButton variant="secondary" small loading>
               Updating...
-            </Button>
-            <Button variant="secondary" small disabled>
+            </StoryButton>
+            <StoryButton variant="secondary" small disabled>
               Settings Locked
-            </Button>
+            </StoryButton>
           </ButtonGroup>
 
           <ButtonGroup title="Round Secondary Buttons">
-            <Button variant="secondary" round aria-label="Settings">
+            <StoryButton variant="secondary" round aria-label="Settings">
               ⚙️
-            </Button>
-            <Button variant="secondary" round small aria-label="Info">
+            </StoryButton>
+            <StoryButton variant="secondary" round small aria-label="Info">
               ℹ️
-            </Button>
-            <Button variant="secondary" round disabled aria-label="Disabled">
+            </StoryButton>
+            <StoryButton variant="secondary" round disabled aria-label="Disabled">
               🔒
-            </Button>
+            </StoryButton>
           </ButtonGroup>
         </Section>
 
@@ -163,37 +201,37 @@ export const AllVariants: Story = {
           description="Destructive actions that require user confirmation, such as deleting games, removing players, or resetting data."
         >
           <ButtonGroup title="Standard Danger Buttons">
-            <Button variant="danger">Delete Game</Button>
-            <Button variant="danger" loading>
+            <StoryButton variant="danger">Delete Game</StoryButton>
+            <StoryButton variant="danger" loading>
               Deleting...
-            </Button>
-            <Button variant="danger" disabled>
+            </StoryButton>
+            <StoryButton variant="danger" disabled>
               Cannot Delete
-            </Button>
+            </StoryButton>
           </ButtonGroup>
 
           <ButtonGroup title="Small Danger Buttons">
-            <Button variant="danger" small>
+            <StoryButton variant="danger" small>
               Remove Player
-            </Button>
-            <Button variant="danger" small loading>
+            </StoryButton>
+            <StoryButton variant="danger" small loading>
               Removing...
-            </Button>
-            <Button variant="danger" small disabled>
+            </StoryButton>
+            <StoryButton variant="danger" small disabled>
               Cannot Remove
-            </Button>
+            </StoryButton>
           </ButtonGroup>
 
           <ButtonGroup title="Round Danger Buttons">
-            <Button variant="danger" round aria-label="Delete">
+            <StoryButton variant="danger" round aria-label="Delete">
               🗑️
-            </Button>
-            <Button variant="danger" round small aria-label="Remove">
+            </StoryButton>
+            <StoryButton variant="danger" round small aria-label="Remove">
               ✕
-            </Button>
-            <Button variant="danger" round disabled aria-label="Locked">
+            </StoryButton>
+            <StoryButton variant="danger" round disabled aria-label="Locked">
               🔒
-            </Button>
+            </StoryButton>
           </ButtonGroup>
         </Section>
 
@@ -203,37 +241,37 @@ export const AllVariants: Story = {
           description="Standard buttons for general actions, form submissions, and neutral interactions."
         >
           <ButtonGroup title="Standard Default Buttons">
-            <Button variant="default">Submit Form</Button>
-            <Button variant="default" loading>
+            <StoryButton variant="default">Submit Form</StoryButton>
+            <StoryButton variant="default" loading>
               Submitting...
-            </Button>
-            <Button variant="default" disabled>
+            </StoryButton>
+            <StoryButton variant="default" disabled>
               Form Invalid
-            </Button>
+            </StoryButton>
           </ButtonGroup>
 
           <ButtonGroup title="Small Default Buttons">
-            <Button variant="default" small>
+            <StoryButton variant="default" small>
               Cancel
-            </Button>
-            <Button variant="default" small loading>
+            </StoryButton>
+            <StoryButton variant="default" small loading>
               Processing...
-            </Button>
-            <Button variant="default" small disabled>
+            </StoryButton>
+            <StoryButton variant="default" small disabled>
               Unavailable
-            </Button>
+            </StoryButton>
           </ButtonGroup>
 
           <ButtonGroup title="Round Default Buttons">
-            <Button variant="default" round aria-label="Close">
+            <StoryButton variant="default" round aria-label="Close">
               ✕
-            </Button>
-            <Button variant="default" round small aria-label="Minimize">
+            </StoryButton>
+            <StoryButton variant="default" round small aria-label="Minimize">
               −
-            </Button>
-            <Button variant="default" round disabled aria-label="Disabled">
+            </StoryButton>
+            <StoryButton variant="default" round disabled aria-label="Disabled">
               ○
-            </Button>
+            </StoryButton>
           </ButtonGroup>
         </Section>
 
@@ -243,37 +281,37 @@ export const AllVariants: Story = {
           description="Subtle, minimal buttons that blend into the background, often used for secondary actions or in dense interfaces."
         >
           <ButtonGroup title="Standard Ghost Buttons">
-            <Button variant="ghost">View Details</Button>
-            <Button variant="ghost" loading>
+            <StoryButton variant="ghost">View Details</StoryButton>
+            <StoryButton variant="ghost" loading>
               Loading...
-            </Button>
-            <Button variant="ghost" disabled>
+            </StoryButton>
+            <StoryButton variant="ghost" disabled>
               No Details
-            </Button>
+            </StoryButton>
           </ButtonGroup>
 
           <ButtonGroup title="Small Ghost Buttons">
-            <Button variant="ghost" small>
+            <StoryButton variant="ghost" small>
               Edit
-            </Button>
-            <Button variant="ghost" small loading>
+            </StoryButton>
+            <StoryButton variant="ghost" small loading>
               Updating...
-            </Button>
-            <Button variant="ghost" small disabled>
+            </StoryButton>
+            <StoryButton variant="ghost" small disabled>
               Read Only
-            </Button>
+            </StoryButton>
           </ButtonGroup>
 
           <ButtonGroup title="Round Ghost Buttons">
-            <Button variant="ghost" round aria-label="Favorite">
+            <StoryButton variant="ghost" round aria-label="Favorite">
               ★
-            </Button>
-            <Button variant="ghost" round small aria-label="Share">
+            </StoryButton>
+            <StoryButton variant="ghost" round small aria-label="Share">
               📤
-            </Button>
-            <Button variant="ghost" round disabled aria-label="Unavailable">
+            </StoryButton>
+            <StoryButton variant="ghost" round disabled aria-label="Unavailable">
               ○
-            </Button>
+            </StoryButton>
           </ButtonGroup>
         </Section>
 
@@ -290,17 +328,17 @@ export const AllVariants: Story = {
                 Control panel for managing an active Magic: The Gathering game session.
               </p>
               <div className="flex flex-wrap gap-3">
-                <Button variant="primary">Start Turn</Button>
-                <Button variant="secondary">View Hand</Button>
-                <Button variant="ghost" small>
+                <StoryButton variant="primary">Start Turn</StoryButton>
+                <StoryButton variant="secondary">View Hand</StoryButton>
+                <StoryButton variant="ghost" small>
                   Pass
-                </Button>
-                <Button variant="danger" small>
+                </StoryButton>
+                <StoryButton variant="danger" small>
                   Concede
-                </Button>
-                <Button variant="default" round aria-label="Pause">
+                </StoryButton>
+                <StoryButton variant="default" round aria-label="Pause">
                   ⏸️
-                </Button>
+                </StoryButton>
               </div>
             </div>
 
@@ -311,21 +349,21 @@ export const AllVariants: Story = {
                 Interface for adding, editing, and removing players from a game.
               </p>
               <div className="flex flex-wrap gap-3">
-                <Button variant="primary" small>
+                <StoryButton variant="primary" small>
                   Add Player
-                </Button>
-                <Button variant="ghost" small>
+                </StoryButton>
+                <StoryButton variant="ghost" small>
                   Edit Life
-                </Button>
-                <Button variant="secondary" small>
+                </StoryButton>
+                <StoryButton variant="secondary" small>
                   View Stats
-                </Button>
-                <Button variant="danger" small>
+                </StoryButton>
+                <StoryButton variant="danger" small>
                   Remove
-                </Button>
-                <Button variant="ghost" round small aria-label="More Options">
+                </StoryButton>
+                <StoryButton variant="ghost" round small aria-label="More Options">
                   ⋯
-                </Button>
+                </StoryButton>
               </div>
             </div>
 
@@ -336,17 +374,17 @@ export const AllVariants: Story = {
                 Configuration options for game preferences and application settings.
               </p>
               <div className="flex flex-wrap gap-3">
-                <Button variant="secondary">Save Settings</Button>
-                <Button variant="default">Reset to Default</Button>
-                <Button variant="ghost" small>
+                <StoryButton variant="secondary">Save Settings</StoryButton>
+                <StoryButton variant="default">Reset to Default</StoryButton>
+                <StoryButton variant="ghost" small>
                   Import
-                </Button>
-                <Button variant="ghost" small>
+                </StoryButton>
+                <StoryButton variant="ghost" small>
                   Export
-                </Button>
-                <Button variant="danger" small>
+                </StoryButton>
+                <StoryButton variant="danger" small>
                   Clear Data
-                </Button>
+                </StoryButton>
               </div>
             </div>
           </div>
@@ -362,21 +400,21 @@ export const AllVariants: Story = {
               All buttons support keyboard navigation and screen readers. Round buttons include proper ARIA labels.
             </p>
             <div className="flex flex-wrap gap-3">
-              <Button variant="primary" aria-label="Start new game session">
+              <StoryButton variant="primary" aria-label="Start new game session">
                 Start Game
-              </Button>
-              <Button variant="secondary" round aria-label="Open settings menu">
+              </StoryButton>
+              <StoryButton variant="secondary" round aria-label="Open settings menu">
                 ⚙️
-              </Button>
-              <Button variant="danger" aria-label="Delete current game">
+              </StoryButton>
+              <StoryButton variant="danger" aria-label="Delete current game">
                 Delete Game
-              </Button>
-              <Button variant="ghost" small aria-label="View game history">
+              </StoryButton>
+              <StoryButton variant="ghost" small aria-label="View game history">
                 History
-              </Button>
-              <Button variant="default" round small aria-label="Close current dialog">
+              </StoryButton>
+              <StoryButton variant="default" round small aria-label="Close current dialog">
                 ✕
-              </Button>
+              </StoryButton>
             </div>
           </div>
         </Section>
@@ -394,63 +432,63 @@ export const LoadingStates: Story = {
       >
         <div className="space-y-6">
           <ButtonGroup title="Primary Loading States">
-            <Button variant="primary" loading>
+            <StoryButton variant="primary" loading>
               Processing...
-            </Button>
-            <Button variant="primary" small loading>
+            </StoryButton>
+            <StoryButton variant="primary" small loading>
               Loading...
-            </Button>
-            <Button variant="primary" round loading aria-label="Loading">
+            </StoryButton>
+            <StoryButton variant="primary" round loading aria-label="Loading">
               ⋯
-            </Button>
+            </StoryButton>
           </ButtonGroup>
 
           <ButtonGroup title="Secondary Loading States">
-            <Button variant="secondary" loading>
+            <StoryButton variant="secondary" loading>
               Updating...
-            </Button>
-            <Button variant="secondary" small loading>
+            </StoryButton>
+            <StoryButton variant="secondary" small loading>
               Syncing...
-            </Button>
-            <Button variant="secondary" round loading aria-label="Loading">
+            </StoryButton>
+            <StoryButton variant="secondary" round loading aria-label="Loading">
               ⋯
-            </Button>
+            </StoryButton>
           </ButtonGroup>
 
           <ButtonGroup title="Danger Loading States">
-            <Button variant="danger" loading>
+            <StoryButton variant="danger" loading>
               Deleting...
-            </Button>
-            <Button variant="danger" small loading>
+            </StoryButton>
+            <StoryButton variant="danger" small loading>
               Removing...
-            </Button>
-            <Button variant="danger" round loading aria-label="Loading">
+            </StoryButton>
+            <StoryButton variant="danger" round loading aria-label="Loading">
               ⋯
-            </Button>
+            </StoryButton>
           </ButtonGroup>
 
           <ButtonGroup title="Default Loading States">
-            <Button variant="default" loading>
+            <StoryButton variant="default" loading>
               Submitting...
-            </Button>
-            <Button variant="default" small loading>
+            </StoryButton>
+            <StoryButton variant="default" small loading>
               Saving...
-            </Button>
-            <Button variant="default" round loading aria-label="Loading">
+            </StoryButton>
+            <StoryButton variant="default" round loading aria-label="Loading">
               ⋯
-            </Button>
+            </StoryButton>
           </ButtonGroup>
 
           <ButtonGroup title="Ghost Loading States">
-            <Button variant="ghost" loading>
+            <StoryButton variant="ghost" loading>
               Loading...
-            </Button>
-            <Button variant="ghost" small loading>
+            </StoryButton>
+            <StoryButton variant="ghost" small loading>
               Updating...
-            </Button>
-            <Button variant="ghost" round loading aria-label="Loading">
+            </StoryButton>
+            <StoryButton variant="ghost" round loading aria-label="Loading">
               ⋯
-            </Button>
+            </StoryButton>
           </ButtonGroup>
         </div>
       </Section>
@@ -467,63 +505,63 @@ export const DisabledStates: Story = {
       >
         <div className="space-y-6">
           <ButtonGroup title="Primary Disabled States">
-            <Button variant="primary" disabled>
+            <StoryButton variant="primary" disabled>
               Unavailable
-            </Button>
-            <Button variant="primary" small disabled>
+            </StoryButton>
+            <StoryButton variant="primary" small disabled>
               Locked
-            </Button>
-            <Button variant="primary" round disabled aria-label="Disabled">
+            </StoryButton>
+            <StoryButton variant="primary" round disabled aria-label="Disabled">
               +
-            </Button>
+            </StoryButton>
           </ButtonGroup>
 
           <ButtonGroup title="Secondary Disabled States">
-            <Button variant="secondary" disabled>
+            <StoryButton variant="secondary" disabled>
               No Access
-            </Button>
-            <Button variant="secondary" small disabled>
+            </StoryButton>
+            <StoryButton variant="secondary" small disabled>
               Blocked
-            </Button>
-            <Button variant="secondary" round disabled aria-label="Disabled">
+            </StoryButton>
+            <StoryButton variant="secondary" round disabled aria-label="Disabled">
               ⚙️
-            </Button>
+            </StoryButton>
           </ButtonGroup>
 
           <ButtonGroup title="Danger Disabled States">
-            <Button variant="danger" disabled>
+            <StoryButton variant="danger" disabled>
               Cannot Delete
-            </Button>
-            <Button variant="danger" small disabled>
+            </StoryButton>
+            <StoryButton variant="danger" small disabled>
               Protected
-            </Button>
-            <Button variant="danger" round disabled aria-label="Disabled">
+            </StoryButton>
+            <StoryButton variant="danger" round disabled aria-label="Disabled">
               🗑️
-            </Button>
+            </StoryButton>
           </ButtonGroup>
 
           <ButtonGroup title="Default Disabled States">
-            <Button variant="default" disabled>
+            <StoryButton variant="default" disabled>
               Form Invalid
-            </Button>
-            <Button variant="default" small disabled>
+            </StoryButton>
+            <StoryButton variant="default" small disabled>
               Required Field
-            </Button>
-            <Button variant="default" round disabled aria-label="Disabled">
+            </StoryButton>
+            <StoryButton variant="default" round disabled aria-label="Disabled">
               ✕
-            </Button>
+            </StoryButton>
           </ButtonGroup>
 
           <ButtonGroup title="Ghost Disabled States">
-            <Button variant="ghost" disabled>
+            <StoryButton variant="ghost" disabled>
               No Permission
-            </Button>
-            <Button variant="ghost" small disabled>
+            </StoryButton>
+            <StoryButton variant="ghost" small disabled>
               Read Only
-            </Button>
-            <Button variant="ghost" round disabled aria-label="Disabled">
+            </StoryButton>
+            <StoryButton variant="ghost" round disabled aria-label="Disabled">
               ★
-            </Button>
+            </StoryButton>
           </ButtonGroup>
         </div>
       </Section>

@@ -5,7 +5,6 @@ import { useGames } from '../hooks/useGames'
 import { cn } from '../utils/cn'
 import { getCurrentMonarch } from '../utils/gameUtils'
 import { generateId } from '../utils/idGenerator'
-import { Button } from './Button'
 
 interface MonarchToggleProps {
   gameId: string
@@ -50,11 +49,10 @@ export const MonarchToggle: React.FC<MonarchToggleProps> = ({ gameId, playerId, 
   }
 
   return (
-    <Button
-      small
+    <button
       type="button"
       className={cn(
-        'transition-colors duration-200',
+        'btn btn-sm transition-colors duration-200',
         isMonarch && 'bg-yellow-600/90 hover:bg-yellow-500 text-white border-yellow-500',
         className
       )}
@@ -62,6 +60,6 @@ export const MonarchToggle: React.FC<MonarchToggleProps> = ({ gameId, playerId, 
       title={isMonarch ? 'Remove Monarch' : 'Become Monarch'}
     >
       👑
-    </Button>
+    </button>
   )
 }

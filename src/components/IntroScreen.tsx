@@ -17,7 +17,6 @@ import { useGames } from '../hooks/useGames'
 import { cn } from '../utils/cn'
 import { EventDispatcher } from '../utils/eventDispatcher'
 import { isFullscreen, toggleFullscreen } from '../utils/fullscreen'
-import { Button } from './Button'
 import { Modal } from './Modal'
 
 const DeckForm = React.lazy(() => import('./DeckForm').then(m => ({ default: m.DeckForm })))
@@ -132,46 +131,45 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
       {!isInGame && <h1 className="mb-40 text-2xl text-center">Magic Counter</h1>}
 
       <div className="grid grid-cols-2 gap-2 w-full max-w-xs">
-        <Button variant="primary" className="col-span-2" onClick={handleNewGame}>
+        <button className={'btn btn-primary col-span-2'} onClick={handleNewGame}>
           <Plus size={20} />
           New Game
-        </Button>
+        </button>
 
         {hasGames && (
-          <Button variant="secondary" onClick={() => setShowGames(true)}>
+          <button className={'btn btn'} onClick={() => setShowGames(true)}>
             <History size={20} />
             Past Games
-          </Button>
+          </button>
         )}
 
-        <Button variant="secondary" onClick={() => setShowUsers(true)}>
+        <button className={'btn btn'} onClick={() => setShowUsers(true)}>
           <UsersIcon size={20} />
           Users
-        </Button>
+        </button>
 
-        <Button variant="secondary" onClick={() => setShowDecks(true)}>
+        <button className={'btn btn'} onClick={() => setShowDecks(true)}>
           <BookOpen size={20} />
           Decks
-        </Button>
+        </button>
 
         {/* In-game settings */}
         {isInGame && (
           <>
             <div className="col-span-2 border-t border-slate-600 my-1"></div>
 
-            <Button variant="secondary" onClick={() => onShowGameSettings?.()}>
+            <button className={'btn btn'} onClick={() => onShowGameSettings?.()}>
               <Settings size={20} />
               Game Settings
-            </Button>
+            </button>
 
-            <Button variant="secondary" onClick={() => onShowActions?.()}>
+            <button className={'btn btn'} onClick={() => onShowActions?.()}>
               <List size={20} />
               Game Actions
-            </Button>
+            </button>
 
-            <Button
-              variant="secondary"
-              className={cn(dragEnabled && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500')}
+            <button
+              className={cn('btn btn', dragEnabled && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500')}
               onClick={() => {
                 onDragEnabledChange?.(!dragEnabled)
                 onClose?.()
@@ -179,11 +177,10 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             >
               <Move size={20} />
               Drag Mode
-            </Button>
+            </button>
 
-            <Button
-              variant="secondary"
-              className={cn(tableMode && 'bg-green-600/90 hover:bg-green-500 text-white border-green-500')}
+            <button
+              className={cn('btn btn', tableMode && 'bg-green-600/90 hover:bg-green-500 text-white border-green-500')}
               onClick={() => {
                 onTableModeChange?.(!tableMode)
                 onClose?.()
@@ -191,11 +188,10 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             >
               <Table size={20} />
               Table Mode
-            </Button>
+            </button>
 
-            <Button
-              variant="secondary"
-              className="col-span-2"
+            <button
+              className={'btn btn col-span-2'}
               onClick={() => {
                 handleToggleFullscreen()
                 onClose?.()
@@ -203,15 +199,15 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             >
               {fullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
               {fullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
-            </Button>
+            </button>
 
             {gameState === 'active' && (
               <>
                 <div className="col-span-2 border-t border-slate-600 my-1"></div>
-                <Button variant="danger" className="col-span-2" onClick={() => onFinishGame?.()}>
+                <button className={'btn btn-error col-span-2'} onClick={() => onFinishGame?.()}>
                   <Trophy size={20} />
                   Finish Game
-                </Button>
+                </button>
               </>
             )}
           </>
@@ -239,14 +235,12 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         </Suspense>
 
         {/* Floating Add User Button */}
-        <Button
-          variant="primary"
-          round
-          className="absolute bottom-3 right-3 shadow-lg z-10"
+        <button
+          className={'btn btn-primary btn-circle absolute bottom-3 right-3 shadow-lg z-10'}
           onClick={() => setUserFormVisible(true)}
         >
           <Plus size={36} />
-        </Button>
+        </button>
 
         {/* User Form Modal */}
         <Modal isOpen={userFormVisible} title="Add User" onClose={() => setUserFormVisible(false)}>
@@ -263,14 +257,12 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         </Suspense>
 
         {/* Floating Add Deck Button */}
-        <Button
-          variant="primary"
-          round
-          className="absolute bottom-3 right-3 shadow-lg z-10"
+        <button
+          className={'btn btn-primary btn-circle absolute bottom-3 right-3 shadow-lg z-10'}
           onClick={() => setDeckFormVisible(true)}
         >
           <Plus size={36} />
-        </Button>
+        </button>
 
         {/* Deck Form Modal */}
         <Modal isOpen={deckFormVisible} title="Add Deck" onClose={() => setDeckFormVisible(false)}>
