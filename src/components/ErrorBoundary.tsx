@@ -56,13 +56,13 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren, ErrorBounda
             </details>
           )}
 
-          <button className={'btn btn-error'} onClick={this.handleReload}>
+          <button className="btn btn-error" onClick={this.handleReload}>
             Reload Page
           </button>
 
           <div className="flex flex-col gap-1 mt-2">
             {STORAGE_KEYS.map(({ key, label }) => (
-              <button key={key} className={'btn btn'} onClick={() => this.handleClearKey(key)}>
+              <button key={key} className="btn" onClick={() => this.handleClearKey(key)}>
                 {label}
               </button>
             ))}

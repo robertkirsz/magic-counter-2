@@ -131,7 +131,7 @@ const DataSectionComponent: React.FC<DataSectionProps> = ({ section, text, setTe
 
     {error && <div className="text-red-600 text-xs mb-1">{error}</div>}
 
-    <button className={'btn btn'} onClick={onSave}>
+    <button className="btn btn-xs" onClick={onSave}>
       Save
     </button>
   </details>
@@ -146,12 +146,7 @@ interface QuickActionButtonProps {
 }
 
 const QuickActionButton: React.FC<QuickActionButtonProps> = ({ icon, onClick, disabled, title }) => (
-  <button
-    className={'btn btn flex items-center gap-1'}
-    onClick={onClick}
-    disabled={disabled}
-    title={title}
-  >
+  <button className="btn btn-xs flex items-center gap-1" onClick={onClick} disabled={disabled} title={title}>
     {icon}
   </button>
 )
@@ -449,7 +444,7 @@ export const DevToolsPanel: React.FC = () => {
   return (
     <div className="fixed z-100 gap-2 bottom-2 right-2 flex flex-col items-end">
       {open && (
-        <div className="flex flex-col gap-2 bg-slate-900 border border-slate-700 font-mono rounded-lg p-4 shadow-lg max-h-[400px] max-w-[100%] overflow-y-auto text-xs">
+        <div className="flex flex-col gap-2 bg-slate-900 border border-slate-700 font-mono rounded-lg p-4 shadow-lg max-h-[400px] max-w-full overflow-y-auto text-xs">
           {/* Quick Actions Section */}
           <details open>
             <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">Quick Actions</summary>
@@ -548,16 +543,16 @@ export const DevToolsPanel: React.FC = () => {
             <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">Import/Export</summary>
 
             <div className="flex gap-2 mb-3">
-              <button className={'btn btn'} onClick={handleExport}>
+              <button className="btn btn-xs" onClick={handleExport}>
                 Export
               </button>
 
-              <label className="btn btn-primary">
+              <label className="btn btn-xs btn-primary">
                 Import
                 <input type="file" accept=".json" onChange={handleImport} className="hidden" />
               </label>
 
-              <button className={'btn btn-error'} onClick={handleClearData}>
+              <button className="btn btn-xs btn-error" onClick={handleClearData}>
                 Delete
               </button>
             </div>
@@ -570,7 +565,7 @@ export const DevToolsPanel: React.FC = () => {
             <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">Event Logger</summary>
 
             <div className="flex gap-2 mb-3">
-              <button className={'btn btn'} onClick={handleClearLogs}>
+              <button className="btn btn-xs" onClick={handleClearLogs}>
                 Clear Logs
               </button>
 
@@ -614,7 +609,7 @@ export const DevToolsPanel: React.FC = () => {
       )}
 
       <button
-        className={cn('btn btn-primary btn-circle bg-green-500 transition-all duration-200', open && 'rotate-12')}
+        className={cn('btn btn-primary btn-circle transition-all duration-200', open && 'rotate-45')}
         onClick={() => setOpen(o => !o)}
       >
         <Wrench size={20} />

@@ -242,18 +242,8 @@ magic-counter-2/
 │   │
 │   ├── assets/                     # Static assets
 │   │
-│   └── stories/                    # Storybook stories
-│       ├── assets/
-│       ├── Button.stories.ts
-│       ├── ButtonShowcase.stories.tsx
-│       ├── Commander.stories.tsx
-│       ├── FormShowcase.stories.tsx
-│       └── Typography.stories.tsx
-│
 ├── public/                         # Public assets
 │   └── icons/                      # App icons
-│
-├── .storybook/                     # Storybook configuration
 │
 ├── package.json                    # Dependencies and scripts
 ├── tsconfig.json                   # TypeScript configuration

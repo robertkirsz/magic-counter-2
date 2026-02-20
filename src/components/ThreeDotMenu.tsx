@@ -51,14 +51,14 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
     return (
       <div className={cn('flex gap-1 empty:hidden', className)} {...props}>
         {onEdit && (
-          <button className={'btn btn btn-circle btn-sm'} title="Edit" onClick={onEdit}>
+          <button className="btn btn-circle btn-sm" title="Edit" onClick={onEdit}>
             <Edit3 size={16} />
           </button>
         )}
 
         {onRemove && (
           <button
-            className={'btn btn-error btn-circle btn-sm'}
+            className="btn btn-error btn-circle btn-sm"
             title="Delete"
             onClick={() => setShowConfirm(true)}
           >
@@ -67,7 +67,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
         )}
 
         {onClose && (
-          <button className={'btn btn btn-circle btn-sm'} title="Close" onClick={onClose}>
+          <button className="btn btn-circle btn-sm" title="Close" onClick={onClose}>
             <X size={16} />
           </button>
         )}
@@ -79,12 +79,12 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
             <p className="text-gray-600">Are you sure you want to delete this item? This action cannot be undone.</p>
 
             <div className="flex gap-2 justify-end">
-              <button className={'btn btn'} onClick={() => setShowConfirm(false)}>
+              <button className="btn" onClick={() => setShowConfirm(false)}>
                 Cancel
               </button>
 
               <button
-                className={'btn btn-error'}
+                className="btn btn-error"
                 onClick={() => {
                   onRemove?.()
                   setShowConfirm(false)
@@ -102,7 +102,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
   return (
     <div ref={wrapperRef} className={cn('relative flex max-w-fit max-h-fit', className)} {...props}>
       <button
-        className={'btn btn btn-circle btn-sm'}
+        className="btn btn-circle btn-sm"
         title="More options"
         onClick={() => setIsOpen(!isOpen)}
       >
@@ -120,7 +120,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
         >
           {onEdit && (
             <button
-              className={'btn btn rounded-none'}
+              className="btn rounded-none"
               onClick={() => {
                 onEdit()
                 setIsOpen(false)
@@ -133,7 +133,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
 
           {onRemove && (
             <button
-              className={'btn btn-error rounded-none'}
+              className="btn btn-error rounded-none"
               onClick={() => {
                 setShowConfirm(true)
                 setIsOpen(false)
@@ -146,7 +146,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
 
           {onClose && (
             <button
-              className={'btn btn'}
+              className="btn"
               onClick={() => {
                 onClose()
                 setIsOpen(false)
@@ -165,12 +165,12 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
           <p>Are you sure you want to delete this item? This action cannot be undone.</p>
 
           <div className="flex gap-2 justify-end">
-            <button className={'btn btn'} onClick={() => setShowConfirm(false)}>
+            <button className="btn" onClick={() => setShowConfirm(false)}>
               Cancel
             </button>
 
             <button
-              className={'btn btn-error'}
+              className="btn btn-error"
               onClick={() => {
                 onRemove?.()
                 setShowConfirm(false)

@@ -78,7 +78,7 @@ export const User: React.FC<UserProps> = ({ user, onEdit, onRemove, onCreateDeck
         </div>
       )}
 
-      <button className={'btn btn-primary'} onClick={onCreateDeck}>
+      <button className="btn btn-primary" onClick={onCreateDeck}>
         Create New Deck
       </button>
     </div>

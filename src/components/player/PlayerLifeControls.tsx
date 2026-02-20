@@ -176,7 +176,7 @@ const PlayerLifeControls: React.FC<{
       <div className="flex gap-4 items-center">
         <button
           type="button"
-          className={'btn !px-6 !py-3'}
+          className="btn !px-6 !py-3"
           {...decrementHandlers}
         >
           <MinusIcon className="w-8 h-8" />
@@ -207,7 +207,7 @@ const PlayerLifeControls: React.FC<{
           <button
             type="button"
             disabled={commanderDamage}
-            className={'btn !px-6 !py-3'}
+            className="btn !px-6 !py-3"
             {...incrementHandlers}
           >
             <PlusIcon className="w-8 h-8" />

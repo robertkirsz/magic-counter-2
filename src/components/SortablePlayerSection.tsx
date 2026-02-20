@@ -48,7 +48,7 @@ export function SortablePlayerSection({
           {...listeners}
           {...attributes}
           type="button"
-          className={'btn btn btn-circle DragHandle'}
+          className="btn btn-circle DragHandle"
         >
           <GripVertical />
         </button>

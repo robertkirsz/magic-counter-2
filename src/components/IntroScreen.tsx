@@ -131,24 +131,24 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
       {!isInGame && <h1 className="mb-40 text-2xl text-center">Magic Counter</h1>}
 
       <div className="grid grid-cols-2 gap-2 w-full max-w-xs">
-        <button className={'btn btn-primary col-span-2'} onClick={handleNewGame}>
+        <button className="btn btn-primary col-span-2" onClick={handleNewGame}>
           <Plus size={20} />
           New Game
         </button>
 
         {hasGames && (
-          <button className={'btn btn'} onClick={() => setShowGames(true)}>
+          <button className="btn" onClick={() => setShowGames(true)}>
             <History size={20} />
             Past Games
           </button>
         )}
 
-        <button className={'btn btn'} onClick={() => setShowUsers(true)}>
+        <button className="btn" onClick={() => setShowUsers(true)}>
           <UsersIcon size={20} />
           Users
         </button>
 
-        <button className={'btn btn'} onClick={() => setShowDecks(true)}>
+        <button className="btn" onClick={() => setShowDecks(true)}>
           <BookOpen size={20} />
           Decks
         </button>
@@ -158,18 +158,18 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
           <>
             <div className="col-span-2 border-t border-slate-600 my-1"></div>
 
-            <button className={'btn btn'} onClick={() => onShowGameSettings?.()}>
+            <button className="btn" onClick={() => onShowGameSettings?.()}>
               <Settings size={20} />
               Game Settings
             </button>
 
-            <button className={'btn btn'} onClick={() => onShowActions?.()}>
+            <button className="btn" onClick={() => onShowActions?.()}>
               <List size={20} />
               Game Actions
             </button>
 
             <button
-              className={cn('btn btn', dragEnabled && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500')}
+              className={cn('btn', dragEnabled && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500')}
               onClick={() => {
                 onDragEnabledChange?.(!dragEnabled)
                 onClose?.()
@@ -180,7 +180,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             </button>
 
             <button
-              className={cn('btn btn', tableMode && 'bg-green-600/90 hover:bg-green-500 text-white border-green-500')}
+              className={cn('btn', tableMode && 'bg-green-600/90 hover:bg-green-500 text-white border-green-500')}
               onClick={() => {
                 onTableModeChange?.(!tableMode)
                 onClose?.()
@@ -191,7 +191,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             </button>
 
             <button
-              className={'btn btn col-span-2'}
+              className="btn col-span-2"
               onClick={() => {
                 handleToggleFullscreen()
                 onClose?.()
@@ -204,7 +204,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             {gameState === 'active' && (
               <>
                 <div className="col-span-2 border-t border-slate-600 my-1"></div>
-                <button className={'btn btn-error col-span-2'} onClick={() => onFinishGame?.()}>
+                <button className="btn btn-error col-span-2" onClick={() => onFinishGame?.()}>
                   <Trophy size={20} />
                   Finish Game
                 </button>
@@ -236,7 +236,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
         {/* Floating Add User Button */}
         <button
-          className={'btn btn-primary btn-circle absolute bottom-3 right-3 shadow-lg z-10'}
+          className="btn btn-primary btn-circle absolute bottom-3 right-3 shadow-lg z-10"
           onClick={() => setUserFormVisible(true)}
         >
           <Plus size={36} />
@@ -258,7 +258,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
         {/* Floating Add Deck Button */}
         <button
-          className={'btn btn-primary btn-circle absolute bottom-3 right-3 shadow-lg z-10'}
+          className="btn btn-primary btn-circle absolute bottom-3 right-3 shadow-lg z-10"
           onClick={() => setDeckFormVisible(true)}
         >
           <Plus size={36} />

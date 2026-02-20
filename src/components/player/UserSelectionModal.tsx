@@ -20,7 +20,7 @@ const UserSelectionModal: React.FC<{
             {users
               .filter(user => !game.players.some(p => p.userId === user.id))
               .map(user => (
-                <button key={user.id} className={'btn btn'} onClick={() => onSelect(user.id)}>
+                <button key={user.id} className="btn" onClick={() => onSelect(user.id)}>
                   {user.name}
                 </button>
               ))}
@@ -33,7 +33,7 @@ const UserSelectionModal: React.FC<{
           <p>All users are already assigned to players.</p>
         )}
 
-        <button className={'btn btn-primary'} onClick={onCreateUser}>
+        <button className="btn btn-primary" onClick={onCreateUser}>
           Create New User
         </button>
       </div>

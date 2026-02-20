@@ -84,7 +84,7 @@ export const Modal: React.FC<ModalProps> = ({
             <button
               type="button"
               aria-label="Close modal"
-              className={'btn btn btn-circle btn-sm ml-auto'}
+              className="btn btn-circle btn-sm ml-auto"
               onClick={onClose}
             >
               <X size={20} />

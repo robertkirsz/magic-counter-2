@@ -254,7 +254,7 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
           {/* Undo Last Action Button */}
           {game.state === 'active' && canUndo && (
             <button
-              className={'btn btn btn-circle'}
+              className="btn btn-circle"
               onClick={handleUndoLastAction}
               title="Undo last action"
             >
@@ -265,7 +265,7 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
           {/* Pass Turn Button */}
           {game.state === 'active' && game.turnTracking && activePlayer && (
             <button
-              className={'btn btn-primary btn-circle !p-3'}
+              className="btn btn-primary btn-circle !p-3"
               onClick={() => handlePassTurn()}
               title={
                 hasEffectiveActivePlayer(gameId) ? 'Cannot pass turn while temporary player is active' : 'Pass turn'
@@ -284,13 +284,13 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
         <div className="flex gap-2 min-h-[30px]">
           {game.state === 'setup' && (
             <>
-              <button className={'btn btn-primary'} disabled={!canPlay} onClick={handlePlay}>
+              <button className="btn btn-primary" disabled={!canPlay} onClick={handlePlay}>
                 <Play size={32} />
                 <span>START</span>
               </button>
 
               <button
-                className="btn btn bg-red-600 hover:bg-red-500 text-white border-red-500"
+                className="btn bg-red-600 hover:bg-red-500 text-white border-red-500"
                 onClick={handleCancel}
               >
                 CANCEL
@@ -302,7 +302,7 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
 
       {/* Menu Button */}
       <div className="absolute top-0 right-0 p-2 z-20">
-        <button className={'btn btn-circle'} onClick={() => setShowIntroModal(true)} title="Menu">
+        <button className="btn btn-circle" onClick={() => setShowIntroModal(true)} title="Menu">
           <Settings size={24} />
         </button>
       </div>

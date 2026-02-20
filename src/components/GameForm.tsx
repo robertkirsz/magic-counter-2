@@ -107,7 +107,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
           <button
             key={count}
             type="button"
-            className={numberOfPlayers === count ? 'btn btn-primary' : 'btn btn'}
+            className={numberOfPlayers === count ? 'btn btn-primary' : 'btn'}
             onClick={() => setNumberOfPlayers(count)}
           >
             {count} <UserIcon className="w-4 h-4" />
@@ -119,7 +119,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
       <div className="flex gap-2 items-center">
         <button
           type="button"
-          className={'btn btn'}
+          className="btn"
           onClick={() => handleLifeChange(startingLife - 5)}
         >
           -
@@ -141,7 +141,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
 
         <button
           type="button"
-          className={'btn btn'}
+          className="btn"
           onClick={() => handleLifeChange(startingLife + 5)}
         >
           +
@@ -174,11 +174,11 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
 
       {/* Action Buttons */}
       <div className="flex gap-2">
-        <button className={'btn btn-primary'} disabled={!isValidGameSetup()}>
+        <button className="btn btn-primary" disabled={!isValidGameSetup()}>
           {isEditMode ? 'Save' : 'Create'}
         </button>
 
-        <button type="button" className={'btn btn'} onClick={onCancel}>
+        <button type="button" className="btn" onClick={onCancel}>
           Cancel
         </button>
       </div>

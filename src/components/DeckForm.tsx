@@ -268,7 +268,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
 
             <button
               type="button"
-              className={'btn btn'}
+              className="btn"
               onClick={handleFetchDeckData}
               disabled={!archidektUrl.trim() || isLoadingDeckName}
             >
@@ -292,7 +292,7 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
 
               <button
                 type="button"
-                className={'btn btn btn-circle btn-sm absolute top-2 right-2'}
+                className="btn btn-circle btn-sm absolute top-2 right-2"
                 onClick={() => handleRemoveCommander(index)}
               >
                 <X size={10} />
@@ -338,11 +338,11 @@ export const DeckForm: React.FC<DeckFormProps> = ({ deckId, userId = null, onSav
 
       {/* Action Buttons */}
       <div className="flex gap-2 justify-end">
-        <button type="button" className={'btn btn'} onClick={handleCancel}>
+        <button type="button" className="btn" onClick={handleCancel}>
           Cancel
         </button>
 
-        <button className={'btn btn-primary'} disabled={!name.trim() || selectedColors.length === 0}>
+        <button className="btn btn-primary" disabled={!name.trim() || selectedColors.length === 0}>
           Save
         </button>
       </div>

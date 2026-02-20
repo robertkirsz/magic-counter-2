@@ -40,7 +40,7 @@ const StartGameModal: React.FC<StartGameModalProps> = ({ gameId, onChoosePlayer 
         {players.map(player => (
           <button
             key={player.id}
-            className={selectedPlayerId === player.id ? 'btn btn-primary' : 'btn btn'}
+            className={selectedPlayerId === player.id ? 'btn btn-primary' : 'btn'}
             onClick={() => setSelectedPlayerId(player.id)}
           >
             {getPlayerName(player.id)}
@@ -48,7 +48,7 @@ const StartGameModal: React.FC<StartGameModalProps> = ({ gameId, onChoosePlayer 
         ))}
       </div>
 
-      <button className={'btn btn-primary'} disabled={!selectedPlayerId} onClick={handleConfirm}>
+      <button className="btn btn-primary" disabled={!selectedPlayerId} onClick={handleConfirm}>
         Confirm
       </button>
     </div>

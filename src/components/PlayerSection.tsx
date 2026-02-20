@@ -229,7 +229,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
 
               {/* Floating Add Deck Button */}
               <button
-                className={'btn btn-primary btn-circle absolute bottom-3 right-3 shadow-lg z-10'}
+                className="btn btn-primary btn-circle absolute bottom-3 right-3 shadow-lg z-10"
                 onClick={() => setShowDeckForm(true)}
               >
                 <Plus size={36} />

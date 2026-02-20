@@ -50,11 +50,11 @@ export const UserForm: React.FC<UserFormProps> = ({ userId, onSave, onCancel }) 
 
       {/* Action Buttons */}
       <div className="flex gap-2 justify-end">
-        <button className={'btn btn-primary'} disabled={!name.trim()}>
+        <button className="btn btn-primary" disabled={!name.trim()}>
           {mode === 'create' ? 'Save User' : 'Save Changes'}
         </button>
 
-        <button type="button" className={'btn btn-error'} onClick={handleCancel}>
+        <button type="button" className="btn btn-error" onClick={handleCancel}>
           Cancel
         </button>
       </div>

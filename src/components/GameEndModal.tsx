@@ -128,11 +128,11 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onCl
 
       {/* Action Buttons */}
       <div className="flex gap-3 pt-4">
-        <button className="btn btn flex-1" onClick={handleCancel}>
+        <button className="btn flex-1" onClick={handleCancel}>
           Cancel
         </button>
         <button
-          className={'btn flex-1'}
+          className="btn flex-1"
           onClick={handleSave}
           disabled={!selectedWinner || !selectedWinCondition}
         >

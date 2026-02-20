@@ -11,7 +11,7 @@ const PlayerUserSelector: React.FC<{
   <>
     {player.userId && (
       <div className="flex items-center gap-1">
-        <button className={'btn btn-primary'} onClick={onShowUserSelect}>
+        <button className="btn btn-primary" onClick={onShowUserSelect}>
           {getUserName(player.userId)}
         </button>
 
@@ -20,7 +20,7 @@ const PlayerUserSelector: React.FC<{
     )}
 
     {!player.userId && (
-      <button className={'btn btn-primary'} onClick={onShowUserSelect}>
+      <button className="btn btn-primary" onClick={onShowUserSelect}>
         User
       </button>
     )}

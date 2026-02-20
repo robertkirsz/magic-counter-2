@@ -10,7 +10,7 @@ const PlayerDeckSelector: React.FC<{
 }> = ({ player, onShowDeckSelect, onRemoveDeck }) => {
   if (!player.deckId)
     return (
-      <button className={'btn btn-primary'} onClick={onShowDeckSelect}>
+      <button className="btn btn-primary" onClick={onShowDeckSelect}>
         Deck
       </button>
     )
