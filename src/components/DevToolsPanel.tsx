@@ -18,6 +18,7 @@ import {
   generateRandomGame,
   generateRandomUser
 } from '../utils/generateRandom'
+import { fetchRandomCommander } from '../utils/scryfall'
 import { generateId } from '../utils/idGenerator'
 
 // Types for data validation
@@ -382,7 +383,40 @@ export const DevToolsPanel: React.FC = () => {
 
   const handleAddRandomUser = () => addUser(generateRandomUser())
 
-  const handleAddRandomDeck = () => addDeck(generateRandomDeck())
+  const handleAddRandomDeck = async () => {
+    // Randomly decide if we should add commanders (70% chance)
+    const shouldAddCommanders = Math.random() > 0.3
+    
+    if (shouldAddCommanders) {
+      try {
+        // Fetch 1-2 random commanders (Commander format allows up to 2)
+        const commanderCount = Math.random() > 0.7 ? 2 : 1
+        const commanders: ScryfallCard[] = []
+        
+        for (let i = 0; i < commanderCount; i++) {
+          const commander = await fetchRandomCommander()
+          if (commander) {
+            commanders.push(commander)
+          }
+        }
+        
+        // Only add deck if we got at least one commander, or if we're not trying to add commanders
+        if (commanders.length > 0) {
+          addDeck(generateRandomDeck({ commanders }))
+        } else {
+          // Fallback: add deck without commanders if API fails
+          addDeck(generateRandomDeck())
+        }
+      } catch (error) {
+        console.error('Error fetching random commanders:', error)
+        // Fallback: add deck without commanders if API fails
+        addDeck(generateRandomDeck())
+      }
+    } else {
+      // Add deck without commanders
+      addDeck(generateRandomDeck())
+    }
+  }
 
   const handleAddGame = () => {
     try {

@@ -83,3 +83,22 @@ export const fetchCommanderSuggestions = async (query: string): Promise<Scryfall
     return []
   }
 }
+
+export const fetchRandomCommander = async (): Promise<ScryfallCard | null> => {
+  try {
+    const card = (await makeScryfallRequest(
+      `https://api.scryfall.com/cards/random?q=is:commander`
+    )) as ScryfallCardRaw
+
+    return {
+      id: card.id,
+      name: card.name,
+      type: card.type_line,
+      colors: card.color_identity || card.colors || [],
+      image: card.card_faces?.[0]?.image_uris?.art_crop || card.image_uris?.art_crop || null
+    }
+  } catch (error) {
+    console.error('Error fetching random commander:', error)
+    return null
+  }
+}
