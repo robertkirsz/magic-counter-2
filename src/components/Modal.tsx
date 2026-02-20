@@ -81,12 +81,7 @@ export const Modal: React.FC<ModalProps> = ({
           {title && <h3 className="text-xl font-semibold text-slate-100">{title}</h3>}
 
           {onClose && !hideCloseButton && (
-            <button
-              type="button"
-              aria-label="Close modal"
-              className="btn btn-circle btn-sm ml-auto"
-              onClick={onClose}
-            >
+            <button type="button" aria-label="Close modal" className="btn btn-circle btn-sm ml-auto" onClick={onClose}>
               <X size={20} />
             </button>
           )}

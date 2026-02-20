@@ -86,9 +86,7 @@ export const fetchCommanderSuggestions = async (query: string): Promise<Scryfall
 
 export const fetchRandomCommander = async (): Promise<ScryfallCard | null> => {
   try {
-    const card = (await makeScryfallRequest(
-      `https://api.scryfall.com/cards/random?q=is:commander`
-    )) as ScryfallCardRaw
+    const card = (await makeScryfallRequest(`https://api.scryfall.com/cards/random?q=is:commander`)) as ScryfallCardRaw
 
     return {
       id: card.id,

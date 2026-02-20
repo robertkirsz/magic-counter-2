@@ -57,11 +57,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
         )}
 
         {onRemove && (
-          <button
-            className="btn btn-error btn-circle btn-sm"
-            title="Delete"
-            onClick={() => setShowConfirm(true)}
-          >
+          <button className="btn btn-error btn-circle btn-sm" title="Delete" onClick={() => setShowConfirm(true)}>
             <Trash2 size={16} />
           </button>
         )}
@@ -101,11 +97,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
 
   return (
     <div ref={wrapperRef} className={cn('relative flex max-w-fit max-h-fit', className)} {...props}>
-      <button
-        className="btn btn-circle btn-sm"
-        title="More options"
-        onClick={() => setIsOpen(!isOpen)}
-      >
+      <button className="btn btn-circle btn-sm" title="More options" onClick={() => setIsOpen(!isOpen)}>
         <MoreVertical size={16} />
       </button>
 

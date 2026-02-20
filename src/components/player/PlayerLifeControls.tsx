@@ -139,7 +139,10 @@ const PlayerLifeControls: React.FC<{
           <div className="flex justify-center">
             <button
               type="button"
-              className={cn('btn btn-sm', commanderDamage && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500')}
+              className={cn(
+                'btn btn-sm',
+                commanderDamage && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500'
+              )}
               onClick={() => setCommanderDamage(!commanderDamage)}
             >
               <img src="/icons/commander.png" className="w-5 h-5" />
@@ -152,7 +155,10 @@ const PlayerLifeControls: React.FC<{
           <div className="flex justify-center">
             <button
               type="button"
-              className={cn('btn btn-sm', poisonDamage && 'bg-green-600/90 hover:bg-green-500 text-white border-green-500')}
+              className={cn(
+                'btn btn-sm',
+                poisonDamage && 'bg-green-600/90 hover:bg-green-500 text-white border-green-500'
+              )}
               title={
                 poisonDamage
                   ? 'Poison mode: - adds poison, + removes poison'
@@ -174,11 +180,7 @@ const PlayerLifeControls: React.FC<{
       </div>
 
       <div className="flex gap-4 items-center">
-        <button
-          type="button"
-          className="btn !px-6 !py-3"
-          {...decrementHandlers}
-        >
+        <button type="button" className="btn px-6! py-3!" {...decrementHandlers}>
           <MinusIcon className="w-8 h-8" />
         </button>
 
@@ -204,12 +206,7 @@ const PlayerLifeControls: React.FC<{
         </div>
 
         {!attackMode && (
-          <button
-            type="button"
-            disabled={commanderDamage}
-            className="btn !px-6 !py-3"
-            {...incrementHandlers}
-          >
+          <button type="button" disabled={commanderDamage} className="btn px-6! py-3!" {...incrementHandlers}>
             <PlusIcon className="w-8 h-8" />
           </button>
         )}

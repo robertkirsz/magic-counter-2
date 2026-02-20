@@ -131,11 +131,7 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onCl
         <button className="btn flex-1" onClick={handleCancel}>
           Cancel
         </button>
-        <button
-          className="btn flex-1"
-          onClick={handleSave}
-          disabled={!selectedWinner || !selectedWinCondition}
-        >
+        <button className="btn flex-1" onClick={handleSave} disabled={!selectedWinner || !selectedWinCondition}>
           Save
         </button>
       </div>

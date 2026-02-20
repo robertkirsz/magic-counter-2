@@ -113,9 +113,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
   const handleNewGame = () => {
     if (isInGame && gameId) {
-      const confirmed = window.confirm(
-        'Are you sure you want to start a new game? The current game will be removed.'
-      )
+      const confirmed = window.confirm('Are you sure you want to start a new game? The current game will be removed.')
       if (!confirmed) return
 
       EventDispatcher.dispatchGameDelete(gameId)

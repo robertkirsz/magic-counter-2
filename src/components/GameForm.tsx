@@ -117,11 +117,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
 
       {/* Section 2: Starting Life */}
       <div className="flex gap-2 items-center">
-        <button
-          type="button"
-          className="btn"
-          onClick={() => handleLifeChange(startingLife - 5)}
-        >
+        <button type="button" className="btn" onClick={() => handleLifeChange(startingLife - 5)}>
           -
         </button>
 
@@ -139,11 +135,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
           </span>
         </div>
 
-        <button
-          type="button"
-          className="btn"
-          onClick={() => handleLifeChange(startingLife + 5)}
-        >
+        <button type="button" className="btn" onClick={() => handleLifeChange(startingLife + 5)}>
           +
         </button>
       </div>

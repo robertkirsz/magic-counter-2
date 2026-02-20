@@ -6,7 +6,7 @@ const PLAYER_COLORS = [
   '#8B5CF6', // violet
   '#EC4899', // pink
   '#06B6D4', // cyan
-  '#84CC16'  // lime
+  '#84CC16' // lime
 ]
 
 export const getPlayerColor = (index: number): string => {

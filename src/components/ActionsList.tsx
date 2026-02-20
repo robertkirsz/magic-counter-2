@@ -291,7 +291,7 @@ interface SectionHeaderProps {
 }
 
 const SectionHeader: React.FC<SectionHeaderProps> = ({ icon, title, subtitle, gradient, iconBg }) => (
-  <div className={`px-4 py-3 bg-gradient-to-r ${gradient} border-b border-gray-700`}>
+  <div className={`px-4 py-3 bg-linear-to-r ${gradient} border-b border-gray-700`}>
     <div className="flex items-center gap-3">
       <div className={`w-8 h-8 ${iconBg} rounded-full flex items-center justify-center`}>{icon}</div>
       <div>
@@ -313,7 +313,7 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({ isCollapsed, on
   <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
     <button
       onClick={onToggle}
-      className="w-full px-4 py-3 bg-gradient-to-r from-blue-900/20 to-indigo-900/20 hover:from-blue-900/30 hover:to-indigo-900/30 transition-colors border-b border-gray-700"
+      className="w-full px-4 py-3 bg-linear-to-r from-blue-900/20 to-indigo-900/20 hover:from-blue-900/30 hover:to-indigo-900/30 transition-colors border-b border-gray-700"
     >
       {header}
     </button>

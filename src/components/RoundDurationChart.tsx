@@ -264,18 +264,25 @@ export const RoundDurationChart: React.FC<RoundDurationChartProps> = ({ gameId }
           {playerStats.players.map(({ name, average, longest, shortest }) => (
             <div key={name} className="bg-slate-700/50 rounded-lg p-3">
               <p className="text-xs text-slate-400 uppercase tracking-wide flex items-center gap-1.5">
-                <span className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: playerColorMap[name] }} />
+                <span
+                  className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
+                  style={{ backgroundColor: playerColorMap[name] }}
+                />
                 {name}
               </p>
               <p className="text-lg font-semibold text-slate-100">Avg: {formatDuration(average)}</p>
               <div className="mt-1 space-y-0.5">
                 <p className="text-sm text-slate-300">
                   <span className="text-slate-400">Longest:</span> {formatDuration(longest.duration)}{' '}
-                  <span className="text-slate-500">R{longest.round}T{longest.turn}</span>
+                  <span className="text-slate-500">
+                    R{longest.round}T{longest.turn}
+                  </span>
                 </p>
                 <p className="text-sm text-slate-300">
                   <span className="text-slate-400">Shortest:</span> {formatDuration(shortest.duration)}{' '}
-                  <span className="text-slate-500">R{shortest.round}T{shortest.turn}</span>
+                  <span className="text-slate-500">
+                    R{shortest.round}T{shortest.turn}
+                  </span>
                 </p>
               </div>
             </div>

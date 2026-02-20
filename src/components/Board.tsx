@@ -23,8 +23,8 @@ import { ActionsList } from './ActionsList'
 import { GameEndModal } from './GameEndModal'
 import { GameForm } from './GameForm'
 import GameStatus from './GameStatus'
-import { Modal } from './Modal'
 import { IntroScreen } from './IntroScreen'
+import { Modal } from './Modal'
 import { MonarchDrawReminder } from './MonarchDrawReminder'
 import { SortablePlayerSection } from './SortablePlayerSection'
 import StartGameModal from './board/StartGameModal'
@@ -253,11 +253,7 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
         <div className="flex items-center gap-4">
           {/* Undo Last Action Button */}
           {game.state === 'active' && canUndo && (
-            <button
-              className="btn btn-circle"
-              onClick={handleUndoLastAction}
-              title="Undo last action"
-            >
+            <button className="btn btn-circle" onClick={handleUndoLastAction} title="Undo last action">
               <Undo size={32} />
             </button>
           )}
@@ -265,7 +261,7 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
           {/* Pass Turn Button */}
           {game.state === 'active' && game.turnTracking && activePlayer && (
             <button
-              className="btn btn-primary btn-circle !p-3"
+              className="btn btn-primary btn-circle p-3!"
               onClick={() => handlePassTurn()}
               title={
                 hasEffectiveActivePlayer(gameId) ? 'Cannot pass turn while temporary player is active' : 'Pass turn'
@@ -289,10 +285,7 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
                 <span>START</span>
               </button>
 
-              <button
-                className="btn bg-red-600 hover:bg-red-500 text-white border-red-500"
-                onClick={handleCancel}
-              >
+              <button className="btn bg-red-600 hover:bg-red-500 text-white border-red-500" onClick={handleCancel}>
                 CANCEL
               </button>
             </>

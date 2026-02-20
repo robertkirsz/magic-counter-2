@@ -46,7 +46,13 @@ export const UserForm: React.FC<UserFormProps> = ({ userId, onSave, onCancel }) 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       {/* Name Input */}
-      <input autoFocus value={name} placeholder="Name" onChange={e => setName(e.target.value)} className="input input-bordered w-full" />
+      <input
+        autoFocus
+        value={name}
+        placeholder="Name"
+        onChange={e => setName(e.target.value)}
+        className="input input-bordered w-full"
+      />
 
       {/* Action Buttons */}
       <div className="flex gap-2 justify-end">

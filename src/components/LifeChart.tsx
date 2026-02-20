@@ -300,13 +300,17 @@ export const LifeChart: React.FC<LifeChartProps> = ({ gameId }) => {
           {playerStats.players.map(({ name, finalLife, peak, lowest, netChange }) => (
             <div key={name} className="bg-gray-700/50 rounded-lg p-3">
               <p className="text-xs text-gray-400 uppercase tracking-wide flex items-center gap-1.5">
-                <span className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: playerColorMap[name] }} />
+                <span
+                  className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
+                  style={{ backgroundColor: playerColorMap[name] }}
+                />
                 {name}
               </p>
               <p className="text-lg font-semibold text-gray-100">
                 {finalLife} HP{' '}
                 <span className={`text-sm font-normal ${netChange >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                  ({netChange >= 0 ? '+' : ''}{netChange})
+                  ({netChange >= 0 ? '+' : ''}
+                  {netChange})
                 </span>
               </p>
               <div className="mt-1 space-y-0.5">
@@ -324,8 +328,11 @@ export const LifeChart: React.FC<LifeChartProps> = ({ gameId }) => {
               <p className="text-xs text-gray-400 uppercase tracking-wide">Biggest Hit</p>
               <p className="text-lg font-semibold text-gray-100">{playerStats.biggestHit.damage} damage</p>
               <p className="text-sm text-gray-300">
-                {playerStats.biggestHit.from} <span className="text-gray-500">dealt to</span> {playerStats.biggestHit.to}{' '}
-                <span className="text-gray-500">R{playerStats.biggestHit.round}T{playerStats.biggestHit.turn}</span>
+                {playerStats.biggestHit.from} <span className="text-gray-500">dealt to</span>{' '}
+                {playerStats.biggestHit.to}{' '}
+                <span className="text-gray-500">
+                  R{playerStats.biggestHit.round}T{playerStats.biggestHit.turn}
+                </span>
               </p>
             </div>
           )}

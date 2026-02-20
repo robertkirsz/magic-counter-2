@@ -145,7 +145,9 @@ export const DamageChart: React.FC<DamageChartProps> = ({ gameId }) => {
     }
 
     // Count turns from turn-change actions
-    const totalTurns = game.actions.filter((a: LifeChangeAction | TurnChangeAction | MonarchChangeAction) => a.type === 'turn-change').length
+    const totalTurns = game.actions.filter(
+      (a: LifeChangeAction | TurnChangeAction | MonarchChangeAction) => a.type === 'turn-change'
+    ).length
     const turnsPerPlayer = Math.max(1, Math.floor(totalTurns / game.players.length))
 
     const lastPoint = chartData.dataPoints[chartData.dataPoints.length - 1]
@@ -157,10 +159,7 @@ export const DamageChart: React.FC<DamageChartProps> = ({ gameId }) => {
     })
 
     // Find top damager
-    const topDamager = players.reduce(
-      (top, p) => (p.totalDamage > (top?.totalDamage ?? 0) ? p : top),
-      players[0]
-    )
+    const topDamager = players.reduce((top, p) => (p.totalDamage > (top?.totalDamage ?? 0) ? p : top), players[0])
 
     return { players, topDamager: topDamager?.totalDamage > 0 ? topDamager : null }
   }, [game, chartData])
@@ -278,7 +277,10 @@ export const DamageChart: React.FC<DamageChartProps> = ({ gameId }) => {
           {playerStats.players.map(({ name, totalDamage, avgPerTurn }) => (
             <div key={name} className="bg-gray-700/50 rounded-lg p-3">
               <p className="text-xs text-gray-400 uppercase tracking-wide flex items-center gap-1.5">
-                <span className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: playerColorMap[name] }} />
+                <span
+                  className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
+                  style={{ backgroundColor: playerColorMap[name] }}
+                />
                 {name}
               </p>
               <p className="text-lg font-semibold text-gray-100">{totalDamage} damage</p>

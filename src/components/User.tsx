@@ -27,7 +27,7 @@ export const User: React.FC<UserProps> = ({ user, onEdit, onRemove, onCreateDeck
     <div className="bg-slate-900 rounded-lg p-4 border border-slate-700">
       {/* User Header */}
       <div className="flex items-center gap-3 mb-4">
-        <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
+        <div className="w-12 h-12 bg-linear-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg">
           <UserIcon size={20} />
         </div>
 
@@ -69,7 +69,7 @@ export const User: React.FC<UserProps> = ({ user, onEdit, onRemove, onCreateDeck
           {decksExpanded && (
             <div className="mt-3 flex flex-wrap gap-2">
               {filteredDecks.map(deck => (
-                <div key={deck.id} className="flex-shrink-0">
+                <div key={deck.id} className="shrink-0">
                   <Deck id={deck.id} useContextControls />
                 </div>
               ))}
