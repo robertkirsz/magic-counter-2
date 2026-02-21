@@ -6,7 +6,6 @@ import { useGames } from '../hooks/useGames'
 import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
 import { generateId } from '../utils/idGenerator'
-import { Button } from './Button'
 import { Modal } from './Modal'
 
 interface GameEndModalProps {
@@ -78,7 +77,7 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onCl
     <Modal isOpen={isOpen} onClose={handleCancel}>
       {/* Winner Selection */}
       <div>
-        <label className="block text-sm font-medium text-white mb-2">Winner</label>
+        <label className="block text-sm font-medium text-base-content mb-2">Winner</label>
         <div className="grid grid-cols-2 gap-2">
           {validPlayers.map(player => {
             const user = users.find(u => u.id === player.userId)
@@ -89,8 +88,8 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onCl
                 className={cn(
                   'p-3 rounded-lg border-2 transition-colors',
                   selectedWinner === player.userId
-                    ? 'border-blue-500 bg-blue-500/20 text-white'
-                    : 'border-gray-600 text-gray-300 hover:border-gray-500 hover:text-white'
+                    ? 'border-info bg-info/20 text-info'
+                    : 'border-base-300 text-base-content/80 hover:border-base-300 hover:text-base-content'
                 )}
               >
                 <div className="flex items-center justify-between">
@@ -105,7 +104,7 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onCl
 
       {/* Win Condition Selection */}
       <div>
-        <label className="block text-sm font-medium text-white mb-2">Win Condition</label>
+        <label className="block text-sm font-medium text-base-content mb-2">Win Condition</label>
         <div className="grid grid-cols-2 gap-2">
           {WIN_CONDITIONS.map(condition => (
             <button
@@ -114,8 +113,8 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onCl
               className={cn(
                 'p-3 rounded-lg border-2 transition-colors',
                 selectedWinCondition === condition.value
-                  ? 'border-green-500 bg-green-500/20 text-white'
-                  : 'border-gray-600 text-gray-300 hover:border-gray-500 hover:text-white'
+                  ? 'border-success bg-success/20 text-success'
+                  : 'border-base-300 text-base-content/80 hover:border-base-300 hover:text-base-content'
               )}
             >
               <div className="flex items-center justify-between">
@@ -129,12 +128,12 @@ export const GameEndModal: React.FC<GameEndModalProps> = ({ gameId, isOpen, onCl
 
       {/* Action Buttons */}
       <div className="flex gap-3 pt-4">
-        <Button variant="secondary" onClick={handleCancel} className="flex-1">
+        <button className="btn flex-1" onClick={handleCancel}>
           Cancel
-        </Button>
-        <Button onClick={handleSave} disabled={!selectedWinner || !selectedWinCondition} className="flex-1">
+        </button>
+        <button className="btn flex-1" onClick={handleSave} disabled={!selectedWinner || !selectedWinCondition}>
           Save
-        </Button>
+        </button>
       </div>
     </Modal>
   )

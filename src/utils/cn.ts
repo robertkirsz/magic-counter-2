@@ -10,7 +10,7 @@ import { twMerge } from 'tailwind-merge'
  *
  * @example
  * cn('px-2 py-1', 'px-3') // Returns 'py-1 px-3'
- * cn('text-red-500', isActive && 'text-blue-500') // Conditional classes
+ * cn('text-error', isActive && 'text-info') // Conditional classes
  * cn('base-class', className) // Merge with prop className
  */
 export function cn(...inputs: ClassValue[]) {

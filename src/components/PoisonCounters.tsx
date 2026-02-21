@@ -32,9 +32,9 @@ export const PoisonCounters: React.FC<PoisonCountersProps> = ({ gameId, playerId
   return (
     <div className="flex items-center gap-1">
       <span>☠️</span>
-      <span className="text-lg font-bold text-green-400">{safeDisplayValue}</span>
+      <span className="text-lg font-bold text-success">{safeDisplayValue}</span>
       {pendingChange !== 0 && (
-        <span className={cn('text-xs', pendingChange < 0 ? 'text-green-400' : 'text-red-400')}>
+        <span className={cn('text-xs', pendingChange < 0 ? 'text-success' : 'text-error')}>
           {pendingChange > 0 ? '+' : ''}
           {pendingChange}
         </span>

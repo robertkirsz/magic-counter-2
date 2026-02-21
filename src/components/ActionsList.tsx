@@ -246,13 +246,13 @@ export const ActionsList: React.FC<ActionsListProps> = ({ gameId }) => {
       {hasActions && !hasTurnTracking && (
         <FadeMask showMask={lifeChangeActions.length > 10}>
           <div className="flex flex-col gap-2">
-            <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+            <div className="bg-base-200 rounded-lg border border-base-300 overflow-hidden">
               <SectionHeader
-                icon={<Heart className="w-4 h-4 text-green-300" />}
+                icon={<Heart className="w-4 h-4 text-success" />}
                 title="Life Changes"
                 subtitle={`${lifeChangeActions.length} actions`}
-                gradient="from-green-900/20 to-emerald-900/20"
-                iconBg="bg-green-900/30"
+                gradient="from-success/20 to-success/20"
+                iconBg="bg-success/30"
               />
 
               <div className="p-4 space-y-2">
@@ -291,12 +291,12 @@ interface SectionHeaderProps {
 }
 
 const SectionHeader: React.FC<SectionHeaderProps> = ({ icon, title, subtitle, gradient, iconBg }) => (
-  <div className={`px-4 py-3 bg-gradient-to-r ${gradient} border-b border-gray-700`}>
+  <div className={`px-4 py-3 bg-linear-to-r ${gradient} border-b border-base-300`}>
     <div className="flex items-center gap-3">
       <div className={`w-8 h-8 ${iconBg} rounded-full flex items-center justify-center`}>{icon}</div>
       <div>
-        <h3 className="font-semibold text-gray-100">{title}</h3>
-        {subtitle && <p className="text-xs text-gray-400">{subtitle}</p>}
+        <h3 className="font-semibold text-base-content">{title}</h3>
+        {subtitle && <p className="text-xs text-base-content/70">{subtitle}</p>}
       </div>
     </div>
   </div>
@@ -310,10 +310,10 @@ interface CollapsibleSectionProps {
 }
 
 const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({ isCollapsed, onToggle, header, children }) => (
-  <div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+  <div className="bg-base-200 rounded-lg border border-base-300 overflow-hidden">
     <button
       onClick={onToggle}
-      className="w-full px-4 py-3 bg-gradient-to-r from-blue-900/20 to-indigo-900/20 hover:from-blue-900/30 hover:to-indigo-900/30 transition-colors border-b border-gray-700"
+      className="w-full px-4 py-3 bg-linear-to-r from-info/20 to-primary/20 hover:from-info/30 hover:to-primary/30 transition-colors border-b border-base-300"
     >
       {header}
     </button>
@@ -330,12 +330,12 @@ interface RoundHeaderProps {
 const RoundHeader: React.FC<RoundHeaderProps> = ({ roundNumber, summary, isCollapsed }) => (
   <div className="flex items-center justify-between">
     <div className="flex items-center gap-3">
-      <div className="w-8 h-8 bg-blue-900/30 rounded-full flex items-center justify-center">
-        <span className="text-blue-300 font-semibold text-sm">{roundNumber}</span>
+      <div className="w-8 h-8 bg-info/30 rounded-full flex items-center justify-center">
+        <span className="text-info font-semibold text-sm">{roundNumber}</span>
       </div>
       <div className="text-left">
-        <h3 className="font-semiboldtext-gray-100">Round {roundNumber}</h3>
-        <p className="text-xstext-gray-400 mt-0.5">{summary}</p>
+        <h3 className="font-semibold text-base-content">Round {roundNumber}</h3>
+        <p className="text-xs text-base-content/70 mt-0.5">{summary}</p>
       </div>
     </div>
     {isCollapsed ? <ChevronRight size={16} /> : <ChevronDown size={16} />}
@@ -365,13 +365,13 @@ const TurnItem: React.FC<TurnItemProps> = ({
   const hasLifeChanges = lifeChanges.length > 0
 
   return (
-    <div className="bg-gray-700/50 rounded-lg p-3 border border-gray-600">
+    <div className="bg-base-300/50 rounded-lg p-3 border border-base-300">
       {/* Turn Header */}
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
-          <Zap className="w-4 h-4 text-blue-400" />
-          <span className="text-sm font-medium text-gray-100">{formatAction(turn)}</span>
-          <span className="text-xs text-gray-400">{turnTime}</span>
+          <Zap className="w-4 h-4 text-info" />
+          <span className="text-sm font-medium text-base-content">{formatAction(turn)}</span>
+          <span className="text-xs text-base-content/70">{turnTime}</span>
         </div>
         {canDeleteAction(turn.id) && <ThreeDotMenu onClose={() => onActionRemove(turn.id)} asMenu={false} />}
       </div>
@@ -417,14 +417,14 @@ const LifeChangeItem: React.FC<LifeChangeItemProps> = ({
   const isLifeGain = action.value > 0
   const isPoison = action.poison
   const Icon = isPoison ? Skull : Heart
-  const iconColor = isLifeGain ? 'text-green-400' : 'text-red-400'
+  const iconColor = isLifeGain ? 'text-success' : 'text-error'
 
   return (
-    <div className="flex items-center justify-between py-1 px-2 bg-gray-800 rounded border border-gray-600">
+    <div className="flex items-center justify-between py-1 px-2 bg-base-200 rounded border border-base-300">
       <div className="flex items-center gap-2">
         <Icon className={cn('flex-none w-3 h-3', iconColor)} />
-        <span className="text-sm text-gray-300">{formatAction(action)}</span>
-        <span className="text-xs text-gray-400">{actionTime}</span>
+        <span className="text-sm text-base-content/80">{formatAction(action)}</span>
+        <span className="text-xs text-base-content/70">{actionTime}</span>
       </div>
       {canDeleteAction(action.id) && <ThreeDotMenu onClose={() => onActionRemove(action.id)} asMenu={false} />}
     </div>
@@ -433,8 +433,8 @@ const LifeChangeItem: React.FC<LifeChangeItemProps> = ({
 
 const EmptyState: React.FC = () => (
   <div className="flex flex-col items-center justify-center text-center">
-    <CircleSlash size={48} className="text-gray-400" />
-    <h3 className="text-xl font-semibold text-gray-300">No actions recorded yet</h3>
-    <p className="text-gray-400">Start playing to see game history</p>
+    <CircleSlash size={48} className="text-base-content/70" />
+    <h3 className="text-xl font-semibold text-base-content/80">No actions recorded yet</h3>
+    <p className="text-base-content/70">Start playing to see game history</p>
   </div>
 )

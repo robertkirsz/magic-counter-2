@@ -19,7 +19,7 @@ import {
   generateRandomUser
 } from '../utils/generateRandom'
 import { generateId } from '../utils/idGenerator'
-import { Button } from './Button'
+import { fetchRandomCommander } from '../utils/scryfall'
 
 // Types for data validation
 type DataType = 'users' | 'decks' | 'games'
@@ -121,20 +121,20 @@ interface DataSectionProps {
 
 const DataSectionComponent: React.FC<DataSectionProps> = ({ section, text, setText, error, onSave }) => (
   <details open>
-    <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">{section.title}</summary>
+    <summary className="font-bold mb-2 cursor-pointer select-none text-base-content">{section.title}</summary>
 
     <textarea
-      className={cn('form-textarea resize-y mb-1 h-28', error && 'border-red-500')}
+      className={cn('textarea textarea-bordered w-full resize-y mb-1 h-28', error && 'border-error')}
       value={text}
       onChange={e => setText(e.target.value)}
       spellCheck={false}
     />
 
-    {error && <div className="text-red-600 text-xs mb-1">{error}</div>}
+    {error && <div className="text-error text-xs mb-1">{error}</div>}
 
-    <Button variant="secondary" onClick={onSave}>
+    <button className="btn btn-xs" onClick={onSave}>
       Save
-    </Button>
+    </button>
   </details>
 )
 
@@ -147,9 +147,9 @@ interface QuickActionButtonProps {
 }
 
 const QuickActionButton: React.FC<QuickActionButtonProps> = ({ icon, onClick, disabled, title }) => (
-  <Button variant="secondary" onClick={onClick} disabled={disabled} className="flex items-center gap-1" title={title}>
+  <button className="btn btn-xs flex items-center gap-1" onClick={onClick} disabled={disabled} title={title}>
     {icon}
-  </Button>
+  </button>
 )
 
 export const DevToolsPanel: React.FC = () => {
@@ -383,7 +383,40 @@ export const DevToolsPanel: React.FC = () => {
 
   const handleAddRandomUser = () => addUser(generateRandomUser())
 
-  const handleAddRandomDeck = () => addDeck(generateRandomDeck())
+  const handleAddRandomDeck = async () => {
+    // Randomly decide if we should add commanders (70% chance)
+    const shouldAddCommanders = Math.random() > 0.3
+
+    if (shouldAddCommanders) {
+      try {
+        // Fetch 1-2 random commanders (Commander format allows up to 2)
+        const commanderCount = Math.random() > 0.7 ? 2 : 1
+        const commanders: ScryfallCard[] = []
+
+        for (let i = 0; i < commanderCount; i++) {
+          const commander = await fetchRandomCommander()
+          if (commander) {
+            commanders.push(commander)
+          }
+        }
+
+        // Only add deck if we got at least one commander, or if we're not trying to add commanders
+        if (commanders.length > 0) {
+          addDeck(generateRandomDeck({ commanders }))
+        } else {
+          // Fallback: add deck without commanders if API fails
+          addDeck(generateRandomDeck())
+        }
+      } catch (error) {
+        console.error('Error fetching random commanders:', error)
+        // Fallback: add deck without commanders if API fails
+        addDeck(generateRandomDeck())
+      }
+    } else {
+      // Add deck without commanders
+      addDeck(generateRandomDeck())
+    }
+  }
 
   const handleAddGame = () => {
     try {
@@ -445,10 +478,10 @@ export const DevToolsPanel: React.FC = () => {
   return (
     <div className="fixed z-100 gap-2 bottom-2 right-2 flex flex-col items-end">
       {open && (
-        <div className="flex flex-col gap-2 bg-slate-900 border border-slate-700 font-mono rounded-lg p-4 shadow-lg max-h-[400px] max-w-[100%] overflow-y-auto text-xs">
+        <div className="flex flex-col gap-2 bg-base-300 border border-base-300 font-mono rounded-lg p-4 shadow-lg max-h-[400px] max-w-full overflow-y-auto text-xs">
           {/* Quick Actions Section */}
           <details open>
-            <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">Quick Actions</summary>
+            <summary className="font-bold mb-2 cursor-pointer select-none text-base-content">Quick Actions</summary>
 
             <div className="flex flex-wrap gap-2 mb-3">
               <QuickActionButton icon={<UserPlus size={14} />} onClick={handleAddRandomUser} title="Add Random User" />
@@ -458,7 +491,7 @@ export const DevToolsPanel: React.FC = () => {
             {/* Game Creation Controls */}
             <div className="mb-3">
               <div className="mb-2">
-                <label className="text-xs text-slate-300 mb-1 block">Game Type:</label>
+                <label className="text-xs text-base-content/80 mb-1 block">Game Type:</label>
                 <div className="flex gap-2">
                   <label className="flex items-center gap-1 text-xs">
                     <input
@@ -497,7 +530,7 @@ export const DevToolsPanel: React.FC = () => {
               </div>
 
               <div className="mb-2">
-                <label className="text-xs text-slate-300 mb-1 block">Game State:</label>
+                <label className="text-xs text-base-content/80 mb-1 block">Game State:</label>
                 <div className="flex gap-2">
                   <label className="flex items-center gap-1 text-xs">
                     <input
@@ -541,52 +574,52 @@ export const DevToolsPanel: React.FC = () => {
 
           {/* Import/Export Section */}
           <details open>
-            <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">Import/Export</summary>
+            <summary className="font-bold mb-2 cursor-pointer select-none text-base-content">Import/Export</summary>
 
             <div className="flex gap-2 mb-3">
-              <Button variant="secondary" onClick={handleExport}>
+              <button className="btn btn-xs" onClick={handleExport}>
                 Export
-              </Button>
+              </button>
 
-              <label className="btn primary">
+              <label className="btn btn-xs btn-primary">
                 Import
                 <input type="file" accept=".json" onChange={handleImport} className="hidden" />
               </label>
 
-              <Button variant="danger" onClick={handleClearData}>
+              <button className="btn btn-xs btn-error" onClick={handleClearData}>
                 Delete
-              </Button>
+              </button>
             </div>
 
-            {importError && <div className="text-red-600 text-xs mb-2">{importError}</div>}
+            {importError && <div className="text-error text-xs mb-2">{importError}</div>}
           </details>
 
           {/* Event Logger Section */}
           <details open>
-            <summary className="font-bold mb-2 cursor-pointer select-none text-slate-100">Event Logger</summary>
+            <summary className="font-bold mb-2 cursor-pointer select-none text-base-content">Event Logger</summary>
 
             <div className="flex gap-2 mb-3">
-              <Button variant="secondary" onClick={handleClearLogs}>
+              <button className="btn btn-xs" onClick={handleClearLogs}>
                 Clear Logs
-              </Button>
+              </button>
 
-              <span className="text-xs text-slate-400 flex items-center">
+              <span className="text-xs text-base-content/70 flex items-center">
                 {logs.length}/{MAX_LOG_ENTRIES} events
               </span>
             </div>
 
-            <div className="space-y-2 max-h-48 overflow-y-auto bg-slate-800 rounded p-2">
+            <div className="space-y-2 max-h-48 overflow-y-auto bg-base-200 rounded p-2">
               {logs.length === 0 ? (
-                <p className="text-slate-400 text-xs">No events logged yet...</p>
+                <p className="text-base-content/70 text-xs">No events logged yet...</p>
               ) : (
                 logs.map(log => (
-                  <div key={log.id} className="text-xs border-l-2 border-blue-500 pl-2">
+                  <div key={log.id} className="text-xs border-l-2 border-info pl-2">
                     <div className="flex justify-between">
-                      <span className="font-semibold text-slate-200">{log.type}</span>
-                      <span className="text-slate-400">{log.timestamp.toLocaleTimeString()}</span>
+                      <span className="font-semibold text-base-content/90">{log.type}</span>
+                      <span className="text-base-content/70">{log.timestamp.toLocaleTimeString()}</span>
                     </div>
 
-                    <pre className="text-slate-300 mt-1 text-xs overflow-x-auto whitespace-pre-wrap">
+                    <pre className="text-base-content/80 mt-1 text-xs overflow-x-auto whitespace-pre-wrap">
                       {JSON.stringify(log.data, null, 2)}
                     </pre>
                   </div>
@@ -609,14 +642,12 @@ export const DevToolsPanel: React.FC = () => {
         </div>
       )}
 
-      <Button
-        variant="primary"
-        round
-        className={cn('bg-green-500 transition-all duration-200', open && 'rotate-12')}
+      <button
+        className={cn('btn btn-primary btn-circle transition-all duration-200', open && 'rotate-45')}
         onClick={() => setOpen(o => !o)}
       >
         <Wrench size={20} />
-      </Button>
+      </button>
     </div>
   )
 }

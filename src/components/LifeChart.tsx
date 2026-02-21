@@ -191,8 +191,8 @@ export const LifeChart: React.FC<LifeChartProps> = ({ gameId }) => {
   if (!game || chartData.dataPoints.length === 0) {
     return (
       <div className="flex items-center justify-center py-8 text-center">
-        <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mb-4">
-          <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="w-16 h-16 bg-base-200 rounded-full flex items-center justify-center mb-4">
+          <svg className="w-8 h-8 text-base-content/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -201,7 +201,7 @@ export const LifeChart: React.FC<LifeChartProps> = ({ gameId }) => {
             />
           </svg>
         </div>
-        <p className="text-gray-400">No life data to display</p>
+        <p className="text-base-content/70">No life data to display</p>
       </div>
     )
   }
@@ -292,40 +292,47 @@ export const LifeChart: React.FC<LifeChartProps> = ({ gameId }) => {
   }
 
   return (
-    <div className="flex-1 bg-gray-800 rounded-lg border border-gray-700 p-4">
-      <h3 className="text-lg font-semibold text-gray-100 mb-4">Life Chart</h3>
+    <div className="flex-1 bg-base-200 rounded-lg border border-base-300 p-4">
+      <h3 className="text-lg font-semibold text-base-content mb-4">Life Chart</h3>
 
       {(playerStats.players.length > 0 || playerStats.biggestHit) && (
         <div className="mb-4 grid grid-cols-2 gap-3">
           {playerStats.players.map(({ name, finalLife, peak, lowest, netChange }) => (
-            <div key={name} className="bg-gray-700/50 rounded-lg p-3">
-              <p className="text-xs text-gray-400 uppercase tracking-wide flex items-center gap-1.5">
-                <span className="inline-block w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: playerColorMap[name] }} />
+            <div key={name} className="bg-base-300/50 rounded-lg p-3">
+              <p className="text-xs text-base-content/70 uppercase tracking-wide flex items-center gap-1.5">
+                <span
+                  className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
+                  style={{ backgroundColor: playerColorMap[name] }}
+                />
                 {name}
               </p>
-              <p className="text-lg font-semibold text-gray-100">
+              <p className="text-lg font-semibold text-base-content">
                 {finalLife} HP{' '}
-                <span className={`text-sm font-normal ${netChange >= 0 ? 'text-emerald-400' : 'text-red-400'}`}>
-                  ({netChange >= 0 ? '+' : ''}{netChange})
+                <span className={`text-sm font-normal ${netChange >= 0 ? 'text-success' : 'text-error'}`}>
+                  ({netChange >= 0 ? '+' : ''}
+                  {netChange})
                 </span>
               </p>
               <div className="mt-1 space-y-0.5">
-                <p className="text-sm text-gray-300">
-                  <span className="text-gray-400">Peak:</span> {peak} HP
+                <p className="text-sm text-base-content/80">
+                  <span className="text-base-content/70">Peak:</span> {peak} HP
                 </p>
-                <p className="text-sm text-gray-300">
-                  <span className="text-gray-400">Lowest:</span> {lowest} HP
+                <p className="text-sm text-base-content/80">
+                  <span className="text-base-content/70">Lowest:</span> {lowest} HP
                 </p>
               </div>
             </div>
           ))}
           {playerStats.biggestHit && (
-            <div className="bg-gray-600/50 rounded-lg p-3">
-              <p className="text-xs text-gray-400 uppercase tracking-wide">Biggest Hit</p>
-              <p className="text-lg font-semibold text-gray-100">{playerStats.biggestHit.damage} damage</p>
-              <p className="text-sm text-gray-300">
-                {playerStats.biggestHit.from} <span className="text-gray-500">dealt to</span> {playerStats.biggestHit.to}{' '}
-                <span className="text-gray-500">R{playerStats.biggestHit.round}T{playerStats.biggestHit.turn}</span>
+            <div className="bg-base-300/50 rounded-lg p-3">
+              <p className="text-xs text-base-content/70 uppercase tracking-wide">Biggest Hit</p>
+              <p className="text-lg font-semibold text-base-content">{playerStats.biggestHit.damage} damage</p>
+              <p className="text-sm text-base-content/80">
+                {playerStats.biggestHit.from} <span className="text-base-content/60">dealt to</span>{' '}
+                {playerStats.biggestHit.to}{' '}
+                <span className="text-base-content/60">
+                  R{playerStats.biggestHit.round}T{playerStats.biggestHit.turn}
+                </span>
               </p>
             </div>
           )}

@@ -2,7 +2,6 @@ import { Edit3, MoreVertical, Trash2, X } from 'lucide-react'
 import React, { useEffect, useRef, useState } from 'react'
 
 import { cn } from '../utils/cn'
-import { Button } from './Button'
 import { Modal } from './Modal'
 
 interface ThreeDotMenuProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -52,43 +51,43 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
     return (
       <div className={cn('flex gap-1 empty:hidden', className)} {...props}>
         {onEdit && (
-          <Button round small variant="secondary" title="Edit" onClick={onEdit}>
+          <button className="btn btn-circle btn-sm" title="Edit" onClick={onEdit}>
             <Edit3 size={16} />
-          </Button>
+          </button>
         )}
 
         {onRemove && (
-          <Button round small variant="danger" title="Delete" onClick={() => setShowConfirm(true)}>
+          <button className="btn btn-error btn-circle btn-sm" title="Delete" onClick={() => setShowConfirm(true)}>
             <Trash2 size={16} />
-          </Button>
+          </button>
         )}
 
         {onClose && (
-          <Button round small variant="secondary" title="Close" onClick={onClose}>
+          <button className="btn btn-circle btn-sm" title="Close" onClick={onClose}>
             <X size={16} />
-          </Button>
+          </button>
         )}
 
         {/* TODO: duplicated below */}
         {/* Confirmation Dialog */}
         <Modal isOpen={showConfirm} onClose={() => setShowConfirm(false)} title="Confirm Delete">
           <div className="flex flex-col gap-4">
-            <p className="text-gray-600">Are you sure you want to delete this item? This action cannot be undone.</p>
+            <p className="text-base-content/70">Are you sure you want to delete this item? This action cannot be undone.</p>
 
             <div className="flex gap-2 justify-end">
-              <Button variant="secondary" onClick={() => setShowConfirm(false)}>
+              <button className="btn" onClick={() => setShowConfirm(false)}>
                 Cancel
-              </Button>
+              </button>
 
-              <Button
-                variant="danger"
+              <button
+                className="btn btn-error"
                 onClick={() => {
                   onRemove?.()
                   setShowConfirm(false)
                 }}
               >
                 Delete
-              </Button>
+              </button>
             </div>
           </div>
         </Modal>
@@ -98,9 +97,9 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
 
   return (
     <div ref={wrapperRef} className={cn('relative flex max-w-fit max-h-fit', className)} {...props}>
-      <Button variant="secondary" round small title="More options" onClick={() => setIsOpen(!isOpen)}>
+      <button className="btn btn-circle btn-sm" title="More options" onClick={() => setIsOpen(!isOpen)}>
         <MoreVertical size={16} />
-      </Button>
+      </button>
 
       {isOpen && (
         <div
@@ -112,9 +111,8 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
           )}
         >
           {onEdit && (
-            <Button
-              variant="secondary"
-              className="rounded-none"
+            <button
+              className="btn rounded-none"
               onClick={() => {
                 onEdit()
                 setIsOpen(false)
@@ -122,13 +120,12 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
             >
               <Edit3 size={14} />
               Edit
-            </Button>
+            </button>
           )}
 
           {onRemove && (
-            <Button
-              variant="danger"
-              className="rounded-none"
+            <button
+              className="btn btn-error rounded-none"
               onClick={() => {
                 setShowConfirm(true)
                 setIsOpen(false)
@@ -136,12 +133,12 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
             >
               <Trash2 size={14} />
               Delete
-            </Button>
+            </button>
           )}
 
           {onClose && (
-            <Button
-              variant="secondary"
+            <button
+              className="btn"
               onClick={() => {
                 onClose()
                 setIsOpen(false)
@@ -149,7 +146,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
             >
               <X size={14} />
               Close
-            </Button>
+            </button>
           )}
         </div>
       )}
@@ -160,19 +157,19 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
           <p>Are you sure you want to delete this item? This action cannot be undone.</p>
 
           <div className="flex gap-2 justify-end">
-            <Button variant="secondary" onClick={() => setShowConfirm(false)}>
+            <button className="btn" onClick={() => setShowConfirm(false)}>
               Cancel
-            </Button>
+            </button>
 
-            <Button
-              variant="danger"
+            <button
+              className="btn btn-error"
               onClick={() => {
                 onRemove?.()
                 setShowConfirm(false)
               }}
             >
               Delete
-            </Button>
+            </button>
           </div>
         </div>
       </Modal>

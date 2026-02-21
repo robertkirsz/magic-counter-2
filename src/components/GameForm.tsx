@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
 import { cn } from '../utils/cn'
-import { Button } from './Button'
 
 interface GameFormProps extends React.HTMLAttributes<HTMLFormElement> {
   gameId?: Game['id']
@@ -105,22 +104,22 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
       {/* Section 1: Number of Players */}
       <div className="grid grid-cols-3 gap-2">
         {[1, 2, 3, 4, 5, 6].map(count => (
-          <Button
+          <button
             key={count}
             type="button"
-            variant={numberOfPlayers === count ? 'primary' : 'secondary'}
+            className={numberOfPlayers === count ? 'btn btn-primary' : 'btn'}
             onClick={() => setNumberOfPlayers(count)}
           >
             {count} <UserIcon className="w-4 h-4" />
-          </Button>
+          </button>
         ))}
       </div>
 
       {/* Section 2: Starting Life */}
       <div className="flex gap-2 items-center">
-        <Button type="button" variant="secondary" onClick={() => handleLifeChange(startingLife - 5)}>
+        <button type="button" className="btn" onClick={() => handleLifeChange(startingLife - 5)}>
           -
-        </Button>
+        </button>
 
         <div className="relative">
           <input
@@ -129,16 +128,16 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
             max="999"
             value={startingLife}
             onChange={e => handleLifeChange(parseInt(e.target.value))}
-            className="form-input-number hide-number-arrows pr-5"
+            className="input input-bordered w-full hide-number-arrows pr-5"
           />
           <span className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
-            <HeartIcon className="w-4 h-4 text-slate-400" />
+            <HeartIcon className="w-4 h-4 text-base-content/70" />
           </span>
         </div>
 
-        <Button type="button" variant="secondary" onClick={() => handleLifeChange(startingLife + 5)}>
+        <button type="button" className="btn" onClick={() => handleLifeChange(startingLife + 5)}>
           +
-        </Button>
+        </button>
       </div>
 
       <div className="flex flex-col gap-2">
@@ -148,9 +147,9 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
             type="checkbox"
             checked={commanders}
             onChange={() => setCommanders(!commanders)}
-            className="form-checkbox"
+            className="checkbox"
           />
-          <span className="text-slate-200">Commander</span>
+          <span className="text-base-content/90">Commander</span>
         </label>
 
         {/* Section 4: Tracking Type */}
@@ -159,21 +158,21 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
             type="checkbox"
             checked={turnTracking}
             onChange={() => setTurnTracking(!turnTracking)}
-            className="form-checkbox"
+            className="checkbox"
           />
-          <span className="text-slate-200">Turn tracking</span>
+          <span className="text-base-content/90">Turn tracking</span>
         </label>
       </div>
 
       {/* Action Buttons */}
       <div className="flex gap-2">
-        <Button variant="primary" disabled={!isValidGameSetup()}>
+        <button className="btn btn-primary" disabled={!isValidGameSetup()}>
           {isEditMode ? 'Save' : 'Create'}
-        </Button>
+        </button>
 
-        <Button type="button" variant="secondary" onClick={onCancel}>
+        <button type="button" className="btn" onClick={onCancel}>
           Cancel
-        </Button>
+        </button>
       </div>
     </form>
   )

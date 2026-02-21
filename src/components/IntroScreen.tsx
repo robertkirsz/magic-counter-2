@@ -17,7 +17,6 @@ import { useGames } from '../hooks/useGames'
 import { cn } from '../utils/cn'
 import { EventDispatcher } from '../utils/eventDispatcher'
 import { isFullscreen, toggleFullscreen } from '../utils/fullscreen'
-import { Button } from './Button'
 import { Modal } from './Modal'
 
 const DeckForm = React.lazy(() => import('./DeckForm').then(m => ({ default: m.DeckForm })))
@@ -114,9 +113,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
   const handleNewGame = () => {
     if (isInGame && gameId) {
-      const confirmed = window.confirm(
-        'Are you sure you want to start a new game? The current game will be removed.'
-      )
+      const confirmed = window.confirm('Are you sure you want to start a new game? The current game will be removed.')
       if (!confirmed) return
 
       EventDispatcher.dispatchGameDelete(gameId)
@@ -132,46 +129,45 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
       {!isInGame && <h1 className="mb-40 text-2xl text-center">Magic Counter</h1>}
 
       <div className="grid grid-cols-2 gap-2 w-full max-w-xs">
-        <Button variant="primary" className="col-span-2" onClick={handleNewGame}>
+        <button className="btn btn-primary col-span-2" onClick={handleNewGame}>
           <Plus size={20} />
           New Game
-        </Button>
+        </button>
 
         {hasGames && (
-          <Button variant="secondary" onClick={() => setShowGames(true)}>
+          <button className="btn" onClick={() => setShowGames(true)}>
             <History size={20} />
             Past Games
-          </Button>
+          </button>
         )}
 
-        <Button variant="secondary" onClick={() => setShowUsers(true)}>
+        <button className="btn" onClick={() => setShowUsers(true)}>
           <UsersIcon size={20} />
           Users
-        </Button>
+        </button>
 
-        <Button variant="secondary" onClick={() => setShowDecks(true)}>
+        <button className="btn" onClick={() => setShowDecks(true)}>
           <BookOpen size={20} />
           Decks
-        </Button>
+        </button>
 
         {/* In-game settings */}
         {isInGame && (
           <>
-            <div className="col-span-2 border-t border-slate-600 my-1"></div>
+            <div className="col-span-2 border-t border-base-300 my-1"></div>
 
-            <Button variant="secondary" onClick={() => onShowGameSettings?.()}>
+            <button className="btn" onClick={() => onShowGameSettings?.()}>
               <Settings size={20} />
               Game Settings
-            </Button>
+            </button>
 
-            <Button variant="secondary" onClick={() => onShowActions?.()}>
+            <button className="btn" onClick={() => onShowActions?.()}>
               <List size={20} />
               Game Actions
-            </Button>
+            </button>
 
-            <Button
-              variant="secondary"
-              className={cn(dragEnabled && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500')}
+            <button
+              className={cn('btn', dragEnabled && 'bg-info/90 hover:bg-info text-info-content border-info')}
               onClick={() => {
                 onDragEnabledChange?.(!dragEnabled)
                 onClose?.()
@@ -179,11 +175,10 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             >
               <Move size={20} />
               Drag Mode
-            </Button>
+            </button>
 
-            <Button
-              variant="secondary"
-              className={cn(tableMode && 'bg-green-600/90 hover:bg-green-500 text-white border-green-500')}
+            <button
+              className={cn('btn', tableMode && 'bg-success/90 hover:bg-success text-success-content border-success')}
               onClick={() => {
                 onTableModeChange?.(!tableMode)
                 onClose?.()
@@ -191,11 +186,10 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             >
               <Table size={20} />
               Table Mode
-            </Button>
+            </button>
 
-            <Button
-              variant="secondary"
-              className="col-span-2"
+            <button
+              className="btn col-span-2"
               onClick={() => {
                 handleToggleFullscreen()
                 onClose?.()
@@ -203,15 +197,15 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             >
               {fullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
               {fullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
-            </Button>
+            </button>
 
             {gameState === 'active' && (
               <>
-                <div className="col-span-2 border-t border-slate-600 my-1"></div>
-                <Button variant="danger" className="col-span-2" onClick={() => onFinishGame?.()}>
+                <div className="col-span-2 border-t border-base-300 my-1"></div>
+                <button className="btn btn-error col-span-2" onClick={() => onFinishGame?.()}>
                   <Trophy size={20} />
                   Finish Game
-                </Button>
+                </button>
               </>
             )}
           </>
@@ -220,37 +214,35 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
       {/* GameForm Modal */}
       <Modal isOpen={showGameForm} onClose={() => setShowGameForm(false)} title="Game Form">
-        <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+        <Suspense fallback={<div className="p-3 text-base-content/70">Loading…</div>}>
           <GameForm onSave={() => setShowGameForm(false)} onCancel={() => setShowGameForm(false)} />
         </Suspense>
       </Modal>
 
       {/* Games Modal */}
       <Modal fullSize isOpen={showGames} onClose={() => setShowGames(false)} title="Games">
-        <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+        <Suspense fallback={<div className="p-3 text-base-content/70">Loading…</div>}>
           <Games className="flex-1" />
         </Suspense>
       </Modal>
 
       {/* Users Modal */}
       <Modal fullSize isOpen={showUsers} onClose={() => setShowUsers(false)} title="Users">
-        <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+        <Suspense fallback={<div className="p-3 text-base-content/70">Loading…</div>}>
           <Users className="flex-1" />
         </Suspense>
 
         {/* Floating Add User Button */}
-        <Button
-          variant="primary"
-          round
-          className="absolute bottom-3 right-3 shadow-lg z-10"
+        <button
+          className="btn btn-primary btn-circle absolute bottom-3 right-3 shadow-lg z-10"
           onClick={() => setUserFormVisible(true)}
         >
           <Plus size={36} />
-        </Button>
+        </button>
 
         {/* User Form Modal */}
         <Modal isOpen={userFormVisible} title="Add User" onClose={() => setUserFormVisible(false)}>
-          <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+          <Suspense fallback={<div className="p-3 text-base-content/70">Loading…</div>}>
             <UserForm onSave={() => setUserFormVisible(false)} onCancel={() => setUserFormVisible(false)} />
           </Suspense>
         </Modal>
@@ -258,23 +250,21 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
       {/* Decks Modal */}
       <Modal fullSize isOpen={showDecks} onClose={() => setShowDecks(false)} title="Decks">
-        <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+        <Suspense fallback={<div className="p-3 text-base-content/70">Loading…</div>}>
           <Decks className="flex-1" />
         </Suspense>
 
         {/* Floating Add Deck Button */}
-        <Button
-          variant="primary"
-          round
-          className="absolute bottom-3 right-3 shadow-lg z-10"
+        <button
+          className="btn btn-primary btn-circle absolute bottom-3 right-3 shadow-lg z-10"
           onClick={() => setDeckFormVisible(true)}
         >
           <Plus size={36} />
-        </Button>
+        </button>
 
         {/* Deck Form Modal */}
         <Modal isOpen={deckFormVisible} title="Add Deck" onClose={() => setDeckFormVisible(false)}>
-          <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+          <Suspense fallback={<div className="p-3 text-base-content/70">Loading…</div>}>
             <DeckForm onSave={() => setDeckFormVisible(false)} onCancel={() => setDeckFormVisible(false)} />
           </Suspense>
         </Modal>

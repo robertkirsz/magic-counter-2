@@ -20,12 +20,11 @@ import { cn } from '../utils/cn'
 import { EventDispatcher } from '../utils/eventDispatcher'
 import { generateId } from '../utils/idGenerator'
 import { ActionsList } from './ActionsList'
-import { Button } from './Button'
 import { GameEndModal } from './GameEndModal'
 import { GameForm } from './GameForm'
 import GameStatus from './GameStatus'
-import { Modal } from './Modal'
 import { IntroScreen } from './IntroScreen'
+import { Modal } from './Modal'
 import { MonarchDrawReminder } from './MonarchDrawReminder'
 import { SortablePlayerSection } from './SortablePlayerSection'
 import StartGameModal from './board/StartGameModal'
@@ -206,7 +205,7 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
   return (
     <div
       className={cn(
-        'Board flex flex-col h-svh bg-black relative overflow-clip',
+        'Board flex flex-col h-svh bg-base-300 relative overflow-clip',
         dragEnabled && 'dragEnabled',
         tableMode && 'tableMode'
       )}
@@ -234,7 +233,7 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
 
         <DragOverlay>
           {draggedPlayerId && (
-            <div className="rounded-lg px-3 py-2 bg-slate-700/90 text-slate-100 border border-slate-600 shadow-lg min-w-[160px]">
+            <div className="rounded-lg px-3 py-2 bg-base-300/90 text-base-content border border-base-300 shadow-lg min-w-[160px]">
               <div className="text-sm font-semibold">
                 {(() => {
                   const player = game.players.find(p => p.id === draggedPlayerId)
@@ -254,25 +253,23 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
         <div className="flex items-center gap-4">
           {/* Undo Last Action Button */}
           {game.state === 'active' && canUndo && (
-            <Button round variant="secondary" onClick={handleUndoLastAction} title="Undo last action">
+            <button className="btn btn-circle" onClick={handleUndoLastAction} title="Undo last action">
               <Undo size={32} />
-            </Button>
+            </button>
           )}
 
           {/* Pass Turn Button */}
           {game.state === 'active' && game.turnTracking && activePlayer && (
-            <Button
-              round
-              variant="primary"
+            <button
+              className="btn btn-primary btn-circle p-3!"
               onClick={() => handlePassTurn()}
               title={
                 hasEffectiveActivePlayer(gameId) ? 'Cannot pass turn while temporary player is active' : 'Pass turn'
               }
-              className="!p-3"
               disabled={hasEffectiveActivePlayer(gameId)}
             >
               <ArrowBigRightDash size={48} />
-            </Button>
+            </button>
           )}
         </div>
 
@@ -283,18 +280,14 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
         <div className="flex gap-2 min-h-[30px]">
           {game.state === 'setup' && (
             <>
-              <Button variant="primary" disabled={!canPlay} onClick={handlePlay}>
+              <button className="btn btn-primary" disabled={!canPlay} onClick={handlePlay}>
                 <Play size={32} />
                 <span>START</span>
-              </Button>
+              </button>
 
-              <Button
-                variant="secondary"
-                className="bg-red-600 hover:bg-red-500 text-white border-red-500"
-                onClick={handleCancel}
-              >
+              <button className="btn bg-error hover:bg-error/80 text-error-content border-error" onClick={handleCancel}>
                 CANCEL
-              </Button>
+              </button>
             </>
           )}
         </div>
@@ -302,9 +295,9 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
 
       {/* Menu Button */}
       <div className="absolute top-0 right-0 p-2 z-20">
-        <Button round onClick={() => setShowIntroModal(true)} title="Menu">
+        <button className="btn btn-circle" onClick={() => setShowIntroModal(true)} title="Menu">
           <Settings size={24} />
-        </Button>
+        </button>
       </div>
 
       {/* IntroScreen Modal */}

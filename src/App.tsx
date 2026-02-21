@@ -16,7 +16,7 @@ const APP_VERSION = pkg.version
 const AppContent: React.FC = () => {
   return (
     <>
-      <div className="fixed top-1 left-1 text-xs text-slate-400 z-50 pointer-events-none">v{APP_VERSION}</div>
+      <div className="fixed top-1 left-1 text-xs text-base-content/70 z-50 pointer-events-none">v{APP_VERSION}</div>
 
       <UsersProvider>
         <GamesProvider>

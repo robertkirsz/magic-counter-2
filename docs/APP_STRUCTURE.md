@@ -4,7 +4,7 @@
 
 ![App Structure Diagram](./app-structure-diagram.png)
 
-*Interactive diagram (Mermaid):*
+_Interactive diagram (Mermaid):_
 
 ```mermaid
 graph TB
@@ -38,7 +38,7 @@ graph TB
         BOARD --> INTRO_MODAL[IntroScreen Modal]
         BOARD --> MONARCH_REMINDER[MonarchDrawReminder]
         BOARD --> START_GAME_MODAL[StartGameModal]
-        
+
         SORTABLE_PLAYERS --> PLAYER_SECTION[PlayerSection]
         PLAYER_SECTION --> PLAYER_LIFE[PlayerLifeControls]
         PLAYER_SECTION --> PLAYER_DECK[PlayerDeckSelector]
@@ -242,18 +242,8 @@ magic-counter-2/
 │   │
 │   ├── assets/                     # Static assets
 │   │
-│   └── stories/                    # Storybook stories
-│       ├── assets/
-│       ├── Button.stories.ts
-│       ├── ButtonShowcase.stories.tsx
-│       ├── Commander.stories.tsx
-│       ├── FormShowcase.stories.tsx
-│       └── Typography.stories.tsx
-│
 ├── public/                         # Public assets
 │   └── icons/                      # App icons
-│
-├── .storybook/                     # Storybook configuration
 │
 ├── package.json                    # Dependencies and scripts
 ├── tsconfig.json                   # TypeScript configuration
@@ -264,14 +254,13 @@ magic-counter-2/
 ## Data Flow
 
 ### Context Providers Hierarchy
+
 1. **UsersProvider** (outermost)
    - Manages user data (players)
    - Provides: `users`, `addUser`, `updateUser`, `removeUser`
-   
 2. **GamesProvider**
    - Manages game state
    - Provides: `games`, `addGame`, `updateGame`, `removeGame`
-   
 3. **DecksProvider** (innermost)
    - Manages deck data
    - Provides: `decks`, `addDeck`, `updateDeck`, `removeDeck`
@@ -307,23 +296,27 @@ magic-counter-2/
 ## Component Categories
 
 ### Core Game Components
+
 - `Board` - Main game interface
 - `PlayerSection` - Individual player display
 - `GameStatus` - Current game state
 - `ActionsList` - Game history
 
 ### Management Components
+
 - `Games` / `Game` - Game list and detail
 - `Decks` / `Deck` / `DeckForm` - Deck management
 - `Users` / `User` / `UserForm` - User management
 
 ### UI Components
+
 - `Modal` - Reusable modal
 - `Button` - Reusable button
 - `ColorBadges` - Mana color display
 - `ThreeDotMenu` - Context menu
 
 ### Chart Components
+
 - `LifeChart` - Life total over time
 - `DamageChart` - Commander damage tracking
 - `RoundDurationChart` - Turn duration analysis

@@ -130,7 +130,7 @@ export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick, ...props }) =
             id="show-only-user-decks"
             checked={showOnlyUserDecks}
             onChange={e => setShowOnlyUserDecks(e.target.checked)}
-            className="form-checkbox"
+            className="checkbox"
           />
 
           <label htmlFor="show-only-user-decks" className="text-sm cursor-pointer">
@@ -159,13 +159,13 @@ export const Decks: React.FC<DecksProps> = ({ userId, onDeckClick, ...props }) =
 
       {!hasDecks && (
         <div className="m-auto flex flex-col items-center justify-center text-center">
-          <BookImageIcon size={48} className="text-slate-400" />
+          <BookImageIcon size={48} className="text-base-content/70" />
 
-          <h3 className="text-xl font-semibold text-slate-300">
+          <h3 className="text-xl font-semibold text-base-content/80">
             {searchQuery.trim() || showOnlyUserDecks ? 'No decks match your criteria' : 'No decks yet'}
           </h3>
 
-          <p className="text-slate-400">
+          <p className="text-base-content/70">
             {searchQuery.trim() || showOnlyUserDecks
               ? 'Try adjusting your search or filters'
               : 'Add a deck to get started!'}

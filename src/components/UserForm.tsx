@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 
 import { useUsers } from '../hooks/useUsers'
-import { Button } from './Button'
 
 interface UserFormProps {
   userId?: User['id']
@@ -47,17 +46,23 @@ export const UserForm: React.FC<UserFormProps> = ({ userId, onSave, onCancel }) 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       {/* Name Input */}
-      <input autoFocus value={name} placeholder="Name" onChange={e => setName(e.target.value)} className="form-input" />
+      <input
+        autoFocus
+        value={name}
+        placeholder="Name"
+        onChange={e => setName(e.target.value)}
+        className="input input-bordered w-full"
+      />
 
       {/* Action Buttons */}
       <div className="flex gap-2 justify-end">
-        <Button variant="primary" disabled={!name.trim()}>
+        <button className="btn btn-primary" disabled={!name.trim()}>
           {mode === 'create' ? 'Save User' : 'Save Changes'}
-        </Button>
+        </button>
 
-        <Button type="button" variant="danger" onClick={handleCancel}>
+        <button type="button" className="btn btn-error" onClick={handleCancel}>
           Cancel
-        </Button>
+        </button>
       </div>
     </form>
   )

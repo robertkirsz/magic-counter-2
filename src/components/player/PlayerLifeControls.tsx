@@ -4,10 +4,10 @@ import React, { useCallback, useRef, useState } from 'react'
 
 import { useDecks } from '../../hooks/useDecks'
 import { useGames } from '../../hooks/useGames'
+import { useLongPress } from '../../hooks/useLongPress'
 import { cn } from '../../utils/cn'
 import { useTurnChangeListener } from '../../utils/eventDispatcher'
 import { generateId } from '../../utils/idGenerator'
-import { Button } from '../Button'
 import { MonarchToggle } from '../MonarchToggle'
 
 const PlayerLifeControls: React.FC<{
@@ -119,30 +119,46 @@ const PlayerLifeControls: React.FC<{
     }
   }, [poisonDamage, pendingLifeChanges, onPendingPoisonChange])
 
+  const decrementHandlers = useLongPress({
+    onLongPress: () => handleLongPressLifeChange(-1),
+    onPress: () => handleLifeChange(-1),
+    shouldStopPropagation: false
+  })
+
+  const incrementHandlers = useLongPress({
+    onLongPress: () => handleLongPressLifeChange(1),
+    onPress: () => handleLifeChange(1),
+    shouldStopPropagation: false
+  })
+
   return (
     <div className="flex flex-col gap-2 items-center justify-center">
       <div className="flex gap-2">
         {/* Commander Damage Icon */}
         {commanderId && (
           <div className="flex justify-center">
-            <Button
-              small
+            <button
               type="button"
-              className={cn(commanderDamage && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500')}
+              className={cn(
+                'btn btn-sm',
+                commanderDamage && 'bg-info/90 hover:bg-info text-info-content border-info'
+              )}
               onClick={() => setCommanderDamage(!commanderDamage)}
             >
               <img src="/icons/commander.png" className="w-5 h-5" />
-            </Button>
+            </button>
           </div>
         )}
 
         {/* Poison Toggle - Only show when infect option is available */}
         {hasInfectOption && (
           <div className="flex justify-center">
-            <Button
-              small
+            <button
               type="button"
-              className={cn(poisonDamage && 'bg-green-600/90 hover:bg-green-500 text-white border-green-500')}
+              className={cn(
+                'btn btn-sm',
+                poisonDamage && 'bg-success/90 hover:bg-success text-success-content border-success'
+              )}
               title={
                 poisonDamage
                   ? 'Poison mode: - adds poison, + removes poison'
@@ -151,7 +167,7 @@ const PlayerLifeControls: React.FC<{
               onClick={() => setPoisonDamage(!poisonDamage)}
             >
               ☠️
-            </Button>
+            </button>
           </div>
         )}
 
@@ -164,19 +180,14 @@ const PlayerLifeControls: React.FC<{
       </div>
 
       <div className="flex gap-4 items-center">
-        <Button
-          type="button"
-          onClick={() => handleLifeChange(-1)}
-          onLongPress={() => handleLongPressLifeChange(-1)}
-          className="!px-6 !py-3"
-        >
+        <button type="button" className="btn px-6! py-3!" {...decrementHandlers}>
           <MinusIcon className="w-8 h-8" />
-        </Button>
+        </button>
 
         <div
           className={cn(
             'relative text-center',
-            pendingLifeChanges !== 0 && !poisonDamage ? 'text-blue-600' : 'text-white'
+            pendingLifeChanges !== 0 && !poisonDamage ? 'text-info' : 'text-base-content'
           )}
         >
           <span className="text-4xl font-bold">{displayLife}</span>
@@ -185,7 +196,7 @@ const PlayerLifeControls: React.FC<{
             <span
               className={cn(
                 'absolute text-sm left-1/2 top-full -translate-x-1/2',
-                pendingLifeChanges > 0 ? 'text-green-600' : 'text-red-600'
+                pendingLifeChanges > 0 ? 'text-success' : 'text-error'
               )}
             >
               {pendingLifeChanges > 0 ? '+' : ''}
@@ -195,15 +206,9 @@ const PlayerLifeControls: React.FC<{
         </div>
 
         {!attackMode && (
-          <Button
-            type="button"
-            disabled={commanderDamage}
-            onClick={() => handleLifeChange(1)}
-            onLongPress={() => handleLongPressLifeChange(1)}
-            className="!px-6 !py-3"
-          >
+          <button type="button" disabled={commanderDamage} className="btn px-6! py-3!" {...incrementHandlers}>
             <PlusIcon className="w-8 h-8" />
-          </Button>
+          </button>
         )}
       </div>
     </div>

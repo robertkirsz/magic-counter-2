@@ -8,7 +8,6 @@ import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
 import { calculateLifeFromActions, getCurrentMonarch, isPlayerEliminated } from '../utils/gameUtils'
 import { generateId } from '../utils/idGenerator'
-import { Button } from './Button'
 import { CommanderDamage } from './CommanderDamage'
 import { DeckForm } from './DeckForm'
 import { Decks } from './Decks'
@@ -138,7 +137,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
       ref={setNodeRef}
       className={cn(
         'PlayerSection flex-1 flex flex-col p-2 relative overflow-clip',
-        isOver && 'ring-2 ring-red-500 ring-opacity-50',
+        isOver && 'ring-2 ring-error ring-opacity-50',
         isEliminated && 'eliminated'
       )}
     >
@@ -161,8 +160,8 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
       <div
         className={cn(
           'PlayerSectionContent hiddenWhenDragEnabled flex-1 relative flex flex-col gap-4 items-center justify-center',
-          playerIsActive && 'outline-4 outline-blue-800',
-          hasEffectiveActivePlayer(gameId) && playerIsActive && 'outline-4 outline-green-800'
+          playerIsActive && 'outline-4 outline-info',
+          hasEffectiveActivePlayer(gameId) && playerIsActive && 'outline-4 outline-success'
         )}
       >
         {gameIsActive && (
@@ -229,14 +228,12 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
               <Decks userId={player.userId || undefined} onDeckClick={handleDeckSelect} />
 
               {/* Floating Add Deck Button */}
-              <Button
-                variant="primary"
-                round
-                className="absolute bottom-3 right-3 shadow-lg z-10"
+              <button
+                className="btn btn-primary btn-circle absolute bottom-3 right-3 shadow-lg z-10"
                 onClick={() => setShowDeckForm(true)}
               >
                 <Plus size={36} />
-              </Button>
+              </button>
 
               {/* Deck Form Modal */}
               <Modal isOpen={showDeckForm} title="Add Deck" onClose={() => setShowDeckForm(false)}>

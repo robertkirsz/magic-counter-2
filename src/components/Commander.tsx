@@ -23,15 +23,15 @@ export const Commander: React.FC<CommanderProps> = ({ commander, className = '',
       <div className="Commander">
         {imageUrl && <img className="CommanderImage" src={imageUrl} />}
 
-        <div className="CommanderDetails" data-importance="high">
-          {colors.length > 0 && <ColorBadges colors={colors} className="flex-none mb-1" data-importance="medium" />}
+        <div className="CommanderDetails">
+          {colors.length > 0 && <ColorBadges colors={colors} className="flex-none mb-1" />}
 
-          <span className="text-sm/tight line-clamp-2" data-importance="high">
+          <span className="text-sm/tight line-clamp-2">
             {name}
           </span>
 
           {typeLine && (
-            <span className="text-xs font-light line-clamp-1" data-importance="low">
+            <span className="text-xs font-light line-clamp-1">
               {typeLine.split('—')[1]}
             </span>
           )}

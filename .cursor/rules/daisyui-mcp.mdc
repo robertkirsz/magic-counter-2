@@ -1,0 +1,22 @@
+---
+description: Use daisyUI Blueprint MCP when user mentions "daisy"
+alwaysApply: true
+---
+
+# daisyUI MCP Usage
+
+When the user mentions "daisy" (or "daisyUI", "daisy UI", etc.), always use the daisyUI Blueprint MCP tool (`user-daisyui-blueprint`) to:
+
+1. **Fetch component snippets**: Use `daisyUI-Snippets` tool to get component examples and documentation
+2. **Follow daisyUI patterns**: Use the official daisyUI syntax and class names from the MCP
+3. **Reference documentation**: Use the MCP as the source of truth for daisyUI component structure
+
+## Example Usage
+
+When user says:
+- "Use daisy buttons"
+- "Add daisyUI dropdown"
+- "Convert to daisy"
+- "Use daisyUI MCP"
+
+→ Use `call_mcp_tool` with server `user-daisyui-blueprint` and tool `daisyUI-Snippets` to get the correct component patterns.

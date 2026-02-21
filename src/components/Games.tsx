@@ -100,13 +100,13 @@ export const Games: React.FC<React.HTMLAttributes<HTMLDivElement>> = props => {
 
       {!hasGames && (
         <div className="m-auto flex flex-col items-center justify-center text-center">
-          <SwordsIcon size={48} className="text-gray-400" />
+          <SwordsIcon size={48} className="text-base-content/70" />
 
-          <h3 className="text-xl font-semibold text-gray-300">
+          <h3 className="text-xl font-semibold text-base-content/80">
             {searchQuery.trim() ? 'No games match your search' : 'No games yet'}
           </h3>
 
-          <p className="text-gray-400">
+          <p className="text-base-content/70">
             {searchQuery.trim() ? 'Try a different search' : 'Create your first game to get started'}
           </p>
         </div>
