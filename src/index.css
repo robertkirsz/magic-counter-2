@@ -7,7 +7,7 @@ html {
 }
 
 body {
-  @apply bg-slate-900 text-white;
+  @apply bg-base-300 text-base-content;
   height: 100vh;
   height: 100dvh; /* Dynamic viewport height for mobile */
   /* Handle safe areas for notched devices */
@@ -22,7 +22,7 @@ body {
 }
 
 dialog {
-  @apply bg-slate-900 text-white;
+  @apply bg-base-300 text-base-content;
 }
 
 #root {

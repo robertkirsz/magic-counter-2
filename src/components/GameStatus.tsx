@@ -71,14 +71,16 @@ export default function GameStatus({ gameId }: GameStatusProps) {
     <div
       className={cn(
         'px-2 py-1 rounded-lg shadow-lg border flex items-center gap-2 pointer-events-none',
-        isFinished ? 'bg-green-800/90 text-white border-green-600' : 'bg-slate-800/90 text-white border-slate-700'
+        isFinished
+          ? 'bg-success/90 text-success-content border-success'
+          : 'bg-base-200/90 text-base-content border-base-300'
       )}
     >
       <span className="font-mono text-sm font-medium">{currentRound}</span>
 
       {elapsedTime && (
         <>
-          <Clock size={14} className={cn(isFinished ? 'text-green-400' : 'text-blue-400')} />
+          <Clock size={14} className={cn(isFinished ? 'text-success' : 'text-info')} />
           <span className="font-mono text-sm font-medium">{elapsedTime}</span>
         </>
       )}

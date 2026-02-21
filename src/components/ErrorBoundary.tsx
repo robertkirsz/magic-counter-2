@@ -41,17 +41,17 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren, ErrorBounda
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen w-full flex flex-col items-center justify-center gap-2 bg-slate-900 text-red-200 font-sans p-8 relative">
+        <div className="min-h-screen w-full flex flex-col items-center justify-center gap-2 bg-base-300 text-error font-sans p-8 relative">
           <h1 className="text-2xl font-bold">Something went wrong</h1>
 
           {this.state.error && (
-            <pre className="whitespace-pre-wrap text-sm bg-slate-800 rounded p-2 border border-red-700 max-w-xl overflow-x-auto">
+            <pre className="whitespace-pre-wrap text-sm bg-base-200 rounded p-2 border border-error max-w-xl overflow-x-auto">
               {this.state.error.toString()}
             </pre>
           )}
 
           {this.state.errorInfo && (
-            <details className="whitespace-pre-wrap text-xs bg-slate-800 rounded p-2 border border-red-700 max-w-xl overflow-x-auto">
+            <details className="whitespace-pre-wrap text-xs bg-base-200 rounded p-2 border border-error max-w-xl overflow-x-auto">
               {this.state.errorInfo.componentStack}
             </details>
           )}
@@ -68,7 +68,7 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren, ErrorBounda
             ))}
           </div>
 
-          <div className="text-xs text-slate-400">v{APP_VERSION}</div>
+          <div className="text-xs text-base-content/70">v{APP_VERSION}</div>
         </div>
       )
     }

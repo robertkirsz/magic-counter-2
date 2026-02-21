@@ -47,7 +47,7 @@ export const MonarchDrawReminder: React.FC<MonarchDrawReminderProps> = ({ gameId
 
   return (
     <div className="fixed inset-0 flex items-center justify-center z-1000 pointer-events-none">
-      <div className="bg-yellow-600 text-white px-6 py-4 rounded-lg shadow-lg pointer-events-auto animate-pulse">
+      <div className="bg-warning text-warning-content px-6 py-4 rounded-lg shadow-lg pointer-events-auto animate-pulse">
         <div className="flex items-center gap-2">
           <span className="text-2xl">👑</span>
           <div>

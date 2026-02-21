@@ -154,7 +154,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
         {/* In-game settings */}
         {isInGame && (
           <>
-            <div className="col-span-2 border-t border-slate-600 my-1"></div>
+            <div className="col-span-2 border-t border-base-300 my-1"></div>
 
             <button className="btn" onClick={() => onShowGameSettings?.()}>
               <Settings size={20} />
@@ -167,7 +167,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             </button>
 
             <button
-              className={cn('btn', dragEnabled && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500')}
+              className={cn('btn', dragEnabled && 'bg-info/90 hover:bg-info text-info-content border-info')}
               onClick={() => {
                 onDragEnabledChange?.(!dragEnabled)
                 onClose?.()
@@ -178,7 +178,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
             </button>
 
             <button
-              className={cn('btn', tableMode && 'bg-green-600/90 hover:bg-green-500 text-white border-green-500')}
+              className={cn('btn', tableMode && 'bg-success/90 hover:bg-success text-success-content border-success')}
               onClick={() => {
                 onTableModeChange?.(!tableMode)
                 onClose?.()
@@ -201,7 +201,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
             {gameState === 'active' && (
               <>
-                <div className="col-span-2 border-t border-slate-600 my-1"></div>
+                <div className="col-span-2 border-t border-base-300 my-1"></div>
                 <button className="btn btn-error col-span-2" onClick={() => onFinishGame?.()}>
                   <Trophy size={20} />
                   Finish Game
@@ -214,21 +214,21 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
       {/* GameForm Modal */}
       <Modal isOpen={showGameForm} onClose={() => setShowGameForm(false)} title="Game Form">
-        <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+        <Suspense fallback={<div className="p-3 text-base-content/70">Loading…</div>}>
           <GameForm onSave={() => setShowGameForm(false)} onCancel={() => setShowGameForm(false)} />
         </Suspense>
       </Modal>
 
       {/* Games Modal */}
       <Modal fullSize isOpen={showGames} onClose={() => setShowGames(false)} title="Games">
-        <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+        <Suspense fallback={<div className="p-3 text-base-content/70">Loading…</div>}>
           <Games className="flex-1" />
         </Suspense>
       </Modal>
 
       {/* Users Modal */}
       <Modal fullSize isOpen={showUsers} onClose={() => setShowUsers(false)} title="Users">
-        <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+        <Suspense fallback={<div className="p-3 text-base-content/70">Loading…</div>}>
           <Users className="flex-1" />
         </Suspense>
 
@@ -242,7 +242,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
         {/* User Form Modal */}
         <Modal isOpen={userFormVisible} title="Add User" onClose={() => setUserFormVisible(false)}>
-          <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+          <Suspense fallback={<div className="p-3 text-base-content/70">Loading…</div>}>
             <UserForm onSave={() => setUserFormVisible(false)} onCancel={() => setUserFormVisible(false)} />
           </Suspense>
         </Modal>
@@ -250,7 +250,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
       {/* Decks Modal */}
       <Modal fullSize isOpen={showDecks} onClose={() => setShowDecks(false)} title="Decks">
-        <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+        <Suspense fallback={<div className="p-3 text-base-content/70">Loading…</div>}>
           <Decks className="flex-1" />
         </Suspense>
 
@@ -264,7 +264,7 @@ export const IntroScreen: React.FC<IntroScreenProps> = ({
 
         {/* Deck Form Modal */}
         <Modal isOpen={deckFormVisible} title="Add Deck" onClose={() => setDeckFormVisible(false)}>
-          <Suspense fallback={<div className="p-3 text-slate-400">Loading…</div>}>
+          <Suspense fallback={<div className="p-3 text-base-content/70">Loading…</div>}>
             <DeckForm onSave={() => setDeckFormVisible(false)} onCancel={() => setDeckFormVisible(false)} />
           </Suspense>
         </Modal>

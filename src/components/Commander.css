@@ -6,7 +6,8 @@
 }
 
 .Commander {
-  @apply flex flex-wrap overflow-clip rounded-sm bg-black;
+  @apply flex flex-wrap overflow-clip rounded-sm;
+  background-color: var(--color-base-200);
 }
 
 .CommanderImage {
@@ -16,35 +17,6 @@
 }
 
 .CommanderDetails {
-  @apply flex flex-1 flex-col p-2 text-white;
-}
-
-@container CommanderContainer (width < 80px) {
-  [data-importance='high'],
-  [data-importance='medium'],
-  [data-importance='low'] {
-    @apply hidden;
-  }
-}
-
-@container CommanderContainer (width < 120px) {
-  [data-importance='medium'],
-  [data-importance='low'] {
-    @apply hidden;
-  }
-}
-
-@container CommanderContainer (width < 200px) {
-  [data-importance='low'] {
-    @apply hidden;
-  }
-}
-
-@container CommanderContainer (width >= 200px) {
-  .Commander {
-    .CommanderImage {
-      width: auto;
-      max-width: 50%;
-    }
-  }
+  @apply flex flex-1 flex-col p-2;
+  color: var(--color-base-content);
 }

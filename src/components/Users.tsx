@@ -107,13 +107,13 @@ export const Users: React.FC<React.HTMLAttributes<HTMLDivElement>> = props => {
 
       {!hasUsers && (
         <div className="m-auto flex flex-col items-center justify-center text-center">
-          <UsersIcon size={48} className="text-slate-400" />
+          <UsersIcon size={48} className="text-base-content/70" />
 
-          <h3 className="text-xl font-semibold text-slate-300">
+          <h3 className="text-xl font-semibold text-base-content/80">
             {searchQuery.trim() ? 'No users match your search' : 'No users yet'}
           </h3>
 
-          <p className="text-slate-400">
+          <p className="text-base-content/70">
             {searchQuery.trim() ? 'Try a different search' : 'Add someone to play with!'}
           </p>
         </div>

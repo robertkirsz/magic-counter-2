@@ -167,8 +167,8 @@ export const DamageChart: React.FC<DamageChartProps> = ({ gameId }) => {
   if (!game || chartData.dataPoints.length === 0) {
     return (
       <div className="flex items-center justify-center py-8 text-center">
-        <div className="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center mb-4">
-          <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="w-16 h-16 bg-base-200 rounded-full flex items-center justify-center mb-4">
+          <svg className="w-8 h-8 text-base-content/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -178,7 +178,7 @@ export const DamageChart: React.FC<DamageChartProps> = ({ gameId }) => {
           </svg>
         </div>
 
-        <p className="text-gray-400">No damage data to display</p>
+        <p className="text-base-content/70">No damage data to display</p>
       </div>
     )
   }
@@ -269,33 +269,33 @@ export const DamageChart: React.FC<DamageChartProps> = ({ gameId }) => {
   }
 
   return (
-    <div className="flex-1 bg-gray-800 rounded-lg border border-gray-700 p-4">
-      <h3 className="text-lg font-semibold text-gray-100 mb-4">Total Damage Chart</h3>
+    <div className="flex-1 bg-base-200 rounded-lg border border-base-300 p-4">
+      <h3 className="text-lg font-semibold text-base-content mb-4">Total Damage Chart</h3>
 
       {(playerStats.players.length > 0 || playerStats.topDamager) && (
         <div className="mb-4 grid grid-cols-2 gap-3">
           {playerStats.players.map(({ name, totalDamage, avgPerTurn }) => (
-            <div key={name} className="bg-gray-700/50 rounded-lg p-3">
-              <p className="text-xs text-gray-400 uppercase tracking-wide flex items-center gap-1.5">
+            <div key={name} className="bg-base-300/50 rounded-lg p-3">
+              <p className="text-xs text-base-content/70 uppercase tracking-wide flex items-center gap-1.5">
                 <span
                   className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
                   style={{ backgroundColor: playerColorMap[name] }}
                 />
                 {name}
               </p>
-              <p className="text-lg font-semibold text-gray-100">{totalDamage} damage</p>
+              <p className="text-lg font-semibold text-base-content">{totalDamage} damage</p>
               <div className="mt-1">
-                <p className="text-sm text-gray-300">
-                  <span className="text-gray-400">Avg/turn:</span> {avgPerTurn}
+                <p className="text-sm text-base-content/80">
+                  <span className="text-base-content/70">Avg/turn:</span> {avgPerTurn}
                 </p>
               </div>
             </div>
           ))}
           {playerStats.topDamager && (
-            <div className="bg-gray-600/50 rounded-lg p-3">
-              <p className="text-xs text-gray-400 uppercase tracking-wide">Top Damager</p>
-              <p className="text-lg font-semibold text-gray-100">{playerStats.topDamager.totalDamage} damage</p>
-              <p className="text-sm text-gray-300">{playerStats.topDamager.name}</p>
+            <div className="bg-base-300/50 rounded-lg p-3">
+              <p className="text-xs text-base-content/70 uppercase tracking-wide">Top Damager</p>
+              <p className="text-lg font-semibold text-base-content">{playerStats.topDamager.totalDamage} damage</p>
+              <p className="text-sm text-base-content/80">{playerStats.topDamager.name}</p>
             </div>
           )}
         </div>

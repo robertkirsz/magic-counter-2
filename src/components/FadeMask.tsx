@@ -46,7 +46,7 @@ export const FadeMask: React.FC<FadeMaskProps> = ({ children, className = '', fa
           className={`pointer-events-none absolute top-0 left-0 w-full z-10`}
           style={{ height: fadeHeight, opacity: showTopFade ? 1 : 0, transition: 'opacity 0.1s' }}
         >
-          <div className="w-full h-full bg-linear-to-b from-slate-900 to-transparent z-10" />
+          <div className="w-full h-full bg-linear-to-b from-base-300 to-transparent z-10" />
         </div>
       )}
 
@@ -59,7 +59,7 @@ export const FadeMask: React.FC<FadeMaskProps> = ({ children, className = '', fa
           className={`pointer-events-none absolute bottom-0 left-0 w-full z-10`}
           style={{ height: fadeHeight, opacity: showBottomFade ? 1 : 0, transition: 'opacity 0.1s' }}
         >
-          <div className="w-full h-full bg-linear-to-t from-slate-900 to-transparent z-10" />
+          <div className="w-full h-full bg-linear-to-t from-base-300 to-transparent z-10" />
         </div>
       )}
     </div>

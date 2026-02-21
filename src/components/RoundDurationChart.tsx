@@ -151,8 +151,8 @@ export const RoundDurationChart: React.FC<RoundDurationChartProps> = ({ gameId }
   if (!game || chartData.dataPoints.length === 0) {
     return (
       <div className="flex items-center justify-center py-8 text-center">
-        <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mb-4">
-          <svg className="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="w-16 h-16 bg-base-200 rounded-full flex items-center justify-center mb-4">
+          <svg className="w-8 h-8 text-base-content/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -161,7 +161,7 @@ export const RoundDurationChart: React.FC<RoundDurationChartProps> = ({ gameId }
             />
           </svg>
         </div>
-        <p className="text-slate-400">No duration data to display</p>
+        <p className="text-base-content/70">No duration data to display</p>
       </div>
     )
   }
@@ -256,31 +256,31 @@ export const RoundDurationChart: React.FC<RoundDurationChartProps> = ({ gameId }
   }
 
   return (
-    <div className="flex-1 bg-slate-800 rounded-lg border border-slate-700 p-4">
-      <h3 className="text-lg font-semibold text-slate-100 mb-4">Round Duration Chart</h3>
+    <div className="flex-1 bg-base-200 rounded-lg border border-base-300 p-4">
+      <h3 className="text-lg font-semibold text-base-content mb-4">Round Duration Chart</h3>
 
       {(playerStats.players.length > 0 || playerStats.longest) && (
         <div className="mb-4 grid grid-cols-2 gap-3">
           {playerStats.players.map(({ name, average, longest, shortest }) => (
-            <div key={name} className="bg-slate-700/50 rounded-lg p-3">
-              <p className="text-xs text-slate-400 uppercase tracking-wide flex items-center gap-1.5">
+            <div key={name} className="bg-base-300/50 rounded-lg p-3">
+              <p className="text-xs text-base-content/70 uppercase tracking-wide flex items-center gap-1.5">
                 <span
                   className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
                   style={{ backgroundColor: playerColorMap[name] }}
                 />
                 {name}
               </p>
-              <p className="text-lg font-semibold text-slate-100">Avg: {formatDuration(average)}</p>
+              <p className="text-lg font-semibold text-base-content">Avg: {formatDuration(average)}</p>
               <div className="mt-1 space-y-0.5">
-                <p className="text-sm text-slate-300">
-                  <span className="text-slate-400">Longest:</span> {formatDuration(longest.duration)}{' '}
-                  <span className="text-slate-500">
+                <p className="text-sm text-base-content/80">
+                  <span className="text-base-content/70">Longest:</span> {formatDuration(longest.duration)}{' '}
+                  <span className="text-base-content/60">
                     R{longest.round}T{longest.turn}
                   </span>
                 </p>
-                <p className="text-sm text-slate-300">
-                  <span className="text-slate-400">Shortest:</span> {formatDuration(shortest.duration)}{' '}
-                  <span className="text-slate-500">
+                <p className="text-sm text-base-content/80">
+                  <span className="text-base-content/70">Shortest:</span> {formatDuration(shortest.duration)}{' '}
+                  <span className="text-base-content/60">
                     R{shortest.round}T{shortest.turn}
                   </span>
                 </p>
@@ -288,10 +288,10 @@ export const RoundDurationChart: React.FC<RoundDurationChartProps> = ({ gameId }
             </div>
           ))}
           {playerStats.longest && (
-            <div className="bg-slate-600/50 rounded-lg p-3">
-              <p className="text-xs text-slate-400 uppercase tracking-wide">Longest Turn</p>
-              <p className="text-lg font-semibold text-slate-100">{formatDuration(playerStats.longest.duration)}</p>
-              <p className="text-sm text-slate-300">
+            <div className="bg-base-300/50 rounded-lg p-3">
+              <p className="text-xs text-base-content/70 uppercase tracking-wide">Longest Turn</p>
+              <p className="text-lg font-semibold text-base-content">{formatDuration(playerStats.longest.duration)}</p>
+              <p className="text-sm text-base-content/80">
                 {playerStats.longest.playerName} (R{playerStats.longest.round}T{playerStats.longest.turn})
               </p>
             </div>

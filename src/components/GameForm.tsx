@@ -131,7 +131,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
             className="input input-bordered w-full hide-number-arrows pr-5"
           />
           <span className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none">
-            <HeartIcon className="w-4 h-4 text-slate-400" />
+            <HeartIcon className="w-4 h-4 text-base-content/70" />
           </span>
         </div>
 
@@ -149,7 +149,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
             onChange={() => setCommanders(!commanders)}
             className="checkbox"
           />
-          <span className="text-slate-200">Commander</span>
+          <span className="text-base-content/90">Commander</span>
         </label>
 
         {/* Section 4: Tracking Type */}
@@ -160,7 +160,7 @@ export const GameForm: React.FC<GameFormProps> = ({ gameId, onSave, onCancel, on
             onChange={() => setTurnTracking(!turnTracking)}
             className="checkbox"
           />
-          <span className="text-slate-200">Turn tracking</span>
+          <span className="text-base-content/90">Turn tracking</span>
         </label>
       </div>
 

@@ -137,7 +137,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
       ref={setNodeRef}
       className={cn(
         'PlayerSection flex-1 flex flex-col p-2 relative overflow-clip',
-        isOver && 'ring-2 ring-red-500 ring-opacity-50',
+        isOver && 'ring-2 ring-error ring-opacity-50',
         isEliminated && 'eliminated'
       )}
     >
@@ -160,8 +160,8 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
       <div
         className={cn(
           'PlayerSectionContent hiddenWhenDragEnabled flex-1 relative flex flex-col gap-4 items-center justify-center',
-          playerIsActive && 'outline-4 outline-blue-800',
-          hasEffectiveActivePlayer(gameId) && playerIsActive && 'outline-4 outline-green-800'
+          playerIsActive && 'outline-4 outline-info',
+          hasEffectiveActivePlayer(gameId) && playerIsActive && 'outline-4 outline-success'
         )}
       >
         {gameIsActive && (

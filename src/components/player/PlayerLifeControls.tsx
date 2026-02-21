@@ -141,7 +141,7 @@ const PlayerLifeControls: React.FC<{
               type="button"
               className={cn(
                 'btn btn-sm',
-                commanderDamage && 'bg-blue-600/90 hover:bg-blue-500 text-white border-blue-500'
+                commanderDamage && 'bg-info/90 hover:bg-info text-info-content border-info'
               )}
               onClick={() => setCommanderDamage(!commanderDamage)}
             >
@@ -157,7 +157,7 @@ const PlayerLifeControls: React.FC<{
               type="button"
               className={cn(
                 'btn btn-sm',
-                poisonDamage && 'bg-green-600/90 hover:bg-green-500 text-white border-green-500'
+                poisonDamage && 'bg-success/90 hover:bg-success text-success-content border-success'
               )}
               title={
                 poisonDamage
@@ -187,7 +187,7 @@ const PlayerLifeControls: React.FC<{
         <div
           className={cn(
             'relative text-center',
-            pendingLifeChanges !== 0 && !poisonDamage ? 'text-blue-600' : 'text-white'
+            pendingLifeChanges !== 0 && !poisonDamage ? 'text-info' : 'text-base-content'
           )}
         >
           <span className="text-4xl font-bold">{displayLife}</span>
@@ -196,7 +196,7 @@ const PlayerLifeControls: React.FC<{
             <span
               className={cn(
                 'absolute text-sm left-1/2 top-full -translate-x-1/2',
-                pendingLifeChanges > 0 ? 'text-green-600' : 'text-red-600'
+                pendingLifeChanges > 0 ? 'text-success' : 'text-error'
               )}
             >
               {pendingLifeChanges > 0 ? '+' : ''}

@@ -117,25 +117,25 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
       case 'setup':
         return {
           label: 'SETUP',
-          color: 'bg-yellow-900/20 text-yellow-300 border-yellow-700',
+          color: 'bg-warning/20 text-warning border-warning',
           duration: null
         }
       case 'active':
         return {
           label: 'ACTIVE',
-          color: 'bg-green-900/20 text-green-300 border-green-700 animate-pulse',
+          color: 'bg-success/20 text-success border-success animate-pulse',
           duration
         }
       case 'finished':
         return {
           label: 'FINISHED',
-          color: 'bg-slate-800 text-slate-200 border-slate-700',
+          color: 'bg-base-200 text-base-content/90 border-base-300',
           duration
         }
       default:
         return {
           label: 'UNKNOWN',
-          color: 'bg-red-900/20 text-red-300 border-red-700',
+          color: 'bg-error/20 text-error border-error',
           duration: null
         }
     }
@@ -144,7 +144,7 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
   const stateDisplay = getGameStateDisplay(game)
 
   return (
-    <div className="flex flex-col gap-2 p-2 bg-slate-800 rounded-lg border border-slate-700 shadow-sm overflow-hidden">
+    <div className="flex flex-col gap-2 p-2 bg-base-200 rounded-lg border border-base-300 shadow-sm overflow-hidden">
       {/* Game Header */}
       <div className="flex flex-wrap gap-2 items-center justify-between">
         <div className="flex items-center gap-2">
@@ -157,14 +157,14 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
             {stateDisplay.label}
 
             {stateDisplay.duration && (
-              <div className="flex items-center gap-1 text-slate-400">
+              <div className="flex items-center gap-1 text-base-content/70">
                 <Clock size={14} />
                 {stateDisplay.duration}
               </div>
             )}
           </div>
 
-          <div className="flex items-center gap-3 text-sm text-slate-400">
+          <div className="flex items-center gap-3 text-sm text-base-content/70">
             <div className="flex items-center gap-1">
               <Calendar size={14} />
               <span>{DateTime.fromJSDate(game.createdAt).toFormat('MMM dd, HH:mm')}</span>
@@ -176,13 +176,13 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
             </div>
 
             {game.turnTracking && (
-              <div className="flex items-center gap-1 text-blue-400">
+              <div className="flex items-center gap-1 text-info">
                 <Clock size={14} />
               </div>
             )}
 
             {game.state === 'finished' && game.winner && game.winCondition && (
-              <div className="flex items-center gap-1 text-yellow-400">
+              <div className="flex items-center gap-1 text-warning">
                 <Trophy size={14} />
                 <span>
                   {getPlayerName(game.winner)} - {getWinConditionDisplay(game.winCondition)}
@@ -195,7 +195,7 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setActionsListVisible(true)}
-            className="px-3 py-1 text-sm bg-blue-900/20 hover:bg-blue-900/30 text-blue-300 rounded border border-blue-700 transition-colors"
+            className="px-3 py-1 text-sm bg-info/20 hover:bg-info/30 text-info rounded border border-info transition-colors"
           >
             Actions
           </button>
@@ -212,12 +212,12 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
             const finalLife = finalLifeValues[player.id]
 
             return (
-              <div key={player.id} className="flex items-start gap-2 flex-1 max-w-43 p-2 bg-slate-700/50 rounded-lg">
+              <div key={player.id} className="flex items-start gap-2 flex-1 max-w-43 p-2 bg-base-300/50 rounded-lg">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="font-medium text-slate-100">{getPlayerName(player.userId)}</span>
+                    <span className="font-medium text-base-content">{getPlayerName(player.userId)}</span>
 
-                    <span className="text-sm text-slate-400">(Life: {finalLife})</span>
+                    <span className="text-sm text-base-content/70">(Life: {finalLife})</span>
                   </div>
 
                   {player.deckId && (
@@ -233,16 +233,16 @@ export const Game: React.FC<GameProps> = ({ game, onRemove }) => {
           <div className="w-full">
             <button
               onClick={() => setChartsExpanded(!chartsExpanded)}
-              className="flex items-center gap-2 w-full p-3 bg-slate-700 rounded-lg hover:bg-slate-600 transition-colors"
+              className="flex items-center gap-2 w-full p-3 bg-base-300 rounded-lg hover:bg-base-content/10 transition-colors"
             >
               {chartsExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-              <span className="font-medium text-slate-100">Charts & Analytics</span>
+              <span className="font-medium text-base-content">Charts & Analytics</span>
             </button>
 
             {chartsExpanded && (
               <Suspense
                 fallback={
-                  <div className="mt-3 p-3 rounded-lg border border-slate-700 bg-slate-800 text-slate-400">
+                  <div className="mt-3 p-3 rounded-lg border border-base-300 bg-base-200 text-base-content/70">
                     Loading charts...
                   </div>
                 }

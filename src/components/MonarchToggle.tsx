@@ -53,7 +53,7 @@ export const MonarchToggle: React.FC<MonarchToggleProps> = ({ gameId, playerId, 
       type="button"
       className={cn(
         'btn btn-sm transition-colors duration-200',
-        isMonarch && 'bg-yellow-600/90 hover:bg-yellow-500 text-white border-yellow-500',
+        isMonarch && 'bg-warning/90 hover:bg-warning text-warning-content border-warning',
         className
       )}
       onClick={handleMonarchToggle}

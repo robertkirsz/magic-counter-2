@@ -45,10 +45,10 @@ export const CommanderDamage: React.FC<CommanderDamageProps> = ({ gameId, player
           <img
             src={commander?.image || ''}
             alt={commander?.name || 'Commander'}
-            className="w-8 h-8 rounded border border-gray-600 object-cover"
+            className="w-8 h-8 rounded border border-base-300 object-cover"
           />
 
-          <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+          <div className="absolute -top-1 -right-1 bg-error text-error-content text-xs rounded-full w-4 h-4 flex items-center justify-center">
             {commanderDamageActions
               .filter(action => (action as LifeChangeAction).commanderId === commander?.id)
               .reduce((total, action) => total + Math.abs((action as LifeChangeAction).value), 0)}

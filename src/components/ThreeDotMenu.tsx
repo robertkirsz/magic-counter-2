@@ -72,7 +72,7 @@ export const ThreeDotMenu: React.FC<ThreeDotMenuProps> = ({
         {/* Confirmation Dialog */}
         <Modal isOpen={showConfirm} onClose={() => setShowConfirm(false)} title="Confirm Delete">
           <div className="flex flex-col gap-4">
-            <p className="text-gray-600">Are you sure you want to delete this item? This action cannot be undone.</p>
+            <p className="text-base-content/70">Are you sure you want to delete this item? This action cannot be undone.</p>
 
             <div className="flex gap-2 justify-end">
               <button className="btn" onClick={() => setShowConfirm(false)}>

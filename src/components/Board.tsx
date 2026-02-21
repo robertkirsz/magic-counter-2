@@ -205,7 +205,7 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
   return (
     <div
       className={cn(
-        'Board flex flex-col h-svh bg-black relative overflow-clip',
+        'Board flex flex-col h-svh bg-base-300 relative overflow-clip',
         dragEnabled && 'dragEnabled',
         tableMode && 'tableMode'
       )}
@@ -233,7 +233,7 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
 
         <DragOverlay>
           {draggedPlayerId && (
-            <div className="rounded-lg px-3 py-2 bg-slate-700/90 text-slate-100 border border-slate-600 shadow-lg min-w-[160px]">
+            <div className="rounded-lg px-3 py-2 bg-base-300/90 text-base-content border border-base-300 shadow-lg min-w-[160px]">
               <div className="text-sm font-semibold">
                 {(() => {
                   const player = game.players.find(p => p.id === draggedPlayerId)
@@ -285,7 +285,7 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
                 <span>START</span>
               </button>
 
-              <button className="btn bg-red-600 hover:bg-red-500 text-white border-red-500" onClick={handleCancel}>
+              <button className="btn bg-error hover:bg-error/80 text-error-content border-error" onClick={handleCancel}>
                 CANCEL
               </button>
             </>
