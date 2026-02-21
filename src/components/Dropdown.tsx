@@ -74,28 +74,39 @@ export const Dropdown: React.FC<DropdownProps> = ({
       }
     }
 
-    // Reset timer on user activity (mouse move, keyboard)
+    // Reset timer on user activity (mouse move, keyboard). Only registered while open.
     const handleActivity = () => {
-      if (details.open) {
-        resetInactivityTimer()
-      }
+      resetInactivityTimer()
     }
 
-    // Listen for toggle events
-    details.addEventListener('toggle', handleToggle)
+    const addActivityListeners = () => {
+      document.addEventListener('mousemove', handleActivity)
+      document.addEventListener('keydown', handleActivity)
+    }
+
+    const removeActivityListeners = () => {
+      document.removeEventListener('mousemove', handleActivity)
+      document.removeEventListener('keydown', handleActivity)
+    }
+
+    // Listen for toggle: run open/close logic and register activity listeners only when open
+    const handleToggleWithListeners: EventListener = () => {
+      handleToggle()
+      if (details.open) {
+        addActivityListeners()
+      } else {
+        removeActivityListeners()
+      }
+    }
+    details.addEventListener('toggle', handleToggleWithListeners)
 
     // Handle clicks (both inside and outside) - closes on outside, resets timer on inside
     document.addEventListener('mousedown', handleClickOutside)
 
-    // Track other user interactions to reset inactivity timer
-    document.addEventListener('mousemove', handleActivity)
-    document.addEventListener('keydown', handleActivity)
-
     return () => {
-      details.removeEventListener('toggle', handleToggle)
+      details.removeEventListener('toggle', handleToggleWithListeners)
       document.removeEventListener('mousedown', handleClickOutside)
-      document.removeEventListener('mousemove', handleActivity)
-      document.removeEventListener('keydown', handleActivity)
+      removeActivityListeners()
       clearInactivityTimer()
     }
   }, [inactivityTimeoutMs])
