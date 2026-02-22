@@ -139,10 +139,7 @@ const PlayerLifeControls: React.FC<{
           <div className="flex justify-center">
             <button
               type="button"
-              className={cn(
-                'btn btn-sm',
-                commanderDamage && 'bg-info/90 hover:bg-info text-info-content border-info'
-              )}
+              className={cn('btn btn-sm', commanderDamage && 'bg-info/90 hover:bg-info text-info-content border-info')}
               onClick={() => setCommanderDamage(!commanderDamage)}
             >
               <img src="/icons/commander.png" className="w-5 h-5" />
@@ -180,7 +177,11 @@ const PlayerLifeControls: React.FC<{
       </div>
 
       <div className="flex gap-4 items-center">
-        <button type="button" className="btn px-6! py-3!" {...decrementHandlers}>
+        <button
+          type="button"
+          className="btn btn-ghost px-8 py-7 bg-transparent! border-none! shadow-none!"
+          {...decrementHandlers}
+        >
           <MinusIcon className="w-8 h-8" />
         </button>
 
@@ -206,7 +207,12 @@ const PlayerLifeControls: React.FC<{
         </div>
 
         {!attackMode && (
-          <button type="button" disabled={commanderDamage} className="btn px-6! py-3!" {...incrementHandlers}>
+          <button
+            type="button"
+            disabled={commanderDamage}
+            className="btn btn-ghost px-8 py-7 bg-transparent! border-none! shadow-none!"
+            {...incrementHandlers}
+          >
             <PlusIcon className="w-8 h-8" />
           </button>
         )}

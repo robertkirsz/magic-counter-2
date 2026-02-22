@@ -28,9 +28,14 @@ export const useLongPress = ({
   const timeout = useRef<NodeJS.Timeout | undefined>(undefined)
   const isLongPress = useRef(false)
   const target = useRef<EventTarget | null>(null)
+  const lastTouchEndTime = useRef(0)
+  const MOUSE_IGNORE_MS = 400
+
+  const isTouchEvent = (e: React.MouseEvent | React.TouchEvent) => 'touches' in e || 'changedTouches' in e
 
   const start = useCallback(
     (event: React.MouseEvent | React.TouchEvent) => {
+      if (!isTouchEvent(event) && Date.now() - lastTouchEndTime.current < MOUSE_IGNORE_MS) return
       if (shouldPreventDefault) {
         event.preventDefault()
       }
@@ -57,6 +62,13 @@ export const useLongPress = ({
       }
 
       if (shouldTriggerClick && !isLongPress.current && onPress) {
+        const fromTouch = isTouchEvent(event)
+        if (fromTouch) lastTouchEndTime.current = Date.now()
+        if (!fromTouch && Date.now() - lastTouchEndTime.current < MOUSE_IGNORE_MS) {
+          isLongPress.current = false
+          target.current = null
+          return
+        }
         onPress(event)
       }
 
