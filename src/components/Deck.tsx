@@ -17,6 +17,9 @@ interface DeckProps extends React.HTMLAttributes<HTMLDivElement> {
   useContextControls?: boolean
   showCreator?: boolean
   showStats?: boolean
+  showOptions?: boolean
+  showName?: boolean
+  showTypeLine?: boolean
   onRemove?: (deckId: string) => void
 }
 
@@ -25,6 +28,9 @@ export const Deck: React.FC<DeckProps> = ({
   useContextControls,
   showCreator = true,
   showStats = true,
+  showOptions = true,
+  showName = true,
+  showTypeLine = true,
   className,
   onRemove,
   ...props
@@ -46,6 +52,9 @@ export const Deck: React.FC<DeckProps> = ({
   const playCount = games.reduce((count, game) => count + game.players.filter(player => player.deckId === id).length, 0)
 
   const menuVisible = useContextControls || onRemove
+  const creatorVisible = showCreator && creatorName
+  const statsVisible = showStats && playCount > 0
+  const headerVisible = creatorVisible || statsVisible || showName || menuVisible
 
   const handleEdit = () => {
     if (useContextControls) setDeckFormVisible(true)
@@ -59,56 +68,57 @@ export const Deck: React.FC<DeckProps> = ({
   return (
     <div className={cn('Deck flex flex-col gap-2', className)} {...props}>
       {/* Header */}
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <h3 className="line-clamp-1">{deck.name}</h3>
-            <ColorBadges colors={deck.colors} />
-          </div>
+      {headerVisible && (
+        <div className="flex items-start justify-between gap-2">
+          {(creatorVisible || statsVisible || showName) && (
+            <div className="flex flex-col gap-2">
+              {showName && (
+                <div className="flex items-center gap-2">
+                  <h3 className="line-clamp-1">{deck.name}</h3>
+                  <ColorBadges colors={deck.colors} />
+                </div>
+              )}
 
-          <div className="flex items-center gap-2">
-            {showCreator && creatorName && (
-              <span className="text-xs bg-base-300 text-base-content/70 px-2 py-1 rounded border border-base-300">
-                {creatorName}
-              </span>
-            )}
+              {(creatorVisible || statsVisible) && (
+                <div className="flex items-center gap-2">
+                  {creatorVisible && (
+                    <span className="text-xs bg-base-300 text-base-content/70 px-2 py-1 rounded border border-base-300">
+                      {creatorName}
+                    </span>
+                  )}
 
-            {showStats && playCount > 0 && (
-              <span className="text-xs bg-info/30 text-info px-2 py-1 rounded font-medium border border-info whitespace-nowrap">
-                {playCount} play{playCount !== 1 ? 's' : ''}
-              </span>
-            )}
-          </div>
+                  {statsVisible && (
+                    <span className="text-xs bg-info/30 text-info px-2 py-1 rounded font-medium border border-info whitespace-nowrap">
+                      {playCount} play{playCount !== 1 ? 's' : ''}
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {menuVisible && (
+            <div className="flex-none">
+              <ThreeDotMenu
+                onEdit={useContextControls ? handleEdit : undefined}
+                onRemove={useContextControls || onRemove ? handleRemove : undefined}
+              />
+            </div>
+          )}
         </div>
-
-        {menuVisible && (
-          <div className="flex-none">
-            <ThreeDotMenu
-              onEdit={useContextControls ? handleEdit : undefined}
-              onRemove={useContextControls || onRemove ? handleRemove : undefined}
-            />
-          </div>
-        )}
-      </div>
+      )}
 
       <div className="flex gap-2">
         {deck.commanders.length > 0 ? (
           deck.commanders.map(commander => (
-            <Commander key={commander.id} commander={commander} className="flex-1 max-w-35" />
+            <Commander key={commander.id} commander={commander} className="flex-1" showTypeLine={showTypeLine} />
           ))
         ) : (
-          <div
-            className={cn('CommanderContainer flex-1 max-w-35')}
-            style={getGradientFromColors(deck.colors)}
-          >
+          <div className={cn('CommanderContainer flex-1 max-w-35')} style={getGradientFromColors(deck.colors)}>
             <div className="Commander">
               <div className="CommanderDetails">
-                {deck.colors.length > 0 && (
-                  <ColorBadges colors={deck.colors} className="flex-none mb-1" />
-                )}
-                <span className="text-sm/tight line-clamp-2">
-                  No commander
-                </span>
+                {deck.colors.length > 0 && <ColorBadges colors={deck.colors} className="flex-none mb-1" />}
+                <span className="text-sm/tight line-clamp-2">No commander</span>
               </div>
             </div>
           </div>
@@ -116,7 +126,7 @@ export const Deck: React.FC<DeckProps> = ({
       </div>
 
       {/* Deck Options */}
-      {deck.options && deck.options.length > 0 && (
+      {showOptions && deck.options && deck.options.length > 0 && (
         <div className="flex items-center gap-2">
           {deck.options.includes('infect') && <span className="badge badge-success badge-sm">Infect</span>}
           {deck.options.includes('monarch') && <span className="badge badge-secondary badge-sm">Monarch</span>}

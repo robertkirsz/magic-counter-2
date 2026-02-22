@@ -194,7 +194,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
               player={player}
               getUserName={getUserName}
               onShowUserSelect={() => setShowUserSelect(true)}
-              onRemoveUser={() => handleUserSelect(null)}
             />
 
             <UserSelectionModal
@@ -203,6 +202,11 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
               game={game}
               onSelect={handleUserSelect}
               onCreateUser={() => setShowUserForm(true)}
+              currentUserId={player.userId ?? null}
+              onRemoveUser={() => {
+                handleUserSelect(null)
+                setShowUserSelect(false)
+              }}
             />
 
             {/* User Form Modal */}
@@ -216,11 +220,7 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
               />
             </Modal>
 
-            <PlayerDeckSelector
-              player={player}
-              onShowDeckSelect={() => setShowDeckSelect(true)}
-              onRemoveDeck={() => handleDeckSelect(null)}
-            />
+            <PlayerDeckSelector player={player} onShowDeckSelect={() => setShowDeckSelect(true)} />
 
             {/* TODO: do similar treatment to users section */}
             {/* Deck Selection Modal */}

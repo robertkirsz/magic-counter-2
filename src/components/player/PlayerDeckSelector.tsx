@@ -1,13 +1,11 @@
 import React from 'react'
 
 import { Deck } from '../Deck'
-import { ThreeDotMenu } from '../ThreeDotMenu'
 
 const PlayerDeckSelector: React.FC<{
   player: Player
   onShowDeckSelect: () => void
-  onRemoveDeck: () => void
-}> = ({ player, onShowDeckSelect, onRemoveDeck }) => {
+}> = ({ player, onShowDeckSelect }) => {
   if (!player.deckId)
     return (
       <button className="btn btn-primary" onClick={onShowDeckSelect}>
@@ -16,18 +14,17 @@ const PlayerDeckSelector: React.FC<{
     )
 
   return (
-    <div className="flex items-center gap-1">
-      <Deck
-        id={player.deckId}
-        role="button"
-        className="cursor-pointer max-w-20"
-        showCreator={false}
-        showStats={false}
-        onClick={onShowDeckSelect}
-      />
-
-      <ThreeDotMenu onClose={onRemoveDeck} asMenu={false} />
-    </div>
+    <Deck
+      id={player.deckId}
+      role="button"
+      className="cursor-pointer"
+      showCreator={false}
+      showStats={false}
+      showOptions={false}
+      showName={false}
+      showTypeLine={false}
+      onClick={onShowDeckSelect}
+    />
   )
 }
 

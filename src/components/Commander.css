@@ -1,8 +1,8 @@
 @import 'tailwindcss';
 
 .CommanderContainer {
-  container: CommanderContainer / inline-size;
-  @apply overflow-clip rounded-md  p-1;
+  @apply overflow-clip rounded-md p-1;
+  max-width: 160px;
 }
 
 .Commander {
@@ -12,8 +12,6 @@
 
 .CommanderImage {
   @apply object-cover object-top;
-  max-height: 100px;
-  width: 100%;
 }
 
 .CommanderDetails {

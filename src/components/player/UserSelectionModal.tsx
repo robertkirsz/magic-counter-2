@@ -9,7 +9,9 @@ const UserSelectionModal: React.FC<{
   game: Game
   onSelect: (userId: string) => void
   onCreateUser: () => void
-}> = ({ isOpen, onClose, game, onSelect, onCreateUser }) => {
+  currentUserId?: string | null
+  onRemoveUser?: () => void
+}> = ({ isOpen, onClose, game, onSelect, onCreateUser, currentUserId, onRemoveUser }) => {
   const { users } = useUsers()
 
   return (
@@ -36,6 +38,12 @@ const UserSelectionModal: React.FC<{
         <button className="btn btn-primary" onClick={onCreateUser}>
           Create New User
         </button>
+
+        {currentUserId != null && onRemoveUser != null && (
+          <button className="btn btn-error btn-outline" onClick={onRemoveUser}>
+            Remove User
+          </button>
+        )}
       </div>
     </Modal>
   )
