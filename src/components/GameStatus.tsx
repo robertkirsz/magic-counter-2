@@ -1,5 +1,5 @@
 import { Clock } from 'lucide-react'
-import { DateTime } from 'luxon'
+import { DateTime, Duration } from 'luxon'
 import { useEffect, useState } from 'react'
 
 import { useGames } from '../hooks/useGames'
@@ -12,9 +12,20 @@ interface GameStatusProps {
 export default function GameStatus({ gameId }: GameStatusProps) {
   const { games, getCurrentRound } = useGames()
   const [elapsedTime, setElapsedTime] = useState<string>('')
+  const [turnElapsedTime, setTurnElapsedTime] = useState<string>('')
   const [isFinished, setIsFinished] = useState(false)
 
   const game = games.find(g => g.id === gameId)
+
+  const formatDuration = (duration: Duration) => {
+    const hours = Math.floor(duration.as('hours'))
+    const minutes = Math.floor(duration.as('minutes')) % 60
+    const seconds = Math.floor(duration.as('seconds')) % 60
+    if (hours > 0) {
+      return `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+    }
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`
+  }
 
   useEffect(() => {
     if (!game) return
@@ -24,6 +35,7 @@ export default function GameStatus({ gameId }: GameStatusProps) {
 
       if (turnActions.length === 0) {
         setElapsedTime('')
+        setTurnElapsedTime('')
         setIsFinished(false)
         return
       }
@@ -42,19 +54,21 @@ export default function GameStatus({ gameId }: GameStatusProps) {
       }
 
       const endTime = gameEndTime || DateTime.now()
-      const duration = endTime.diff(gameStartTime)
-
-      const hours = Math.floor(duration.as('hours'))
-      const minutes = Math.floor(duration.as('minutes')) % 60
-      const seconds = Math.floor(duration.as('seconds')) % 60
-
-      if (hours > 0) {
-        setElapsedTime(`${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`)
-      } else {
-        setElapsedTime(`${minutes}:${seconds.toString().padStart(2, '0')}`)
-      }
-
+      setElapsedTime(formatDuration(endTime.diff(gameStartTime)))
       setIsFinished(finished)
+
+      // Current turn elapsed: last turn-change with to !== null
+      if (!finished) {
+        for (let i = turnActions.length - 1; i >= 0; i--) {
+          if (turnActions[i].to != null) {
+            const turnStartTime = DateTime.fromJSDate(turnActions[i].createdAt)
+            setTurnElapsedTime(formatDuration(DateTime.now().diff(turnStartTime)))
+            break
+          }
+        }
+      } else {
+        setTurnElapsedTime('')
+      }
     }
 
     updateTimer()
@@ -81,7 +95,8 @@ export default function GameStatus({ gameId }: GameStatusProps) {
       {elapsedTime && (
         <>
           <Clock size={14} className={cn(isFinished ? 'text-success' : 'text-info')} />
-          <span className="font-mono text-sm font-medium">{elapsedTime}</span>
+          {turnElapsedTime && <span className="font-mono text-sm font-medium">{turnElapsedTime}</span>}
+          <span className="font-mono text-sm font-medium opacity-70">({elapsedTime})</span>
         </>
       )}
     </div>
