@@ -205,7 +205,7 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
   return (
     <div
       className={cn(
-        'Board flex flex-col h-svh bg-base-300 relative overflow-clip',
+        'Board flex flex-col h-svh relative overflow-clip',
         dragEnabled && 'dragEnabled',
         tableMode && 'tableMode'
       )}
@@ -253,22 +253,23 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
         <div className="flex items-center gap-4">
           {/* Undo Last Action Button */}
           {game.state === 'active' && canUndo && (
+            // TODO: Clicking undo while there temporary active player should remove the temporary active player
             <button className="btn btn-circle" onClick={handleUndoLastAction} title="Undo last action">
-              <Undo size={32} />
+              <Undo />
             </button>
           )}
 
           {/* Pass Turn Button */}
           {game.state === 'active' && game.turnTracking && activePlayer && (
             <button
-              className="btn btn-primary btn-circle p-3!"
+              className="btn btn-primary btn-circle btn-xl"
               onClick={() => handlePassTurn()}
               title={
                 hasEffectiveActivePlayer(gameId) ? 'Cannot pass turn while temporary player is active' : 'Pass turn'
               }
               disabled={hasEffectiveActivePlayer(gameId)}
             >
-              <ArrowBigRightDash size={48} />
+              <ArrowBigRightDash className="size-8" />
             </button>
           )}
         </div>
@@ -300,8 +301,7 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
         </button>
       </div>
 
-      {/* IntroScreen Modal */}
-      <Modal isOpen={showIntroModal} onClose={() => setShowIntroModal(false)} title="Menu">
+      <Modal title="Menu" isOpen={showIntroModal} onClose={() => setShowIntroModal(false)}>
         <IntroScreen
           gameId={gameId}
           tableMode={tableMode}
@@ -326,6 +326,10 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
         />
       </Modal>
 
+      <Modal title="Who starts?" isOpen={showStartModal} hideCloseButton onClose={() => {}}>
+        <StartGameModal gameId={gameId} onChoosePlayer={handlePassTurn} />
+      </Modal>
+
       <Modal title="Game Settings" isOpen={showSettings} onClose={() => setShowSettings(false)}>
         <GameForm
           gameId={gameId}
@@ -337,10 +341,6 @@ export const Board: React.FC<BoardProps> = ({ gameId, onRequestNewGame }) => {
 
       <Modal fullSize title="Game Actions" isOpen={showActions} onClose={() => setShowActions(false)}>
         <ActionsList gameId={gameId} />
-      </Modal>
-
-      <Modal title="Who starts?" isOpen={showStartModal} hideCloseButton onClose={() => {}}>
-        <StartGameModal gameId={gameId} onChoosePlayer={handlePassTurn} />
       </Modal>
 
       <GameEndModal gameId={gameId} isOpen={showGameEndModal} onClose={() => setShowGameEndModal(false)} />

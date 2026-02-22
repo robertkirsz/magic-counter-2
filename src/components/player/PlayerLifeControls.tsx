@@ -1,4 +1,4 @@
-import { MinusIcon, PlusIcon } from 'lucide-react'
+import { MinusIcon, PlusIcon, SkullIcon } from 'lucide-react'
 import { DateTime } from 'luxon'
 import React, { useCallback, useRef, useState } from 'react'
 
@@ -8,7 +8,9 @@ import { useLongPress } from '../../hooks/useLongPress'
 import { cn } from '../../utils/cn'
 import { useTurnChangeListener } from '../../utils/eventDispatcher'
 import { generateId } from '../../utils/idGenerator'
+import { CommanderDamage } from '../CommanderDamage'
 import { MonarchToggle } from '../MonarchToggle'
+import { PoisonCounters } from '../PoisonCounters'
 
 const PlayerLifeControls: React.FC<{
   from?: string
@@ -20,6 +22,8 @@ const PlayerLifeControls: React.FC<{
   commanderId?: string
   playerId?: string
   onPendingPoisonChange?: (pendingChange: number) => void
+  playerName?: string
+  onPlayerNameClick?: () => void
 }> = ({
   from,
   to,
@@ -29,7 +33,9 @@ const PlayerLifeControls: React.FC<{
   onLifeCommitted,
   commanderId,
   playerId,
-  onPendingPoisonChange
+  onPendingPoisonChange,
+  playerName,
+  onPlayerNameClick
 }) => {
   const { dispatchAction, games } = useGames()
   const { decks } = useDecks()
@@ -131,18 +137,29 @@ const PlayerLifeControls: React.FC<{
     shouldStopPropagation: false
   })
 
+  // TODO: Move to PoisonCounters?
+  const pendingPoisonChange = poisonDamage ? -pendingLifeChanges : 0
+
   return (
-    <div className="flex flex-col gap-2 items-center justify-center">
-      <div className="flex gap-2">
+    <div className="flex flex-col items-center justify-around h-full">
+      <div className="flex gap-2 items-center">
+        {/* Player name */}
+        {playerName != null && (
+          <span className="text-lg font-bold" onClick={onPlayerNameClick}>
+            {playerName}
+          </span>
+        )}
+
         {/* Commander Damage Icon */}
         {commanderId && (
           <div className="flex justify-center">
             <button
               type="button"
-              className={cn('btn btn-sm', commanderDamage && 'bg-info/90 hover:bg-info text-info-content border-info')}
+              className={cn('btn btn-sm btn-circle', !commanderDamage && 'btn-ghost', commanderDamage && 'btn-primary')}
               onClick={() => setCommanderDamage(!commanderDamage)}
             >
-              <img src="/icons/commander.png" className="w-5 h-5" />
+              {/* Find svg icon for commander */}
+              <img src="/icons/commander.png" className="size-4" />
             </button>
           </div>
         )}
@@ -152,10 +169,8 @@ const PlayerLifeControls: React.FC<{
           <div className="flex justify-center">
             <button
               type="button"
-              className={cn(
-                'btn btn-sm',
-                poisonDamage && 'bg-success/90 hover:bg-success text-success-content border-success'
-              )}
+              // TODO: Use specific color rather than semantic color
+              className={cn('btn btn-sm btn-circle', !poisonDamage && 'btn-ghost', poisonDamage && 'btn-success')}
               title={
                 poisonDamage
                   ? 'Poison mode: - adds poison, + removes poison'
@@ -163,26 +178,24 @@ const PlayerLifeControls: React.FC<{
               }
               onClick={() => setPoisonDamage(!poisonDamage)}
             >
-              ☠️
+              <SkullIcon className="size-4" />
             </button>
           </div>
         )}
 
         {/* Monarch Toggle */}
-        {playerId && (
-          <div className="flex justify-center">
-            <MonarchToggle gameId={gameId} playerId={playerId} />
-          </div>
-        )}
+        {/* TODO: Don't display if monarch is not available in current decks */}
+        {playerId && <MonarchToggle gameId={gameId} playerId={playerId} />}
       </div>
 
-      <div className="flex gap-4 items-center">
+      {/* Life controls */}
+      <div className="flex gap-2 items-center">
         <button
           type="button"
           className="btn btn-ghost px-8 py-7 bg-transparent! border-none! shadow-none!"
           {...decrementHandlers}
         >
-          <MinusIcon className="w-8 h-8" />
+          <MinusIcon className="size-8" />
         </button>
 
         <div
@@ -191,7 +204,7 @@ const PlayerLifeControls: React.FC<{
             pendingLifeChanges !== 0 && !poisonDamage ? 'text-info' : 'text-base-content'
           )}
         >
-          <span className="text-4xl font-bold">{displayLife}</span>
+          <span className="text-7xl font-bold">{displayLife}</span>
 
           {pendingLifeChanges !== 0 && !poisonDamage && (
             <span
@@ -213,10 +226,18 @@ const PlayerLifeControls: React.FC<{
             className="btn btn-ghost px-8 py-7 bg-transparent! border-none! shadow-none!"
             {...incrementHandlers}
           >
-            <PlusIcon className="w-8 h-8" />
+            <PlusIcon className="size-8" />
           </button>
         )}
       </div>
+
+      {/* Damage counters */}
+      {playerId != null && (
+        <div className="flex items-center gap-2 min-h-8">
+          <CommanderDamage gameId={gameId} playerId={playerId} />
+          <PoisonCounters gameId={gameId} playerId={playerId} pendingChange={pendingPoisonChange} />
+        </div>
+      )}
     </div>
   )
 }

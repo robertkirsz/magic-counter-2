@@ -1,3 +1,4 @@
+import { CrownIcon } from 'lucide-react'
 import React from 'react'
 
 import { useDecks } from '../hooks/useDecks'
@@ -51,15 +52,11 @@ export const MonarchToggle: React.FC<MonarchToggleProps> = ({ gameId, playerId, 
   return (
     <button
       type="button"
-      className={cn(
-        'btn btn-sm transition-colors duration-200',
-        isMonarch && 'bg-warning/90 hover:bg-warning text-warning-content border-warning',
-        className
-      )}
+      className={cn('btn btn-sm btn-circle', !isMonarch && 'btn-ghost', isMonarch && 'btn-warning', className)}
       onClick={handleMonarchToggle}
       title={isMonarch ? 'Remove Monarch' : 'Become Monarch'}
     >
-      👑
+      <CrownIcon className="size-4" />
     </button>
   )
 }

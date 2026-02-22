@@ -1,3 +1,5 @@
 - Make it so when life is modified, dispatch an action and modify it's value until the change is commited. Modified value should be live visible in Rounds view. This way me should not be needed to listen to turn changes to commit pending life changes. There will be no asynchronity.
 - If a Player has no life, omit them when passing turn. Don't count them when counting rounds.
 - Remove HTTPS from local setup?
+- Option to delete game (not finish)
+- Life total - make screen width dependant

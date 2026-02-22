@@ -8,11 +8,9 @@ import { useUsers } from '../hooks/useUsers'
 import { cn } from '../utils/cn'
 import { calculateLifeFromActions, getCurrentMonarch, isPlayerEliminated } from '../utils/gameUtils'
 import { generateId } from '../utils/idGenerator'
-import { CommanderDamage } from './CommanderDamage'
 import { DeckForm } from './DeckForm'
 import { Decks } from './Decks'
 import { Modal } from './Modal'
-import { PoisonCounters } from './PoisonCounters'
 import { UserForm } from './UserForm'
 import PlayerDeckSelector from './player/PlayerDeckSelector'
 import PlayerLifeControls from './player/PlayerLifeControls'
@@ -39,7 +37,6 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
   const [showDeckSelect, setShowDeckSelect] = useState<boolean>(false)
   const [showDeckForm, setShowDeckForm] = useState<boolean>(false)
   const [showUserForm, setShowUserForm] = useState<boolean>(false)
-  const [pendingPoisonChange, setPendingPoisonChange] = useState<number>(0)
   const effectiveActivePlayerId = getEffectiveActivePlayer(gameId)
   const isTemporaryActive = hasEffectiveActivePlayer(gameId)
 
@@ -136,7 +133,8 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
     <div
       ref={setNodeRef}
       className={cn(
-        'PlayerSection flex-1 flex flex-col p-2 relative overflow-clip',
+        'PlayerSection flex-1 flex flex-col relative overflow-clip',
+        // TODO: Check dragging again
         isOver && 'ring-2 ring-error ring-opacity-50',
         isEliminated && 'eliminated'
       )}
@@ -159,17 +157,11 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
 
       <div
         className={cn(
-          'PlayerSectionContent hiddenWhenDragEnabled flex-1 relative flex flex-col gap-4 items-center justify-center',
+          'PlayerSectionContent hiddenWhenDragEnabled flex-1 relative flex flex-col gap-4 -outline-offset-8 items-center justify-center rounded-xl ',
           playerIsActive && 'outline-4 outline-info',
           hasEffectiveActivePlayer(gameId) && playerIsActive && 'outline-4 outline-success'
         )}
       >
-        {gameIsActive && (
-          <p className="text-xl font-bold cursor-pointer transition-colors text-whit" onClick={handlePlayerNameClick}>
-            {getUserName(player.userId)}
-          </p>
-        )}
-
         {gameIsActive && (
           <PlayerLifeControls
             from={effectiveActivePlayerId}
@@ -179,14 +171,10 @@ export const PlayerSection: React.FC<PlayerSectionProps> = ({ gameId, playerId }
             commanderId={activePlayerCommanderId}
             playerId={playerId}
             onLifeCommitted={handleLifeCommitted}
-            onPendingPoisonChange={setPendingPoisonChange}
+            playerName={getUserName(player.userId)}
+            onPlayerNameClick={handlePlayerNameClick}
           />
         )}
-
-        <div className="flex items-center gap-2">
-          <CommanderDamage gameId={gameId} playerId={playerId} />
-          <PoisonCounters gameId={gameId} playerId={playerId} pendingChange={pendingPoisonChange} />
-        </div>
 
         {!gameIsActive && (
           <>

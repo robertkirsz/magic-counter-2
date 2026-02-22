@@ -1,7 +1,7 @@
+import { SkullIcon } from 'lucide-react'
 import React from 'react'
 
 import { useGames } from '../hooks/useGames'
-import { cn } from '../utils/cn'
 import { calculatePoisonCounters } from '../utils/gameUtils'
 
 interface PoisonCountersProps {
@@ -30,15 +30,18 @@ export const PoisonCounters: React.FC<PoisonCountersProps> = ({ gameId, playerId
   const safeDisplayValue = Math.max(0, displayPoisonCounters)
 
   return (
-    <div className="flex items-center gap-1">
-      <span>☠️</span>
-      <span className="text-lg font-bold text-success">{safeDisplayValue}</span>
-      {pendingChange !== 0 && (
-        <span className={cn('text-xs', pendingChange < 0 ? 'text-success' : 'text-error')}>
-          {pendingChange > 0 ? '+' : ''}
-          {pendingChange}
-        </span>
-      )}
+    <div className="flex relative">
+      <SkullIcon className="size-8" />
+
+      <div className="absolute -top-1 -right-1 bg-success text-success-content text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+        {safeDisplayValue}
+        {pendingChange !== 0 && (
+          <span className="text-xs absolute left-full pl-1 text-success">
+            {pendingChange > 0 ? '+' : ''}
+            {pendingChange}
+          </span>
+        )}
+      </div>
     </div>
   )
 }
